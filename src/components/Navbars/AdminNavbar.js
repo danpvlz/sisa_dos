@@ -15,8 +15,8 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import { Link } from "react-router-dom";
+import React, {useCallback} from "react";
+import { Link, useHistory } from "react-router-dom";
 // reactstrap components
 import {
   DropdownMenu,
@@ -33,18 +33,21 @@ import {
   Nav,
   Container,
   Media,
+  Button
 } from "reactstrap";
 
 const AdminNavbar = (props) => {
+  const history = useHistory();
+  const handleBack = useCallback(() => history.goBack(), [history]);
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
         <Container fluid>
           <Link
-            className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
-            to="/"
+            className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"  
+            onClick={handleBack}
           >
-            {props.brandText}
+           <i class="fa fa-chevron-left mr-2" aria-hidden="true"></i>{props.brandText}
           </Link>
           <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
             <FormGroup className="mb-0">
@@ -54,7 +57,7 @@ const AdminNavbar = (props) => {
                     <i className="fas fa-search" />
                   </InputGroupText>
                 </InputGroupAddon>
-                <Input placeholder="Search" type="text" />
+                <Input placeholder="Buscar" type="text" />
               </InputGroup>
             </FormGroup>
           </Form>
