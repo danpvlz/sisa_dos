@@ -1,0 +1,9 @@
+[
+    {"id":1,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","horas":30,"observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":1,"estado":1},
+    {"id":2,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","horas":30,"observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":2,"estado":1},
+    {"id":3,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","horas":30,"observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":1,"estado":2},
+    {"id":4,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","horas":30,"observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":2,"estado":1},
+    {"id":5,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","horas":30,"observaciones":["asd","lala"],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":1,"estado":1},
+    {"id":6,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","horas":30,"observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":1,"estado":2},
+    {"id":7,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","horas":30,"observaciones":["asd","lala"],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":2,"estado":1}
+]

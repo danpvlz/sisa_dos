@@ -25,6 +25,7 @@ import Asociado from "views/examples/Asociado.js";
 import Colaborador from "views/examples/Colaborador.js";
 import NuevoAsociado from "views/examples/NuevoAsociado.js";
 import NuevoColaborador from "views/examples/NuevoColaborador.js";
+import Asistencia from "views/examples/Asistencia.js";
 import Icons from "views/examples/Icons.js";
 
 var routes = [
@@ -71,8 +72,16 @@ var routes = [
   {
     path: "/colaborador",
     name: "Colaborador",
-    icon: "ni ni-badge text-blue",
+    icon: "ni ni-badge text-orange",
     component: Colaborador,
+    layout: "/admin",
+    show: true
+  },
+  {
+    path: "/asistencia",
+    name: "Asistencia",
+    icon: "ni ni-calendar-grid-58 text-blue",
+    component: Asistencia,
     layout: "/admin",
     show: true
   },
