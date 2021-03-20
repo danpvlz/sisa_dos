@@ -26,6 +26,8 @@ import Colaborador from "views/examples/Colaborador.js";
 import NuevoAsociado from "views/examples/NuevoAsociado.js";
 import NuevoColaborador from "views/examples/NuevoColaborador.js";
 import Asistencia from "views/examples/Asistencia.js";
+import MiAsistencia from "views/examples/MiAsistencia.js";
+import MarcarAsistencia from "views/examples/MarcarAsistencia.js";
 import Icons from "views/examples/Icons.js";
 
 var routes = [
@@ -82,6 +84,22 @@ var routes = [
     name: "Asistencia",
     icon: "ni ni-calendar-grid-58 text-blue",
     component: Asistencia,
+    layout: "/admin",
+    show: true
+  },
+  {
+    path: "/mi-asistencia",
+    name: "Mi asistencia",
+    icon: "ni ni-calendar-grid-58 text-blue",
+    component: MiAsistencia,
+    layout: "/admin",
+    show: true
+  },
+  {
+    path: "/registrar-asistencia",
+    name: "Registrar asistencia",
+    icon: "ni ni-calendar-grid-58 text-blue",
+    component: MarcarAsistencia,
     layout: "/admin",
     show: true
   },

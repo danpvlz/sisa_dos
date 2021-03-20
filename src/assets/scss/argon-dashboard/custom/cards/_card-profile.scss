@@ -2,6 +2,36 @@
 // Profile card
 //
 
+.clock-progress{
+    background-color: red;
+    border-radius: 100%;
+    width: 310px;
+    height: 310px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.clock-container{
+    background-color: #f0f2f8;
+    border-radius: 100%;
+    width: 18rem;
+    height: 18rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    margin: auto;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    user-select: none;
+    small{
+        display: flex;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+}
+
 .card-profile-image {
     position: relative;
 
