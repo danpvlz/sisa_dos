@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import Index from "views/Index.js";
 import Profile from "views/examples/Profile.js";
 import Maps from "views/examples/Maps.js";
@@ -39,6 +22,14 @@ import MiAsistencia from "views/Asistencia/MiAsistencia.js";
 import MarcarAsistencia from "views/Asistencia/MarcarAsistencia.js";
 
 var routes = [
+  {
+    path: "/login",
+    name: "Login",
+    icon: "ni ni-key-25 text-info",
+    component: Login,
+    layout: "/auth",
+    show: false
+  },
   {
     path: "/index",
     name: "Inicio",
@@ -152,14 +143,6 @@ var routes = [
     show: true
   },
   {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: Login,
-    layout: "/auth",
-    show: true
-  },
-  {
     path: "/register",
     name: "Register",
     icon: "ni ni-circle-08 text-pink",
@@ -168,4 +151,5 @@ var routes = [
     show: true
   },
 ];
+
 export default routes;

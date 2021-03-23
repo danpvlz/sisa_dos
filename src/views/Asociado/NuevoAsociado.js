@@ -131,7 +131,7 @@ const NuevoAsociado = () => {
                   </Col>
                     <Col>
                   <h6 className="heading-small text-muted mb-4">
-                    Contact information
+                    Empresa
                   </h6>
                   <div className="pl-lg-4">
                     <Row>
@@ -139,16 +139,15 @@ const NuevoAsociado = () => {
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-address"
+                            htmlFor="input-ruc"
                           >
-                            Address
+                            RUC
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                            id="input-address"
-                            placeholder="Home Address"
+                            id="input-ruc"
                             type="text"
+                            pattern="[0-9]"
                           />
                         </FormGroup>
                       </Col>

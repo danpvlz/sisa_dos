@@ -20,7 +20,7 @@ import React from "react";
 // reactstrap components
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 
-const Header = () => {
+const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
   return (
     <>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
@@ -40,7 +40,7 @@ const Header = () => {
                           Tardanzas
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          20
+                          {tardanzas}
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -50,7 +50,7 @@ const Header = () => {
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2">
+                      <span className="text-success mr-2 d-none">
                         <i className="fa fa-arrow-up" /> 3.48%
                       </span>{" "}
                       <span className="text-nowrap">El último mes</span>
@@ -69,7 +69,9 @@ const Header = () => {
                         >
                           Faltas
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">5</span>
+                        <span className="h2 font-weight-bold mb-0">
+                          {faltas}
+                        </span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
@@ -78,7 +80,7 @@ const Header = () => {
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-danger mr-2">
+                      <span className="text-danger mr-2 d-none">
                         <i className="fas fa-arrow-down" /> 3.48%
                       </span>{" "}
                       <span className="text-nowrap">El último mes</span>
@@ -97,7 +99,9 @@ const Header = () => {
                         >
                           H. realizadas
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">924</span>
+                        <span className="h2 font-weight-bold mb-0">
+                          {hRealizadas}
+                        </span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -106,8 +110,8 @@ const Header = () => {
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-danger mr-2">
-                        <i className="fas fa-arrow-down" /> 1.10%
+                      <span className="text-danger mr-2 d-none">
+                        <i className="fas fa-arrow-down"/> 1.10%
                       </span>{" "}
                       <span className="text-nowrap">El último mes</span>
                     </p>
@@ -125,7 +129,9 @@ const Header = () => {
                         >
                           H. compensar
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">200</span>
+                        <span className="h2 font-weight-bold mb-0">
+                          {hCompensar}
+                        </span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-success text-white rounded-circle shadow">
@@ -134,8 +140,8 @@ const Header = () => {
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2">
-                        <i className="fas fa-arrow-up" /> 12%
+                      <span className="text-success mr-2 d-none">
+                        <i className="fas fa-arrow-up"/> 12%
                       </span>{" "}
                       <span className="text-nowrap">El último mes</span>
                     </p>
@@ -150,4 +156,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default AsistenciaHeader;

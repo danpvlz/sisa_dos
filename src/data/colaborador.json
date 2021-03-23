@@ -1,23 +1,55 @@
-[
-    {"idColaborador":"1","colaborador":"MARÍA ALEJANDRA PASCO HERRERA","rol":"1", "dni":"45855762","fechaIngreso":"2019-09-13","usuario":"ALEJANDRA","estado":"1"},
-    {"idColaborador":"2","colaborador":"ALEJANDRO MAZA CRISANTO","rol":"2", "dni":"16663975","fechaIngreso":"2010-01-25","usuario":"ALEJANDRO","estado":"1"},
-    {"idColaborador":"3","colaborador":"ALEX DIDI GOMEZ JIMENEZ","rol":"2", "dni":"40760425","fechaIngreso":"2001-09-15","usuario":"ALEX","estado":"1"},
-    {"idColaborador":"4","colaborador":"ANA MARIA DEL ROSARIO GUZMAN GUIMAREY","rol":"1", "dni":"16657467","fechaIngreso":"2011-01-19","usuario":"ANA","estado":"1"},
-    {"idColaborador":"5","colaborador":"CARMEN JULIA SIME NIETO","rol":"2", "dni":"16479841","fechaIngreso":"2008-01-02","usuario":"CARMEN","estado":"1"},
-    {"idColaborador":"6","colaborador":"CYNTHIA CHAVESTA RODRIGUEZ","rol":"1", "dni":"71739729","fechaIngreso":"2019-08-01","usuario":"CYNTHIA","estado":"1"},
-    {"idColaborador":"7","colaborador":"DANIELA DE FÁTIMA PAIVA VELÁSQUEZ","rol":"1", "dni":"73568479","fechaIngreso":"2021-02-15","usuario":"DANIELA","estado":"1"},
-    {"idColaborador":"8","colaborador":"JAVIER MAZA CRISANTO","rol":"1", "dni":"16619893","fechaIngreso":"1996-10-04","usuario":"JAVIER","estado":"1"},
-    {"idColaborador":"9","colaborador":"JESÚS NICOMEDES CERDAN VALENZUELA","rol":"1", "dni":"16654958","fechaIngreso":"1989-08-15","usuario":"JESUS","estado":"1"},
-    {"idColaborador":"10","colaborador":"JORGE LUIS CHOZO CAJUSOL","rol":"1", "dni":"74169431","fechaIngreso":"2018-01-02","usuario":"JORGE","estado":"1"},
-    {"idColaborador":"11","colaborador":"JUAN CARLOS MERA GOICOCHEA","rol":"1", "dni":"47856454","fechaIngreso":"2017-10-24","usuario":"JUAN","estado":"1"},
-    {"idColaborador":"12","colaborador":"JUAN LUIS LLONTOP SERRANO","rol":"1", "dni":"47218441","fechaIngreso":"2021-01-02","usuario":"JUANLUIS","estado":"1"},
-    {"idColaborador":"13","colaborador":"LAURA TORRES HUAMAN","rol":"1", "dni":"17415869","fechaIngreso":"2019-05-22","usuario":"LAURA","estado":"1"},
-    {"idColaborador":"14","colaborador":"LUIS CARLOS MASABEL SANTILLAN","rol":"1", "dni":"42784263","fechaIngreso":"2018-04-09","usuario":"LUIS","estado":"1"},
-    {"idColaborador":"15","colaborador":"MARCO ANTONIO SILVA MONJA","rol":"1", "dni":"16437742","fechaIngreso":"2007-10-01","usuario":"MARCO","estado":"1"},
-    {"idColaborador":"16","colaborador":"MARTHA LUZ SIFUENTES ROJAS","rol":"1", "dni":"16657584","fechaIngreso":"1995-09-01","usuario":"MARTHA","estado":"1"},
-    {"idColaborador":"17","colaborador":"MIGUEL ANGEL CAMACHO URBINA","rol":"1", "dni":"17612442","fechaIngreso":"2019-08-01","usuario":"MIGUEL","estado":"1"},
-    {"idColaborador":"18","colaborador":"ROSA MARGARITA BANCES MIMBELA","rol":"1", "dni":"45478015","fechaIngreso":"2013-04-08","usuario":"ROSA","estado":"1"},
-    {"idColaborador":"19","colaborador":"VANESSA CLAUDIA ÑIQUEN BAZÁN","rol":"1", "dni":"16785385","fechaIngreso":"1998-04-01","usuario":"VANESSA","estado":"1"},
-    {"idColaborador":"20","colaborador":"WALTER MARTIN VILLAVICENCIO DIAZ","rol":"1", "dni":"17854172","fechaIngreso":"1995-09-01","usuario":"WALTER","estado":"1"},
-    {"idColaborador":"21","colaborador":"Nombres Apellido paterno Apellido materno","rol":"1", "dni":"00000020","fechaIngreso":"0000-00-00","usuario":"DERITA","estado":"0"}
+{
+    "total":18,
+    "data":[
+        {
+            "idColaborador":"1",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "rol":"1", 
+            "dni":"45855762",
+            "fechaIngreso":"2019-09-13",
+            "usuario":"ALEJANDRA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "estado":"1"
+        },
+        {
+            "idColaborador":"2",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "rol":"1", 
+            "dni":"45855762",
+            "fechaIngreso":"2019-09-13",
+            "usuario":"ALEJANDRA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "estado":"1"
+        },
+        {
+            "idColaborador":"3",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "rol":"1", 
+            "dni":"45855762",
+            "fechaIngreso":"2019-09-13",
+            "usuario":"ALEJANDRA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "estado":"1"
+        },
+        {
+            "idColaborador":"4",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "rol":"1", 
+            "dni":"45855762",
+            "fechaIngreso":"2019-09-13",
+            "usuario":"ALEJANDRA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "estado":"1"
+        },
+        {
+            "idColaborador":"5",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "rol":"1", 
+            "dni":"45855762",
+            "fechaIngreso":"2019-09-13",
+            "usuario":"ALEJANDRA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "estado":"1"
+        }
     ]
+}

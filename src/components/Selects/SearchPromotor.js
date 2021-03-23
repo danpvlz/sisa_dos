@@ -1,7 +1,8 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import CreatableSelect from 'react-select/creatable';
 
-export default function SearchPromotor({searched, setSearched}) {
+export default function SearchPromotor({ searched, setSearched }) {
+    const promotores = require('../../data/filtroPromotor.json');
     const [searchPromotor, setSearchPromotor] = useState([]);
 
     const handleChange = (newValue, actionMeta) => {
@@ -10,22 +11,19 @@ export default function SearchPromotor({searched, setSearched}) {
 
     const handleInputChange = (inputValue, actionMeta) => {
         setSearchPromotor(
-          inputValue.length>=2 ? [
-              { value: '1', label: 'Daniela Paiva' },
-              { value: '2', label: 'Alejandra Paiva' },
-              { value: '3', label: 'Mileidy Quintero' }
-            ] : []
+            inputValue.length >= 2 ? promotores : []
         );
     }
-    
+
     const handleCreate = (inputValue) => {
-        let newOption={
+        let newOption = {
             value: 0,
             label: inputValue,
-          };
+        };
         setSearchPromotor([newOption]);
         setSearched(newOption);
     };
+    
     return (
         <CreatableSelect
             placeholder="Seleccione..."

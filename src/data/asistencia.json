@@ -1,9 +1,229 @@
-[
-    {"id":1,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","tardanza":"-","observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":1,"estado":1},
-    {"id":2,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","tardanza":"-","observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":2,"estado":3},
-    {"id":3,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","tardanza":"15min","observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":1,"estado":2},
-    {"id":4,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","tardanza":"-","observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":2,"estado":1},
-    {"id":5,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","tardanza":"-","observaciones":["asd","lala"],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":1,"estado":1},
-    {"id":6,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","tardanza":"5min","observaciones":[],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":1,"estado":2},
-    {"id":7,"colaborador":"MARÍA ALEJANDRA PASCO HERRERA","tardanza":"-","observaciones":["asd","lala"],"fecha":"2019-09-13","entrada":"03:09:52","salida":"07:20:52","turno":2,"estado":3}
-]
+{
+    "tardanzas":20,
+    "faltas":5,
+    "hRealizadas":924,
+    "hCompensar":200,
+    "tab1":[
+        {
+            "idAsistencia":"1",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "tardanzas":20,
+            "observaciones":[],
+            "justificaciones":[]
+        },
+        {
+            "idAsistencia":"2",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "tardanzas":20,
+            "observaciones":[],
+            "justificaciones":[]
+        },
+        {
+            "idAsistencia":"3",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "tardanzas":20,
+            "observaciones":[],
+            "justificaciones":[]
+        },
+        {
+            "idAsistencia":"4",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "tardanzas":20,
+            "observaciones":[],
+            "justificaciones":[]
+        },
+        {
+            "idAsistencia":"5",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "tardanzas":20,
+            "observaciones":[],
+            "justificaciones":[]
+        }
+    ],
+    "tab2":[
+        {
+            "idAsistencia":"21",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        },
+        {
+            "idAsistencia":"22",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        },
+        {
+            "idAsistencia":"23",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        },
+        {
+            "idAsistencia":"25",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        },
+        {
+            "idAsistencia":"25",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        }
+    ],
+    "tab3":[
+        {
+            "idAsistencia":"31",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "tipo":1,
+            "turno":1,
+            "hora":{"hora":"08:30:52","estado":1},
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "idAsistencia":"32",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "turno":2,
+            "hora":{"hora":"08:30:52","estado":2},
+            "observacion":"-",
+            "justificacion":"-"
+        },
+        {
+            "idAsistencia":"33",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "turno":1,
+            "hora":{"hora":"08:30:52","estado":1},
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "idAsistencia":"34",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "turno":2,
+            "hora":{"hora":"08:30:52","estado":2},
+            "observacion":"-",
+            "justificacion":"-"
+        },
+        {
+            "idAsistencia":"35",
+            "colaborador":"MARÍA ALEJANDRA PASCO HERRERA",
+            "foto":"https://st.depositphotos.com/1269204/1219/i/600/depositphotos_12196477-stock-photo-smiling-men-isolated-on-the.jpg",
+            "fecha":"2019-09-13",
+            "turno":2,
+            "hora":{"hora":"08:30:52","estado":2},
+            "observacion":"-",
+            "justificacion":"-"
+        }
+    ],
+    "detalleAsistencia":[
+        {
+            "fecha":"2021-10-05",
+            "turno":2,
+            "hora":"08:30:52",
+            "estado":1,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "fecha":"2021-10-05",
+            "turno":2,
+            "hora":"08:30:52",
+            "estado":1,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "fecha":"2021-10-05",
+            "turno":2,
+            "hora":"08:30:52",
+            "estado":1,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "fecha":"2021-10-05",
+            "turno":2,
+            "hora":"08:30:52",
+            "estado":1,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "fecha":"2021-10-05",
+            "turno":2,
+            "hora":"08:30:52",
+            "estado":1,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "fecha":"2021-10-05",
+            "turno":2,
+            "hora":"08:30:52",
+            "estado":1,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "fecha":"2021-10-05",
+            "turno":2,
+            "hora":"08:30:52",
+            "estado":1,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "fecha":"2021-10-05",
+            "turno":2,
+            "hora":"08:30:52",
+            "estado":1,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        }
+    ]
+}

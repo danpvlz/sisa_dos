@@ -29,7 +29,7 @@ import {
 } from "reactstrap";
 // core components
 
-import AsistenciaHeader from "components/Headers/Asistencia.js";
+import AsistenciaHeader from "components/Headers/AsistenciaHeader.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
 
 const Asistencia = () => {
@@ -50,7 +50,12 @@ const Asistencia = () => {
   };
   return (
     <>
-      <AsistenciaHeader />
+      <AsistenciaHeader
+        tardanzas={asistencias.tardanzas}
+        faltas={asistencias.faltas}
+        hRealizadas={asistencias.hRealizadas}
+        hCompensar={asistencias.hCompensar}
+      />
       {/* Page content */}
       <Container className="mt--7" fluid>
         {/* Table */}
@@ -151,17 +156,14 @@ const Asistencia = () => {
                     </thead>
                     <tbody>
                       {
-                        asistencias?.map((asistencia, key) =>
+                        asistencias.tab1?.map((asistencia, key) =>
                           <tr key={key}>
                             <th scope="row">
                               <Media className="align-items-center">
                                 <img
                                   className="avatar rounded-circle mr-3"
                                   alt="..."
-                                  src={
-                                    require("../../assets/img/theme/Gerencia-2-819x1024.png")
-                                      .default
-                                  }
+                                  src={asistencia.foto}
                                 />
                                 <Media>
                                   <span className="mb-0 text-sm">
@@ -172,7 +174,7 @@ const Asistencia = () => {
 
                             </th>
                             <td className="text-center">
-                              20min
+                              {asistencia.tardanzas}min
                             </td>
                             <td className="text-center">
                               {asistencia.observaciones.length > 0 ?
@@ -184,7 +186,7 @@ const Asistencia = () => {
                               }
                             </td>
                             <td className="text-center">
-                              {asistencia.observaciones.length > 0 ?
+                              {asistencia.justificaciones.length > 0 ?
                                 <Badge color="" className="badge-dot mr-4">
                                   <i className="bg-yellow" /> Con justificaciones
                             </Badge>
@@ -292,17 +294,14 @@ const Asistencia = () => {
                     </thead>
                     <tbody>
                       {
-                        asistencias?.map((asistencia, key) =>
+                        asistencias.tab2?.map((asistencia, key) =>
                           <tr key={key}>
                             <th scope="row">
                               <Media className="align-items-center">
                                 <img
                                   className="avatar rounded-circle mr-3"
                                   alt="..."
-                                  src={
-                                    require("../../assets/img/theme/Gerencia-2-819x1024.png")
-                                      .default
-                                  }
+                                  src={asistencia.foto}
                                 />
                                 <Media>
                                   <span className="mb-0 text-sm">
@@ -322,67 +321,67 @@ const Asistencia = () => {
                               <Badge
                                 id={`tooltip_in_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "danger" : "warning"}>
-                                {asistencia.entrada}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.prim_entrada.estado) == 1 ? "success" : parseInt(asistencia.prim_entrada.estado) == 2 ? "danger" : "warning"}>
+                                {asistencia.prim_entrada.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.prim_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.prim_entrada.estado) == 2 ? "No marcó" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
                               <Badge
                                 id={`tooltip_out_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "danger" : "default"}>
-                                {asistencia.salida}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.prim_salida.estado) == 1 ? "success" : parseInt(asistencia.prim_salida.estado) == 2 ? "danger" : "default"}>
+                                {asistencia.prim_salida.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
                                 target={`tooltip_out_${key}`}
                               >
-                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "No marcó" : "Compensó"}
+                                {parseInt(asistencia.prim_salida.estado) == 1 ? "Normal" : parseInt(asistencia.prim_salida.estado) == 2 ? "No marcó" : "Compensó"}
                               </UncontrolledTooltip>
                             </td>
                             <td>
                               <Badge
                                 id={`tooltip_in_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "danger" : "warning"}>
-                                {asistencia.entrada}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.seg_entrada.estado) == 1 ? "success" : parseInt(asistencia.seg_entrada.estado) == 2 ? "danger" : "warning"}>
+                                {asistencia.seg_entrada.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.seg_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.seg_entrada.estado) == 2 ? "No marcó" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
                               <Badge
                                 id={`tooltip_out_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "danger" : "default"}>
-                                {asistencia.salida}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.seg_salida.estado) == 1 ? "success" : parseInt(asistencia.seg_salida.estado) == 2 ? "danger" : "default"}>
+                                {asistencia.seg_salida.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
                                 target={`tooltip_out_${key}`}
                               >
-                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "No marcó" : "Compensó"}
+                                {parseInt(asistencia.seg_salida.estado) == 1 ? "Normal" : parseInt(asistencia.seg_salida.estado) == 2 ? "No marcó" : "Compensó"}
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
                               {asistencia.tardanza}
                             </td>
                             <td className="text-center">
-                              {asistencia.tardanza}
+                              {asistencia.compensado}
                             </td>
                           </tr>
                         )
@@ -466,25 +465,22 @@ const Asistencia = () => {
                         <th scope="col">Fecha</th>
                         <th scope="col">Día</th>
                         <th scope="col">Turno</th>
-                        <th scope="col">Hora</th>
                         <th scope="col">Tipo</th>
+                        <th scope="col">Hora</th>
                         <th scope="col">Observación</th>
                         <th scope="col">Justificación</th>
                       </tr>
                     </thead>
                     <tbody>
                       {
-                        asistencias?.map((asistencia, key) =>
+                        asistencias.tab3?.map((asistencia, key) =>
                           <tr key={key}>
                             <th scope="row">
                               <Media className="align-items-center">
                                 <img
                                   className="avatar rounded-circle mr-3"
                                   alt="..."
-                                  src={
-                                    require("../../assets/img/theme/Gerencia-2-819x1024.png")
-                                      .default
-                                  }
+                                  src={asistencia.foto}
                                 />
                                 <Media>
                                   <span className="mb-0 text-sm">
@@ -495,27 +491,37 @@ const Asistencia = () => {
 
                             </th>
                             <td>
-                              {"2021-10-05"}
+                              {asistencia.fecha}
                             </td>
                             <td>
-                              {"Martes"}
+                              {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
                             </td>
                             <td>
-                              {"Mañana"}
+                              {asistencia.turno == 1 ? "Primero" : "Segundo"}
                             </td>
                             <td>
-                              <Badge style={{ fontSize: '.8rem' }} color="success">
-                                {asistencia.entrada}
+                              {asistencia.tipo == 1 ? "Entrada" : "Salida"}
+                            </td>
+                            <td>
+                              <Badge
+                                id={`tooltip_in_${key}`}
+                                data-placement="top"
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.hora.estado) == 1 ? "success" : parseInt(asistencia.hora.estado) == 2 ? "danger" : "warning"}>
+                                {asistencia.hora.hora}
                               </Badge>
-                            </td>
-                            <td>
-                              {"Entrada"}
+                              <UncontrolledTooltip
+                                delay={0}
+                                placement="top"
+                                target={`tooltip_in_${key}`}
+                              >
+                                {parseInt(asistencia.hora.estado) == 1 ? "Normal" : parseInt(asistencia.hora.estado) == 2 ? "No marcó" : "Tardanza"}
+                              </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
-                              {"-"}
+                              {asistencia.observacion.length == 0 ? "-" : asistencia.observacion}
                             </td>
                             <td className="text-center">
-                              {"-"}
+                              {asistencia.justificacion.length == 0 ? "-" : asistencia.justificacion}
                             </td>
                           </tr>
                         )
@@ -626,7 +632,7 @@ const DetalleAsistencia = ({ showDetail, toggleModal }) => {
               </Media>
             </Media>
           </Col>
-          <Col className="align-items-center" style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '1rem' }}><span style={{fontSize:'.9rem'}}><i className="ni ni-calendar-grid-58"></i> MARZO</span></Col>
+          <Col className="align-items-center" style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '1rem' }}><span style={{ fontSize: '.9rem' }}><i className="ni ni-calendar-grid-58"></i> MARZO</span></Col>
         </Row>
         <Table className="align-items-center table-flush" responsive>
           <thead className="thead-light">
@@ -643,36 +649,28 @@ const DetalleAsistencia = ({ showDetail, toggleModal }) => {
           </thead>
           <tbody>
             {
-              asistencias?.map((asistencia, key) =>
+              asistencias.detalleAsistencia?.map((asistencia, key) =>
                 <tr key={key}>
                   <td>
                     {"2021-10-05"}
                   </td>
                   <td>
-                    {"Martes"}
+                    {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
                   </td>
                   <td>
-                    {"Mañana"}
+                    {asistencia.turno == 1 ? "Primero" : "Segundo"}
                   </td>
                   <td>
-                    {"3:09pm"}
+                    {asistencia.turno}
                   </td>
                   <td>
-                    {asistencia.observaciones.length > 0 ?
-                      <Badge color="" className="badge-dot mr-4">
-                        <i className="bg-danger" /> Tardanza
-                  </Badge>
-                      :
-                      <Badge color="" className="badge-dot mr-4">
-                        <i className="bg-success" /> Normal
-                  </Badge>
-                    }
+                    {asistencia.estado == 1 ? "NORMAL" : asistencia.estado == 2 ? "TARDANZA" : asistencia.estado == 3 ? "NO MARCÓ" : "COMPENSÓ"}
                   </td>
                   <td className="text-center">
-                    {"-"}
+                    {asistencia.observacion.length == 0 ? "-" : asistencia.observacion}
                   </td>
                   <td className="text-center">
-                    {"-"}
+                    {asistencia.justificacion.length == 0 ? "-" : asistencia.justificacion}
                   </td>
                 </tr>
               )

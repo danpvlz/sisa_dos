@@ -58,7 +58,7 @@ const Tables = () => {
           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0 d-flex justify-content-between">
-              <h3 className="mb-0">Colaboradores <Badge color="primary" pill>{colaboradores.length}</Badge></h3>
+              <h3 className="mb-0">Colaboradores <Badge color="primary" pill>{colaboradores.total}</Badge></h3>
               <Button
                 className="btn-new-xl btn-icon d-none d-md-block"
                 color="primary"
@@ -91,16 +91,14 @@ const Tables = () => {
                 </thead>
                 <tbody>
                   {
-                    colaboradores?.map((colaborador,key)=>
+                    colaboradores.data?.map((colaborador,key)=>
                       <tr key={key}>
                         <th scope="row">
                       <Media className="align-items-center">
                         <img
                         className="avatar rounded-circle mr-3"
                           alt="..."
-                          src={
-                            require("../../assets/img/theme/Gerencia-2-819x1024.png")
-                              .default
+                          src={colaborador.foto
                           }
                         />
                         <Media>

@@ -1,0 +1,115 @@
+{
+    "tardanzas":20,
+    "faltas":5,
+    "hRealizadas":924,
+    "hCompensar":200,
+    "porDia":[
+        {
+            "idAsistencia":"21",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        },
+        {
+            "idAsistencia":"22",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        },
+        {
+            "idAsistencia":"23",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        },
+        {
+            "idAsistencia":"25",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        },
+        {
+            "idAsistencia":"25",
+            "fecha":"2019-09-13",
+            "prim_entrada": {"hora":"08:30:52","estado":1},
+            "prim_salida":{"hora":"13:30:52","estado":4},
+            "seg_entrada": {"hora":"08:30:52","estado":1},
+            "seg_salida":{"hora":"13:30:52","estado":4},
+            "tardanza": 15,
+            "compensado": 15
+        }
+    ],
+    "detalle":[
+        {
+            "idAsistencia":"31",
+            "fecha":"2019-09-13",
+            "turno":1,
+            "tipo":1,
+            "hora":{"hora":"08:30:52","estado":1},
+            "tardanza":5,
+            "compensado":10,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "idAsistencia":"31",
+            "fecha":"2019-09-13",
+            "turno":1,
+            "tipo":1,
+            "hora":{"hora":"08:30:52","estado":1},
+            "tardanza":5,
+            "compensado":10,
+            "observacion":"tardanza por xyz",
+            "justificacion":"justificacion por xyz"
+        },
+        {
+            "idAsistencia":"31",
+            "fecha":"2019-09-13",
+            "turno":1,
+            "tipo":1,
+            "hora":{"hora":"08:30:52","estado":1},
+            "tardanza":5,
+            "compensado":10,
+            "observacion":"",
+            "justificacion":""
+        },
+        {
+            "idAsistencia":"31",
+            "fecha":"2019-09-13",
+            "turno":1,
+            "tipo":1,
+            "hora":{"hora":"08:30:52","estado":1},
+            "tardanza":5,
+            "compensado":10,
+            "observacion":"",
+            "justificacion":""
+        },
+        {
+            "idAsistencia":"31",
+            "fecha":"2019-09-13",
+            "turno":1,
+            "tipo":1,
+            "hora":{"hora":"08:30:52","estado":1},
+            "tardanza":5,
+            "compensado":10,
+            "observacion":"",
+            "justificacion":""
+        }
+    ]
+}

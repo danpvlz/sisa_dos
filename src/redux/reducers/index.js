@@ -1,6 +1,14 @@
-import { combineReducers } from 'redux'
-import Asistencia from './Asistencia'
+import { combineReducers } from "redux";
+import { connectRouter } from "connected-react-router";
 
-export default combineReducers({
-  Asistencia
+import Common from "./Common";
+import Auth from "./Auth";
+import Asistencia from './Asistencia';
+
+export default (history) =>
+combineReducers({
+  router: connectRouter(history),
+  commonData: Common,
+  auth: Auth,
+  asistencia: Asistencia,
 })

@@ -46,11 +46,11 @@ import {
 } from "reactstrap";
 // core components
 
-import AsistenciaHeader from "components/Headers/Asistencia.js";
+import AsistenciaHeader from "components/Headers/AsistenciaHeader.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
 
 const Asistencia = () => {
-  const asistencias = require('../../data/asistencia.json');
+  const asistencias = require('../../data/miasistencia.json');
   const history = useHistory();
   const [showDetail, setShowDetail] = useState(false);
 
@@ -67,7 +67,11 @@ const Asistencia = () => {
   };
   return (
     <>
-      <AsistenciaHeader />
+      <AsistenciaHeader 
+        tardanzas={asistencias.tardanzas}
+        faltas={asistencias.faltas}
+        hRealizadas={asistencias.hRealizadas}
+        hCompensar={asistencias.hCompensar}/>
       {/* Page content */}
       <Container className="mt--7" fluid>
         {/* Table */}
@@ -174,7 +178,7 @@ const Asistencia = () => {
                     </thead>
                     <tbody>
                       {
-                        asistencias?.map((asistencia, key) =>
+                        asistencias.porDia?.map((asistencia, key) =>
                           <tr key={key}>
                             <td>
                               {asistencia.fecha}
@@ -186,67 +190,67 @@ const Asistencia = () => {
                               <Badge
                                 id={`tooltip_in_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "danger" : "warning"}>
-                                {asistencia.entrada}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.prim_entrada.estado) == 1 ? "success" : parseInt(asistencia.prim_entrada.estado) == 2 ? "danger" : "warning"}>
+                                {asistencia.prim_entrada.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.prim_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.prim_entrada.estado) == 2 ? "No marcó" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
                               <Badge
                                 id={`tooltip_out_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "danger" : "default"}>
-                                {asistencia.salida}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.prim_salida.estado) == 1 ? "success" : parseInt(asistencia.prim_salida.estado) == 2 ? "danger" : "default"}>
+                                {asistencia.prim_salida.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
                                 target={`tooltip_out_${key}`}
                               >
-                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "No marcó" : "Compensó"}
+                                {parseInt(asistencia.prim_salida.estado) == 1 ? "Normal" : parseInt(asistencia.prim_salida.estado) == 2 ? "No marcó" : "Compensó"}
                               </UncontrolledTooltip>
                             </td>
                             <td>
                               <Badge
                                 id={`tooltip_in_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "danger" : "warning"}>
-                                {asistencia.entrada}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.seg_entrada.estado) == 1 ? "success" : parseInt(asistencia.seg_entrada.estado) == 2 ? "danger" : "warning"}>
+                                {asistencia.seg_entrada.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.seg_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.seg_entrada.estado) == 2 ? "No marcó" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
                               <Badge
                                 id={`tooltip_out_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "danger" : "default"}>
-                                {asistencia.salida}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.seg_salida.estado) == 1 ? "success" : parseInt(asistencia.seg_salida.estado) == 2 ? "danger" : "default"}>
+                                {asistencia.seg_salida.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
                                 target={`tooltip_out_${key}`}
                               >
-                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "No marcó" : "Compensó"}
+                                {parseInt(asistencia.seg_salida.estado) == 1 ? "Normal" : parseInt(asistencia.seg_salida.estado) == 2 ? "No marcó" : "Compensó"}
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
-                              {asistencia.tardanza}
+                              {asistencia.tardanza == 0 ? "-" : asistencia.tardanza+"min"}
                             </td>
                             <td className="text-center">
-                              {asistencia.tardanza}
+                              {asistencia.compensado == 0 ? "-" : asistencia.compensado+"min"}
                             </td>
                           </tr>
                         )
@@ -339,36 +343,46 @@ const Asistencia = () => {
                     </thead>
                     <tbody>
                       {
-                        asistencias?.map((asistencia, key) =>
+                        asistencias.detalle?.map((asistencia, key) =>
                           <tr key={key}>
                             <td>
-                              {"2021-10-05"}
+                              {asistencia.fecha}
                             </td>
                             <td>
-                              {"Martes"}
+                              {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
                             </td>
                             <td>
-                              {"Mañana"}
+                              {asistencia.turno==1 ? "Primero" : "Segundo"}
                             </td>
                             <td>
-                              {"Entrada"}
+                              {asistencia.tipo==1 ? "Entrada" : "Salida"}
                             </td>
                             <td>
-                              <Badge style={{ fontSize: '.8rem' }} color="success">
-                                {asistencia.entrada}
+                              <Badge
+                                id={`tooltip_in_${key}`}
+                                data-placement="top"
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.hora.estado) == 1 ? "success" : parseInt(asistencia.hora.estado) == 2 ? "danger" : "warning"}>
+                                {asistencia.hora.hora}
                               </Badge>
+                              <UncontrolledTooltip
+                                delay={0}
+                                placement="top"
+                                target={`tooltip_in_${key}`}
+                              >
+                                {parseInt(asistencia.hora.estado) == 1 ? "Normal" : parseInt(asistencia.hora.estado) == 2 ? "No marcó" : "Tardanza"}
+                              </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
-                              {"-"}
+                              {asistencia.tardanza == 0 ? "-" : asistencia.tardanza+"min"}
                             </td>
                             <td className="text-center">
-                              {"-"}
+                              {asistencia.compensado == 0 ? "-" : asistencia.compensado+"min"}
                             </td>
                             <td className="text-center">
-                              {"-"}
+                              {asistencia.observacion.length==0 ? "-" : asistencia.observacion}
                             </td>
                             <td className="text-center">
-                              {"-"}
+                              {asistencia.justificacion.length==0 ? "-" : asistencia.justificacion}
                             </td>
                           </tr>
                         )
@@ -436,169 +450,5 @@ const Asistencia = () => {
     </>
   );
 };
-
-const DetalleAsistencia = ({ showDetail, toggleModal }) => {
-  const asistencias = require('../../data/asistencia.json');
-  return (
-    <Modal
-      className="modal-dialog-centered"
-      isOpen={showDetail}
-      toggle={toggleModal}
-      size="lg"
-    >
-      <div className="modal-header bg-secondary">
-        <h3 className="modal-title" id="modalDetalleAsistencia">
-          Asistencias
-        </h3>
-        <button
-          aria-label="Close"
-          className="close"
-          data-dismiss="modal"
-          type="button"
-          onClick={toggleModal}
-        >
-          <span aria-hidden={true}>×</span>
-        </button>
-      </div>
-      <div className="modal-body">
-        <Row>
-          <Col className="mb-3">
-            <Media className="align-items-center">
-              <img
-                className="avatar rounded-circle mr-3"
-                alt="..."
-                src={
-                  require("../../assets/img/theme/Gerencia-2-819x1024.png")
-                    .default
-                }
-              />
-              <Media>
-                <span className="mb-0 text-sm">
-                  MARÍA ALEJANDRA PASCO HERRERA
-                 </span>
-              </Media>
-            </Media>
-          </Col>
-          <Col className="align-items-center" style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '1rem' }}><span style={{fontSize:'.9rem'}}><i className="ni ni-calendar-grid-58"></i> MARZO</span></Col>
-        </Row>
-        <Table className="align-items-center table-flush" responsive>
-          <thead className="thead-light">
-            <tr>
-              <th scope="col">Fecha</th>
-              <th scope="col">Día</th>
-              <th scope="col">Turno</th>
-              <th scope="col">Hora</th>
-              <th scope="col">Estado</th>
-              <th scope="col">Observación</th>
-              <th scope="col">Justificación</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              asistencias?.map((asistencia, key) =>
-                <tr key={key}>
-                  <td>
-                    {"2021-10-05"}
-                  </td>
-                  <td>
-                    {"Martes"}
-                  </td>
-                  <td>
-                    {"Mañana"}
-                  </td>
-                  <td>
-                    {"3:09pm"}
-                  </td>
-                  <td>
-                    {asistencia.observaciones.length > 0 ?
-                      <Badge color="" className="badge-dot mr-4">
-                        <i className="bg-danger" /> Tardanza
-                  </Badge>
-                      :
-                      <Badge color="" className="badge-dot mr-4">
-                        <i className="bg-success" /> Normal
-                  </Badge>
-                    }
-                  </td>
-                  <td className="text-center">
-                    {"-"}
-                  </td>
-                  <td className="text-center">
-                    {"-"}
-                  </td>
-                </tr>
-              )
-            }
-          </tbody>
-        </Table>
-        <CardFooter className="py-4">
-          <nav aria-label="...">
-            <Pagination
-              className="pagination justify-content-end mb-0"
-              listClassName="justify-content-end mb-0"
-            >
-              <PaginationItem className="disabled">
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                  tabIndex="-1"
-                >
-                  <i className="fas fa-angle-left" />
-                  <span className="sr-only">Previous</span>
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem className="active">
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  1
-            </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  2 <span className="sr-only">(current)</span>
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  3
-            </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <i className="fas fa-angle-right" />
-                  <span className="sr-only">Next</span>
-                </PaginationLink>
-              </PaginationItem>
-            </Pagination>
-          </nav>
-        </CardFooter>
-
-      </div>
-      <div className="modal-footer">
-        <Button
-          color="primary"
-          data-dismiss="modal"
-          type="button"
-          onClick={toggleModal}
-        >
-          Cerrar
-        </Button>
-      </div>
-    </Modal>
-  )
-}
-
 
 export default Asistencia;

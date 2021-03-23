@@ -1,4 +1,4 @@
-import { LIST_ASSISTANCE, LIST_MY_ASSISTANCE, SAVE_ASSISTANCE } from "../constants/action-types";
+import { LIST_ASSISTANCE, LIST_MY_ASSISTANCE, SAVE_ASSISTANCE } from "../ActionTypes";
 
 const initialState = {
   asistencia_list: [],
