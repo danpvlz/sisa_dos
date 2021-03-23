@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { useCallback, useState } from "react";
 import { useHistory } from 'react-router-dom';
 import classnames from "classnames";
@@ -48,12 +31,6 @@ import {
 
 import AsistenciaHeader from "components/Headers/Asistencia.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
-
-const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-]
 
 const Asistencia = () => {
   const asistencias = require('../../data/asistencia.json');
@@ -127,8 +104,8 @@ const Asistencia = () => {
                         onClick={e => toggleNavs(e, "tabs", 1)}
                         role="tab"
                       >
-                        <i className="fa fa-clock mr-2" aria-hidden="true"></i>
-                        Por día
+                        <i className="fa fa-user mr-2" />
+                        Por colaborador
                       </NavLink>
                     </NavItem>
                     <NavItem style={{ cursor: 'pointer' }}>
@@ -140,6 +117,19 @@ const Asistencia = () => {
                         onClick={e => toggleNavs(e, "tabs", 2)}
                         role="tab"
                       >
+                        <i className="fa fa-clock mr-2" aria-hidden="true"></i>
+                        Por día
+                      </NavLink>
+                    </NavItem>
+                    <NavItem style={{ cursor: 'pointer' }}>
+                      <NavLink
+                        aria-selected={state.tabs === 3}
+                        className={classnames("mb-sm-3 mb-md-0", {
+                          active: state.tabs === 3
+                        })}
+                        onClick={e => toggleNavs(e, "tabs", 3)}
+                        role="tab"
+                      >
                         <i className="ni ni-calendar-grid-58 mr-2" aria-hidden="true"></i>
                         Detalle
                       </NavLink>
@@ -149,7 +139,128 @@ const Asistencia = () => {
               </CardHeader>
               <TabContent activeTab={"tabs" + state.tabs} >
                 <TabPane tabId="tabs1">
-                  <Row className="bg-secondary text-center pb-3">
+                  <Table className="align-items-center table-flush" responsive>
+                    <thead className="thead-light">
+                      <tr>
+                        <th scope="col">Colaborador</th>
+                        <th className="text-center" scope="col">Tardanzas</th>
+                        <th className="text-center" scope="col">Observaciones</th>
+                        <th className="text-center" scope="col">Justificaciones</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        asistencias?.map((asistencia, key) =>
+                          <tr key={key}>
+                            <th scope="row">
+                              <Media className="align-items-center">
+                                <img
+                                  className="avatar rounded-circle mr-3"
+                                  alt="..."
+                                  src={
+                                    require("../../assets/img/theme/Gerencia-2-819x1024.png")
+                                      .default
+                                  }
+                                />
+                                <Media>
+                                  <span className="mb-0 text-sm">
+                                    {asistencia.colaborador}
+                                  </span>
+                                </Media>
+                              </Media>
+
+                            </th>
+                            <td className="text-center">
+                              20min
+                            </td>
+                            <td className="text-center">
+                              {asistencia.observaciones.length > 0 ?
+                                <Badge color="" className="badge-dot mr-4">
+                                  <i className="bg-yellow" /> Con observaciones
+                            </Badge>
+                                :
+                                "-"
+                              }
+                            </td>
+                            <td className="text-center">
+                              {asistencia.observaciones.length > 0 ?
+                                <Badge color="" className="badge-dot mr-4">
+                                  <i className="bg-yellow" /> Con justificaciones
+                            </Badge>
+                                :
+                                "-"
+                              }
+                            </td>
+                            <td>
+                              <Button
+                                className="icon icon-shape bg-secondary rounded-circle shadow "
+                                onClick={toggleModal}
+                              >
+                                <i className="fas fa-eye" style={{ color: "#1279ee" }} />
+                              </Button>
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </tbody>
+                  </Table>
+                  <CardFooter className="py-4">
+                    <nav aria-label="...">
+                      <Pagination
+                        className="pagination justify-content-end mb-0"
+                        listClassName="justify-content-end mb-0"
+                      >
+                        <PaginationItem className="disabled">
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                            tabIndex="-1"
+                          >
+                            <i className="fas fa-angle-left" />
+                            <span className="sr-only">Previous</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem className="active">
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                            1
+                      </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                            2 <span className="sr-only">(current)</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                            3
+                      </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                            <i className="fas fa-angle-right" />
+                            <span className="sr-only">Next</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      </Pagination>
+                    </nav>
+                  </CardFooter>
+                  <DetalleAsistencia showDetail={showDetail} toggleModal={toggleModal} />
+                </TabPane>
+                <TabPane tabId="tabs2">
+                  <div className="bg-secondary text-center pb-3">
                     <Col>
                       <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
                         Normal
@@ -164,10 +275,11 @@ const Asistencia = () => {
                         Compensó
                       </Badge>
                     </Col>
-                  </Row>
+                  </div>
                   <Table className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>
+                        <th scope="col">Colaborador</th>
                         <th scope="col">Fecha</th>
                         <th scope="col">Día</th>
                         <th scope="col">Entrada</th>
@@ -182,6 +294,24 @@ const Asistencia = () => {
                       {
                         asistencias?.map((asistencia, key) =>
                           <tr key={key}>
+                            <th scope="row">
+                              <Media className="align-items-center">
+                                <img
+                                  className="avatar rounded-circle mr-3"
+                                  alt="..."
+                                  src={
+                                    require("../../assets/img/theme/Gerencia-2-819x1024.png")
+                                      .default
+                                  }
+                                />
+                                <Media>
+                                  <span className="mb-0 text-sm">
+                                    {asistencia.colaborador}
+                                  </span>
+                                </Media>
+                              </Media>
+
+                            </th>
                             <td>
                               {asistencia.fecha}
                             </td>
@@ -312,8 +442,8 @@ const Asistencia = () => {
                     </nav>
                   </CardFooter>
                 </TabPane>
-                <TabPane tabId="tabs2">
-                  <Row className="bg-secondary text-center pb-3">
+                <TabPane tabId="tabs3">
+                  <div className="bg-secondary text-center pb-3">
                     <Col>
                       <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
                         Normal
@@ -328,26 +458,42 @@ const Asistencia = () => {
                         Compensó
                       </Badge>
                     </Col>
-                  </Row>
+                  </div>
                   <Table className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>
+                        <th scope="col">Colaborador</th>
                         <th scope="col">Fecha</th>
                         <th scope="col">Día</th>
                         <th scope="col">Turno</th>
-                        <th scope="col">Tipo</th>
                         <th scope="col">Hora</th>
-                        <th scope="col">Tardanza</th>
-                        <th scope="col">Compensado</th>
+                        <th scope="col">Tipo</th>
                         <th scope="col">Observación</th>
                         <th scope="col">Justificación</th>
-                        <th scope="col"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {
                         asistencias?.map((asistencia, key) =>
                           <tr key={key}>
+                            <th scope="row">
+                              <Media className="align-items-center">
+                                <img
+                                  className="avatar rounded-circle mr-3"
+                                  alt="..."
+                                  src={
+                                    require("../../assets/img/theme/Gerencia-2-819x1024.png")
+                                      .default
+                                  }
+                                />
+                                <Media>
+                                  <span className="mb-0 text-sm">
+                                    {asistencia.colaborador}
+                                  </span>
+                                </Media>
+                              </Media>
+
+                            </th>
                             <td>
                               {"2021-10-05"}
                             </td>
@@ -358,18 +504,12 @@ const Asistencia = () => {
                               {"Mañana"}
                             </td>
                             <td>
-                              {"Entrada"}
-                            </td>
-                            <td>
                               <Badge style={{ fontSize: '.8rem' }} color="success">
                                 {asistencia.entrada}
                               </Badge>
                             </td>
-                            <td className="text-center">
-                              {"-"}
-                            </td>
-                            <td className="text-center">
-                              {"-"}
+                            <td>
+                              {"Entrada"}
                             </td>
                             <td className="text-center">
                               {"-"}
@@ -606,6 +746,5 @@ const DetalleAsistencia = ({ showDetail, toggleModal }) => {
     </Modal>
   )
 }
-
 
 export default Asistencia;

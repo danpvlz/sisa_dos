@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, {useState} from "react";
 
 // reactstrap components
@@ -59,12 +42,14 @@ const NuevoAsociado = () => {
               </CardHeader>
               <CardBody>
                 <Form>
+                  <Row>
+                    <Col>
                   <h6 className="heading-small text-muted mb-4">
                     Asociado
                   </h6>
                   <div className="pl-lg-4">
                     <Row>
-                      <Col lg="4" md="6">
+                      <Col lg="6">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -82,7 +67,7 @@ const NuevoAsociado = () => {
                           options={[{value: 1, label:"Empresa"},{value: 2, label:"Persona"}]} />
                         </FormGroup>
                       </Col>
-                      <Col lg="4" md="6">
+                      <Col lg="6">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -93,7 +78,7 @@ const NuevoAsociado = () => {
                           <SearchComiteGremial searched={promotorSearched} setSearched={setPromotorSearched} />
                         </FormGroup>
                       </Col>
-                      <Col lg="4" md="6">
+                      <Col lg="6">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -104,7 +89,7 @@ const NuevoAsociado = () => {
                           <SearchPromotor searched={promotorSearched} setSearched={setPromotorSearched} />
                         </FormGroup>
                       </Col>
-                      <Col lg="4" md="6">
+                      <Col lg="6">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -125,7 +110,7 @@ const NuevoAsociado = () => {
                           </InputGroup>
                         </FormGroup>
                       </Col>
-                      <Col lg="8">
+                      <Col lg="12">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -143,8 +128,8 @@ const NuevoAsociado = () => {
                       </Col>
                     </Row>
                   </div>
-                  <hr className="my-4" />
-                  {/* Address */}
+                  </Col>
+                    <Col>
                   <h6 className="heading-small text-muted mb-4">
                     Contact information
                   </h6>
@@ -221,6 +206,10 @@ const NuevoAsociado = () => {
                       </Col>
                     </Row>
                   </div>
+                  </Col>
+                  </Row>
+                  <hr className="my-4" />
+                  {/* Address */}
                   <hr className="my-4" />
                   {/* Description */}
                   <h6 className="heading-small text-muted mb-4">About me</h6>

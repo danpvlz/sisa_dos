@@ -46,6 +46,7 @@ const AdminNavbar = (props) => {
           <p
             className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"  
             onClick={handleBack}
+            style={{cursor:'pointer'}}
           >
            <i className="fa fa-chevron-left mr-2" aria-hidden="true"></i>{props.brandText}
           </p>

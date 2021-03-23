@@ -19,16 +19,24 @@ import Index from "views/Index.js";
 import Profile from "views/examples/Profile.js";
 import Maps from "views/examples/Maps.js";
 import Register from "views/examples/Register.js";
-import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
-import Asociado from "views/examples/Asociado.js";
-import Colaborador from "views/examples/Colaborador.js";
-import NuevoAsociado from "views/examples/NuevoAsociado.js";
-import NuevoColaborador from "views/examples/NuevoColaborador.js";
-import Asistencia from "views/examples/Asistencia.js";
-import MiAsistencia from "views/examples/MiAsistencia.js";
-import MarcarAsistencia from "views/examples/MarcarAsistencia.js";
 import Icons from "views/examples/Icons.js";
+
+//Auth
+import Login from "views/Auth/Login.js";
+
+//Asociado
+import Asociado from "views/Asociado/Asociado.js";
+import NuevoAsociado from "views/Asociado/NuevoAsociado.js";
+
+//Colaborador
+import Colaborador from "views/Colaborador/Colaborador.js";
+import NuevoColaborador from "views/Colaborador/NuevoColaborador.js";
+
+//Asistencia
+import Asistencia from "views/Asistencia/Asistencia.js";
+import MiAsistencia from "views/Asistencia/MiAsistencia.js";
+import MarcarAsistencia from "views/Asistencia/MarcarAsistencia.js";
 
 var routes = [
   {

@@ -65,7 +65,9 @@
   },
   "devDependencies": {
     "gulp": "4.0.2",
-    "gulp-append-prepend": "1.0.8"
+    "gulp-append-prepend": "1.0.8",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5"
   },
   "optionalDependencies": {
     "eslint-plugin-flowtype": "5.2.0",
