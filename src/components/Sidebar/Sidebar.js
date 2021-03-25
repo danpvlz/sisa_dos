@@ -52,9 +52,12 @@ import {
   Col,
 } from "reactstrap";
 
-var ps;
+import { userSignOut } from "../../redux/actions/Auth";
+import {useDispatch, useSelector} from "react-redux";
 
 const Sidebar = (props) => {
+  const { authUser } = useSelector(({ auth }) => auth);
+  const dispatch = useDispatch();
   const [collapseOpen, setCollapseOpen] = useState();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
@@ -150,18 +153,15 @@ const Sidebar = (props) => {
               <Media className="align-items-center">
                 <span className="avatar avatar-sm rounded-circle">
                   <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/theme/team-1-800x800.jpg")
-                        .default
-                    }
+                      alt={authUser.nombres+" "+authUser.paterno+" "+authUser.materno}
+                      src={authUser.foto}
                   />
                 </span>
               </Media>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-arrow" right>
               <DropdownItem className="noti-title" header tag="div">
-                <h6 className="text-overflow m-0">Welcome!</h6>
+                <h6 className="text-overflow m-0">Bienvenido!</h6>
               </DropdownItem>
               <DropdownItem to="/admin/user-profile" tag={Link}>
                 <i className="ni ni-single-02" />
@@ -180,9 +180,9 @@ const Sidebar = (props) => {
                 <span>Support</span>
               </DropdownItem>
               <DropdownItem divider />
-              <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
+              <DropdownItem onClick={() => dispatch(userSignOut())}>
                 <i className="ni ni-user-run" />
-                <span>Logout</span>
+                <span>Cerrar sesión</span>
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>

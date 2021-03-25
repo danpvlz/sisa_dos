@@ -8,7 +8,7 @@ export const fetchStart = () => {
 
 export const fetchSuccess = () => {
   return {
-    type: FETCH_SUCCESS
+    type: FETCH_SUCCESS,
   }
 };
 

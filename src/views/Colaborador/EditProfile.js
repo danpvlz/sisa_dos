@@ -32,10 +32,12 @@ import {
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 // core components
+import { useSelector } from "react-redux";
 
-const NuevoColaborador = () => {
+const EditProfile = () => {
+  const { authUser } = useSelector(({ auth }) => auth);
   const { register, handleSubmit, watch, reset  } = useForm();
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState(authUser.foto);
   const [showPassword, setShowPassword]=useState(false);
 
   const hiddenFileInput = React.useRef(null);
@@ -46,7 +48,6 @@ const NuevoColaborador = () => {
   
   const handleChange = event => {
     const fileUploaded = event.target.files[0];
-    console.log(fileUploaded)
     setFile(fileUploaded ? URL.createObjectURL(fileUploaded) : null);
   };
 
@@ -77,7 +78,7 @@ const NuevoColaborador = () => {
                       onChange={handleChange}
                       style={{ display: 'none' }}
                     />
-                    <div className="card-profile-image mb-4" style={{ cursor: 'pointer' }}>
+                    <div className="card-profile-image" style={{ cursor: 'pointer' }}>
                       <img
                         onClick={handleOpenFileSearch}
                         alt="..."
@@ -113,6 +114,7 @@ const NuevoColaborador = () => {
                             id="input-fullName"
                             name="fullName"
                             type="text"
+                            defaultValue={authUser.nombres}
                           />
                         </FormGroup>
                       </Col>
@@ -130,6 +132,7 @@ const NuevoColaborador = () => {
                             id="input-firstName"
                             name="firstName"
                             type="text"
+                            defaultValue={authUser.paterno}
                           />
                         </FormGroup>
                       </Col>
@@ -149,6 +152,7 @@ const NuevoColaborador = () => {
                             id="input-secondName"
                             name="secondName"
                             type="text"
+                            defaultValue={authUser.materno}
                           />
                         </FormGroup>
                       </Col>
@@ -166,6 +170,7 @@ const NuevoColaborador = () => {
                             id="input-birthday"
                             name="birthday"
                             type="date"
+                            defaultValue={authUser.fNac}
                           />
                         </FormGroup>
                       </Col>
@@ -192,6 +197,7 @@ const NuevoColaborador = () => {
                             id="input-userName"
                             name="userName"
                             type="text"
+                            defaultValue={authUser.usuario}
                           />
                         </FormGroup>
                       </Col>
@@ -240,4 +246,4 @@ const NuevoColaborador = () => {
   );
 };
 
-export default NuevoColaborador;
+export default EditProfile;

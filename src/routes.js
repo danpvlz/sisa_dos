@@ -15,6 +15,7 @@ import NuevoAsociado from "views/Asociado/NuevoAsociado.js";
 //Colaborador
 import Colaborador from "views/Colaborador/Colaborador.js";
 import NuevoColaborador from "views/Colaborador/NuevoColaborador.js";
+import EditProfile from "views/Colaborador/EditProfile.js";
 
 //Asistencia
 import Asistencia from "views/Asistencia/Asistencia.js";
@@ -36,7 +37,7 @@ var routes = [
     icon: "ni ni-tv-2 text-primary",
     component: Index,
     layout: "/admin",
-    show: true
+    show: false
   },
   {
     path: "/asociado",
@@ -58,7 +59,7 @@ var routes = [
     path: "/editar-perfil",
     name: "Editar perfil",
     icon: "ni ni-badge text-blue",
-    component: NuevoColaborador,
+    component: EditProfile,
     layout: "/admin",
     show: false
   },
@@ -81,7 +82,7 @@ var routes = [
   {
     path: "/asistencia",
     name: "Asistencia",
-    icon: "ni ni-calendar-grid-58 text-blue",
+    icon: "ni ni-calendar-grid-58 text-primary",
     component: Asistencia,
     layout: "/admin",
     show: true
@@ -92,12 +93,12 @@ var routes = [
     icon: "ni ni-calendar-grid-58 text-blue",
     component: MiAsistencia,
     layout: "/admin",
-    show: true
+    show: false
   },
   {
     path: "/registrar-asistencia",
     name: "Registrar asistencia",
-    icon: "ni ni-calendar-grid-58 text-blue",
+    icon: "ni ni-active-40 text-blue",
     component: MarcarAsistencia,
     layout: "/admin",
     show: true

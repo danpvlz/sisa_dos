@@ -29,12 +29,14 @@ import configureStore, { history } from "./redux/store";
 
 import App from "./App";
 import Message from "components/Message.js";
+import Loading from "components/Loading.js";
 
 const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
     <Message />
+    <Loading />
     <ConnectedRouter history={history}>
       <App />
     </ConnectedRouter>

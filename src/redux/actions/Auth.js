@@ -21,21 +21,18 @@ export const setInitUrl = (url) => {
   };
 };
 
-export const userSignUp = ({ email, password }) => {
-
-};
-
 export const userSignIn = ({ userName, password, remember }) => {
   return (dispatch) => {
     dispatch({ type: FETCH_START });
     axios.post('auth/login', {
-      userName: userName,
+      usuario: userName,
       password: password,
-      remember: remember,
     }
     ).then(({ data }) => {
       if (data) {
-        localStorage.setItem("token", JSON.stringify(data.access_token));
+        if(remember){
+          localStorage.setItem("token", JSON.stringify(data.access_token));
+        }
         axios.defaults.headers.common['Authorization'] = "Bearer " + data.access_token;
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: USER_TOKEN_SET, payload: data.access_token });
@@ -43,7 +40,6 @@ export const userSignIn = ({ userName, password, remember }) => {
         dispatch({ type: FETCH_ERROR, payload: data.error });
       }
     }).catch(function (error) {
-      console.log((error.response));
       if (error.response) {
         dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
 
@@ -95,9 +91,6 @@ export const updatePassword = (values) => {
         dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: AUTH_STATUS_ACTIONS, payload: status });
         dispatch({ type: AUTH_MESSAGE, payload: data.message });
-
-
-
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.message });
       }
@@ -131,24 +124,6 @@ export const userSignOut = () => {
       localStorage.removeItem("user");
       dispatch({ type: FETCH_SUCCESS });
       dispatch({ type: SIGNOUT_USER_SUCCESS });
-    });
-  }
-};
-
-export const getPasswordInfo = () => {
-  return (dispatch) => {
-    dispatch({ type: FETCH_START });
-    axios.get('auth/getPasswordInfo'
-    ).then(({ data }) => {
-      if (data) {
-        dispatch({ type: FETCH_SUCCESS });
-        dispatch({ type: PASSWORD_REQUIREMENTS, payload: data });
-
-      } else {
-        dispatch({ type: FETCH_ERROR, payload: data.error });
-      }
-    }).catch(function (error) {
-      dispatch({ type: FETCH_ERROR, payload: error.message });
     });
   }
 };

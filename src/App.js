@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory, Route, Switch, Redirect } from "react-router-dom";
 
 import AdminLayout from "layouts/Admin.js";
@@ -8,18 +8,19 @@ import AuthLayout from "layouts/Auth.js";
 
 const App = () => {
     const history = useHistory();
-    const dispatch = useDispatch();
     const token = useSelector(({ auth }) => auth.token);
 
     useEffect(() => {
         if (token == null) {
+            history.push("/auth/login");
+        }else{
             history.push("/admin/index");
         }
     }, [token, history]);
 
     return (
         <>
-        {token==null ?
+        {token !== null ?
             <AdminSwitch />
             :
             <AuthSwitch />

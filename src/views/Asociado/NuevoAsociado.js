@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 // reactstrap components
 import {
@@ -23,11 +23,12 @@ import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
 
 const NuevoAsociado = () => {
   const [promotorSearched, setPromotorSearched] = useState(undefined);
+  const [typeAssociated, setTypeAssociated] = useState(null);
   return (
     <>
-    <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
-      <span className="mask bg-gradient-info opacity-8" />
-    </div>
+      <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
+        <span className="mask bg-gradient-info opacity-8" />
+      </div>
       {/* Page content */}
       <Container className="mt--7" fluid>
         <Row>
@@ -43,188 +44,113 @@ const NuevoAsociado = () => {
               <CardBody>
                 <Form>
                   <Row>
-                    <Col>
-                  <h6 className="heading-small text-muted mb-4">
-                    Asociado
+                    <Col lg="12">
+                      <h6 className="heading-small text-muted mb-4">
+                        Asociado
                   </h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-address"
-                          >
-                            Tipo de asociado
+                      <div className="pl-lg-4">
+                        <Row>
+                          <Col lg="4">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Promotor
                           </label>
-                          <Select 
-                          placeholder="Seleccione..."
-                          className="select-style"
-                          name="typeAsociado"
-                          onChange={(inputValue, actionMeta) => {
-                              console.log(inputValue.value);
-                          }}
-                          options={[{value: 1, label:"Empresa"},{value: 2, label:"Persona"}]} />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-address"
-                          >
-                            Comité gremial
+                              <SearchPromotor searched={promotorSearched} setSearched={setPromotorSearched} />
+                            </FormGroup>
+                          </Col>
+                          <Col lg="4">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Comité gremial*
                           </label>
-                          <SearchComiteGremial searched={promotorSearched} setSearched={setPromotorSearched} />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-address"
-                          >
-                            Promotor
+                              <SearchComiteGremial searched={promotorSearched} setSearched={setPromotorSearched} />
+                            </FormGroup>
+                          </Col>
+                          <Col lg="4">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Tipo de asociado*
                           </label>
-                          <SearchPromotor searched={promotorSearched} setSearched={setPromotorSearched} />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-address"
-                          >
-                            Importe mensual
+                              <Select
+                                placeholder="Seleccione..."
+                                className="select-style"
+                                name="typeAsociado"
+                                onChange={(inputValue, actionMeta) => {
+                                  setTypeAssociated(inputValue.value);
+                                }}
+                                options={[{ value: 1, label: "Empresa" }, { value: 2, label: "Persona" }]} />
+                            </FormGroup>
+                          </Col>
+                          <Col lg="8">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Dirección social
                           </label>
-                          <InputGroup className="input-group-alternative mb-4">
-                            <InputGroupAddon addonType="prepend">
-                              <InputGroupText>
-                                S/.
+                              <Input
+                                className="form-control-alternative"
+                                id="input-socialAddress"
+                                name="socialAddress"
+                                type="text"
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col lg="4">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Importe mensual*
+                          </label>
+                              <InputGroup className="input-group-alternative mb-4">
+                                <InputGroupAddon addonType="prepend">
+                                  <InputGroupText>
+                                    S/.
                               </InputGroupText>
-                            </InputGroupAddon>
-                            <Input
-                              className="form-control-alternative"
-                              type="number"
-                            />
-                          </InputGroup>
-                        </FormGroup>
-                      </Col>
-                      <Col lg="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-address"
-                          >
-                            Dirección social
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-socialAddress"
-                            name="socialAddress"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  </Col>
-                    <Col>
-                  <h6 className="heading-small text-muted mb-4">
-                    Empresa
-                  </h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col md="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-ruc"
-                          >
-                            RUC
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-ruc"
-                            type="text"
-                            pattern="[0-9]"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-city"
-                          >
-                            City
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="New York"
-                            id="input-city"
-                            placeholder="City"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                            Country
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="United States"
-                            id="input-country"
-                            placeholder="Country"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                            Postal code
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-postal-code"
-                            placeholder="Postal code"
-                            type="number"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  </Col>
+                                </InputGroupAddon>
+                                <Input
+                                  className="form-control-alternative"
+                                  type="number"
+                                />
+                              </InputGroup>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                      </div>
+                    </Col>
+                    {
+                      typeAssociated == 1 ?
+                        <Company />
+                        :
+                        typeAssociated == 2 ?
+                          <Person />
+                          :
+                          ""
+                    }
                   </Row>
-                  <hr className="my-4" />
-                  {/* Address */}
-                  <hr className="my-4" />
-                  {/* Description */}
-                  <h6 className="heading-small text-muted mb-4">About me</h6>
-                  <div className="pl-lg-4">
-                    <FormGroup>
-                      <label>About Me</label>
-                      <Input
-                        className="form-control-alternative"
-                        placeholder="A few words about you ..."
-                        rows="4"
-                        defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
-                        Open Source."
-                        type="textarea"
-                      />
-                    </FormGroup>
-                  </div>
+
+                  {
+                    typeAssociated == null ?
+                    ""
+                    :
+                    <div className="text-center mt-5">
+                      <Button className="my-4 btn-block" color="primary" type="submit">
+                        Registrar
+                      </Button>
+                    </div>
+                  }
                 </Form>
               </CardBody>
             </Card>
@@ -234,5 +160,517 @@ const NuevoAsociado = () => {
     </>
   );
 };
+
+const Person = () => {
+  return (<>
+    <Col lg="12">
+      <hr className="my-4 " />
+      <h6 className="heading-small text-muted mb-4">
+        Persona
+      </h6>
+      <div className="pl-lg-4">
+        <Row>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-address"
+              >
+                Tipo de documento*
+              </label>
+              <Select
+                placeholder="Seleccione..."
+                className="select-style"
+                name="typeAsociado"
+                onChange={(inputValue, actionMeta) => {
+                  console.log(inputValue.value);
+                }}
+                options={[{ value: 1, label: "DNI" }, { value: 2, label: "RUC" }, { value: 3, label: "Carnet de extranjería" }]} />
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Documento*
+              </label>
+              <div className="d-flex">
+                <Input
+                  className="form-control-alternative"
+                  id="input-postal-code"
+                  type="tel"
+                />
+                <Button className="btn-icon" size="sm" color="primary" type="button">
+                  <span>
+                    <i className="fa fa-search" />
+                  </span>
+                </Button>
+              </div>
+            </FormGroup>
+          </Col>
+          <Col lg="12">
+            <Row >
+              <Col lg="4">
+                <FormGroup>
+                  <label
+                    className="form-control-label"
+                    htmlFor="input-country"
+                  >
+                    Nombres*
+                  </label>
+                  <Input
+                    className="form-control-alternative"
+                    id="input-country"
+                    type="text"
+                  />
+                </FormGroup>
+              </Col>
+              <Col lg="4">
+                <FormGroup>
+                  <label
+                    className="form-control-label"
+                    htmlFor="input-country"
+                  >
+                    Apellido paterno*
+                  </label>
+                  <Input
+                    className="form-control-alternative"
+                    id="input-postal-code"
+                    type="text"
+                  />
+                </FormGroup>
+              </Col>
+              <Col lg="4">
+                <FormGroup>
+                  <label
+                    className="form-control-label"
+                    htmlFor="input-country"
+                  >
+                    Apellido materno*
+                  </label>
+                  <Input
+                    className="form-control-alternative"
+                    id="input-postal-code"
+                    type="text"
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-address"
+              >
+                Sexo*
+              </label>
+              <Select
+                placeholder="Seleccione..."
+                className="select-style"
+                name="sexo"
+                onChange={(inputValue, actionMeta) => {
+                  console.log(inputValue.value);
+                }}
+                options={[{ value: 1, label: "Hombre" }, { value: 2, label: "Mujer" }]} />
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Fecha de nacimiento*
+              </label>
+              <Input
+                className="form-control-alternative"
+                id="input-postal-code"
+                type="date"
+              />
+            </FormGroup>
+          </Col>
+          <Col lg="6">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Dirección fiscal*
+              </label>
+              <Input
+                className="form-control-alternative"
+                id="input-postal-code"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
+          <Col lg="6">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Actividad/Profesión*
+              </label>
+              <Input
+                className="form-control-alternative"
+                id="input-postal-code"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Teléfono
+                </label>
+              <div className="d-flex">
+                <Input
+                  className="form-control-alternative"
+                  id="input-postal-code"
+                  type="tel"
+                />
+                <Button className="btn-icon" size="sm" color="primary" type="button">
+                  <span>
+                    <i className="fa fa-plus" />
+                  </span>
+                </Button>
+              </div>
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Correo
+                          </label>
+              <div className="d-flex">
+                <Input
+                  className="form-control-alternative"
+                  id="input-postal-code"
+                  type="email"
+                />
+                <Button className="btn-icon" size="sm" color="primary" type="button">
+                  <span>
+                    <i className="fa fa-plus" />
+                  </span>
+                </Button>
+              </div>
+            </FormGroup>
+          </Col>
+        </Row>
+      </div>
+    </Col>
+  </>);
+}
+
+const Company = () => {
+  return (<>
+    <Col lg="12">
+      <hr className="my-4 " />
+      <h6 className="heading-small text-muted mb-4">
+        Empresa
+      </h6>
+      <div className="pl-lg-4">
+        <Row>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-ruc"
+              >
+                RUC*
+              </label>
+              <div className="d-flex">
+                <Input
+                  className="form-control-alternative"
+                  id="input-ruc"
+                  type="text"
+                />
+                <Button className="btn-icon btn-2" color="primary" type="button">
+                  <span className="btn-inner--icon">
+                    <i className="fa fa-search" />
+                  </span>
+                </Button>
+              </div>
+            </FormGroup>
+          </Col>
+          <Col lg="4">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-city"
+              >
+                Razón social*
+              </label>
+              <Input
+                className="form-control-alternative"
+                id="input-city"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
+          <Col lg="5">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Dirección fiscal*
+              </label>
+              <Input
+                className="form-control-alternative"
+                id="input-country"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Fundación*
+              </label>
+              <Input
+                className="form-control-alternative"
+                id="input-postal-code"
+                type="date"
+              />
+            </FormGroup>
+          </Col>
+          <Col lg="6">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Actividad*
+              </label>
+              <Input
+                className="form-control-alternative"
+                id="input-postal-code"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Teléfono
+              </label>
+              <div className="d-flex">
+                <Input
+                  className="form-control-alternative"
+                  id="input-postal-code"
+                  type="tel"
+                />
+                <Button className="btn-icon" size="sm" color="primary" type="button">
+                  <span>
+                    <i className="fa fa-plus" />
+                  </span>
+                </Button>
+              </div>
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Correo
+              </label>
+              <div className="d-flex">
+                <Input
+                  className="form-control-alternative"
+                  id="input-postal-code"
+                  type="email"
+                />
+                <Button className="btn-icon" size="sm" color="primary" type="button">
+                  <span>
+                    <i className="fa fa-plus" />
+                  </span>
+                </Button>
+              </div>
+            </FormGroup>
+          </Col>
+        </Row>
+      </div>
+    </Col>
+    <Col lg="12">
+      <hr className="my-4 " />
+      <h6 className="heading-small text-muted mb-4">
+        Representante
+      </h6>
+      <div className="pl-lg-4">
+        <Row>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-address"
+              >
+                Tipo de documento*
+              </label>
+              <Select
+                placeholder="Seleccione..."
+                className="select-style"
+                name="typeAsociado"
+                onChange={(inputValue, actionMeta) => {
+                  console.log(inputValue.value);
+                }}
+                options={[{ value: 1, label: "DNI" }, { value: 2, label: "RUC" }, { value: 3, label: "Carnet de extranjería" }]} />
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Documento*
+              </label>
+              <div className="d-flex">
+                <Input
+                  className="form-control-alternative"
+                  id="input-postal-code"
+                  type="tel"
+                />
+                <Button className="btn-icon" size="sm" color="primary" type="button">
+                  <span>
+                    <i className="fa fa-search" />
+                  </span>
+                </Button>
+              </div>
+            </FormGroup>
+          </Col>
+          <Col lg="12">
+            <Row >
+              <Col lg="4">
+                <FormGroup>
+                  <label
+                    className="form-control-label"
+                    htmlFor="input-country"
+                  >
+                    Nombres*
+                  </label>
+                  <Input
+                    className="form-control-alternative"
+                    id="input-country"
+                    type="text"
+                  />
+                </FormGroup>
+              </Col>
+              <Col lg="4">
+                <FormGroup>
+                  <label
+                    className="form-control-label"
+                    htmlFor="input-country"
+                  >
+                    Apellido paterno*
+                  </label>
+                  <Input
+                    className="form-control-alternative"
+                    id="input-postal-code"
+                    type="text"
+                  />
+                </FormGroup>
+              </Col>
+              <Col lg="4">
+                <FormGroup>
+                  <label
+                    className="form-control-label"
+                    htmlFor="input-country"
+                  >
+                    Apellido materno*
+                    </label>
+                  <Input
+                    className="form-control-alternative"
+                    id="input-postal-code"
+                    type="text"
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+
+          </Col>
+          <Col lg="4">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Cargo*
+              </label>
+              <Input
+                className="form-control-alternative"
+                id="input-postal-code"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Teléfono
+                              </label>
+              <div className="d-flex">
+                <Input
+                  className="form-control-alternative"
+                  id="input-postal-code"
+                  type="tel"
+                />
+                <Button className="btn-icon" size="sm" color="primary" type="button">
+                  <span>
+                    <i className="fa fa-plus" />
+                  </span>
+                </Button>
+              </div>
+            </FormGroup>
+          </Col>
+          <Col lg="3">
+            <FormGroup>
+              <label
+                className="form-control-label"
+                htmlFor="input-country"
+              >
+                Correo
+                          </label>
+              <div className="d-flex">
+                <Input
+                  className="form-control-alternative"
+                  id="input-postal-code"
+                  type="email"
+                />
+                <Button className="btn-icon" size="sm" color="primary" type="button">
+                  <span>
+                    <i className="fa fa-plus" />
+                  </span>
+                </Button>
+              </div>
+            </FormGroup>
+          </Col>
+        </Row>
+      </div>
+    </Col>
+  
+  </>);
+}
 
 export default NuevoAsociado;

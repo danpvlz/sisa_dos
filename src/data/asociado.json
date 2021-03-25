@@ -1,0 +1,38 @@
+[
+    {
+        "idAsociado": 1,
+        "asociado": "PRODUCTOS LACTEOS NATURALES S.A.C.",
+        "tipo":1,
+        "estado":1,
+        "actividad":"PRODUCTIVO",
+        "comite":"Proyectos y Desarrollo",
+        "importe": 75,
+        "cobrador":"JAVIER MAZA",
+        "telf":"074-436168, 978071317",
+        "correos":"productos@cclam.org.pe"
+    },
+    {
+        "idAsociado": 2,
+        "asociado": "PRODUCTOS LACTEOS NATURALES S.A.C.",
+        "tipo":1,
+        "estado":1,
+        "actividad":"PRODUCTIVO",
+        "comite":"Proyectos y Desarrollo",
+        "importe": 75,
+        "cobrador":"JAVIER MAZA",
+        "telf":"074-436168, 978071317",
+        "correos":"productos@cclam.org.pe"
+    },
+    {
+        "idAsociado": 3,
+        "asociado": "PRODUCTOS LACTEOS NATURALES S.A.C.",
+        "tipo":1,
+        "estado":2,
+        "actividad":"PRODUCTIVO",
+        "comite":"Proyectos y Desarrollo",
+        "importe": 75,
+        "cobrador":"JAVIER MAZA",
+        "telf":"074-436168, 978071317",
+        "correos":"productos@cclam.org.pe"
+    }
+]

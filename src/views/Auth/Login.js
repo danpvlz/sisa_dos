@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React from "react";
 import { useHistory } from 'react-router-dom';
 
 // reactstrap components
@@ -19,27 +19,18 @@ import {
 
 import { useForm } from "react-hook-form";
 
-import { useDispatch, useSelector } from "react-redux";
-import { userSignIn } from "../../redux/actions/Auth";
+import { useDispatch } from "react-redux";
+import { userSignIn, getUser } from "../../redux/actions/Auth";
 
 const Login = (props) => {
   const dispatch = useDispatch();
-  const token = useSelector(({ auth }) => auth.token);
   
   const { register, handleSubmit } = useForm();
 
-  const history = useHistory();
-  const handleOnClick = useCallback(() => history.push('/index'), [history]);
-
-  useEffect(() => {
-    if (token !== null) {
-      props.history.push("/index");
-    }
-  }, [token, props.history]);
-
   const onSubmit  = (values) => {
-    console.log(values);
-    //dispatch(userSignIn(values));
+    //console.log(values);
+    dispatch(userSignIn(values));
+    dispatch(getUser());
   };
 
   return (
@@ -47,7 +38,7 @@ const Login = (props) => {
       <Col lg="5" md="7">
         <Card className="bg-secondary shadow border-0">
           <CardBody className="px-lg-5 py-lg-5">
-            <Form role="form" onSubmit={handleSubmit(onSubmit)}>
+            <Form role="form" onSubmit={handleSubmit(onSubmit)} autoComplete="on">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
