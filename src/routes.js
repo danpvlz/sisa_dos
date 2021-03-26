@@ -22,6 +22,10 @@ import Asistencia from "views/Asistencia/Asistencia.js";
 import MiAsistencia from "views/Asistencia/MiAsistencia.js";
 import MarcarAsistencia from "views/Asistencia/MarcarAsistencia.js";
 
+//Llamadas
+import Llamadas from "views/Llamadas/Llamadas.js";
+import RegistroLlamada from "views/Llamadas/RegistroLlamada.js";
+
 var routes = [
   {
     path: "/login",
@@ -44,6 +48,22 @@ var routes = [
     name: "Asociado",
     icon: "ni ni-single-02 text-blue",
     component: Asociado,
+    layout: "/admin",
+    show: true
+  },
+  {
+    path: "/nuevo-asociado",
+    name: "Nuevo asociado",
+    icon: "ni ni-single-02 text-yellow",
+    component: NuevoAsociado,
+    layout: "/admin",
+    show: false
+  },
+  {
+    path: "/colaborador",
+    name: "Colaborador",
+    icon: "ni ni-badge text-orange",
+    component: Colaborador,
     layout: "/admin",
     show: true
   },
@@ -72,14 +92,6 @@ var routes = [
     show: false
   },
   {
-    path: "/colaborador",
-    name: "Colaborador",
-    icon: "ni ni-badge text-orange",
-    component: Colaborador,
-    layout: "/admin",
-    show: true
-  },
-  {
     path: "/asistencia",
     name: "Asistencia",
     icon: "ni ni-calendar-grid-58 text-primary",
@@ -104,6 +116,22 @@ var routes = [
     show: true
   },
   {
+    path: "/llamadas",
+    name: "Llamadas",
+    icon: "fa fa-phone text-primary",
+    component: Llamadas,
+    layout: "/admin",
+    show: true
+  },
+  {
+    path: "/registro-llamada",
+    name: "Registro de llamada",
+    icon: "fa fa-phone text-primary",
+    component: RegistroLlamada,
+    layout: "/admin",
+    show: false
+  },
+  {
     path: "/icons",
     name: "Icons",
     icon: "ni ni-planet text-blue",
@@ -126,14 +154,6 @@ var routes = [
     component: Profile,
     layout: "/admin",
     show: true
-  },
-  {
-    path: "/nuevo-asociado",
-    name: "Nuevo asociado",
-    icon: "ni ni-single-02 text-yellow",
-    component: NuevoAsociado,
-    layout: "/admin",
-    show: false
   },
   {
     path: "/tables",

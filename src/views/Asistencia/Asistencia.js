@@ -148,7 +148,8 @@ const Asistencia = () => {
                     <thead className="thead-light">
                       <tr>
                         <th scope="col">Colaborador</th>
-                        <th className="text-center" scope="col">Tardanzas</th>
+                        <th className="text-center" scope="col">Debe</th>
+                        <th className="text-center" scope="col">Compensar</th>
                         <th className="text-center" scope="col">Observaciones</th>
                         <th className="text-center" scope="col">Justificaciones</th>
                         <th scope="col"></th>
@@ -173,6 +174,9 @@ const Asistencia = () => {
                               </Media>
 
                             </th>
+                            <td className="text-center">
+                              {asistencia.tardanzas}min
+                            </td>
                             <td className="text-center">
                               {asistencia.tardanzas}min
                             </td>
@@ -263,7 +267,7 @@ const Asistencia = () => {
                 </TabPane>
                 <TabPane tabId="tabs2">
                   <div className="bg-secondary text-center pb-3">
-                    <Col>
+                    <Col className="not-selectble">
                       <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
                         Normal
                       </Badge>
@@ -271,9 +275,12 @@ const Asistencia = () => {
                         Tardanza
                       </Badge>
                       <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger">
-                        No marcó
+                        Falta
                       </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default">
+                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} className="bg-yellow text-default">
+                        Salió temprano
+                      </Badge>
+                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default" className="text-default">
                         Compensó
                       </Badge>
                     </Col>
@@ -329,7 +336,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.prim_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.prim_entrada.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.prim_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.prim_entrada.estado) == 2 ? "Falta" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
@@ -344,7 +351,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_out_${key}`}
                               >
-                                {parseInt(asistencia.prim_salida.estado) == 1 ? "Normal" : parseInt(asistencia.prim_salida.estado) == 2 ? "No marcó" : "Compensó"}
+                                {parseInt(asistencia.prim_salida.estado) == 1 ? "Normal" : parseInt(asistencia.prim_salida.estado) == 2 ? "Falta" : "Compensó"}
                               </UncontrolledTooltip>
                             </td>
                             <td>
@@ -359,7 +366,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.seg_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.seg_entrada.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.seg_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.seg_entrada.estado) == 2 ? "Falta" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
@@ -374,7 +381,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_out_${key}`}
                               >
-                                {parseInt(asistencia.seg_salida.estado) == 1 ? "Normal" : parseInt(asistencia.seg_salida.estado) == 2 ? "No marcó" : "Compensó"}
+                                {parseInt(asistencia.seg_salida.estado) == 1 ? "Normal" : parseInt(asistencia.seg_salida.estado) == 2 ? "Falta" : "Compensó"}
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
@@ -443,17 +450,20 @@ const Asistencia = () => {
                 </TabPane>
                 <TabPane tabId="tabs3">
                   <div className="bg-secondary text-center pb-3">
-                    <Col>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
+                    <Col className="not-selectble">
+                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success" type="button">
                         Normal
                       </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="warning">
+                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="warning" type="button">
                         Tardanza
                       </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger">
-                        No marcó
+                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger" type="button">
+                        Falta
                       </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default">
+                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} className="bg-yellow text-default" type="button">
+                        Salió temprano
+                      </Badge>
+                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default" className="text-default" type="button">
                         Compensó
                       </Badge>
                     </Col>
@@ -514,7 +524,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.hora.estado) == 1 ? "Normal" : parseInt(asistencia.hora.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.hora.estado) == 1 ? "Normal" : parseInt(asistencia.hora.estado) == 2 ? "Falta" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
@@ -664,7 +674,7 @@ const DetalleAsistencia = ({ showDetail, toggleModal }) => {
                     {asistencia.turno}
                   </td>
                   <td>
-                    {asistencia.estado == 1 ? "NORMAL" : asistencia.estado == 2 ? "TARDANZA" : asistencia.estado == 3 ? "NO MARCÓ" : "COMPENSÓ"}
+                    {asistencia.estado == 1 ? "NORMAL" : asistencia.estado == 2 ? "TARDANZA" : asistencia.estado == 3 ? "Falta" : "COMPENSÓ"}
                   </td>
                   <td className="text-center">
                     {asistencia.observacion.length == 0 ? "-" : asistencia.observacion}

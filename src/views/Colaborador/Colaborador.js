@@ -48,11 +48,11 @@ const Tables = () => {
   const handleEdit = useCallback(() => history.push('/admin/editar-colaborador'), [history]);
   return (
     <>
-    <div className="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"> 
+    <div className="header py-8 d-flex align-items-center"> 
       <span className="mask bg-gradient-info opacity-8" />
     </div>
       {/* Page content */}
-      <Container className="mt--7" fluid>
+      <Container className="mt--8" fluid>
         {/* Table */}
         <Row>
           <div className="col">
@@ -98,7 +98,12 @@ const Tables = () => {
                         <img
                         className="avatar rounded-circle mr-3"
                           alt="..."
-                          src={colaborador.foto
+                          src={
+                            colaborador.foto == null || colaborador.foto == "" ?
+                            require("../../assets/img/theme/default.png")
+                              .default
+                            :
+                            colaborador.foto
                           }
                         />
                         <Media>

@@ -30,15 +30,17 @@ import Select from 'react-select';
 import Header from "components/Headers/AsociadoHeader.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
 
-const Tables = () => {
-  const asociados = require('../../data/asociado.json');
+const Llamadas = () => {
+  const llamadas = require('../../data/llamadas.json');
   const history = useHistory();
-  const handleNewAsociado = useCallback(() => history.push('/admin/nuevo-asociado'), [history]);
+  const handleNew = useCallback(() => history.push('/admin/registro-llamada'), [history]);
   return (
     <>
-      <Header />
+    <div className="header pb-8 pt-9 d-flex align-items-center"> 
+      <span className="mask bg-gradient-info opacity-8" />
+    </div>
       {/* Page content */}
-      <Container className="mt--7" fluid>
+      <Container className="mt--9" fluid>
         {/* Table */}
         <Row>
           <div className="col">
@@ -46,29 +48,63 @@ const Tables = () => {
               <CardHeader className="border-0 bg-secondary">
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">
-                    <h3 className="mb-0">Asociados</h3>
+                    <h3 className="mb-0">Llamadas</h3>
                     <Button
                       className="btn-new-xl btn-icon d-none d-md-block"
                       color="primary"
-                      onClick={handleNewAsociado}
+                      onClick={handleNew}
                     >
                       <span className="btn-inner--icon">
 
                         <i className="fa fa-plus" />
                       </span>
-                      <span className="btn-inner--text">Nuevo asociado</span>
+                      <span className="btn-inner--text">Nueva llamada</span>
                     </Button>
                     <Button
                       className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
-                      onClick={handleNewAsociado}
+                      onClick={handleNew}
                     >
                       <i className="fas fa-plus" />
                     </Button>
                   </Col>
                   <Col lg="12 ">
-                    <hr className="my-4 " />
+                    <hr className="my-4" />
                     <Row className="bg-secondary">
-                      <Col lg="5"  >
+                  <Col lg="2"  >
+                    <FormGroup className="mb-0 pb-4">
+                      <label
+                        className="form-control-label"
+                        htmlFor="filterMonth"
+                      >
+                        Desde
+                      </label>
+                      <Input
+                        className="form-control-alternative"
+                        defaultValue="lucky.jesse"
+                        id="filterMonth"
+                        placeholder="filterMonth"
+                        type="date"
+                      />
+                    </FormGroup >
+                  </Col>
+                  <Col lg="2"  >
+                    <FormGroup className="mb-0 pb-4">
+                      <label
+                        className="form-control-label"
+                        htmlFor="filterMonth"
+                      >
+                        Hasta
+                      </label>
+                      <Input
+                        className="form-control-alternative"
+                        defaultValue="lucky.jesse"
+                        id="filterMonth"
+                        placeholder="filterMonth"
+                        type="date"
+                      />
+                    </FormGroup >
+                  </Col>
+                      <Col lg="4"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
                             className="form-control-label"
@@ -90,25 +126,7 @@ const Tables = () => {
                           <SearchColaborador />
                         </FormGroup>
                       </Col>
-                      <Col lg="2"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Estado
-                      </label>
-                          <Select
-                            placeholder="Seleccione..."
-                            className="select-style"
-                            name="sexo"
-                            onChange={(inputValue, actionMeta) => {
-                              console.log(inputValue.value);
-                            }}
-                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "Retiro" }]} />
-                        </FormGroup >
-                      </Col>
-                      <Col lg="1" className="text-right m-auto">
+                      <Col lg="2" className="text-right ml-auto">
                         <Button color="success"  type="button">
                           <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
                         </Button>
@@ -125,86 +143,48 @@ const Tables = () => {
                     <th scope="col">Asociado</th>
                     <th scope="col">Tipo</th>
                     <th scope="col">Estado</th>
-                    <th scope="col">Actividad</th>
-                    <th scope="col">Comité gremial</th>
-                    <th scope="col">Importe</th>
+                    <th scope="col">Sector</th>
                     <th scope="col">Cobrador</th>
-                    <th scope="col">Teléfonos</th>
-                    <th scope="col">Correos</th>
-                    <th scope="col" />
+                    <th scope="col">Fecha</th>
+                    <th scope="col">H. inicio</th>
+                    <th scope="col">H. fin</th>
+                    <th scope="col">Detalle</th>
                   </tr>
                 </thead>
                 <tbody>
                   {
-                    asociados?.map((asociado,key)=>
+                    llamadas?.map((llamada,key)=>
                     
                   <tr key={key}>
                   <td scope="row">
-                    {asociado.asociado}
+                    {llamada.asociado}
                   </td>
                   <td>
-                    {asociado.tipo == 1 ? "Empresa" : "Persona"}
+                    {llamada.tipo == 1 ? "Empresa" : "Persona"}
                   </td>
                   <td>
                     <Badge color="" className="badge-dot mr-4">
-                      <i className={asociado.estado == 1 ? "bg-success" : "bg-warning"} />
-                      {asociado.estado == 1 ? "Activo" : "Retiro"}
+                      <i className={llamada.estado == 1 ? "bg-success" : "bg-warning"} />
+                      {llamada.estado == 1 ? "Activo" : "Retiro"}
                     </Badge>
                   </td>
                   <td>
-                    {asociado.actividad}
+                    {llamada.sector}
                   </td>
                   <td>
-                    {asociado.comite}
+                    {llamada.cobrador}
                   </td>
                   <td>
-                    {asociado.importe}
+                    {llamada.fecha}
                   </td>
                   <td>
-                    {asociado.cobrador}
+                    {llamada.inicio}
                   </td>
                   <td>
-                    {asociado.telf}
+                    {llamada.fin}
                   </td>
                   <td>
-                    {asociado.correos}
-                  </td>
-                  <td className="text-right">
-                    <UncontrolledDropdown>
-                      <DropdownToggle
-                        className="btn-icon-only text-light"
-                        href="#pablo"
-                        role="button"
-                        size="sm"
-                        color=""
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-ellipsis-v" />
-                      </DropdownToggle>
-                      <DropdownMenu className="dropdown-menu-arrow" right>
-                        <DropdownItem
-                        className="d-flex"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                           <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
-                        </DropdownItem>
-                        <DropdownItem
-                        className="d-flex"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                           <i className="text-blue fa fa-phone fa-rotate-90" aria-hidden="true"></i> Llamadas
-                        </DropdownItem>
-                        <DropdownItem
-                        className="d-flex"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="text-blue fa fa-credit-card" aria-hidden="true"></i> Cuentas 
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
+                    {llamada.detalle}
                   </td>
                 </tr>
                     )
@@ -272,4 +252,4 @@ const Tables = () => {
   );
 };
 
-export default Tables;
+export default Llamadas;

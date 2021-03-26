@@ -12,6 +12,7 @@ import {
   Row,
   Col,
   Modal,
+  Badge
 } from "reactstrap";
 import Select from 'react-select';
 import { useForm } from "react-hook-form";
@@ -26,7 +27,9 @@ const MarcarAsistencia = () => {
   const [type, setType] = useState(1);
 
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showJustify, setShowJustify] = useState(false);
   const [sendAssistance, setSendAssistance] = useState(false);
+  const [sendJustification, setSendJustification] = useState(false);
 
   const [formData, setFormData] = useState(null);
 
@@ -38,6 +41,10 @@ const MarcarAsistencia = () => {
   const toggleModal = () => {
     listAssistance()
     setShowConfirm(!showConfirm);
+  };
+
+  const toggleModalJustify = () => {
+    setShowJustify(!showJustify);
   };
 
   useEffect(() => {
@@ -69,16 +76,16 @@ const MarcarAsistencia = () => {
 
   return (
     <>
-      <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
+      <div className="header py-8  d-flex align-items-center">
         <span className="mask bg-gradient-info opacity-8" />
       </div>
       {/* Page content */}
-      <Container className="mt--7" fluid>
+      <Container className="mt--8" fluid>
         <Row>
           <Col className="offset-xl-2" xl="8">
             <Card className="card-profile shadow bg-secondary">
-              <Form id="form-check-assistance" onSubmit={handleSubmit(onSubmit)}>
-                <CardBody >
+              <CardBody >
+                <Form id="form-check-assistance" onSubmit={handleSubmit(onSubmit)}>
                   <Row >
                     <Col lg="6">
                       <div className="clock-container">
@@ -135,84 +142,66 @@ const MarcarAsistencia = () => {
                       </Row>
                     </Col>
                   </Row >
-                  <hr></hr>
-                  <Row className="mt-3">
-                    <Col className="text-center" lg="3">
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="input-firstEntry"
-                        >
-                          Entrada
-                          </label>
-                        <Input
-                          className="form-control-alternative text-center"
-                          defaultValue="8:00:00am"
-                          id="input-firstEntry"
-                          type="text"
-                          disabled
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="text-center" lg="3">
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="input-firstOut"
-                        >
-                          Salida
-                          </label>
-                        <Input
-                          className="form-control-alternative text-center"
-                          defaultValue="1:00:00pm"
-                          id="input-firstOut"
-                          type="text"
-                          disabled
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="text-center" lg="3">
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="input-firstEntry"
-                        >
-                          Entrada
-                          </label>
-                        <Input
-                          className="form-control-alternative text-center"
-                          defaultValue="3:30:00pm"
-                          id="input-firstEntry"
-                          type="text"
-                          disabled
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="text-center" lg="3">
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="input-firstOut"
-                        >
-                          Salida
-                          </label>
-                        <Input
-                          className="form-control-alternative text-center"
-                          defaultValue="7:00:00pm"
-                          id="input-firstOut"
-                          type="text"
-                          disabled
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Form>
+
+                </Form>
+                <hr></hr>
+                <Row className="mt-3">
+                  <Col className="text-center mb-4" lg="3">
+                    <div>
+                      <span>
+                        Entrada
+                          <small className="d-flex justify-content-center font-weight-bold">Normal</small>
+                      </span>
+                      <div className="form-control-alternative text-center assistance-input text-center">
+
+                        {"8:00:00am"}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col className="text-center mb-4" lg="3">
+                    <div>
+                      <span>
+                        Salida
+                        <small className="d-flex justify-content-center font-weight-bold">Falta</small>
+                      </span>
+                      <div className="form-control-alternative text-center assistance-input text-center">
+                        {"3:30:00pm"}
+                      </div>
+                      <Button onClick={toggleModalJustify} className="mt-2" block color="warning" size="sm" type="button">
+                        Justificar
+                      </Button>
+                    </div>
+                  </Col>
+                  <Col className="text-center mb-4" lg="3">
+                    <div>
+                      <span>
+                        Entrada
+                          <small className="d-flex justify-content-center font-weight-bold ">Tardanza</small>
+                      </span>
+                      <div className="form-control-alternative text-center assistance-input text-center">
+                        {"3:40:00pm"}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col className="text-center mb-4" lg="3">
+                    <div>
+                      <span>
+                        Salida
+                          <small className="d-flex justify-content-center font-weight-bold">Compensó</small>
+                      </span>
+                      <div className="form-control-alternative text-center assistance-input text-center">
+                        {"8:00:00pm"}
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </CardBody>
             </Card>
           </Col>
         </Row>
       </Container>
       <ConfirmDialog showConfirm={showConfirm} toggleModal={toggleModal} setSendAssistance={setSendAssistance} />
+      <Justify showJustify={showJustify} toggleModal={toggleModalJustify} setSendJustification={setSendJustification} />
     </>
   );
 };
@@ -229,8 +218,8 @@ const ConfirmDialog = ({ showConfirm, toggleModal, setSendAssistance }) => {
     >
       <div className="modal-body pb-0">
         <div className="pt-3 text-center">
-          <h4 className="text-primary" style={{fontSize:'1.2rem'}}>Confirmar registro</h4>
-          <p style={{fontSize:'1.2rem'}}>¿Seguro de registrar asistencia?</p>
+          <h4 className="text-primary" style={{ fontSize: '1.2rem' }}>Confirmar registro</h4>
+          <p style={{ fontSize: '1.2rem' }}>¿Seguro de registrar asistencia?</p>
         </div>
       </div>
       <div className="modal-footer">
@@ -245,6 +234,36 @@ const ConfirmDialog = ({ showConfirm, toggleModal, setSendAssistance }) => {
                 </Button>
         <Button className="btn-primary" color="primary" type="button" onClick={saveAssistance}>
           Confirmar
+                </Button>
+      </div>
+    </Modal>);
+}
+
+const Justify = ({ showJustify, toggleModal, setSendJustification }) => {
+  const saveJustification = () => {
+    setSendJustification(true); toggleModal();
+  }
+  return (
+    <Modal
+      className="modal-dialog-centered"
+      isOpen={showJustify}
+      toggle={toggleModal}
+    >
+      <div className="modal-body pb-0">
+      <Input type="textarea" placeholder="Especifica el motivo por el que no pudiste marcar asistencia." rows={3} />
+      </div>
+      <div className="modal-footer">
+        <Button
+          className="mr-auto"
+          color="link"
+          data-dismiss="modal"
+          type="button"
+          onClick={toggleModal}
+        >
+          Cerrar
+                </Button>
+        <Button className="btn-primary" color="primary" type="button" onClick={saveJustification}>
+          Guardar
                 </Button>
       </div>
     </Modal>);

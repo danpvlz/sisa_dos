@@ -156,7 +156,7 @@ const Asistencia = () => {
                         Tardanza
                       </Badge>
                       <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger">
-                        No marcó
+                        Falta
                       </Badge>
                       <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default">
                         Compensó
@@ -198,7 +198,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.prim_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.prim_entrada.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.prim_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.prim_entrada.estado) == 2 ? "Falta" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
@@ -213,7 +213,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_out_${key}`}
                               >
-                                {parseInt(asistencia.prim_salida.estado) == 1 ? "Normal" : parseInt(asistencia.prim_salida.estado) == 2 ? "No marcó" : "Compensó"}
+                                {parseInt(asistencia.prim_salida.estado) == 1 ? "Normal" : parseInt(asistencia.prim_salida.estado) == 2 ? "Falta" : "Compensó"}
                               </UncontrolledTooltip>
                             </td>
                             <td>
@@ -228,7 +228,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.seg_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.seg_entrada.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.seg_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.seg_entrada.estado) == 2 ? "Falta" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
@@ -243,7 +243,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_out_${key}`}
                               >
-                                {parseInt(asistencia.seg_salida.estado) == 1 ? "Normal" : parseInt(asistencia.seg_salida.estado) == 2 ? "No marcó" : "Compensó"}
+                                {parseInt(asistencia.seg_salida.estado) == 1 ? "Normal" : parseInt(asistencia.seg_salida.estado) == 2 ? "Falta" : "Compensó"}
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
@@ -320,7 +320,7 @@ const Asistencia = () => {
                         Tardanza
                       </Badge>
                       <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger">
-                        No marcó
+                        Falta
                       </Badge>
                       <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default">
                         Compensó
@@ -369,7 +369,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.hora.estado) == 1 ? "Normal" : parseInt(asistencia.hora.estado) == 2 ? "No marcó" : "Tardanza"}
+                                {parseInt(asistencia.hora.estado) == 1 ? "Normal" : parseInt(asistencia.hora.estado) == 2 ? "Falta" : "Tardanza"}
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">

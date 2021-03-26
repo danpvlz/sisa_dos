@@ -218,7 +218,7 @@ const Sidebar = (props) => {
             </Row>
           </div>
           {/* Form */}
-          <Form className="mt-4 mb-3 d-md-none">
+          <Form className="mt-4 mb-3 d-none">
             <InputGroup className="input-group-rounded input-group-merge">
               <Input
                 aria-label="Search"
