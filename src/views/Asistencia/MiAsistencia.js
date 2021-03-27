@@ -80,7 +80,7 @@ const Asistencia = () => {
             <Card className="shadow">
               <CardHeader className="border-0 bg-secondary">
                 <Row className="bg-secondary">
-                  <Col lg="6"  >
+                  <Col lg="4"  >
                     <FormGroup className="mb-0 pb-4">
                       <label
                         className="form-control-label"
@@ -96,17 +96,6 @@ const Asistencia = () => {
                         type="month"
                       />
                     </FormGroup >
-                  </Col>
-                  <Col lg="6"  >
-                    <FormGroup className="mb-0 pb-4">
-                      <label
-                        className="form-control-label"
-                        htmlFor="filterMonth"
-                      >
-                        Colaborador
-                      </label>
-                      <SearchColaborador />
-                    </FormGroup>
                   </Col>
                 </Row>
                 <div className="nav-wrapper">

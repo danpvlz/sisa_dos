@@ -27,8 +27,9 @@ import Llamada from "views/Llamada/Llamada.js";
 import NuevaLlamada from "views/Llamada/NuevaLlamada.js";
 
 //Cuentas
-import Cuenta from "views/Cuenta/Cuenta.js";
-import NuevaEmision from "views/Cuenta/NuevaEmision.js";
+import Cobranza from "views/Cuenta/Cobranza.js";
+import NuevaCobranza from "views/Cuenta/NuevaCobranza.js";
+import Pendientes from "views/Cuenta/Pendientes.js";
 
 var components=[
   Login,
@@ -42,8 +43,9 @@ var components=[
   MarcarAsistencia,
   Llamada,
   NuevaLlamada,
-  Cuenta,
-  NuevaEmision
+  Cobranza,
+  NuevaCobranza,
+  Pendientes
 ]
 
 var routes = [
@@ -86,26 +88,34 @@ var routes = [
     routes: [
       {
         path: "/cuentas",
-        name: "Cuentas",
+        name: "Cobranza",
         icon: "ni ni-credit-card text-blue",
-        component: Cuenta,
+        component: Cobranza,
         layout: "/admin",
         show: true
       },
       {
         path: "/registro-emision",
         name: "Nueva emisión",
-        icon: "fa fa-file text-blue",
-        component: NuevaEmision,
+        icon: "fa fa-file text-success",
+        component: NuevaCobranza,
         layout: "/admin",
         show: true
       },
+      {
+        path: "/pendientes",
+        name: "Pendientes",
+        icon: "fa fa-clock text-danger",
+        component: Pendientes,
+        layout: "/admin",
+        show: true
+      }
     ]
   },
   {
     path: "/colaborador",
     name: "Colaborador",
-    icon: "ni ni-badge text-orange",
+    icon: "ni ni-badge text-blue",
     component: Colaborador,
     layout: "/admin",
     show: true
@@ -159,7 +169,7 @@ var routes = [
       {
         path: "/registrar-asistencia",
         name: "Registrar asistencia",
-        icon: "ni ni-active-40 text-blue",
+        icon: "ni ni-active-40 text-success",
         component: MarcarAsistencia,
         layout: "/admin",
         show: true

@@ -117,7 +117,7 @@ const Cuenta = () => {
                             onChange={(inputValue, actionMeta) => {
                               console.log(inputValue.value);
                             }}
-                            options={[{ value: 1, label: "Por cancelar" }, { value: 2, label: "Pendiente" }, { value: 2, label: "Cancelada" }, { value: 2, label: "Anulada" }]} />
+                            options={[{ value: 1, label: "Por cancelar" }, { value: 2, label: "Pendiente" }, { value: 3, label: "Cancelada" }, { value: 4, label: "Anulada" }]} />
                         </FormGroup >
                       </Col>
                       <Col lg="4"  >
@@ -166,7 +166,6 @@ const Cuenta = () => {
                     <th scope="col">IGV</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Cobrador</th>
-                    <th scope="col">Pago</th>
                     <th scope="col">Anulación</th>
                     <th scope="col" />
                   </tr>
@@ -208,9 +207,6 @@ const Cuenta = () => {
                   </td>
                   <td>
                     {cuenta.cobrador}
-                  </td>
-                  <td>
-                    {cuenta.fPago}
                   </td>
                   <td>
                     {cuenta.fAnul}

@@ -50,7 +50,7 @@ const NuevaEmision = () => {
                       </h6>
                       <div className="pl-lg-4">
                         <Row>
-                          <Col lg="5">
+                          <Col lg="6">
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -61,7 +61,7 @@ const NuevaEmision = () => {
                               <SearchPromotor searched={promotorSearched} setSearched={setPromotorSearched} />
                             </FormGroup>
                           </Col>
-                          <Col lg="2">
+                          <Col lg="3">
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -76,7 +76,7 @@ const NuevaEmision = () => {
                                 onChange={(inputValue, actionMeta) => {
                                   setTypeAssociated(inputValue.value);
                                 }}
-                                options={[{ value: 1, label: "Factura" }, { value: 3, label: "Boleta" }]} />
+                                options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
                             </FormGroup>
                           </Col>
                           <Col lg="3">
@@ -85,7 +85,7 @@ const NuevaEmision = () => {
                                 className="form-control-label"
                                 htmlFor="input-address"
                               >
-                                Fecha vencimiento
+                                Fecha emisión
                           </label>
                               <Input
                                 className="form-control-alternative"
@@ -95,7 +95,7 @@ const NuevaEmision = () => {
                               />
                             </FormGroup>
                           </Col>
-                          <Col lg="2">
+                          <Col lg="3">
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -113,6 +113,22 @@ const NuevaEmision = () => {
                                 options={[{ value: 1, label: "Sí" }, { value: 3, label: "No" }]} />
                             </FormGroup>
                           </Col>
+                          <Col lg="3">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Fecha pago
+                          </label>
+                              <Input
+                                className="form-control-alternative"
+                                id="input-socialAddress"
+                                name="socialAddress"
+                                type="date"
+                              />
+                            </FormGroup>
+                          </Col>
                         </Row>
                       </div>
 
@@ -124,7 +140,7 @@ const NuevaEmision = () => {
                       </h6>
                       <div className="pl-lg-4">
                         <Row>
-                          <Col lg="4">
+                          <Col lg="5">
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -135,19 +151,20 @@ const NuevaEmision = () => {
                               <SearchPromotor searched={promotorSearched} setSearched={setPromotorSearched} />
                             </FormGroup>
                           </Col>
-                          <Col lg="3">
+                          <Col lg="2">
                             <FormGroup>
                               <label
                                 className="form-control-label"
                                 htmlFor="input-address"
                               >
-                                Observación
+                                Cantidad
                           </label>
                               <Input
-                                className="form-control-alternative"
+                                className="form-control-alternative text-center"
                                 id="input-socialAddress"
                                 name="socialAddress"
-                                type="text"
+                                type="number"
+                                min="0"
                               />
                             </FormGroup>
                           </Col>
@@ -178,6 +195,22 @@ const NuevaEmision = () => {
                                 { 'value': 12, 'label': 'Diciembre' },
                                 ]}
                                 classNamePrefix="select"
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col>
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Observación
+                          </label>
+                              <Input
+                                className="form-control-alternative"
+                                id="input-socialAddress"
+                                name="socialAddress"
+                                type="text"
                               />
                             </FormGroup>
                           </Col>
