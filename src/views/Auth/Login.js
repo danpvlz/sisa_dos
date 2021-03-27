@@ -1,6 +1,4 @@
 import React from "react";
-import { useHistory } from 'react-router-dom';
-
 // reactstrap components
 import {
   Button,
@@ -28,7 +26,6 @@ const Login = (props) => {
   const { register, handleSubmit } = useForm();
 
   const onSubmit  = (values) => {
-    //console.log(values);
     dispatch(userSignIn(values));
     dispatch(getUser());
   };

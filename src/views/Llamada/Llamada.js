@@ -36,9 +36,9 @@ const Llamadas = () => {
   const handleNew = useCallback(() => history.push('/admin/registro-llamada'), [history]);
   return (
     <>
-    <div className="header pb-8 pt-9 d-flex align-items-center"> 
-      <span className="mask bg-gradient-info opacity-8" />
-    </div>
+      <div className="header pb-8 pt-9 d-flex align-items-center">
+        <span className="mask bg-gradient-info opacity-8" />
+      </div>
       {/* Page content */}
       <Container className="mt--9" fluid>
         {/* Table */}
@@ -70,40 +70,40 @@ const Llamadas = () => {
                   <Col lg="12 ">
                     <hr className="my-4" />
                     <Row className="bg-secondary">
-                  <Col lg="2"  >
-                    <FormGroup className="mb-0 pb-4">
-                      <label
-                        className="form-control-label"
-                        htmlFor="filterMonth"
-                      >
-                        Desde
+                      <Col lg="2"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Desde
                       </label>
-                      <Input
-                        className="form-control-alternative"
-                        defaultValue="lucky.jesse"
-                        id="filterMonth"
-                        placeholder="filterMonth"
-                        type="date"
-                      />
-                    </FormGroup >
-                  </Col>
-                  <Col lg="2"  >
-                    <FormGroup className="mb-0 pb-4">
-                      <label
-                        className="form-control-label"
-                        htmlFor="filterMonth"
-                      >
-                        Hasta
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue="lucky.jesse"
+                            id="filterMonth"
+                            placeholder="filterMonth"
+                            type="date"
+                          />
+                        </FormGroup >
+                      </Col>
+                      <Col lg="2"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Hasta
                       </label>
-                      <Input
-                        className="form-control-alternative"
-                        defaultValue="lucky.jesse"
-                        id="filterMonth"
-                        placeholder="filterMonth"
-                        type="date"
-                      />
-                    </FormGroup >
-                  </Col>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue="lucky.jesse"
+                            id="filterMonth"
+                            placeholder="filterMonth"
+                            type="date"
+                          />
+                        </FormGroup >
+                      </Col>
                       <Col lg="4"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
@@ -127,8 +127,8 @@ const Llamadas = () => {
                         </FormGroup>
                       </Col>
                       <Col lg="2" className="text-right ml-auto">
-                        <Button color="success"  type="button">
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
+                        <Button color="success" type="button">
+                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -153,43 +153,43 @@ const Llamadas = () => {
                 </thead>
                 <tbody>
                   {
-                    llamadas?.map((llamada,key)=>
-                    
-                  <tr key={key}>
-                  <td scope="row">
-                    {llamada.asociado}
-                  </td>
-                  <td>
-                    {llamada.tipo == 1 ? "Empresa" : "Persona"}
-                  </td>
-                  <td>
-                    <Badge color="" className="badge-dot mr-4">
-                      <i className={llamada.estado == 1 ? "bg-success" : "bg-warning"} />
-                      {llamada.estado == 1 ? "Activo" : "Retiro"}
-                    </Badge>
-                  </td>
-                  <td>
-                    {llamada.sector}
-                  </td>
-                  <td>
-                    {llamada.cobrador}
-                  </td>
-                  <td>
-                    {llamada.fecha}
-                  </td>
-                  <td>
-                    {llamada.inicio}
-                  </td>
-                  <td>
-                    {llamada.fin}
-                  </td>
-                  <td>
-                    {llamada.detalle}
-                  </td>
-                </tr>
+                    llamadas?.map((llamada, key) =>
+
+                      <tr key={key}>
+                        <td scope="row">
+                          {llamada.asociado}
+                        </td>
+                        <td>
+                          {llamada.tipo == 1 ? "Empresa" : "Persona"}
+                        </td>
+                        <td>
+                          <Badge color="" className="badge-dot mr-4">
+                            <i className={llamada.estado == 1 ? "bg-success" : "bg-warning"} />
+                            {llamada.estado == 1 ? "Activo" : "Retiro"}
+                          </Badge>
+                        </td>
+                        <td>
+                          {llamada.sector}
+                        </td>
+                        <td>
+                          {llamada.cobrador}
+                        </td>
+                        <td>
+                          {llamada.fecha}
+                        </td>
+                        <td>
+                          {llamada.inicio}
+                        </td>
+                        <td>
+                          {llamada.fin}
+                        </td>
+                        <td>
+                          {llamada.detalle}
+                        </td>
+                      </tr>
                     )
                   }
-                  
+
                 </tbody>
               </Table>
               <CardFooter className="py-4">

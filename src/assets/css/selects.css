@@ -8,6 +8,11 @@
     color: #8898aa;
 }
 
+.select-multiple-height .css-yk16xz-control{
+    height: auto !important;
+    min-height: calc(1.5em + 1.25rem + 2px) !important;
+}
+
 .assistance-input{
     background-color: #e9ecef;
     opacity: 1;

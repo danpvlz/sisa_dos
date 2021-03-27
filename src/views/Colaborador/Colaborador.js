@@ -41,7 +41,7 @@ import {
 } from "reactstrap";
 // core components
 
-const Tables = () => {
+const Colaborador = () => {
   const colaboradores = require('../../data/colaborador.json');
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/nuevo-colaborador'), [history]);
@@ -229,4 +229,4 @@ const Tables = () => {
   );
 };
 
-export default Tables;
+export default Colaborador;

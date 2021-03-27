@@ -53,9 +53,13 @@ import {
 } from "reactstrap";
 
 import { userSignOut } from "../../redux/actions/Auth";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Sidebar = (props) => {
+  const [isOpen, setIsOpen] = useState({});
+  const toggle = (key) => {
+    setIsOpen({ ...isOpen, [key]: !isOpen[key] })
+  }
   const { authUser } = useSelector(({ auth }) => auth);
   const dispatch = useDispatch();
   const [collapseOpen, setCollapseOpen] = useState();
@@ -75,22 +79,49 @@ const Sidebar = (props) => {
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
       return (
-        prop.show ? 
-        <NavItem key={key}>
-          <NavLink
-            to={prop.layout + prop.path}
-            tag={NavLinkRRD}
-            onClick={closeCollapse}
-            activeClassName="active"
-          >
-            <i className={prop.icon} />
-            {prop.name}
-          </NavLink>
-        </NavItem>
-        : ''
+        prop.routes ?
+          <div key={key} >
+            <NavItem>
+              <NavLink
+                style={{ cursor: 'pointer' }}
+                onClick={() => toggle(key)} >
+                <i className={prop.icon} />
+                {prop.name}
+                <i className={`fa fa-angle-${isOpen[key] ? 'up' : 'down'} ml-auto`} />
+              </NavLink>
+            </NavItem>
+            <Collapse className="ml-3" isOpen={isOpen[key]}>
+              {
+                prop.routes.map((sub, subKey) =>
+                <CreateLink key={key+"_"+subKey} prop={sub} />
+                )
+              }
+            </Collapse>
+          </div>
+          :
+          <CreateLink key={key} prop={prop} />
       );
     });
   };
+
+  const CreateLink = ({prop}) => {
+    return (<>
+      {
+        prop.show &&
+          <NavItem>
+            <NavLink
+              to={prop.layout + prop.path}
+              tag={NavLinkRRD}
+              onClick={closeCollapse}
+              activeClassName="active"
+            >
+              <i className={prop.icon} />
+              {prop.name}
+            </NavLink>
+          </NavItem>
+      }
+    </>);
+  }
 
   const { bgColor, routes, logo } = props;
   let navbarBrandProps;
@@ -153,8 +184,8 @@ const Sidebar = (props) => {
               <Media className="align-items-center">
                 <span className="avatar avatar-sm rounded-circle">
                   <img
-                      alt={authUser.nombres+" "+authUser.paterno+" "+authUser.materno}
-                      src={authUser.foto}
+                    alt={authUser.nombres + " " + authUser.paterno + " " + authUser.materno}
+                    src={authUser.foto}
                   />
                 </span>
               </Media>
@@ -163,21 +194,9 @@ const Sidebar = (props) => {
               <DropdownItem className="noti-title" header tag="div">
                 <h6 className="text-overflow m-0">Bienvenido!</h6>
               </DropdownItem>
-              <DropdownItem to="/admin/user-profile" tag={Link}>
+              <DropdownItem to="/admin/mi-perfil" tag={Link}>
                 <i className="ni ni-single-02" />
-                <span>My profile</span>
-              </DropdownItem>
-              <DropdownItem to="/admin/user-profile" tag={Link}>
-                <i className="ni ni-settings-gear-65" />
-                <span>Settings</span>
-              </DropdownItem>
-              <DropdownItem to="/admin/user-profile" tag={Link}>
-                <i className="ni ni-calendar-grid-58" />
-                <span>Activity</span>
-              </DropdownItem>
-              <DropdownItem to="/admin/user-profile" tag={Link}>
-                <i className="ni ni-support-16" />
-                <span>Support</span>
+                <span>Mi perfil</span>
               </DropdownItem>
               <DropdownItem divider />
               <DropdownItem onClick={() => dispatch(userSignOut())}>

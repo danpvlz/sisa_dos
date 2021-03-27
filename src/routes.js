@@ -23,8 +23,28 @@ import MiAsistencia from "views/Asistencia/MiAsistencia.js";
 import MarcarAsistencia from "views/Asistencia/MarcarAsistencia.js";
 
 //Llamadas
-import Llamadas from "views/Llamadas/Llamadas.js";
-import RegistroLlamada from "views/Llamadas/RegistroLlamada.js";
+import Llamada from "views/Llamada/Llamada.js";
+import NuevaLlamada from "views/Llamada/NuevaLlamada.js";
+
+//Cuentas
+import Cuenta from "views/Cuenta/Cuenta.js";
+import NuevaEmision from "views/Cuenta/NuevaEmision.js";
+
+var components=[
+  Login,
+  Asociado,
+  NuevoAsociado,
+  Colaborador,
+  NuevoColaborador,
+  EditProfile,
+  Asistencia,
+  MiAsistencia,
+  MarcarAsistencia,
+  Llamada,
+  NuevaLlamada,
+  Cuenta,
+  NuevaEmision
+]
 
 var routes = [
   {
@@ -47,7 +67,7 @@ var routes = [
     path: "/asociado",
     name: "Asociado",
     icon: "ni ni-single-02 text-blue",
-    component: Asociado,
+    component: components[1],
     layout: "/admin",
     show: true
   },
@@ -58,6 +78,29 @@ var routes = [
     component: NuevoAsociado,
     layout: "/admin",
     show: false
+  },
+  {
+    name: "Cuentas",
+    icon: "ni ni-credit-card text-blue",
+    layout: "/admin",
+    routes: [
+      {
+        path: "/cuentas",
+        name: "Cuentas",
+        icon: "ni ni-credit-card text-blue",
+        component: Cuenta,
+        layout: "/admin",
+        show: true
+      },
+      {
+        path: "/registro-emision",
+        name: "Nueva emisión",
+        icon: "fa fa-file text-blue",
+        component: NuevaEmision,
+        layout: "/admin",
+        show: true
+      },
+    ]
   },
   {
     path: "/colaborador",
@@ -76,8 +119,8 @@ var routes = [
     show: false
   },
   {
-    path: "/editar-perfil",
-    name: "Editar perfil",
+    path: "/mi-perfil",
+    name: "Mi perfil",
     icon: "ni ni-badge text-blue",
     component: EditProfile,
     layout: "/admin",
@@ -91,35 +134,43 @@ var routes = [
     layout: "/admin",
     show: false
   },
+  
   {
-    path: "/asistencia",
     name: "Asistencia",
-    icon: "ni ni-calendar-grid-58 text-primary",
-    component: Asistencia,
+    icon: "fa fa-calendar text-blue",
     layout: "/admin",
-    show: true
-  },
-  {
-    path: "/mi-asistencia",
-    name: "Mi asistencia",
-    icon: "ni ni-calendar-grid-58 text-blue",
-    component: MiAsistencia,
-    layout: "/admin",
-    show: false
-  },
-  {
-    path: "/registrar-asistencia",
-    name: "Registrar asistencia",
-    icon: "ni ni-active-40 text-blue",
-    component: MarcarAsistencia,
-    layout: "/admin",
-    show: true
+    routes: [
+      {
+        path: "/asistencia",
+        name: "Asistencias",
+        icon: "ni ni-calendar-grid-58 text-primary",
+        component: Asistencia,
+        layout: "/admin",
+        show: true
+      },
+      {
+        path: "/mi-asistencia",
+        name: "Mi asistencia",
+        icon: "fa fa-address-book text-blue",
+        component: MiAsistencia,
+        layout: "/admin",
+        show: true
+      },
+      {
+        path: "/registrar-asistencia",
+        name: "Registrar asistencia",
+        icon: "ni ni-active-40 text-blue",
+        component: MarcarAsistencia,
+        layout: "/admin",
+        show: true
+      },
+    ]
   },
   {
     path: "/llamadas",
     name: "Llamadas",
     icon: "fa fa-phone text-primary",
-    component: Llamadas,
+    component: Llamada,
     layout: "/admin",
     show: true
   },
@@ -127,7 +178,7 @@ var routes = [
     path: "/registro-llamada",
     name: "Registro de llamada",
     icon: "fa fa-phone text-primary",
-    component: RegistroLlamada,
+    component: NuevaLlamada,
     layout: "/admin",
     show: false
   },
@@ -137,7 +188,7 @@ var routes = [
     icon: "ni ni-planet text-blue",
     component: Icons,
     layout: "/admin",
-    show: true
+    show: false
   },
   {
     path: "/maps",
@@ -145,7 +196,7 @@ var routes = [
     icon: "ni ni-pin-3 text-orange",
     component: Maps,
     layout: "/admin",
-    show: true
+    show: false
   },
   {
     path: "/user-profile",
@@ -153,7 +204,7 @@ var routes = [
     icon: "ni ni-single-02 text-yellow",
     component: Profile,
     layout: "/admin",
-    show: true
+    show: false
   },
   {
     path: "/tables",
@@ -161,7 +212,7 @@ var routes = [
     icon: "ni ni-bullet-list-67 text-red",
     component: Tables,
     layout: "/admin",
-    show: true
+    show: false
   },
   {
     path: "/register",
@@ -169,7 +220,7 @@ var routes = [
     icon: "ni ni-circle-08 text-pink",
     component: Register,
     layout: "/auth",
-    show: true
+    show: false
   },
 ];
 

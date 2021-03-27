@@ -27,16 +27,16 @@ import {
 } from "reactstrap";
 // core components
 import Select from 'react-select';
-import Header from "components/Headers/AsociadoHeader.js";
+import CuentasHeader from "components/Headers/CuentasHeader.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
 
-const Asociado = () => {
-  const asociados = require('../../data/asociado.json');
+const Cuenta = () => {
+  const cuentas = require('../../data/cuenta.json');
   const history = useHistory();
-  const handleNewAsociado = useCallback(() => history.push('/admin/nuevo-asociado'), [history]);
+  const handleNew = useCallback(() => history.push('/admin/registro-emision'), [history]);
   return (
     <>
-      <Header />
+      <CuentasHeader />
       {/* Page content */}
       <Container className="mt--7" fluid>
         {/* Table */}
@@ -46,21 +46,21 @@ const Asociado = () => {
               <CardHeader className="border-0 bg-secondary">
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">
-                    <h3 className="mb-0">Asociados</h3>
+                    <h3 className="mb-0">Cuentas</h3>
                     <Button
                       className="btn-new-xl btn-icon d-none d-md-block"
                       color="primary"
-                      onClick={handleNewAsociado}
+                      onClick={handleNew}
                     >
                       <span className="btn-inner--icon">
 
                         <i className="fa fa-plus" />
                       </span>
-                      <span className="btn-inner--text">Nuevo asociado</span>
+                      <span className="btn-inner--text">Nueva emisión</span>
                     </Button>
                     <Button
                       className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
-                      onClick={handleNewAsociado}
+                      onClick={handleNew}
                     >
                       <i className="fas fa-plus" />
                     </Button>
@@ -68,7 +68,59 @@ const Asociado = () => {
                   <Col lg="12 ">
                     <hr className="my-4 " />
                     <Row className="bg-secondary">
-                      <Col lg="5"  >
+                    <Col lg="3"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Desde
+                      </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue="lucky.jesse"
+                            id="filterMonth"
+                            placeholder="filterMonth"
+                            type="date"
+                          />
+                        </FormGroup >
+                      </Col>
+                      <Col lg="3"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Hasta
+                      </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue="lucky.jesse"
+                            id="filterMonth"
+                            placeholder="filterMonth"
+                            type="date"
+                          />
+                        </FormGroup >
+                      </Col>
+                      <Col lg="2"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Estado
+                      </label>
+                          <Select
+                            placeholder="Seleccione..."
+                            className="select-style"
+                            name="sexo"
+                            onChange={(inputValue, actionMeta) => {
+                              console.log(inputValue.value);
+                            }}
+                            options={[{ value: 1, label: "Por cancelar" }, { value: 2, label: "Pendiente" }, { value: 2, label: "Cancelada" }, { value: 2, label: "Anulada" }]} />
+                        </FormGroup >
+                      </Col>
+                      <Col lg="4"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
                             className="form-control-label"
@@ -90,25 +142,7 @@ const Asociado = () => {
                           <SearchColaborador />
                         </FormGroup>
                       </Col>
-                      <Col lg="2"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Estado
-                      </label>
-                          <Select
-                            placeholder="Seleccione..."
-                            className="select-style"
-                            name="sexo"
-                            onChange={(inputValue, actionMeta) => {
-                              console.log(inputValue.value);
-                            }}
-                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "Retiro" }]} />
-                        </FormGroup >
-                      </Col>
-                      <Col lg="1" className="text-right m-auto">
+                      <Col lg="1" className="text-right my-auto ml-auto">
                         <Button color="success"  type="button">
                           <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
                         </Button>
@@ -122,52 +156,64 @@ const Asociado = () => {
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
-                    <th scope="col">Asociado</th>
+                    <th scope="col">Fecha emision</th>
                     <th scope="col">Tipo</th>
+                    <th scope="col">Serie</th>
+                    <th scope="col">Número</th>
+                    <th scope="col">Asociado</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">IGV</th>
                     <th scope="col">Estado</th>
-                    <th scope="col">Actividad</th>
-                    <th scope="col">Comité gremial</th>
-                    <th scope="col">Importe</th>
                     <th scope="col">Cobrador</th>
-                    <th scope="col">Teléfonos</th>
-                    <th scope="col">Correos</th>
+                    <th scope="col">Pago</th>
+                    <th scope="col">Anulación</th>
                     <th scope="col" />
                   </tr>
                 </thead>
                 <tbody>
                   {
-                    asociados?.map((asociado,key)=>
+                    cuentas?.map((cuenta,key)=>
                     
                   <tr key={key}>
                   <td scope="row">
-                    {asociado.asociado}
+                    {cuenta.fechaEmision}
                   </td>
                   <td>
-                    {asociado.tipo == 1 ? "Empresa" : "Persona"}
+                    {cuenta.tipo == 1 ? "Factura" : cuenta.tipo == 3 ? "Boleta" :cuenta.tipo == 7 ? "N. cred" : "N. deb"}
+                  </td>
+                  <td>
+                    {cuenta.serie}
+                  </td>
+                  <td>
+                    {cuenta.numero}
+                  </td>
+                  <td>
+                    {cuenta.asociado}
+                  </td>
+                  <td className="text-center"> 
+                    <small>S/.</small> {cuenta.subtotal}
+                  </td>
+                  <td className="text-center">
+                  <small>S/.</small> {cuenta.total}
+                  </td>
+                  <td>
+                    {cuenta.igv}
                   </td>
                   <td>
                     <Badge color="" className="badge-dot mr-4">
-                      <i className={asociado.estado == 1 ? "bg-success" : "bg-warning"} />
-                      {asociado.estado == 1 ? "Activo" : "Retiro"}
+                      <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger"} />
+                      {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : "Anulada"}
                     </Badge>
                   </td>
                   <td>
-                    {asociado.actividad}
+                    {cuenta.cobrador}
                   </td>
                   <td>
-                    {asociado.comite}
+                    {cuenta.fPago}
                   </td>
                   <td>
-                    {asociado.importe}
-                  </td>
-                  <td>
-                    {asociado.cobrador}
-                  </td>
-                  <td>
-                    {asociado.telf}
-                  </td>
-                  <td>
-                    {asociado.correos}
+                    {cuenta.fAnul}
                   </td>
                   <td className="text-right">
                     <UncontrolledDropdown>
@@ -187,22 +233,40 @@ const Asociado = () => {
                           href="#pablo"
                           onClick={(e) => e.preventDefault()}
                         >
-                           <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
+                           <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
                         </DropdownItem>
-                        <DropdownItem
-                        className="d-flex"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                           <i className="text-blue fa fa-phone fa-rotate-90" aria-hidden="true"></i> Llamadas
-                        </DropdownItem>
-                        <DropdownItem
-                        className="d-flex"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="text-blue fa fa-credit-card" aria-hidden="true"></i> Cuentas 
-                        </DropdownItem>
+                        {
+                          cuenta.estado==1 ?
+                          <>
+                          <DropdownItem
+                          className="d-flex"
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                             <i className="fa fa-credit-card text-success" aria-hidden="true"></i> Cancelar
+                          </DropdownItem>
+                          <DropdownItem
+                          className="d-flex"
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                             <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
+                          </DropdownItem>
+                          </>
+                          :
+                          cuenta.estado==2 ?
+                          <>
+                          <DropdownItem
+                          className="d-flex"
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                             <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
+                          </DropdownItem>
+                          </>
+                          :
+                          ""
+                        }
                       </DropdownMenu>
                     </UncontrolledDropdown>
                   </td>
@@ -272,4 +336,4 @@ const Asociado = () => {
   );
 };
 
-export default Asociado;
+export default Cuenta;

@@ -22,6 +22,7 @@ export const setInitUrl = (url) => {
 };
 
 export const userSignIn = ({ userName, password, remember }) => {
+  console.log(".-.")
   return (dispatch) => {
     dispatch({ type: FETCH_START });
     axios.post('auth/login', {
@@ -29,6 +30,7 @@ export const userSignIn = ({ userName, password, remember }) => {
       password: password,
     }
     ).then(({ data }) => {
+      console.log(data)
       if (data) {
         if(remember){
           localStorage.setItem("token", JSON.stringify(data.access_token));
