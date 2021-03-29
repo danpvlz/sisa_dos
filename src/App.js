@@ -1,26 +1,28 @@
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 
 import { useSelector } from "react-redux";
 import { useHistory, Route, Switch, Redirect } from "react-router-dom";
 
 import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
+import { userSignOut } from "./redux/actions/Auth";
 
 const App = () => {
     const history = useHistory();
     const token = useSelector(({ auth }) => auth.token);
+    const {error} = useSelector(({ commonData }) => commonData);
 
     useEffect(() => {
-        if (token == null) {
-            history.push("/auth/login");
-        }else{
-            history.push("/admin/index");
-        }
-    }, [token, history]);
+        console.log('error')
+        console.log(error?.message)
+        error?.message=="Request failed with status code 401" &&
+        userSignOut();
+    }, [error])
+
 
     return (
         <>
-        {token !== null ?
+        {token ?
             <AdminSwitch />
             :
             <AuthSwitch />

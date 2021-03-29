@@ -12,9 +12,9 @@ import {
   Row,
   Col,
   Modal,
-  Badge
 } from "reactstrap";
 import Select from 'react-select';
+import ConfirmDialog from '../../components/ConfirmDialog';
 import { useForm } from "react-hook-form";
 
 import { connect } from "react-redux";
@@ -200,44 +200,13 @@ const MarcarAsistencia = () => {
           </Col>
         </Row>
       </Container>
-      <ConfirmDialog showConfirm={showConfirm} toggleModal={toggleModal} setSendAssistance={setSendAssistance} />
+      <ConfirmDialog 
+      question="¿Seguro de registrar asistencia?"
+      showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setSendAssistance} />
       <Justify showJustify={showJustify} toggleModal={toggleModalJustify} setSendJustification={setSendJustification} />
     </>
   );
 };
-
-const ConfirmDialog = ({ showConfirm, toggleModal, setSendAssistance }) => {
-  const saveAssistance = () => {
-    setSendAssistance(true); toggleModal();
-  }
-  return (
-    <Modal
-      className="modal-dialog-centered"
-      isOpen={showConfirm}
-      toggle={toggleModal}
-    >
-      <div className="modal-body pb-0">
-        <div className="pt-3 text-center">
-          <h4 className="text-primary" style={{ fontSize: '1.2rem' }}>Confirmar registro</h4>
-          <p style={{ fontSize: '1.2rem' }}>¿Seguro de registrar asistencia?</p>
-        </div>
-      </div>
-      <div className="modal-footer">
-        <Button
-          className="mr-auto"
-          color="link"
-          data-dismiss="modal"
-          type="button"
-          onClick={toggleModal}
-        >
-          Cerrar
-                </Button>
-        <Button className="btn-primary" color="primary" type="button" onClick={saveAssistance}>
-          Confirmar
-                </Button>
-      </div>
-    </Modal>);
-}
 
 const Justify = ({ showJustify, toggleModal, setSendJustification }) => {
   const saveJustification = () => {

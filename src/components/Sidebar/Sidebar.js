@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-/*eslint-disable*/
 import React, { useState } from "react";
 import { NavLink as NavLinkRRD, Link } from "react-router-dom";
 // nodejs library to set properties for components
@@ -185,7 +167,12 @@ const Sidebar = (props) => {
                 <span className="avatar avatar-sm rounded-circle">
                   <img
                     alt={authUser.nombres + " " + authUser.paterno + " " + authUser.materno}
-                    src={authUser.foto}
+                    src={
+                      authUser.foto == null || authUser.foto == "" ?
+                      require("../../assets/img/theme/default.png")
+                        .default
+                      :
+                      process.env.REACT_APP_BASE + 'storage/colaborador/'+authUser.foto}
                   />
                 </span>
               </Media>

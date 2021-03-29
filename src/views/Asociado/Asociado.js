@@ -105,7 +105,7 @@ const Asociado = () => {
                             onChange={(inputValue, actionMeta) => {
                               console.log(inputValue.value);
                             }}
-                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "Retiro" }]} />
+                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" },{ value: 0, label: "Retiro" }]} />
                         </FormGroup >
                       </Col>
                       <Col lg="1" className="text-right m-auto">

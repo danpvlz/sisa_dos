@@ -1,23 +1,5 @@
-/*!
+import React, { useState, useEffect } from "react";
 
-=========================================================
-* Argon Dashboard React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React, { useState } from "react";
-
-// reactstrap components
 import {
   Button,
   Card,
@@ -30,33 +12,76 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { useHistory } from 'react-router-dom';
 import { useForm } from "react-hook-form";
-// core components
+import { showWorker, resetShowWorker, update, resetPassword } from "../../redux/actions/Colaborador";
+import { useDispatch, useSelector } from "react-redux";
+import ConfirmDialog from '../../components/ConfirmDialog';
 
-const NuevoColaborador = () => {
-  const { register, handleSubmit, watch, reset  } = useForm();
+const NuevoColaborador = (props) => {
+  const dispatch = useDispatch();
+  const { workerObject } = useSelector(({ colaborador }) => colaborador);
+  const { register, handleSubmit, watch, reset } = useForm();
   const [file, setFile] = useState(null);
-  const [showPassword, setShowPassword]=useState(false);
+  const [fileSend, setfileSend] = useState(null);
+  const [formdata, setformdata] = useState(null);
+  const [confirm, setComfirm] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [actionresetpassword, setactionresetpassword] = useState(false);
+
+  const history = useHistory();
 
   const hiddenFileInput = React.useRef(null);
-  
+
   const handleOpenFileSearch = event => {
     hiddenFileInput.current.click();
   };
-  
+
   const handleChange = event => {
     const fileUploaded = event.target.files[0];
-    console.log(fileUploaded)
+    setfileSend(fileUploaded)
     setFile(fileUploaded ? URL.createObjectURL(fileUploaded) : null);
   };
 
-  const onSubmit  = (data) => {
-    data.photo=hiddenFileInput.current.value;
-    console.log(data);
+  const onSubmit = (data) => {
+    data.photo = fileSend;
+    setformdata(data)
+    toggleModal()
     /*hiddenFileInput.current.value = null;
     setFile(null);
     reset();*/
   };
+
+  useEffect(() => {
+    if (props.location.state?.workerSelected) {
+      workerObject.length == 0 &&
+        dispatch(showWorker(props.location.state.workerSelected));
+    }
+    return () => {
+      dispatch(resetShowWorker());
+    }
+  }, [])
+
+  useEffect(() => {
+    if (confirm) {
+      if(actionresetpassword){
+        dispatch(resetPassword(props.location.state.workerSelected));
+      }else{
+        dispatch(update(props.location.state.workerSelected, formdata));
+        history.push('/admin/colaborador');
+      }
+    }
+    setComfirm(false);
+  }, [confirm])
+
+  const toggleModal = () => {
+    setShowConfirm(!showConfirm);
+  };
+
+  const handleChangePassword = () => {
+    setactionresetpassword(true);
+    toggleModal();
+  }
   return (
     <>
       <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
@@ -64,6 +89,11 @@ const NuevoColaborador = () => {
       </div>
       {/* Page content */}
       <Container className="mt--7" fluid>
+        <ConfirmDialog
+          question={actionresetpassword ? '¿Seguro de resetear contraseña?' : `¿Seguro de actualizar datos?`}
+          showConfirm={showConfirm}
+          toggleModal={toggleModal}
+          setConfirm={setComfirm} />
         <Row>
           <Col className="offset-xl-2" xl="8">
             <Card className="card-profile shadow bg-secondary">
@@ -84,8 +114,9 @@ const NuevoColaborador = () => {
                         className="rounded-circle"
                         src={
                           file == null ?
-                            require("../../assets/img/theme/default.png")
-                              .default
+                            workerObject?.foto == "" || workerObject?.foto == null ? require("../../assets/img/theme/default.png")
+                              .default : process.env.REACT_APP_BASE + 'storage/colaborador/' + workerObject?.foto
+
                             :
                             file
                         }
@@ -96,7 +127,7 @@ const NuevoColaborador = () => {
                 <CardBody className="mt-6">
                   <h6 className="heading-small text-muted mb-4">
                     Información personal
-                  </h6>
+                    </h6>
                   <div className="pl-lg-4">
                     <Row>
                       <Col lg="6">
@@ -106,13 +137,14 @@ const NuevoColaborador = () => {
                             htmlFor="input-fullName"
                           >
                             Nombres
-                          </label>
+                            </label>
                           <Input
-                            innerRef={register({ required: true })} 
+                            innerRef={register({ required: true })}
                             className="form-control-alternative"
                             id="input-fullName"
                             name="fullName"
                             type="text"
+                            defaultValue={workerObject?.nombres}
                           />
                         </FormGroup>
                       </Col>
@@ -123,13 +155,14 @@ const NuevoColaborador = () => {
                             htmlFor="input-firstName"
                           >
                             Apellido paterno
-                          </label>
+                            </label>
                           <Input
-                            innerRef={register({ required: true })} 
+                            innerRef={register({ required: true })}
                             className="form-control-alternative"
                             id="input-firstName"
                             name="firstName"
                             type="text"
+                            defaultValue={workerObject?.paterno}
                           />
                         </FormGroup>
                       </Col>
@@ -142,13 +175,14 @@ const NuevoColaborador = () => {
                             htmlFor="input-secondName"
                           >
                             Apellido materno
-                          </label>
+                            </label>
                           <Input
-                            innerRef={register({ required: true })} 
+                            innerRef={register({ required: true })}
                             className="form-control-alternative"
                             id="input-secondName"
                             name="secondName"
                             type="text"
+                            defaultValue={workerObject?.materno}
                           />
                         </FormGroup>
                       </Col>
@@ -159,13 +193,14 @@ const NuevoColaborador = () => {
                             htmlFor="input-birthday"
                           >
                             Fecha de nacimiento
-                          </label>
+                            </label>
                           <Input
-                            innerRef={register({ required: true })} 
+                            innerRef={register({ required: true })}
                             className="form-control-alternative"
                             id="input-birthday"
                             name="birthday"
                             type="date"
+                            defaultValue={workerObject?.fNac}
                           />
                         </FormGroup>
                       </Col>
@@ -175,7 +210,7 @@ const NuevoColaborador = () => {
                   {/* Address */}
                   <h6 className="heading-small text-muted mb-4">
                     Información de usuario
-                  </h6>
+                    </h6>
                   <div className="pl-lg-4">
                     <Row>
                       <Col lg="6">
@@ -185,50 +220,42 @@ const NuevoColaborador = () => {
                             htmlFor="input-userName"
                           >
                             Usuario
-                          </label>
+                            </label>
                           <Input
-                            innerRef={register({ required: true })} 
+                            innerRef={register({ required: true })}
                             className="form-control-alternative"
                             id="input-userName"
                             name="userName"
                             type="text"
+                            defaultValue={workerObject?.usuario}
                           />
                         </FormGroup>
                       </Col>
-                      <Col lg="6" >
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-password"
-                          >
-                            Contraseña
-                          </label>
-                          <div 
-                            style={{position:'relative',}}>
-                          <Input
-                            innerRef={register({ required: true })} 
-                            className="form-control-alternative"
-                            id="input-password"
-                            name="password"
-                            type={showPassword ? "text" : "password"}
-                            style={{position:'absolute', zIndex:1, paddingRight:'4rem'}}
-                          />
-                          <Button
-                            className=" shadow"
-                            style={{position:'absolute', zIndex:3, right:0}}
-                            onClick={()=>setShowPassword(!showPassword)}
-                          >
-                            <i className={showPassword ? "fas fa-eye" : "fa fa-eye-slash"}  />
-                          </Button>
-                          </div>
-                        </FormGroup>
-                      </Col>
+                      {
+                        workerObject.length != 0 ?
+                          <Col lg="6" >
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-password"
+                              >
+                                Contraseña
+                              </label>
+                              <div className="text-center">
+                                <Button className="btn-block" color="danger" type="button" onClick={handleChangePassword} >
+                                  Resetear contraseña
+                              </Button>
+                              </div>
+
+                            </FormGroup>
+                          </Col> : ''
+                      }
                     </Row>
                   </div>
                   <div className="text-center mt-3">
                     <Button className="my-4" color="success" type="submit">
                       Registrar
-                    </Button>
+                      </Button>
                   </div>
                 </CardBody>
               </Form>
@@ -236,6 +263,7 @@ const NuevoColaborador = () => {
           </Col>
         </Row>
       </Container>
+
     </>
   );
 };

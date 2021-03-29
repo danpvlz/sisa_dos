@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
@@ -9,11 +9,21 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
 
+import { useSelector } from "react-redux";
+
+import axios from '../util/Api';
+
 const Admin = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
+  const token = useSelector(({ auth }) => auth.token);
+  const [allowed, setallowed] = useState(false)
 
   React.useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+      setallowed(true)
+    }
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     mainContent.current.scrollTop = 0;
@@ -46,7 +56,6 @@ const Admin = (props) => {
   const getBrandText = (path) => {
     for (let i = 0; i < routes.length; i++) {
       if(routes[i].routes){
-        console.log(routes[i].routes)
         for (let j = 0; j < routes[i].routes.length; j++) {
           if (
             props.location.pathname.indexOf(routes[i].layout + routes[i].routes[j].path) !==
@@ -69,6 +78,7 @@ const Admin = (props) => {
 
   return (
     <>
+    
       <Sidebar
         {...props}
         routes={routes}
@@ -78,15 +88,20 @@ const Admin = (props) => {
           imgAlt: "...",
         }}
       />
+      
       <div className="main-content" ref={mainContent}>
         <AdminNavbar
           {...props}
           brandText={getBrandText(props.location.pathname)}
         />
+
+{allowed &&
         <Switch>
           {getRoutes(routes)}
           <Redirect from="*" to="/admin/index" />
         </Switch>
+        
+      }
         <Container fluid>
           <AdminFooter />
         </Container>

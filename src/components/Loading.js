@@ -5,7 +5,7 @@ export default function Loading() {
     const loading = useSelector(({ commonData }) => commonData.loading);
     return (
         <div  style={{
-            position: "absolute",
+            position: "fixed",
             zIndex: "9999",
             backgroundColor: "#00000087",
             width: "100%",
@@ -16,6 +16,7 @@ export default function Loading() {
             <div style={{
                 display: "flex",
                 justifyContent: "center",
+                minHeight: "100%",
                 height: "inherit"
             }}>
                 <i className="fa fa-spinner fa-spin fa-3x fa-fw" aria-hidden="true" style={{

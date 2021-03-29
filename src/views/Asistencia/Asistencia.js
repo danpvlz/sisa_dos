@@ -164,7 +164,12 @@ const Asistencia = () => {
                                 <img
                                   className="avatar rounded-circle mr-3"
                                   alt="..."
-                                  src={asistencia.foto}
+                                  src={
+                                    asistencia.foto == null || asistencia.foto == "" ?
+                                    require("../../assets/img/theme/default.png")
+                                      .default
+                                    :
+                                    asistencia.foto}
                                 />
                                 <Media>
                                   <span className="mb-0 text-sm">
@@ -308,7 +313,12 @@ const Asistencia = () => {
                                 <img
                                   className="avatar rounded-circle mr-3"
                                   alt="..."
-                                  src={asistencia.foto}
+                                  src={
+                                    asistencia.foto == null || asistencia.foto == "" ?
+                                    require("../../assets/img/theme/default.png")
+                                      .default
+                                    :
+                                    asistencia.foto}
                                 />
                                 <Media>
                                   <span className="mb-0 text-sm">
@@ -490,7 +500,12 @@ const Asistencia = () => {
                                 <img
                                   className="avatar rounded-circle mr-3"
                                   alt="..."
-                                  src={asistencia.foto}
+                                  src={
+                                    asistencia.foto == null || asistencia.foto == "" ?
+                                    require("../../assets/img/theme/default.png")
+                                      .default
+                                    :
+                                    asistencia.foto}
                                 />
                                 <Media>
                                   <span className="mb-0 text-sm">

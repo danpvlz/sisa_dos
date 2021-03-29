@@ -11,7 +11,7 @@ export const SIGNIN_USER_SUCCESS = 'SIGNIN_USER_SUCCESS';
 export const SIGNOUT_USER = 'SIGNOUT_USER';
 export const SIGNOUT_USER_SUCCESS = 'SIGNOUT_USER_SUCCESS';
 export const INIT_URL = 'INIT_URL';
-export const USER_DATA = 'USER_DATA';
+export const USER_DATA = 'user_data';
 export const USER_TOKEN_SET = 'user_token_set';
 export const USER_UPDATE_PASSWORD = 'USER_UPDATE_PASSWORD';
 export const PASSWORD_REQUIREMENTS = 'PASSWORD_REQUIREMENTS';
@@ -21,6 +21,11 @@ export const AUTH_STATUS_ACTIONS='AUTH_STATUS_ACTIONS';
 //COLABORADOR
 export const LIST_WORKER    = "LIST_WORKER";
 export const SAVE_WORKER    = "SAVE_WORKER";
+export const WORKER_STATUS_ACTIONS    = "WORKER_STATUS_ACTIONS";
+export const ACTIVE_WORKER    = "ACTIVE_WORKER";
+export const UPDATE_WORKER    = "UPDATE_WORKER";
+export const GET_WORKER    = "GET_WORKER";
+export const RESET_PASSWORD_WORKER    = "RESET_PASSWORD_WORKER";
 
 //ASISTENCIA
 export const LIST_ASSISTANCE    = "LIST_ASSISTANCE";

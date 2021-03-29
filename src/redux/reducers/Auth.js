@@ -9,7 +9,6 @@ const INIT_STATE = {
   authUser: JSON.parse(localStorage.getItem('user')),
   authStatusActions:0,
   auth_message:'',
-  //password requirements
   password_requirements: [],
   forgotPassword: null
 };

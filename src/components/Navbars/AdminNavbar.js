@@ -57,7 +57,12 @@ const AdminNavbar = (props) => {
                   <span className="avatar avatar-sm rounded-circle">
                     <img
                       alt={authUser.nombres+" "+authUser.paterno+" "+authUser.materno}
-                      src={authUser.foto}
+                      src={
+                        authUser.foto == null || authUser.foto == "" ?
+                        require("../../assets/img/theme/default.png")
+                          .default
+                        :
+                        process.env.REACT_APP_BASE + 'storage/colaborador/'+authUser.foto}
                     />
                   </span>
                   <Media className="ml-2 d-none d-lg-block">

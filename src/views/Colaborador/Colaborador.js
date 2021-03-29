@@ -1,22 +1,5 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React, {useCallback} from "react";
-import {useHistory} from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from 'react-router-dom';
 
 // reactstrap components
 import {
@@ -32,56 +15,91 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
-  Progress,
   Table,
   Container,
   Row,
-  UncontrolledTooltip,
   Button
 } from "reactstrap";
+import ConfirmDialog from '../../components/ConfirmDialog';
 // core components
-
+import { useDispatch, useSelector } from "react-redux";
+import { listWorker, status, vacations } from "../../redux/actions/Colaborador";
 const Colaborador = () => {
-  const colaboradores = require('../../data/colaborador.json');
+  const dispatch = useDispatch();
+  const { workerList, meta, workerStatusActions } = useSelector(({ colaborador }) => colaborador);
+  const [page, setPage] = useState(1)
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirm, setComfirm] = useState(false);
+  const [action, setAction] = useState(1);
+  const [colabSelected, setColabSelected] = useState(-1);
+  const [question, setquestion] = useState('')
+
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/nuevo-colaborador'), [history]);
-  const handleEdit = useCallback(() => history.push('/admin/editar-colaborador'), [history]);
+  useEffect(() => {
+    if (workerStatusActions == 200) {
+      dispatch(listWorker(page));
+    }
+  }, [workerStatusActions])
+
+  useEffect(() => {
+    dispatch(listWorker(page))
+  }, [page])
+
+  useEffect(() => {
+    if (confirm) {
+      if (action == 1) {
+        dispatch(status(colabSelected));
+      } else {
+        dispatch(vacations(colabSelected));
+      }
+      setComfirm(false);
+      setColabSelected(-1);
+    }
+  }, [confirm, action])
+
+  const toggleModal = () => {
+    setShowConfirm(!showConfirm);
+  };
+
   return (
     <>
-    <div className="header py-8 d-flex align-items-center"> 
-      <span className="mask bg-gradient-info opacity-8" />
-    </div>
+      <div className="header py-8 d-flex align-items-center">
+        <span className="mask bg-gradient-info opacity-8" />
+      </div>
       {/* Page content */}
       <Container className="mt--8" fluid>
+        <ConfirmDialog
+          question={question}
+          showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setComfirm} />
         {/* Table */}
         <Row>
           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0 d-flex justify-content-between">
-              <h3 className="mb-0">Colaboradores <Badge color="primary" pill>{colaboradores.total}</Badge></h3>
-              <Button
-                className="btn-new-xl btn-icon d-none d-md-block"
-                color="primary"
-                onClick={handleNew}
-              >
-                <span className="btn-inner--icon">
-                  
-                <i className="fa fa-plus" />
-                </span>
-                <span className="btn-inner--text">Nuevo colaborador</span>
-              </Button>
-              <Button
-                className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
-                onClick={handleNew}
-              >
-              <i className="fas fa-plus" />
-              </Button>
+                <h3 className="mb-0">Colaboradores <Badge color="primary" pill>{meta?.total}</Badge></h3>
+                <Button
+                  className="btn-new-xl btn-icon d-none d-md-block"
+                  color="primary"
+                  onClick={handleNew}
+                >
+                  <span className="btn-inner--icon">
+
+                    <i className="fa fa-plus" />
+                  </span>
+                  <span className="btn-inner--text">Nuevo colaborador</span>
+                </Button>
+                <Button
+                  className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
+                  onClick={handleNew}
+                >
+                  <i className="fas fa-plus" />
+                </Button>
               </CardHeader>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Colaborador</th>
-                    <th scope="col">Rol</th>
                     <th scope="col">DNI</th>
                     <th scope="col">Ingreso</th>
                     <th scope="col">Usuario</th>
@@ -91,32 +109,28 @@ const Colaborador = () => {
                 </thead>
                 <tbody>
                   {
-                    colaboradores.data?.map((colaborador,key)=>
+                    workerList?.data?.map((colaborador, key) =>
                       <tr key={key}>
                         <th scope="row">
-                      <Media className="align-items-center">
-                        <img
-                        className="avatar rounded-circle mr-3"
-                          alt="..."
-                          src={
-                            colaborador.foto == null || colaborador.foto == "" ?
-                            require("../../assets/img/theme/default.png")
-                              .default
-                            :
-                            colaborador.foto
-                          }
-                        />
-                        <Media>
-                          <span className="mb-0 text-sm">
-                          {colaborador.colaborador}
-                          </span>
-                        </Media>
-                      </Media>
-                          
+                          <Media className="align-items-center">
+                            <img
+                              className="avatar rounded-circle mr-3"
+                              alt="..."
+                              src={
+                                colaborador.foto == null || colaborador.foto == "" ?
+                                  require("../../assets/img/theme/default.png")
+                                    .default
+                                  :
+                                  process.env.REACT_APP_BASE + colaborador.foto
+                              }
+                            />
+                            <Media>
+                              <span className="mb-0 text-sm">
+                                {colaborador.colaborador}
+                              </span>
+                            </Media>
+                          </Media>
                         </th>
-                        <td>
-                          {colaborador.rol}
-                        </td>
                         <td>
                           {colaborador.dni}
                         </td>
@@ -127,14 +141,19 @@ const Colaborador = () => {
                           {colaborador.usuario}
                         </td>
                         <td>
-                          {parseInt(colaborador.estado)==1 ? 
+                          {parseInt(colaborador.estado) == 1 ?
                             <Badge color="" className="badge-dot mr-4">
                               <i className="bg-success" />Activo
                             </Badge>
-                          : 
-                            <Badge color="" className="badge-dot mr-4">
-                              <i className="bg-danger" />Inactivo
-                            </Badge>
+                            :
+                            parseInt(colaborador.estado) == 2 ?
+                              <Badge color="" className="badge-dot mr-4">
+                                <i className="bg-info" />De vacaciones
+                          </Badge>
+                              :
+                              <Badge color="" className="badge-dot mr-4">
+                                <i className="bg-danger" />Inactivo
+                          </Badge>
                           }
                         </td>
                         <td className="text-right">
@@ -151,16 +170,45 @@ const Colaborador = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-arrow" right>
                               <DropdownItem
-                                onClick={handleEdit}
+                                onClick={()=>{
+                                  history.push({
+                                    pathname: '/admin/editar-colaborador',
+                                    state: { workerSelected: colaborador.idColaborador }});
+
+                                }}
                               >
                                 Editar
                               </DropdownItem>
-                              <DropdownItem
-                                href="#pablo"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                {parseInt(colaborador.estado)==1 ? 'Dar de baja' : 'Activar'}
-                              </DropdownItem>
+
+                              {
+                                parseInt(colaborador.estado) == 0 || parseInt(colaborador.estado) == 1 ?
+                                  <DropdownItem
+                                    onClick={() => {
+                                      setquestion(parseInt(colaborador.estado) == 1 ? `¿Seguro de dar de baja al trabajador?` : `¿Seguro de reincorporar al trabajador?`)
+                                      
+                                      setAction(1)
+                                      setColabSelected(colaborador.idColaborador);
+                                      toggleModal()
+                                    }}
+                                  >
+                                    {parseInt(colaborador.estado) == 1 ? 'Dar de baja' : 'Activar'}
+                                  </DropdownItem>
+                                  : ""
+                              }
+                              {
+                                parseInt(colaborador.estado) == 1 || parseInt(colaborador.estado) == 2 ?
+                                  <DropdownItem
+                                    onClick={() => {
+                                      setquestion(parseInt(colaborador.estado) == 2 ? `¿Seguro de terminar vacaciones del trabajador?` : `¿Seguro de empezar vacaciones del trabajador?`)
+                                      setAction(2)
+                                      setColabSelected(colaborador.idColaborador);
+                                      toggleModal()
+                                    }}
+                                  >
+                                    {parseInt(colaborador.estado) == 2 ? 'Terminar vacaciones' : 'Empezar vacaciones'}
+                                  </DropdownItem>
+                                  : ""
+                              }
                             </DropdownMenu>
                           </UncontrolledDropdown>
                         </td>
@@ -171,54 +219,47 @@ const Colaborador = () => {
               </Table>
               <CardFooter className="py-4">
                 <nav aria-label="...">
-                  <Pagination
-                    className="pagination justify-content-end mb-0"
-                    listClassName="justify-content-end mb-0"
-                  >
-                    <PaginationItem className="disabled">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                        tabIndex="-1"
-                      >
-                        <i className="fas fa-angle-left" />
-                        <span className="sr-only">Previous</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem className="active">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-angle-right" />
-                        <span className="sr-only">Next</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                  </Pagination>
+                  {
+                    meta.total > 0 &&
+                    <Pagination
+                      className="pagination justify-content-end mb-0"
+                      listClassName="justify-content-end mb-0"
+                    >
+                      {
+                        page > 1 &&
+                        <PaginationItem className="disabled">
+                          <PaginationLink
+                            onClick={(e) => { e.preventDefault(); setPage(page - 1) }}
+                            tabIndex="-1"
+                          >
+                            <i className="fas fa-angle-left" />
+                            <span className="sr-only">Previous</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      }
+                      {
+                        Array.from({ length: meta.last_page }, (_, i) => i + 1).map((cpage, key) =>
+                          <PaginationItem key={key} className={page === cpage ? "active" : "inactive"}>
+                            <PaginationLink
+                              onClick={(e) => { e.preventDefault(); setPage(cpage) }}
+                            >
+                              {cpage}
+                            </PaginationLink>
+                          </PaginationItem>)
+                      }
+                      {
+                        page < meta.last_page &&
+                        <PaginationItem>
+                          <PaginationLink
+                            onClick={(e) => { e.preventDefault(); setPage(page + 1) }}
+                          >
+                            <i className="fas fa-angle-right" />
+                            <span className="sr-only">Next</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      }
+                    </Pagination>
+                  }
                 </nav>
               </CardFooter>
             </Card>

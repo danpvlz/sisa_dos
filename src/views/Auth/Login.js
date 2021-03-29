@@ -27,7 +27,6 @@ const Login = (props) => {
 
   const onSubmit  = (values) => {
     dispatch(userSignIn(values));
-    dispatch(getUser());
   };
 
   return (

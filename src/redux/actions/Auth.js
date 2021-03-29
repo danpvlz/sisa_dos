@@ -22,7 +22,6 @@ export const setInitUrl = (url) => {
 };
 
 export const userSignIn = ({ userName, password, remember }) => {
-  console.log(".-.")
   return (dispatch) => {
     dispatch({ type: FETCH_START });
     axios.post('auth/login', {
@@ -30,13 +29,14 @@ export const userSignIn = ({ userName, password, remember }) => {
       password: password,
     }
     ).then(({ data }) => {
-      console.log(data)
       if (data) {
         if(remember){
+          localStorage.setItem("user", JSON.stringify(data.user));
           localStorage.setItem("token", JSON.stringify(data.access_token));
         }
         axios.defaults.headers.common['Authorization'] = "Bearer " + data.access_token;
         dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: USER_DATA, payload: data.user });
         dispatch({ type: USER_TOKEN_SET, payload: data.access_token });
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.error });
@@ -46,7 +46,7 @@ export const userSignIn = ({ userName, password, remember }) => {
         dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
 
       } else {
-        dispatch({ type: FETCH_ERROR, payload: error.message });
+        dispatch({ type: FETCH_ERROR, payload: error });
       }
     });
   }
@@ -57,7 +57,6 @@ export const getUser = () => {
     dispatch({ type: FETCH_START });
     axios.get('auth/user',
     ).then(({ data }) => {
-      console.log("getUser: ", data);
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
         localStorage.setItem("user", JSON.stringify(data));
@@ -67,13 +66,12 @@ export const getUser = () => {
         dispatch({ type: FETCH_ERROR, payload: data.error });
       }
     }).catch(function (error) {
-      dispatch({ type: FETCH_ERROR, payload: error.message });
+      dispatch({ type: FETCH_ERROR, payload: error });
     });
   }
 };
 
 export const updatePassword = (values) => {
-  console.log(values)
   let config = {
     headers: {
       'X-Requested-With': 'XMLHttpRequest'
@@ -82,11 +80,10 @@ export const updatePassword = (values) => {
   return (dispatch) => {
 
     dispatch({ type: FETCH_START });
-    axios.post('/auth/updatePassword',
+    axios.post('auth/updatepassword',
       values,
       config
     ).then(({ data, status }) => {
-      console.log(data)
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: USER_UPDATE_PASSWORD });
@@ -106,14 +103,14 @@ export const updatePassword = (values) => {
 };
 
 export const userSignOut = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 
   return (dispatch) => {
     dispatch({ type: FETCH_START });
 
     axios.get('auth/logout').then(({ data }) => {
       if (data) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: SIGNOUT_USER_SUCCESS });
 
@@ -121,7 +118,7 @@ export const userSignOut = () => {
         dispatch({ type: FETCH_ERROR, payload: data.error });
       }
     }).catch(function (error) {
-      dispatch({ type: FETCH_ERROR, payload: error.message });
+      dispatch({ type: FETCH_ERROR, payload: error });
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       dispatch({ type: FETCH_SUCCESS });
