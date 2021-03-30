@@ -4,7 +4,8 @@ import {
   ACTIVE_WORKER,
   UPDATE_WORKER,
   GET_WORKER,
-  RESET_PASSWORD_WORKER
+  RESET_PASSWORD_WORKER,
+  FILTER_WORKER
 } from "../ActionTypes";
 
 const INIT_STATE = {
@@ -15,6 +16,7 @@ const INIT_STATE = {
   },
   workerStatusActions: 0,
   workerObject: [],
+  workersFilter: [],
 };
 
 export default (state = INIT_STATE, action) => {
@@ -53,6 +55,12 @@ export default (state = INIT_STATE, action) => {
           ...state,
           workerObject : action.payload
       }
+  }
+  case FILTER_WORKER: {
+    return {
+      ...state,
+      workersFilter: action.payload,
+    }
   }
     default:
       return state;

@@ -8,7 +8,8 @@ import {
   ACTIVE_WORKER,
   UPDATE_WORKER,
   GET_WORKER,
-  RESET_PASSWORD_WORKER
+  RESET_PASSWORD_WORKER,
+  FILTER_WORKER
 } from "../ActionTypes";
 import axios from '../../util/Api'
 
@@ -163,5 +164,27 @@ export const resetPassword = (id) => {
       .catch(function (error) {
         dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
       });
+  }
+};
+  
+export const filter = (search="") => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('/workerFilterData',
+    {
+        "search": search
+    }
+    ).then(({data}) => {
+      console.log("data")
+      console.log(data)
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: FILTER_WORKER, payload: data });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
   }
 };

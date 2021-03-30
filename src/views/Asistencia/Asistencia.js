@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from 'react-router-dom';
 import classnames from "classnames";
 
@@ -31,11 +31,45 @@ import {
 
 import AsistenciaHeader from "components/Headers/AsistenciaHeader.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
+import { useDispatch, useSelector } from "react-redux";
+import { listDetail } from "../../redux/actions/Asistencia";
 
 const Asistencia = () => {
+  const dispatch = useDispatch();
+  const { assistanceList, meta } = useSelector(({ asistencia }) => asistencia);
+  const [page, setPage] = useState(1);
+  const [search, setsearch] = useState({});
+  const [month, setmonth] = useState(null);
+  const [idColaborador, setidColaborador] = useState(null);
   const asistencias = require('../../data/asistencia.json');
   const history = useHistory();
   const [showDetail, setShowDetail] = useState(false);
+
+  useEffect(() => {
+    dispatch(listDetail(page,search))
+  }, [page]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(month == null){
+      delete tsearch.month;
+    }else{
+      tsearch.month=month;
+    }
+    setsearch(tsearch);
+    dispatch(listDetail(page,tsearch));
+  }, [month]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(idColaborador == null){
+      delete tsearch.idColaborador;
+    }else{
+      tsearch.idColaborador=idColaborador;
+    }
+    setsearch(tsearch);
+    dispatch(listDetail(page,tsearch));
+  }, [idColaborador]);
 
   const toggleModal = () => {
     setShowDetail(!showDetail);
@@ -74,10 +108,12 @@ const Asistencia = () => {
                       </label>
                       <Input
                         className="form-control-alternative"
-                        defaultValue="lucky.jesse"
                         id="filterMonth"
                         placeholder="filterMonth"
                         type="month"
+                        onChange={(e) => {
+                          setmonth(e.target.value == "" ? null : e.target.value)
+                        }}
                       />
                     </FormGroup >
                   </Col>
@@ -89,7 +125,7 @@ const Asistencia = () => {
                       >
                         Colaborador
                       </label>
-                      <SearchColaborador />
+                      <SearchColaborador setVal={setidColaborador} />
                     </FormGroup>
                   </Col>
                 </Row>
@@ -484,7 +520,6 @@ const Asistencia = () => {
                         <th scope="col">Colaborador</th>
                         <th scope="col">Fecha</th>
                         <th scope="col">Día</th>
-                        <th scope="col">Turno</th>
                         <th scope="col">Tipo</th>
                         <th scope="col">Hora</th>
                         <th scope="col">Observación</th>
@@ -493,7 +528,7 @@ const Asistencia = () => {
                     </thead>
                     <tbody>
                       {
-                        asistencias.tab3?.map((asistencia, key) =>
+                        assistanceList?.data?.map((asistencia, key) =>
                           <tr key={key}>
                             <th scope="row">
                               <Media className="align-items-center">
@@ -505,11 +540,11 @@ const Asistencia = () => {
                                     require("../../assets/img/theme/default.png")
                                       .default
                                     :
-                                    asistencia.foto}
+                                    process.env.REACT_APP_BASE + 'storage/colaborador/'+asistencia.foto}
                                 />
                                 <Media>
                                   <span className="mb-0 text-sm">
-                                    {asistencia.colaborador}
+                                    {`${asistencia?.nombres} ${asistencia?.apellidoPaterno} ${asistencia?.apellidoMaterno}`}
                                   </span>
                                 </Media>
                               </Media>
@@ -522,89 +557,80 @@ const Asistencia = () => {
                               {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
                             </td>
                             <td>
-                              {asistencia.turno == 1 ? "Primero" : "Segundo"}
-                            </td>
-                            <td>
                               {asistencia.tipo == 1 ? "Entrada" : "Salida"}
                             </td>
                             <td>
                               <Badge
                                 id={`tooltip_in_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.hora.estado) == 1 ? "success" : parseInt(asistencia.hora.estado) == 2 ? "danger" : "warning"}>
-                                {asistencia.hora.hora}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "warning" : parseInt(asistencia.estado) == 3 ? "danger" : parseInt(asistencia.estado) == 4 ? "yellow" : "default"}>
+                                {asistencia.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
                                 target={`tooltip_in_${key}`}
                               >
-                                {parseInt(asistencia.hora.estado) == 1 ? "Normal" : parseInt(asistencia.hora.estado) == 2 ? "Falta" : "Tardanza"}
+                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "Tardanza" : parseInt(asistencia.estado) == 3 ? "Falta" : parseInt(asistencia.estado) == 4 ? "Salió temprano" : "Compensó"}
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
-                              {asistencia.observacion.length == 0 ? "-" : asistencia.observacion}
+                              {asistencia.observacion==null ? "-" : asistencia.observacion}
                             </td>
                             <td className="text-center">
-                              {asistencia.justificacion.length == 0 ? "-" : asistencia.justificacion}
+                              {asistencia.justificacion==null ? "-" : asistencia.justificacion}
                             </td>
                           </tr>
                         )
                       }
                     </tbody>
                   </Table>
-                  <CardFooter className="py-4">
-                    <nav aria-label="...">
-                      <Pagination
-                        className="pagination justify-content-end mb-0"
-                        listClassName="justify-content-end mb-0"
-                      >
+              
+              <CardFooter className="py-4">
+                <nav aria-label="...">
+                  {
+                    meta.total > 0 &&
+                    <Pagination
+                      className="pagination justify-content-end mb-0"
+                      listClassName="justify-content-end mb-0"
+                    >
+                      {
+                        page > 1 &&
                         <PaginationItem className="disabled">
                           <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) => { e.preventDefault(); setPage(page - 1) }}
                             tabIndex="-1"
                           >
                             <i className="fas fa-angle-left" />
                             <span className="sr-only">Previous</span>
                           </PaginationLink>
                         </PaginationItem>
-                        <PaginationItem className="active">
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            1
-            </PaginationLink>
-                        </PaginationItem>
+                      }
+                      {
+                        Array.from({ length: meta.last_page>5 ? 5 :  meta.last_page}, (_, i) => i + 1).map((cpage, key) =>
+                          <PaginationItem key={key} className={page === cpage ? "active" : "inactive"}>
+                            <PaginationLink
+                              onClick={(e) => { e.preventDefault(); setPage(cpage) }}
+                            >
+                              {cpage}
+                            </PaginationLink>
+                          </PaginationItem>)
+                      }
+                      {
+                        page < meta.last_page &&
                         <PaginationItem>
                           <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            2 <span className="sr-only">(current)</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            3
-            </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) => { e.preventDefault(); setPage(page + 1) }}
                           >
                             <i className="fas fa-angle-right" />
                             <span className="sr-only">Next</span>
                           </PaginationLink>
                         </PaginationItem>
-                      </Pagination>
-                    </nav>
-                  </CardFooter>
+                      }
+                    </Pagination>
+                  }
+                </nav>
+              </CardFooter>
                 </TabPane>
               </TabContent>
             </Card>

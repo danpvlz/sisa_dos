@@ -1,26 +1,16 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { indicators } from "../../redux/actions/Asociado";
 
 // reactstrap components
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const associatedIndicators = useSelector(({ asociado }) => asociado.associatedIndicators);
+  useEffect(() => {
+    dispatch(indicators());
+  }, [])
   return (
     <>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
@@ -40,7 +30,9 @@ const Header = () => {
                           Asociados
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          794
+                          {
+                            associatedIndicators?.associateds
+                          }
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -53,7 +45,7 @@ const Header = () => {
                       <span className="text-success mr-2 d-none">
                         <i className="fa fa-arrow-up" /> 10
                       </span>{" "}
-                      <span className="text-nowrap">El último mes</span>
+                      <span className="text-nowrap">Total</span>
                     </p>
                   </CardBody>
                 </Card>
@@ -69,7 +61,11 @@ const Header = () => {
                         >
                           Afiliaciones
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">10</span>
+                        <span className="h2 font-weight-bold mb-0">
+                          {
+                            associatedIndicators?.afiliations
+                          }
+                          </span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-success text-white rounded-circle shadow">
@@ -78,7 +74,7 @@ const Header = () => {
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2">
+                      <span className="text-success mr-2 d-none">
                         <i className="fas fa-arrow-up" /> 12%
                       </span>{" "}
                       <span className="text-nowrap">El último mes</span>
@@ -97,7 +93,9 @@ const Header = () => {
                         >
                           Retiros
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">3</span>
+                        <span className="h2 font-weight-bold mb-0">{
+                            associatedIndicators?.retreats
+                          }</span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
@@ -107,9 +105,11 @@ const Header = () => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-danger mr-2">
-                        <i className="fas fa-arrow-down" /> 3.48%
+                        <i className="fas fa-arrow-down" /> {
+                            associatedIndicators?.retreatsActualMonth
+                          }
                       </span>{" "}
-                      <span className="text-nowrap">Del último mes</span>
+                      <span className="text-nowrap">El último mes</span>
                     </p>
                   </CardBody>
                 </Card>
@@ -125,7 +125,9 @@ const Header = () => {
                         >
                           En proceso
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">10</span>
+                        <span className="h2 font-weight-bold mb-0">{
+                            associatedIndicators?.inProcess
+                          }</span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">

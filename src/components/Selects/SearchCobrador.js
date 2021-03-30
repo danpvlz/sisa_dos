@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import Select from 'react-select';
 import { useDispatch, useSelector } from "react-redux";
-import { filter } from "../../redux/actions/Asociado";
+import { filter } from "../../redux/actions/Cobrador";
 
-export default function SearchAsociado({setVal}) {
+export default function SearchCobrador({setVal}) {
   const dispatch = useDispatch();
-  const associatedFilter = useSelector(({ asociado }) => asociado.associatedFilter);
+  const debCollectorFilter = useSelector(({ cobrador }) => cobrador.debCollectorFilter);
   const handleInputChange = (inputValue, actionMeta) => {
       inputValue.length >= 2 && dispatch(filter(inputValue));
   }
   return (
     <Select
       placeholder="Seleccione..."
-      id="searchAsociado"
-      name="searchAsociado"
+      id="searchDebCollector"
+      name="searchDebCollector"
       className="select-style"
       onInputChange={handleInputChange}
       isClearable={true}
       onChange={(inputValue, actionMeta) => {
         setVal(inputValue != null ? inputValue.value : null);
       }}
-      options={associatedFilter} />
+      options={debCollectorFilter} />
   )
 }

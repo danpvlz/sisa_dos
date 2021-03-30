@@ -7,9 +7,9 @@ export default function Message() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    error.message?.length>0 &&
+    error?.message?.length>0 &&
     setVisible(true)
-  }, [error.message])
+  }, [error])
 
   useEffect(() => {
     message?.length>0 &&

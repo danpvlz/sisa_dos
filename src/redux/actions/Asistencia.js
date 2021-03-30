@@ -1,24 +1,25 @@
-import { LIST_ASSISTANCE, LIST_MY_ASSISTANCE,SAVE_ASSISTANCE } from "../ActionTypes";
-
-export function listAssistance() {
-  return function(dispatch) {
-    return fetch("https://api.github.com/gists")
-      .then(response => response.json())
-      .then(json => {
-          console.log(json)
-        dispatch({ type: LIST_ASSISTANCE, payload: json });
-      });
-  };
-}
-
-export function listMyAssistance() {
-    console.log(":________:")
-    return function(dispatch) {
-      return fetch("https://api.github.com/gists")
-        .then(response => response.json())
-        .then(json => {
-            console.log(json)
-          dispatch({ type: LIST_ASSISTANCE, payload: [{ num: 1, time: "8:00:00am" }, { num: 2, time: "1:10:00pm" }] });
-        });
-    };
+import {
+  FETCH_ERROR,
+  FETCH_START,
+  FETCH_SUCCESS,
+  LIST_ASSISTANCE,
+} from "../ActionTypes";
+import axios from '../../util/Api';
+  
+export const listDetail = (page = 1,params={}) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('assistance/detail?page=' + page,
+    params
+    ).then(({ data }) => {  
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: LIST_ASSISTANCE, payload: data });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
   }
+};

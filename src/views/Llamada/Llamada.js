@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
 
 // reactstrap components
@@ -7,33 +7,82 @@ import {
   Card,
   CardHeader,
   CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Media,
   Pagination,
   PaginationItem,
   PaginationLink,
-  Progress,
   Table,
   Container,
   Row,
-  UncontrolledTooltip,
   Button,
   Col,
   FormGroup,
   Input,
 } from "reactstrap";
 // core components
-import Select from 'react-select';
-import Header from "components/Headers/AsociadoHeader.js";
-import SearchColaborador from "components/Selects/SearchColaborador.js";
+import SearchAsociado from "components/Selects/SearchAsociado.js";
+import SearchCobrador from "components/Selects/SearchCobrador.js";
+import { useDispatch, useSelector } from "react-redux";
+import { listCalls, exportPhoneCalls } from "../../redux/actions/Llamada";
 
 const Llamadas = () => {
-  const llamadas = require('../../data/llamadas.json');
+  const dispatch = useDispatch();
+  const { phoneCallList, meta } = useSelector(({ llamada }) => llamada);
+  const [search, setsearch] = useState({});
+  const [since, setsince] = useState(null);
+  const [until, setuntil] = useState(null);
+  const [idAsociado, setIdAsociado] = useState(null);
+  const [debCollector, setdebCollector] = useState(null);
+  const [page, setPage] = useState(1);
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/registro-llamada'), [history]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(idAsociado == null){
+      delete tsearch.idAsociado;
+    }else{
+      tsearch.idAsociado=idAsociado;
+    }
+    setsearch(tsearch);
+    dispatch(listCalls(page,tsearch))
+  }, [idAsociado]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(debCollector == null){
+      delete tsearch.debCollector;
+    }else{
+      tsearch.debCollector=debCollector;
+    }
+    setsearch(tsearch);
+    dispatch(listCalls(page,tsearch))
+  }, [debCollector]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(since == null){
+      delete tsearch.since;
+    }else{
+      tsearch.since=since;
+    }
+    setsearch(tsearch);
+    dispatch(listCalls(page,tsearch))
+  }, [since]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(until == null){
+      delete tsearch.until;
+    }else{
+      tsearch.until=until;
+    }
+    setsearch(tsearch);
+    dispatch(listCalls(page,tsearch))
+  }, [until]);
+
+  useEffect(() => {
+    dispatch(listCalls(page,search))
+  }, [page])
   return (
     <>
       <div className="header pb-8 pt-9 d-flex align-items-center">
@@ -84,6 +133,9 @@ const Llamadas = () => {
                             id="filterMonth"
                             placeholder="filterMonth"
                             type="date"
+                            onChange={(e) => {
+                              setsince(e.target.value == "" ? null : e.target.value)
+                            }}
                           />
                         </FormGroup >
                       </Col>
@@ -101,6 +153,9 @@ const Llamadas = () => {
                             id="filterMonth"
                             placeholder="filterMonth"
                             type="date"
+                            onChange={(e) => {
+                              setuntil(e.target.value == "" ? null : e.target.value)
+                            }}
                           />
                         </FormGroup >
                       </Col>
@@ -112,7 +167,7 @@ const Llamadas = () => {
                           >
                             Asociado
                       </label>
-                          <SearchColaborador />
+                          <SearchAsociado  setVal={setIdAsociado}/>
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -123,11 +178,11 @@ const Llamadas = () => {
                           >
                             Cobrador
                       </label>
-                          <SearchColaborador />
+                          <SearchCobrador setVal={setdebCollector}/>
                         </FormGroup>
                       </Col>
                       <Col lg="2" className="text-right ml-auto">
-                        <Button color="success" type="button">
+                        <Button color="success" type="button" onClick={()=>dispatch(exportPhoneCalls(search))}>
                           <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
@@ -153,7 +208,7 @@ const Llamadas = () => {
                 </thead>
                 <tbody>
                   {
-                    llamadas?.map((llamada, key) =>
+                    phoneCallList?.data?.map((llamada, key) =>
 
                       <tr key={key}>
                         <td scope="row">
@@ -192,56 +247,50 @@ const Llamadas = () => {
 
                 </tbody>
               </Table>
+              
               <CardFooter className="py-4">
                 <nav aria-label="...">
-                  <Pagination
-                    className="pagination justify-content-end mb-0"
-                    listClassName="justify-content-end mb-0"
-                  >
-                    <PaginationItem className="disabled">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                        tabIndex="-1"
-                      >
-                        <i className="fas fa-angle-left" />
-                        <span className="sr-only">Previous</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem className="active">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-angle-right" />
-                        <span className="sr-only">Next</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                  </Pagination>
+                  {
+                    meta.total > 0 &&
+                    <Pagination
+                      className="pagination justify-content-end mb-0"
+                      listClassName="justify-content-end mb-0"
+                    >
+                      {
+                        page > 1 &&
+                        <PaginationItem className="disabled">
+                          <PaginationLink
+                            onClick={(e) => { e.preventDefault(); setPage(page - 1) }}
+                            tabIndex="-1"
+                          >
+                            <i className="fas fa-angle-left" />
+                            <span className="sr-only">Previous</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      }
+                      {
+                        Array.from({ length: meta.last_page>5 ? 5 :  meta.last_page}, (_, i) => i + 1).map((cpage, key) =>
+                          <PaginationItem key={key} className={page === cpage ? "active" : "inactive"}>
+                            <PaginationLink
+                              onClick={(e) => { e.preventDefault(); setPage(cpage) }}
+                            >
+                              {cpage}
+                            </PaginationLink>
+                          </PaginationItem>)
+                      }
+                      {
+                        page < meta.last_page &&
+                        <PaginationItem>
+                          <PaginationLink
+                            onClick={(e) => { e.preventDefault(); setPage(page + 1) }}
+                          >
+                            <i className="fas fa-angle-right" />
+                            <span className="sr-only">Next</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      }
+                    </Pagination>
+                  }
                 </nav>
               </CardFooter>
             </Card>

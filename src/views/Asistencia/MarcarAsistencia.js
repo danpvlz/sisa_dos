@@ -17,8 +17,7 @@ import Select from 'react-select';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { useForm } from "react-hook-form";
 
-import { connect } from "react-redux";
-import { listAssistance } from '../../redux/actions/Asistencia';
+//import { listAssistance } from '../../redux/actions/Asistencia';
 // core components
 
 const MarcarAsistencia = () => {
@@ -39,7 +38,7 @@ const MarcarAsistencia = () => {
   }
 
   const toggleModal = () => {
-    listAssistance()
+    //listAssistance()
     setShowConfirm(!showConfirm);
   };
 
@@ -238,4 +237,4 @@ const Justify = ({ showJustify, toggleModal, setSendJustification }) => {
     </Modal>);
 }
 
-export default connect(null, { listAssistance })(MarcarAsistencia)
+export default MarcarAsistencia;

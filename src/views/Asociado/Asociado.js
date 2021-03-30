@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback,useState,useEffect } from "react";
 import { useHistory } from 'react-router-dom';
 
 // reactstrap components
@@ -28,12 +28,59 @@ import {
 // core components
 import Select from 'react-select';
 import Header from "components/Headers/AsociadoHeader.js";
-import SearchColaborador from "components/Selects/SearchColaborador.js";
+import SearchAsociado from "components/Selects/SearchAsociado.js";
+import SearchCobrador from "components/Selects/SearchCobrador.js";
+import { useDispatch, useSelector } from "react-redux";
+import { listAssociated, exportAssociateds } from "../../redux/actions/Asociado";
 
 const Asociado = () => {
-  const asociados = require('../../data/asociado.json');
+  const dispatch = useDispatch();
+  const { associatedList, meta, associatedStatusActions } = useSelector(({ asociado }) => asociado);
+  const [search, setsearch] = useState({});
+  const [idAsociado, setIdAsociado] = useState(null);
+  const [state, setState] = useState(null);
+  const [debCollector, setdebCollector] = useState(null);
+  const [page, setPage] = useState(1)
+  //const asociados = require('../../data/asociado.json');
   const history = useHistory();
   const handleNewAsociado = useCallback(() => history.push('/admin/nuevo-asociado'), [history]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(idAsociado == null){
+      delete tsearch.idAsociado;
+    }else{
+      tsearch.idAsociado=idAsociado;
+    }
+    setsearch(tsearch);
+    dispatch(listAssociated(page,tsearch))
+  }, [idAsociado]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(debCollector == null){
+      delete tsearch.debCollector;
+    }else{
+      tsearch.debCollector=debCollector;
+    }
+    setsearch(tsearch);
+    dispatch(listAssociated(page,tsearch))
+  }, [debCollector]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(state == null){
+      delete tsearch.state;
+    }else{
+      tsearch.state=state;
+    }
+    setsearch(tsearch);
+    dispatch(listAssociated(page,tsearch))
+  }, [state]);
+
+  useEffect(() => {
+    dispatch(listAssociated(page,search))
+  }, [page])
   return (
     <>
       <Header />
@@ -76,7 +123,7 @@ const Asociado = () => {
                           >
                             Asociado
                       </label>
-                          <SearchColaborador />
+                          <SearchAsociado setVal={setIdAsociado}/>
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -87,7 +134,7 @@ const Asociado = () => {
                           >
                             Cobrador
                       </label>
-                          <SearchColaborador />
+                          <SearchCobrador setVal={setdebCollector}/>
                         </FormGroup>
                       </Col>
                       <Col lg="2"  >
@@ -103,13 +150,14 @@ const Asociado = () => {
                             className="select-style"
                             name="sexo"
                             onChange={(inputValue, actionMeta) => {
-                              console.log(inputValue.value);
+                              setState(inputValue != null ? inputValue.value : null);
                             }}
-                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" },{ value: 0, label: "Retiro" }]} />
+                            isClearable
+                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" },{ value: 3, label: "Retiro" }]} />
                         </FormGroup >
                       </Col>
                       <Col lg="1" className="text-right m-auto">
-                        <Button color="success"  type="button">
+                        <Button color="success"  type="button" onClick={()=>dispatch(exportAssociateds(search))}>
                           <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
                         </Button>
                       </Col>
@@ -124,50 +172,50 @@ const Asociado = () => {
                   <tr>
                     <th scope="col">Asociado</th>
                     <th scope="col">Tipo</th>
+                    <th scope="col">Documento</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Actividad</th>
                     <th scope="col">Comité gremial</th>
                     <th scope="col">Importe</th>
                     <th scope="col">Cobrador</th>
-                    <th scope="col">Teléfonos</th>
-                    <th scope="col">Correos</th>
+                    <th scope="col">Dirección</th>
                     <th scope="col" />
                   </tr>
                 </thead>
                 <tbody>
                   {
-                    asociados?.map((asociado,key)=>
+                    associatedList?.data?.map((asociado,key)=>
                     
                   <tr key={key}>
                   <td scope="row">
                     {asociado.asociado}
                   </td>
                   <td>
-                    {asociado.tipo == 1 ? "Empresa" : "Persona"}
+                    {asociado.tipoAsociado == 1 ? "Empresa" : "Persona"}
+                  </td>
+                  <td>
+                    {asociado.documento}
                   </td>
                   <td>
                     <Badge color="" className="badge-dot mr-4">
-                      <i className={asociado.estado == 1 ? "bg-success" : "bg-warning"} />
-                      {asociado.estado == 1 ? "Activo" : "Retiro"}
+                      <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : "bg-warning"} />
+                      {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : "Retiro"}
                     </Badge>
                   </td>
                   <td>
                     {asociado.actividad}
                   </td>
                   <td>
-                    {asociado.comite}
+                    {asociado.comitegremial}
                   </td>
                   <td>
-                    {asociado.importe}
+                    <small>s/. </small>{asociado.importeMensual}
                   </td>
                   <td>
                     {asociado.cobrador}
                   </td>
                   <td>
-                    {asociado.telf}
-                  </td>
-                  <td>
-                    {asociado.correos}
+                    {asociado.direccionSocial}
                   </td>
                   <td className="text-right">
                     <UncontrolledDropdown>
@@ -212,56 +260,50 @@ const Asociado = () => {
                   
                 </tbody>
               </Table>
+              
               <CardFooter className="py-4">
                 <nav aria-label="...">
-                  <Pagination
-                    className="pagination justify-content-end mb-0"
-                    listClassName="justify-content-end mb-0"
-                  >
-                    <PaginationItem className="disabled">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                        tabIndex="-1"
-                      >
-                        <i className="fas fa-angle-left" />
-                        <span className="sr-only">Previous</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem className="active">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-angle-right" />
-                        <span className="sr-only">Next</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                  </Pagination>
+                  {
+                    meta.total > 0 &&
+                    <Pagination
+                      className="pagination justify-content-end mb-0"
+                      listClassName="justify-content-end mb-0"
+                    >
+                      {
+                        page > 1 &&
+                        <PaginationItem className="disabled">
+                          <PaginationLink
+                            onClick={(e) => { e.preventDefault(); setPage(page - 1) }}
+                            tabIndex="-1"
+                          >
+                            <i className="fas fa-angle-left" />
+                            <span className="sr-only">Previous</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      }
+                      {
+                        Array.from({ length: meta.last_page>5 ? 5 :  meta.last_page}, (_, i) => i + 1).map((cpage, key) =>
+                          <PaginationItem key={key} className={page === cpage ? "active" : "inactive"}>
+                            <PaginationLink
+                              onClick={(e) => { e.preventDefault(); setPage(cpage) }}
+                            >
+                              {cpage}
+                            </PaginationLink>
+                          </PaginationItem>)
+                      }
+                      {
+                        page < meta.last_page &&
+                        <PaginationItem>
+                          <PaginationLink
+                            onClick={(e) => { e.preventDefault(); setPage(page + 1) }}
+                          >
+                            <i className="fas fa-angle-right" />
+                            <span className="sr-only">Next</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      }
+                    </Pagination>
+                  }
                 </nav>
               </CardFooter>
             </Card>

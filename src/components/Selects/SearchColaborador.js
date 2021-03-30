@@ -1,25 +1,26 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import Select from 'react-select';
+import { useDispatch, useSelector } from "react-redux";
+import { filter } from "../../redux/actions/Colaborador";
 
-export default function SearchColaborador() {
-  const colaboradores = require('../../data/filtroColaborador.json');
-  const [searchColaborador, setSearchColaborador] = useState([]);
+export default function SearchColaborador({setVal}) {
+  const dispatch = useDispatch();
+  const workersFilter = useSelector(({ colaborador }) => colaborador.workersFilter);
   const handleInputChange = (inputValue, actionMeta) => {
-    setSearchColaborador(
-      inputValue.length >= 2 ? colaboradores : []
-    );
+      inputValue.length >= 2 && dispatch(filter(inputValue));
   }
   return (
     <Select
       placeholder="Seleccione..."
-      id="searchColaborador"
-      name="searchColaborador"
+      id="searchWorker"
+      name="searchWorker"
       className="select-style"
       onInputChange={handleInputChange}
+      isClearable={true}
       onChange={(inputValue, actionMeta) => {
-        console.log(inputValue.value);
+        setVal(inputValue != null ? inputValue.value : null);
       }}
-      options={searchColaborador} />
+      options={workersFilter} />
   )
 }
