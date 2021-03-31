@@ -1,5 +1,7 @@
 import {
     LIST_CALLS,
+    SAVE_CALL,
+    CALLS_STATUS_ACTIONS,
   } from "../ActionTypes";
   
   const INIT_STATE = {
@@ -8,6 +10,7 @@ import {
       total: 0,
       last_page:1,
     },
+    callsStatusActions:0,
   };
   
   export default (state = INIT_STATE, action) => {
@@ -19,6 +22,16 @@ import {
           meta:action.payload.meta
         }
       }
+      case SAVE_CALL:
+        return {
+          ...state,
+        }
+        case CALLS_STATUS_ACTIONS: {
+            return {
+                ...state,
+                callsStatusActions:action.payload
+            }
+        }
       default:
         return state;
     }

@@ -52,4 +52,5 @@ export const FILTER_DEBCOLLECTOR    = "FILTER_DEBCOLLECTOR";
 
 //LLAMADA
 export const LIST_CALLS    = "LIST_CALLS";
-
+export const SAVE_CALL    = "SAVE_CALL";
+export const CALLS_STATUS_ACTIONS    = "CALLS_STATUS_ACTIONS";

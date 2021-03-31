@@ -15,6 +15,7 @@ import {
 } from "reactstrap";
 import Select from 'react-select';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import Justify from '../../components/JustifyModal';
 import { useForm } from "react-hook-form";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -92,11 +93,11 @@ const MarcarAsistencia = () => {
         "justification": justificacion
       }
       dispatch(saveJustification(fData))
-      dispatch(myTodayAssistanceList())
       //REGISTRAR
       setSendJustification(false);
       setidAssistance(0);
       setjustificacion("");
+      dispatch(myTodayAssistanceList());
     } else {
       setFormData(null);
     }
@@ -214,6 +215,18 @@ const MarcarAsistencia = () => {
                         {myTodayAssistance.asistencia ? JSON.parse(myTodayAssistance.asistencia)[1]?.hora : "-"}
                       </div>
                     </div>
+                    {myTodayAssistance.asistencia ?
+                      parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 4  ?
+                        JSON.parse(myTodayAssistance.asistencia)[1]?.justificacion == "" ?
+                          <Button onClick={() => { setidAssistance(JSON.parse(myTodayAssistance.asistencia)[1]?.idAsistencia); toggleModalJustify(); }} className="mt-2" block color="warning" size="sm" type="button">
+                            Justificar
+                          </Button>
+                          : <small><strong>Justificado</strong></small>
+                        :
+                        ""
+                      :
+                      "-"
+                    }
                   </Col>
                   <Col className="text-center mb-4" lg="3">
                     <div>
@@ -254,6 +267,18 @@ const MarcarAsistencia = () => {
                         {myTodayAssistance.asistencia ? JSON.parse(myTodayAssistance.asistencia)[3]?.hora : "-"}
                       </div>
                     </div>
+                    {myTodayAssistance.asistencia ?
+                      parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 4  ?
+                        JSON.parse(myTodayAssistance.asistencia)[3]?.justificacion == "" ?
+                          <Button onClick={() => { setidAssistance(JSON.parse(myTodayAssistance.asistencia)[3]?.idAsistencia); toggleModalJustify(); }} className="mt-2" block color="warning" size="sm" type="button">
+                            Justificar
+                          </Button>
+                          : <small><strong>Justificado</strong></small>
+                        :
+                        ""
+                      :
+                      "-"
+                    }
                   </Col>
                 </Row>
               </CardBody>
@@ -269,41 +294,5 @@ const MarcarAsistencia = () => {
   );
 };
 
-const Justify = ({ showJustify, toggleModal, setSendJustification, justificacion, setjustificacion }) => {
-  const saveJustification = () => {
-    setSendJustification(true); toggleModal();
-  }
-  return (
-    <Modal
-      className="modal-dialog-centered"
-      isOpen={showJustify}
-      toggle={toggleModal}
-    >
-      <div className="modal-body pb-0">
-        <Input type="textarea"
-          value={justificacion}
-          placeholder="Especifica el motivo por el que no pudiste marcar asistencia o tu falta."
-          rows={3}
-          onChange={(e) => {
-            setjustificacion(e.target.value == "" ? null : e.target.value)
-          }}
-        />
-      </div>
-      <div className="modal-footer">
-        <Button
-          className="mr-auto"
-          color="link"
-          data-dismiss="modal"
-          type="button"
-          onClick={toggleModal}
-        >
-          Cerrar
-        </Button>
-        <Button className="btn-primary" color="primary" type="button" onClick={saveJustification}>
-          Guardar
-        </Button>
-      </div>
-    </Modal>);
-}
 
 export default MarcarAsistencia;

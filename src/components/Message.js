@@ -18,7 +18,6 @@ export default function Message() {
 
   useEffect(() => {
     if(message?.length>0){
-      console.log("meeeee")
       setVisible(true)
       settype(2)
       setshowmessage(message)

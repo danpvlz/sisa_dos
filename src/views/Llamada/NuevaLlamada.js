@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState,useEffect} from "react";
 
 // reactstrap components
 import {
@@ -12,9 +12,44 @@ import {
   Container,
   Row,
   Col,
-} from "reactstrap";;
+} from "reactstrap";
+import { useHistory } from 'react-router-dom';
+import { useForm } from "react-hook-form";
+import SearchAsociado from "components/Selects/SearchAsociado.js";
+import { useDispatch, useSelector } from "react-redux";
+import ConfirmDialog from '../../components/ConfirmDialog';
+import {savePhoneCall} from '../../redux/actions/Llamada';
 
 const RegistroLlamada = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const [idAsociado, setIdAsociado] = useState(null);
+  const { register, handleSubmit, watch, reset } = useForm();
+  const [formdata, setformdata] = useState(null);
+  const [confirm, setComfirm] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const onSubmit = (data) => {
+    setformdata(data)
+    toggleModal()
+    /*hiddenFileInput.current.value = null;
+    setFile(null);
+    reset();*/
+  };
+
+  useEffect(() => {
+    if (confirm) {
+      formdata.idAsociado=idAsociado;
+      dispatch(savePhoneCall(formdata));
+      history.push('/admin/llamadas');
+    }
+    setComfirm(false);
+  }, [confirm]);
+
+  const toggleModal = () => {
+    setShowConfirm(!showConfirm);
+  };
+
   return (
     <>
       <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
@@ -22,11 +57,16 @@ const RegistroLlamada = () => {
       </div>
       {/* Page content */}
       <Container className="mt--7" fluid>
+        <ConfirmDialog
+          question={'¿Seguro de registrar llamada?'}
+          showConfirm={showConfirm}
+          toggleModal={toggleModal}
+          setConfirm={setComfirm} />
         <Row>
           <Col className="order-xl-1" xl="12">
             <Card className="bg-secondary shadow">
               <CardHeader className="bg-white border-0">
-                <div className="d-flex justify-content-between">
+                <Row className="justify-content-between">
                           <Col lg="6">
                             <FormGroup>
                               <label
@@ -35,13 +75,7 @@ const RegistroLlamada = () => {
                               >
                                 Asociado
                               </label>
-                              <Input
-                                className="form-control-alternative"
-                                id="input-postal-code"
-                                type="text"
-                                value={"PRODUCTOS LACTEOS NATURALES S.A.C."}
-                                disabled
-                              />
+                              <SearchAsociado  setVal={setIdAsociado}/>
                             </FormGroup>
                           </Col>
                           <Col lg="2">
@@ -78,15 +112,15 @@ const RegistroLlamada = () => {
                               />
                             </FormGroup>
                           </Col>
-                </div>
+                </Row>
               </CardHeader>
               <CardBody>
-                <Form>
+                <Form onSubmit={handleSubmit(onSubmit)}>
                   <Row>
                     <Col lg="12">
                       <h6 className="heading-small text-muted mb-4">
                         Llamada
-                  </h6>
+                      </h6>
                       <div className="pl-lg-4">
                         <Row>
                           <Col lg="4">
@@ -99,8 +133,10 @@ const RegistroLlamada = () => {
                               </label>
                               <Input
                                 className="form-control-alternative"
-                                id="input-postal-code"
+                                id="input-date"
                                 type="date"
+                                name="fecha"
+                                innerRef={register({ required: true })}
                               />
                             </FormGroup>
                           </Col>
@@ -114,7 +150,9 @@ const RegistroLlamada = () => {
                               </label>
                               <Input
                                 className="form-control-alternative"
-                                id="input-postal-code"
+                                id="input-hini"
+                                name="horaInicio"
+                                innerRef={register({ required: true })}
                                 type="time"
                               />
                             </FormGroup>
@@ -129,7 +167,9 @@ const RegistroLlamada = () => {
                               </label>
                               <Input
                                 className="form-control-alternative"
-                                id="input-postal-code"
+                                id="input-hfin"
+                                name="horaFin"
+                                innerRef={register({ required: true })}
                                 type="time"
                               />
                             </FormGroup>
@@ -144,8 +184,9 @@ const RegistroLlamada = () => {
                           </label>
                               <Input
                                 className="form-control-alternative"
-                                id="input-socialAddress"
-                                name="socialAddress"
+                                id="input-detail"
+                                name="detalle"
+                                innerRef={register({ required: true })}
                                 type="text"
                               />
                             </FormGroup>
@@ -155,9 +196,9 @@ const RegistroLlamada = () => {
                     </Col>
                   </Row>
                   <div className="text-center ">
-                    <Button className="my-4 " color="primary" type="submit">
+                    <Button className="my-4 " color="primary" type="submit" disabled={idAsociado?false:true}>
                       Registrar
-                      </Button>
+                    </Button>
                   </div>
                 </Form>
               </CardBody>

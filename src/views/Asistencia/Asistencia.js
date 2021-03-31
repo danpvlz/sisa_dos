@@ -200,6 +200,7 @@ const Asistencia = () => {
                     <thead className="thead-light">
                       <tr>
                         <th scope="col">Colaborador</th>
+                        <th className="text-center" scope="col">Faltas</th>
                         <th className="text-center" scope="col">Debe</th>
                         <th className="text-center" scope="col">Compensar</th>
                         <th className="text-center" scope="col">Vacaciones</th>
@@ -230,7 +231,10 @@ const Asistencia = () => {
 
                             </th>
                             <td className="text-center">
-                              {asistencia.debe}min
+                              {asistencia.faltas}
+                            </td>
+                            <td className="text-center">
+                              {asistencia.debe*-1}min
                             </td>
                             <td className="text-center">
                               {asistencia.compensar}min
@@ -535,7 +539,6 @@ const Asistencia = () => {
                         <th scope="col">Hora</th>
                         <th scope="col">Tardanza</th>
                         <th scope="col">Compensado</th>
-                        <th scope="col">Falta</th>
                         <th scope="col">Salió temprano</th>
                         <th scope="col">Observación</th>
                         <th scope="col">Justificación</th>
@@ -594,9 +597,6 @@ const Asistencia = () => {
                             </td>
                             <td className="text-center">
                               {parseInt(asistencia.estado) == 5 ?  asistencia.calc>60 ? asistencia.calc/60+"h" : asistencia.calc+"min" : "-"}
-                            </td>
-                            <td className="text-center">
-                              {parseInt(asistencia.estado) == 3 ?  asistencia.calc*-1>60 ? asistencia.calc*-1/60+"h" : asistencia.calc*-1+"min" : "-"}
                             </td>
                             <td className="text-center">
                               {parseInt(asistencia.estado) == 4 ?  asistencia.calc*-1>60 ? asistencia.calc*-1/60+"h" : asistencia.calc*-1+"min" : "-"}

@@ -31,7 +31,8 @@ import {
 
 import AsistenciaHeader from "components/Headers/AsistenciaHeader.js";
 import { useDispatch, useSelector } from "react-redux";
-import { myAssistance, myAssistanceDetail, indicators } from "../../redux/actions/Asistencia";
+import { myAssistance, myAssistanceDetail, indicators, saveJustification } from "../../redux/actions/Asistencia";
+import Justify from '../../components/JustifyModal';
 
 const Asistencia = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,18 @@ const Asistencia = () => {
   const [search, setsearch] = useState({});
   const [month, setmonth] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
+
+  const [maxdatejustification, setmaxdatejustification] = useState(new Date().toISOString().slice(0,10));
+  const [idAssistance, setidAssistance] = useState(0);
+  const [showJustify, setShowJustify] = useState(false);
+  const [justificacion, setjustificacion] = useState("")
+  const [sendJustification, setSendJustification] = useState(false);
+
+  useEffect(() => {
+    let dd=new Date();
+    dd.setDate(dd.getDate() - 3);
+    setmaxdatejustification(dd.toISOString().slice(0,10));
+  }, [])
 
   useEffect(() => {
     let tsearch=search;
@@ -66,6 +79,28 @@ const Asistencia = () => {
   const toggleModal = () => {
     setShowDetail(!showDetail);
   };
+
+  const toggleModalJustify = () => {
+    setShowJustify(!showJustify);
+  };
+
+  useEffect(() => {
+    if (sendJustification) {
+      //REGISTRAR
+      var fData = {
+        "idAsistencia": idAssistance,
+        "justification": justificacion
+      }
+      dispatch(saveJustification(fData))
+      //REGISTRAR
+      setSendJustification(false);
+      setidAssistance(0);
+      setjustificacion("");
+      dispatch(myAssistance(page,search));
+      dispatch(myAssistanceDetail(page,search));
+      dispatch(indicators(search));
+    }
+  }, [sendJustification])
 
   const [state, setState] = useState({ tabs: 1 });
   const toggleNavs = (e, state, index) => {
@@ -257,7 +292,7 @@ const Asistencia = () => {
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
-                              {asistencia.tardanza == 0 ? "-" : asistencia.tardanza < 0 ? (asistencia.tardanza*-1)>60 && (asistencia.tardanza*-1)+"min"  : asistencia.tardanza*-1+"min"}
+                              {asistencia.tardanza == 0 ? "-" : asistencia.tardanza*-1+"min"}
                             </td>
                             <td className="text-center">
                               {asistencia.compensado == 0 ? "-" : asistencia.compensado < 0 ? (asistencia.compensado*-1)>60 && (asistencia.compensado*-1)+"min"  : asistencia.compensado*-1+"min"}
@@ -401,7 +436,19 @@ const Asistencia = () => {
                               {asistencia.observacion==null ? "-" : asistencia.observacion}
                             </td>
                             <td className="text-center">
-                              {asistencia.justificacion==null ? "-" : asistencia.justificacion}
+                              {asistencia.justificacion==null ? 
+                              asistencia.fecha>=maxdatejustification &&
+                              (
+                                (parseInt(asistencia.tipo) == 1 && (parseInt(asistencia.estado) == 2 || parseInt(asistencia.estado) == 3)) 
+                                || 
+                                (parseInt(asistencia.tipo) == 2 && parseInt(asistencia.estado) == 4) 
+                              )
+                                ? 
+                                  <Button onClick={() => { setidAssistance(asistencia.idAsistencia); toggleModalJustify(); }} className="mt-2" block color="warning" size="sm" type="button">
+                                    Justificar
+                                  </Button>                               
+                                : "-"
+                              : asistencia.justificacion}
                             </td>
                           </tr>
                         )
@@ -460,6 +507,7 @@ const Asistencia = () => {
           </div>
         </Row>
       </Container>
+      <Justify setjustificacion={setjustificacion} justificacion={justificacion} showJustify={showJustify} toggleModal={toggleModalJustify} setSendJustification={setSendJustification} />
     </>
   );
 };

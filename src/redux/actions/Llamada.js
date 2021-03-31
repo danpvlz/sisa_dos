@@ -2,7 +2,10 @@ import {
     FETCH_ERROR,
     FETCH_START,
     FETCH_SUCCESS,
+    SHOW_MESSAGE,
     LIST_CALLS,
+    SAVE_CALL,
+    CALLS_STATUS_ACTIONS,
   } from "../ActionTypes";
   import axios from '../../util/Api'
   
@@ -44,5 +47,28 @@ import {
       }).catch(function (error) {
         dispatch({ type: FETCH_ERROR, payload: error });
       });
+    }
+  };
+
+  export const savePhoneCall = (phoeCallData) => {
+    return (dispatch) => {
+      dispatch({ type: FETCH_START });
+      dispatch({ type: CALLS_STATUS_ACTIONS, payload: 0 });
+  
+      axios.post('phonecalls',
+      phoeCallData
+      ).then(({ data, status }) => {
+        if (data) {
+          dispatch({ type: FETCH_SUCCESS });
+          dispatch({ type: SAVE_CALL });
+          dispatch({ type: CALLS_STATUS_ACTIONS, payload: status });
+          dispatch({ type: SHOW_MESSAGE, payload: data.message });
+        } else {
+          dispatch({ type: FETCH_ERROR, payload: data.message });
+        }
+      })
+        .catch(function (error) {
+          dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+        });
     }
   };
