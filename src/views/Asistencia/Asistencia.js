@@ -32,11 +32,13 @@ import {
 import AsistenciaHeader from "components/Headers/AsistenciaHeader.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listDetail } from "../../redux/actions/Asistencia";
+import { indicatorsAll,listAssistanceByWorker,listAssistance,listDetail } from "../../redux/actions/Asistencia";
 
 const Asistencia = () => {
   const dispatch = useDispatch();
-  const { assistanceList, meta } = useSelector(({ asistencia }) => asistencia);
+  const { assistanceListAll, assistanceList, assistanceListByWorker, assistanceIndicatorsAll } = useSelector(({ asistencia }) => asistencia);
+  const [pageByWorker, setpageaByWorker] = useState(1);
+  const [pageall, setpageall] = useState(1);
   const [page, setPage] = useState(1);
   const [search, setsearch] = useState({});
   const [month, setmonth] = useState(null);
@@ -44,6 +46,14 @@ const Asistencia = () => {
   const asistencias = require('../../data/asistencia.json');
   const history = useHistory();
   const [showDetail, setShowDetail] = useState(false);
+
+  useEffect(() => {
+    dispatch(listAssistanceByWorker(pageByWorker,search))
+  }, [pageByWorker]);
+
+  useEffect(() => {
+    dispatch(listAssistance(pageall,search))
+  }, [pageall]);
 
   useEffect(() => {
     dispatch(listDetail(page,search))
@@ -57,6 +67,9 @@ const Asistencia = () => {
       tsearch.month=month;
     }
     setsearch(tsearch);
+    dispatch(indicatorsAll(search));
+    dispatch(listAssistanceByWorker(pageByWorker,search));
+    dispatch(listAssistance(pageall,tsearch));
     dispatch(listDetail(page,tsearch));
   }, [month]);
 
@@ -68,6 +81,9 @@ const Asistencia = () => {
       tsearch.idColaborador=idColaborador;
     }
     setsearch(tsearch);
+    dispatch(indicatorsAll(search));
+    dispatch(listAssistanceByWorker(pageByWorker,search));
+    dispatch(listAssistance(pageall,tsearch));
     dispatch(listDetail(page,tsearch));
   }, [idColaborador]);
 
@@ -85,10 +101,10 @@ const Asistencia = () => {
   return (
     <>
       <AsistenciaHeader
-        tardanzas={asistencias.tardanzas}
-        faltas={asistencias.faltas}
-        hRealizadas={asistencias.hRealizadas}
-        hCompensar={asistencias.hCompensar}
+        tardanzas={assistanceIndicatorsAll?.tardanzas}
+        faltas={assistanceIndicatorsAll?.faltas}
+        hRealizadas={assistanceIndicatorsAll?.hRealizadas}
+        hCompensar={assistanceIndicatorsAll?.hCompensar}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -186,14 +202,12 @@ const Asistencia = () => {
                         <th scope="col">Colaborador</th>
                         <th className="text-center" scope="col">Debe</th>
                         <th className="text-center" scope="col">Compensar</th>
-                        <th className="text-center" scope="col">Observaciones</th>
-                        <th className="text-center" scope="col">Justificaciones</th>
-                        <th scope="col"></th>
+                        <th className="text-center" scope="col">Vacaciones</th>
                       </tr>
                     </thead>
                     <tbody>
                       {
-                        asistencias.tab1?.map((asistencia, key) =>
+                        assistanceListByWorker?.data?.map((asistencia, key) =>
                           <tr key={key}>
                             <th scope="row">
                               <Media className="align-items-center">
@@ -205,7 +219,7 @@ const Asistencia = () => {
                                     require("../../assets/img/theme/default.png")
                                       .default
                                     :
-                                    asistencia.foto}
+                                    process.env.REACT_APP_BASE + 'storage/colaborador/'+asistencia.foto}
                                 />
                                 <Media>
                                   <span className="mb-0 text-sm">
@@ -216,30 +230,15 @@ const Asistencia = () => {
 
                             </th>
                             <td className="text-center">
-                              {asistencia.tardanzas}min
+                              {asistencia.debe}min
                             </td>
                             <td className="text-center">
-                              {asistencia.tardanzas}min
+                              {asistencia.compensar}min
                             </td>
                             <td className="text-center">
-                              {asistencia.observaciones.length > 0 ?
-                                <Badge color="" className="badge-dot mr-4">
-                                  <i className="bg-yellow" /> Con observaciones
-                            </Badge>
-                                :
-                                "-"
-                              }
+                              {asistencia.vacaciones/60}h
                             </td>
-                            <td className="text-center">
-                              {asistencia.justificaciones.length > 0 ?
-                                <Badge color="" className="badge-dot mr-4">
-                                  <i className="bg-yellow" /> Con justificaciones
-                            </Badge>
-                                :
-                                "-"
-                              }
-                            </td>
-                            <td>
+                            <td className="d-none">
                               <Button
                                 className="icon icon-shape bg-secondary rounded-circle shadow "
                                 onClick={toggleModal}
@@ -338,11 +337,13 @@ const Asistencia = () => {
                         <th scope="col">Salida</th>
                         <th scope="col">Tardanza</th>
                         <th scope="col">Compensado</th>
+                        <th scope="col">Falta</th>
+                        <th scope="col">Salió temprano</th>
                       </tr>
                     </thead>
                     <tbody>
                       {
-                        asistencias.tab2?.map((asistencia, key) =>
+                        assistanceListAll?.data?.map((asistencia, key) =>
                           <tr key={key}>
                             <th scope="row">
                               <Media className="align-items-center">
@@ -354,7 +355,7 @@ const Asistencia = () => {
                                     require("../../assets/img/theme/default.png")
                                       .default
                                     :
-                                    asistencia.foto}
+                                    process.env.REACT_APP_BASE + 'storage/colaborador/'+asistencia.foto}
                                 />
                                 <Media>
                                   <span className="mb-0 text-sm">
@@ -372,69 +373,79 @@ const Asistencia = () => {
                             </td>
                             <td>
                               <Badge
-                                id={`tooltip_in_${key}`}
+                                id={`tooltip_in_fe_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.prim_entrada.estado) == 1 ? "success" : parseInt(asistencia.prim_entrada.estado) == 2 ? "danger" : "warning"}>
-                                {asistencia.prim_entrada.hora}
+                                className={parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 4 ? "bg-yellow text-default" : ""}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 4 ? "yellow" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 5 ? "default" : "info"}>
+                                {JSON.parse(asistencia.asistencia)[0]?.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
-                                target={`tooltip_in_${key}`}
+                                target={`tooltip_in_fe_${key}`}
                               >
-                                {parseInt(asistencia.prim_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.prim_entrada.estado) == 2 ? "Falta" : "Tardanza"}
+                                {parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 5 ? "Compensó" : "Vacaciones"}
                               </UncontrolledTooltip>
                             </td>
-                            <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
+                            <td> 
                               <Badge
-                                id={`tooltip_out_${key}`}
+                                id={`tooltip_in_fs_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.prim_salida.estado) == 1 ? "success" : parseInt(asistencia.prim_salida.estado) == 2 ? "danger" : "default"}>
-                                {asistencia.prim_salida.hora}
+                                className={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "bg-yellow text-default" : ""}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "default" : "info"}>
+                                {JSON.parse(asistencia.asistencia)[1]?.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
-                                target={`tooltip_out_${key}`}
+                                target={`tooltip_in_fs_${key}`}
                               >
-                                {parseInt(asistencia.prim_salida.estado) == 1 ? "Normal" : parseInt(asistencia.prim_salida.estado) == 2 ? "Falta" : "Compensó"}
+                                {parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "Compensó" : "Vacaciones"}
                               </UncontrolledTooltip>
                             </td>
                             <td>
                               <Badge
-                                id={`tooltip_in_${key}`}
+                                id={`tooltip_in_se_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.seg_entrada.estado) == 1 ? "success" : parseInt(asistencia.seg_entrada.estado) == 2 ? "danger" : "warning"}>
-                                {asistencia.seg_entrada.hora}
+                                className={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "bg-yellow text-default" : ""}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "default" : "info"}>
+                                {JSON.parse(asistencia.asistencia)[2]?.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
-                                target={`tooltip_in_${key}`}
+                                target={`tooltip_in_se_${key}`}
                               >
-                                {parseInt(asistencia.seg_entrada.estado) == 1 ? "Normal" : parseInt(asistencia.seg_entrada.estado) == 2 ? "Falta" : "Tardanza"}
+                                {parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "Compensó" : "Vacaciones"}
                               </UncontrolledTooltip>
                             </td>
-                            <td> {/*VERDE: SALIDA NORMAL, AZUL:COMPENSÓ HORAS */}
+                            <td> 
                               <Badge
-                                id={`tooltip_out_${key}`}
+                                id={`tooltip_in_se_${key}`}
                                 data-placement="top"
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.seg_salida.estado) == 1 ? "success" : parseInt(asistencia.seg_salida.estado) == 2 ? "danger" : "default"}>
-                                {asistencia.seg_salida.hora}
+                                className={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "bg-yellow text-default" : ""}
+                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "default" : "info"}>
+                                {JSON.parse(asistencia.asistencia)[3]?.hora}
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
-                                target={`tooltip_out_${key}`}
+                                target={`tooltip_in_se_${key}`}
                               >
-                                {parseInt(asistencia.seg_salida.estado) == 1 ? "Normal" : parseInt(asistencia.seg_salida.estado) == 2 ? "Falta" : "Compensó"}
+                                {parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "Compensó" : "Vacaciones"}
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
-                              {asistencia.tardanza}
+                              {asistencia.tardanza == 0 ? "-" : asistencia.tardanza < 0 ? (asistencia.tardanza*-1)>60 && (asistencia.tardanza*-1)/60+"h"  : asistencia.tardanza*-1+"min"}
                             </td>
                             <td className="text-center">
-                              {asistencia.compensado}
+                              {asistencia.compensado == 0 ? "-" : asistencia.compensado < 0 ? (asistencia.compensado*-1)>60 && (asistencia.compensado*-1)/60+"h"  : asistencia.compensado*-1+"min"}
+                            </td>
+                            <td className="text-center">
+                              {asistencia.falta == 0 ? "-" : asistencia.falta < 0 ? (asistencia.falta*-1)>60 ? (asistencia.falta*-1)/60+"h"  : asistencia.falta*-1+"min" : asistencia.falta*-1+"min"}
+                            </td>
+                            <td className="text-center">
+                              {asistencia.temp == 0 ? "-" : asistencia.temp < 0 ? (asistencia.temp*-1)>60 ? (asistencia.temp*-1)/60+"h"  : asistencia.temp*-1+"min" : asistencia.falta*-1+"min"}
                             </td>
                           </tr>
                         )
@@ -522,6 +533,10 @@ const Asistencia = () => {
                         <th scope="col">Día</th>
                         <th scope="col">Tipo</th>
                         <th scope="col">Hora</th>
+                        <th scope="col">Tardanza</th>
+                        <th scope="col">Compensado</th>
+                        <th scope="col">Falta</th>
+                        <th scope="col">Salió temprano</th>
                         <th scope="col">Observación</th>
                         <th scope="col">Justificación</th>
                       </tr>
@@ -575,6 +590,18 @@ const Asistencia = () => {
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
+                              {parseInt(asistencia.estado) == 2 ?  asistencia.calc*-1>60 ? asistencia.calc*-1/60+"h" : asistencia.calc*-1+"min" : "-"}
+                            </td>
+                            <td className="text-center">
+                              {parseInt(asistencia.estado) == 5 ?  asistencia.calc>60 ? asistencia.calc/60+"h" : asistencia.calc+"min" : "-"}
+                            </td>
+                            <td className="text-center">
+                              {parseInt(asistencia.estado) == 3 ?  asistencia.calc*-1>60 ? asistencia.calc*-1/60+"h" : asistencia.calc*-1+"min" : "-"}
+                            </td>
+                            <td className="text-center">
+                              {parseInt(asistencia.estado) == 4 ?  asistencia.calc*-1>60 ? asistencia.calc*-1/60+"h" : asistencia.calc*-1+"min" : "-"}
+                            </td>
+                            <td className="text-center">
                               {asistencia.observacion==null ? "-" : asistencia.observacion}
                             </td>
                             <td className="text-center">
@@ -589,7 +616,7 @@ const Asistencia = () => {
               <CardFooter className="py-4">
                 <nav aria-label="...">
                   {
-                    meta.total > 0 &&
+                    assistanceList?.meta?.total > 0 &&
                     <Pagination
                       className="pagination justify-content-end mb-0"
                       listClassName="justify-content-end mb-0"
@@ -607,7 +634,7 @@ const Asistencia = () => {
                         </PaginationItem>
                       }
                       {
-                        Array.from({ length: meta.last_page>5 ? 5 :  meta.last_page}, (_, i) => i + 1).map((cpage, key) =>
+                        Array.from({ length: assistanceList?.meta?.last_page>5 ? 5 :  assistanceList?.meta?.last_page}, (_, i) => i + 1).map((cpage, key) =>
                           <PaginationItem key={key} className={page === cpage ? "active" : "inactive"}>
                             <PaginationLink
                               onClick={(e) => { e.preventDefault(); setPage(cpage) }}
@@ -617,7 +644,7 @@ const Asistencia = () => {
                           </PaginationItem>)
                       }
                       {
-                        page < meta.last_page &&
+                        page < assistanceList?.meta?.last_page &&
                         <PaginationItem>
                           <PaginationLink
                             onClick={(e) => { e.preventDefault(); setPage(page + 1) }}

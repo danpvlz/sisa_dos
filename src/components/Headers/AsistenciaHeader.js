@@ -53,7 +53,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                       <span className="text-success mr-2 d-none">
                         <i className="fa fa-arrow-up" /> 3.48%
                       </span>{" "}
-                      <span className="text-nowrap">El último mes</span>
+                      <span className="text-nowrap">Total</span>
                     </p>
                   </CardBody>
                 </Card>
@@ -83,7 +83,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                       <span className="text-danger mr-2 d-none">
                         <i className="fas fa-arrow-down" /> 3.48%
                       </span>{" "}
-                      <span className="text-nowrap">El último mes</span>
+                      <span className="text-nowrap">Total</span>
                     </p>
                   </CardBody>
                 </Card>
@@ -100,7 +100,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                           H. realizadas
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          {hRealizadas}
+                          {hRealizadas}h
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -113,7 +113,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                       <span className="text-danger mr-2 d-none">
                         <i className="fas fa-arrow-down"/> 1.10%
                       </span>{" "}
-                      <span className="text-nowrap">El último mes</span>
+                      <span className="text-nowrap">Total</span>
                     </p>
                   </CardBody>
                 </Card>
@@ -130,7 +130,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                           H. compensar
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          {hCompensar}
+                          {hCompensar}h
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -141,9 +141,9 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-success mr-2 d-none">
-                        <i className="fas fa-arrow-up"/> 12%
+                        <i className="fas fa-arrow-up"/> 12%|
                       </span>{" "}
-                      <span className="text-nowrap">El último mes</span>
+                      <span className="text-nowrap">Total</span>
                     </p>
                   </CardBody>
                 </Card>
