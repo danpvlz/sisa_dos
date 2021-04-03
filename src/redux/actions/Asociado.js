@@ -6,7 +6,8 @@ import {
     LIST_ASSOCIATED,
     FILTER_ASSOCIATED,
     INDICATORS_ASSOCIATED,
-    ASSOCIATED_STATUS_ACTIONS
+    ASSOCIATED_STATUS_ACTIONS,
+    SHOW_ASSOCIATED
   } from "../ActionTypes";
   import axios from '../../util/Api'
   
@@ -86,5 +87,30 @@ import {
       }).catch(function (error) {
         dispatch({ type: FETCH_ERROR, payload: error });
       });
+    }
+  };
+
+  export const showAssociated = (id) => {
+    return (dispatch) => {
+      dispatch({ type: FETCH_START });
+      axios.get('associated/'+id,
+      ).then(({ data }) => {
+        if (data) {
+          dispatch({ type: FETCH_SUCCESS });
+          dispatch({ type: SHOW_ASSOCIATED, payload: data });
+  
+        } else {
+          dispatch({ type: FETCH_ERROR, payload: data.error });
+        }
+      }).catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error });
+      });
+    }
+  };
+
+  export const clearShowAssociated = (id) => {
+    return (dispatch) => {
+      
+      dispatch({ type: SHOW_ASSOCIATED, payload: [] });
     }
   };

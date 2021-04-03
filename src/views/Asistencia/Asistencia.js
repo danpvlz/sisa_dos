@@ -28,6 +28,8 @@ import {
   UncontrolledTooltip
 } from "reactstrap";
 // core components
+import PaginationComponent from "react-reactstrap-pagination";
+
 
 import AsistenciaHeader from "components/Headers/AsistenciaHeader.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
@@ -256,55 +258,18 @@ const Asistencia = () => {
                     </tbody>
                   </Table>
                   <CardFooter className="py-4">
-                    <nav aria-label="...">
-                      <Pagination
-                        className="pagination justify-content-end mb-0"
+                    <nav aria-label="..." className="pagination justify-content-end mb-0">
+                      <PaginationComponent
                         listClassName="justify-content-end mb-0"
-                      >
-                        <PaginationItem className="disabled">
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                            tabIndex="-1"
-                          >
-                            <i className="fas fa-angle-left" />
-                            <span className="sr-only">Previous</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem className="active">
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            1
-                      </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            2 <span className="sr-only">(current)</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            3
-                      </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <i className="fas fa-angle-right" />
-                            <span className="sr-only">Next</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                      </Pagination>
+                        firstPageText="<<"
+                        lastPageText=">>"
+                        previousPageText="<"
+                        nextPageText=">"
+                        totalItems={assistanceListByWorker?.meta?.total}
+                        pageSize={10}
+                        onSelect={(selectedPage)=>setpageaByWorker(selectedPage)}
+                      />
+                    
                     </nav>
                   </CardFooter>
                   <DetalleAsistencia showDetail={showDetail} toggleModal={toggleModal} />
@@ -457,55 +422,17 @@ const Asistencia = () => {
                     </tbody>
                   </Table>
                   <CardFooter className="py-4">
-                    <nav aria-label="...">
-                      <Pagination
-                        className="pagination justify-content-end mb-0"
+                    <nav aria-label="..." className="pagination justify-content-end mb-0">
+                      <PaginationComponent
                         listClassName="justify-content-end mb-0"
-                      >
-                        <PaginationItem className="disabled">
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                            tabIndex="-1"
-                          >
-                            <i className="fas fa-angle-left" />
-                            <span className="sr-only">Previous</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem className="active">
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            1
-                      </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            2 <span className="sr-only">(current)</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            3
-                      </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <i className="fas fa-angle-right" />
-                            <span className="sr-only">Next</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                      </Pagination>
+                        firstPageText="<<"
+                        lastPageText=">>"
+                        previousPageText="<"
+                        nextPageText=">"
+                        totalItems={assistanceListAll?.meta?.total}
+                        pageSize={10}
+                        onSelect={(selectedPage)=>setpageall(selectedPage)}
+                      />
                     </nav>
                   </CardFooter>
                 </TabPane>
@@ -614,48 +541,17 @@ const Asistencia = () => {
                   </Table>
               
               <CardFooter className="py-4">
-                <nav aria-label="...">
-                  {
-                    assistanceList?.meta?.total > 0 &&
-                    <Pagination
-                      className="pagination justify-content-end mb-0"
-                      listClassName="justify-content-end mb-0"
-                    >
-                      {
-                        page > 1 &&
-                        <PaginationItem className="disabled">
-                          <PaginationLink
-                            onClick={(e) => { e.preventDefault(); setPage(page - 1) }}
-                            tabIndex="-1"
-                          >
-                            <i className="fas fa-angle-left" />
-                            <span className="sr-only">Previous</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                      }
-                      {
-                        Array.from({ length: assistanceList?.meta?.last_page>5 ? 5 :  assistanceList?.meta?.last_page}, (_, i) => i + 1).map((cpage, key) =>
-                          <PaginationItem key={key} className={page === cpage ? "active" : "inactive"}>
-                            <PaginationLink
-                              onClick={(e) => { e.preventDefault(); setPage(cpage) }}
-                            >
-                              {cpage}
-                            </PaginationLink>
-                          </PaginationItem>)
-                      }
-                      {
-                        page < assistanceList?.meta?.last_page &&
-                        <PaginationItem>
-                          <PaginationLink
-                            onClick={(e) => { e.preventDefault(); setPage(page + 1) }}
-                          >
-                            <i className="fas fa-angle-right" />
-                            <span className="sr-only">Next</span>
-                          </PaginationLink>
-                        </PaginationItem>
-                      }
-                    </Pagination>
-                  }
+                <nav aria-label="..." className="pagination justify-content-end mb-0">
+                  <PaginationComponent
+                    listClassName="justify-content-end mb-0"
+                    firstPageText="<<"
+                    lastPageText=">>"
+                    previousPageText="<"
+                    nextPageText=">"
+                    totalItems={assistanceList?.meta?.total}
+                    pageSize={10}
+                    onSelect={(selectedPage)=>setpageall(selectedPage)}
+                  />
                 </nav>
               </CardFooter>
                 </TabPane>

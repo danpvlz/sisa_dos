@@ -19,9 +19,10 @@ import SearchAsociado from "components/Selects/SearchAsociado.js";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmDialog from '../../components/ConfirmDialog';
 import {savePhoneCall} from '../../redux/actions/Llamada';
-
+import {showAssociated,clearShowAssociated} from '../../redux/actions/Asociado';
 const RegistroLlamada = () => {
   const dispatch = useDispatch();
+  const { associatedObject } = useSelector(({ asociado }) => asociado);
   const history = useHistory();
   const [idAsociado, setIdAsociado] = useState(null);
   const { register, handleSubmit, watch, reset } = useForm();
@@ -36,6 +37,12 @@ const RegistroLlamada = () => {
     setFile(null);
     reset();*/
   };
+
+  useEffect(() => {
+    if(idAsociado!=null){
+      dispatch(showAssociated(idAsociado));
+    }
+  }, [idAsociado]);
 
   useEffect(() => {
     if (confirm) {
@@ -90,7 +97,7 @@ const RegistroLlamada = () => {
                                 className="form-control-alternative"
                                 id="input-postal-code"
                                 type="text"
-                                value={"2"}
+                                value={idAsociado ? associatedObject[0]?.codigo : ""}
                                 disabled
                               />
                             </FormGroup>
@@ -107,7 +114,7 @@ const RegistroLlamada = () => {
                                 className="form-control-alternative"
                                 id="input-postal-code"
                                 type="text"
-                                value={"JAVIER MAZA"}
+                                value={idAsociado ? associatedObject[0]?.descripcion : ""}
                                 disabled
                               />
                             </FormGroup>

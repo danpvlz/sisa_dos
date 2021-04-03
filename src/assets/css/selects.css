@@ -40,3 +40,7 @@
     -webkit-user-select: none;
     -o-user-select: none;
 }
+
+.page-link{
+    min-height: '43.5px' !important;
+}

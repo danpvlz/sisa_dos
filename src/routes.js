@@ -30,9 +30,11 @@ import NuevaLlamada from "views/Llamada/NuevaLlamada.js";
 import Cobranza from "views/Cuenta/Cobranza.js";
 import NuevaCobranza from "views/Cuenta/NuevaCobranza.js";
 import Pendientes from "views/Cuenta/Pendientes.js";
+import Membresia from "views/Cuenta/Membresia.js";
 
 var components=[
   Login,
+  Index,
   Asociado,
   NuevoAsociado,
   Colaborador,
@@ -45,15 +47,16 @@ var components=[
   NuevaLlamada,
   Cobranza,
   NuevaCobranza,
-  Pendientes
+  Pendientes,
+  Membresia,
 ]
 
-var routes = [
+export const routesSimple = [
   {
     path: "/login",
     name: "Login",
     icon: "ni ni-key-25 text-info",
-    component: Login,
+    component: components[0],
     layout: "/auth",
     show: false
   },
@@ -61,7 +64,7 @@ var routes = [
     path: "/index",
     name: "Inicio",
     icon: "ni ni-tv-2 text-primary",
-    component: Index,
+    component: components[8],
     layout: "/admin",
     show: false
   },
@@ -69,110 +72,52 @@ var routes = [
     path: "/asociado",
     name: "Asociado",
     icon: "ni ni-single-02 text-blue",
-    component: components[1],
+    component: components[2],
     layout: "/admin",
-    show: true
+    show: true,
+    users: [0]
   },
   {
     path: "/nuevo-asociado",
     name: "Nuevo asociado",
-    icon: "ni ni-single-02 text-yellow",
-    component: NuevoAsociado,
+    icon: "ni ni-single-02 text-green",
+    component: components[3],
     layout: "/admin",
-    show: false
-  },
-  {
-    name: "Cuentas",
-    icon: "ni ni-credit-card text-blue",
-    layout: "/admin",
-    routes: [
-      {
-        path: "/cuentas",
-        name: "Cobranza",
-        icon: "ni ni-credit-card text-blue",
-        component: Cobranza,
-        layout: "/admin",
-        show: true
-      },
-      {
-        path: "/registro-emision",
-        name: "Nueva emisión",
-        icon: "fa fa-file text-success",
-        component: NuevaCobranza,
-        layout: "/admin",
-        show: true
-      },
-      {
-        path: "/pendientes",
-        name: "Pendientes",
-        icon: "fa fa-clock text-danger",
-        component: Pendientes,
-        layout: "/admin",
-        show: true
-      }
-    ]
-  },
-  {
-    path: "/colaborador",
-    name: "Colaborador",
-    icon: "ni ni-badge text-blue",
-    component: Colaborador,
-    layout: "/admin",
-    show: true
-  },
-  {
-    path: "/nuevo-colaborador",
-    name: "Nuevo colaborador",
-    icon: "ni ni-badge text-blue",
-    component: NuevoColaborador,
-    layout: "/admin",
-    show: false
+    show: false,
+    users:[0]
   },
   {
     path: "/mi-perfil",
     name: "Mi perfil",
     icon: "ni ni-badge text-blue",
-    component: EditProfile,
+    component: components[6],
     layout: "/admin",
-    show: false
+    show: false,
+    users:[0]
   },
-  {
-    path: "/editar-colaborador",
-    name: "Editar colaborador",
-    icon: "ni ni-badge text-blue",
-    component: NuevoColaborador,
-    layout: "/admin",
-    show: false
-  },
-  
   {
     name: "Asistencia",
     icon: "fa fa-calendar text-blue",
     layout: "/admin",
+    users:[0],
     routes: [
-      {
-        path: "/asistencia",
-        name: "Asistencias",
-        icon: "ni ni-calendar-grid-58 text-primary",
-        component: Asistencia,
-        layout: "/admin",
-        show: true
-      },
       {
         path: "/mi-asistencia",
         name: "Mi asistencia",
         icon: "fa fa-address-book text-blue",
-        component: MiAsistencia,
+        component: components[8],
         layout: "/admin",
-        show: true
+        show: true,
+        users:[0]
       },
       {
         path: "/registrar-asistencia",
         name: "Registrar asistencia",
         icon: "ni ni-active-40 text-success",
-        component: MarcarAsistencia,
+        component: components[9],
         layout: "/admin",
-        show: true
+        show: true,
+        users:[0]
       },
     ]
   },
@@ -180,17 +125,19 @@ var routes = [
     path: "/llamadas",
     name: "Llamadas",
     icon: "fa fa-phone text-primary",
-    component: Llamada,
+    component: components[10],
     layout: "/admin",
-    show: true
+    show: true,
+    users:[0]
   },
   {
     path: "/registro-llamada",
     name: "Registro de llamada",
     icon: "fa fa-phone text-primary",
-    component: NuevaLlamada,
+    component: components[11],
     layout: "/admin",
-    show: false
+    show: false,
+    users:[0]
   },
   {
     path: "/icons",
@@ -226,4 +173,326 @@ var routes = [
   },
 ];
 
-export default routes;
+export const routesAdmin=[
+  {
+    path: "/login",
+    name: "Login",
+    icon: "ni ni-key-25 text-info",
+    component: components[0],
+    layout: "/auth",
+    show: false
+  },
+  {
+    path: "/index",
+    name: "Inicio",
+    icon: "ni ni-tv-2 text-primary",
+    component: components[8],
+    layout: "/admin",
+    show: false
+  },
+  {
+    path: "/asociado",
+    name: "Asociado",
+    icon: "ni ni-single-02 text-blue",
+    component: components[2],
+    layout: "/admin",
+    show: true
+  },
+  {
+    path: "/nuevo-asociado",
+    name: "Nuevo asociado",
+    icon: "ni ni-single-02 text-green",
+    component: components[3],
+    layout: "/admin",
+    show: false
+  },
+  {
+    path: "/colaborador",
+    name: "Colaborador",
+    icon: "ni ni-badge text-blue",
+    component: components[4],
+    layout: "/admin",
+    show: true
+  },
+  {
+    path: "/nuevo-colaborador",
+    name: "Nuevo colaborador",
+    icon: "ni ni-badge text-blue",
+    component: components[5],
+    layout: "/admin",
+    show: false
+  },
+  {
+    path: "/mi-perfil",
+    name: "Mi perfil",
+    icon: "ni ni-badge text-blue",
+    component: components[6],
+    layout: "/admin",
+    show: false
+  },
+  {
+    path: "/editar-colaborador",
+    name: "Editar colaborador",
+    icon: "ni ni-badge text-blue",
+    component: components[5],
+    layout: "/admin",
+    show: false
+  },
+  {
+    name: "Asistencia",
+    icon: "fa fa-calendar text-blue",
+    layout: "/admin",
+    routes: [
+      {
+        path: "/asistencia",
+        name: "Asistencias",
+        icon: "ni ni-calendar-grid-58 text-primary",
+        component: components[7],
+        layout: "/admin",
+        show: true
+      },
+      {
+        path: "/mi-asistencia",
+        name: "Mi asistencia",
+        icon: "fa fa-address-book text-blue",
+        component: components[8],
+        layout: "/admin",
+        show: true
+      },
+      {
+        path: "/registrar-asistencia",
+        name: "Registrar asistencia",
+        icon: "ni ni-active-40 text-success",
+        component: components[9],
+        layout: "/admin",
+        show: true
+      },
+    ]
+  },
+  {
+    path: "/llamadas",
+    name: "Llamadas",
+    icon: "fa fa-phone text-primary",
+    component: components[10],
+    layout: "/admin",
+    show: true
+  },
+  {
+    path: "/registro-llamada",
+    name: "Registro de llamada",
+    icon: "fa fa-phone text-primary",
+    component: components[11],
+    layout: "/admin",
+    show: false
+  },
+  {
+    name: "Cuentas",
+    icon: "ni ni-credit-card text-blue",
+    layout: "/admin",
+    
+    routes: [
+      {
+        path: "/cuentas",
+        name: "Cobranza",
+        icon: "ni ni-credit-card text-blue",
+        component: components[12],
+        layout: "/admin",
+        show: true,
+        
+      },
+      {
+        path: "/registro-emision",
+        name: "Nueva emisión",
+        icon: "fa fa-file text-success",
+        component: components[13],
+        layout: "/admin",
+        show: true,
+        users:[1,13,20,23],
+      },
+      {
+        path: "/pendientes",
+        name: "Pendientes",
+        icon: "fa fa-clock text-danger",
+        component: components[14],
+        layout: "/admin",
+        show: true,
+        
+      },
+      {
+        path: "/membresias",
+        name: "Membresias",
+        icon: "ni ni-calendar-grid-58 text-yellow",
+        component: components[15],
+        layout: "/admin",
+        show: true,
+        
+      }
+    ]
+  },
+  {
+    path: "/icons",
+    name: "Icons",
+    icon: "ni ni-planet text-blue",
+    component: Icons,
+    layout: "/admin",
+    show: false
+  },
+  {
+    path: "/user-profile",
+    name: "User Profile",
+    icon: "ni ni-single-02 text-yellow",
+    component: Profile,
+    layout: "/admin",
+    show: false
+  },
+  {
+    path: "/tables",
+    name: "Tables",
+    icon: "ni ni-bullet-list-67 text-red",
+    component: Tables,
+    layout: "/admin",
+    show: false
+  },
+  {
+    path: "/register",
+    name: "Register",
+    icon: "ni ni-circle-08 text-pink",
+    component: Register,
+    layout: "/auth",
+    show: false
+  },
+];
+
+export const routesMembership = [
+  {
+    path: "/login",
+    name: "Login",
+    icon: "ni ni-key-25 text-info",
+    component: components[0],
+    layout: "/auth",
+    show: false
+  },
+  {
+    path: "/index",
+    name: "Inicio",
+    icon: "ni ni-tv-2 text-primary",
+    component: components[8],
+    layout: "/admin",
+    show: false
+  },
+  {
+    path: "/asociado",
+    name: "Asociado",
+    icon: "ni ni-single-02 text-blue",
+    component: components[2],
+    layout: "/admin",
+    show: true,
+    users: [0]
+  },
+  {
+    path: "/nuevo-asociado",
+    name: "Nuevo asociado",
+    icon: "ni ni-single-02 text-green",
+    component: components[3],
+    layout: "/admin",
+    show: false,
+    users:[0]
+  },
+  {
+    path: "/mi-perfil",
+    name: "Mi perfil",
+    icon: "ni ni-badge text-blue",
+    component: components[6],
+    layout: "/admin",
+    show: false,
+    users:[0]
+  },
+  {
+    name: "Asistencia",
+    icon: "fa fa-calendar text-blue",
+    layout: "/admin",
+    users:[0],
+    routes: [
+      {
+        path: "/mi-asistencia",
+        name: "Mi asistencia",
+        icon: "fa fa-address-book text-blue",
+        component: components[8],
+        layout: "/admin",
+        show: true,
+        users:[0]
+      },
+      {
+        path: "/registrar-asistencia",
+        name: "Registrar asistencia",
+        icon: "ni ni-active-40 text-success",
+        component: components[9],
+        layout: "/admin",
+        show: true,
+        users:[0]
+      },
+    ]
+  },
+  {
+    path: "/llamadas",
+    name: "Llamadas",
+    icon: "fa fa-phone text-primary",
+    component: components[10],
+    layout: "/admin",
+    show: true,
+    users:[0]
+  },
+  {
+    path: "/registro-llamada",
+    name: "Registro de llamada",
+    icon: "fa fa-phone text-primary",
+    component: components[11],
+    layout: "/admin",
+    show: false,
+    users:[0]
+  },
+  {
+    name: "Cuentas",
+    icon: "ni ni-credit-card text-blue",
+    layout: "/admin",
+    users:[1,3,11,13,18,19,20,23],
+    routes: [
+      {
+        path: "/cuentas",
+        name: "Cobranza",
+        icon: "ni ni-credit-card text-blue",
+        component: components[12],
+        layout: "/admin",
+        show: true,
+        users:[1,3,11,13,18,19,20,23],
+      },
+      {
+        path: "/registro-emision",
+        name: "Nueva emisión",
+        icon: "fa fa-file text-success",
+        component: components[13],
+        layout: "/admin",
+        show: true,
+        users:[1,13,20,23],
+      },
+      {
+        path: "/pendientes",
+        name: "Pendientes",
+        icon: "fa fa-clock text-danger",
+        component: components[14],
+        layout: "/admin",
+        show: true,
+        users:[1,3,11,13,18,19,20,23],
+      },
+      {
+        path: "/membresias",
+        name: "Membresias",
+        icon: "ni ni-calendar-grid-58 text-yellow",
+        component: components[15],
+        layout: "/admin",
+        show: true,
+        users:[1,3,11,13,18,19,20,23],
+      }
+    ]
+  },
+];

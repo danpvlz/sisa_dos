@@ -1,5 +1,8 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
+import PaginationComponent from "react-reactstrap-pagination";
+import ConfirmDialog from '../../components/ConfirmDialog';
+import PayModal from '../../components/PayModal';
 
 // reactstrap components
 import {
@@ -11,15 +14,9 @@ import {
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Progress,
   Table,
   Container,
   Row,
-  UncontrolledTooltip,
   Button,
   Col,
   FormGroup,
@@ -27,18 +24,175 @@ import {
 } from "reactstrap";
 // core components
 import Select from 'react-select';
+import PaymentsModal from "components/Payments.js";
 import CuentasHeader from "components/Headers/CuentasHeader.js";
-import SearchColaborador from "components/Selects/SearchColaborador.js";
+import SearchAsociado from "components/Selects/SearchAsociado.js";
+import SearchCobrador from "components/Selects/SearchCobrador.js";
+import { useDispatch, useSelector } from "react-redux";
+import { listBills, indicatorsBills,anularCuenta,pagarCuenta,getBillDetail } from "../../redux/actions/Cuenta";
 
 const Cuenta = () => {
-  const cuentas = require('../../data/cuenta.json');
+  const dispatch = useDispatch();
+  const { billList, billIndicators } = useSelector(({ cuenta }) => cuenta);
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/registro-emision'), [history]);
+
+  const [page, setPage] = useState(1);
+  const [search, setsearch] = useState({});
+  const [idCuenta, setidCuenta] = useState(null);
+  const [action, setaction] = useState(1);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [sendConfirm, setsendConfirm] = useState(false);
+
+  const [showPay, setshowPay] = useState(false);
+  const [fecha, setfecha] = useState({"fecha":new Date().toISOString().substring(0, 10)});
+  const [monto, setmonto] = useState(0);
+  const [sendPay, setsendPay] = useState(0);
+
+  const [showBillDetail, setshowBillDetail] = useState(false);
+
+  //Filters
+  const [since, setsince] = useState(null);
+  const [until, setuntil] = useState(null);
+  const [status, setstatus] = useState(null);
+  const [idAsociado, setidAsociado] = useState(null);
+  const [cobrador, setcobrador] = useState(null);
+
+  useEffect(() => {
+    console.log(since)
+    let tsearch=search;
+    if(since == null){
+      delete tsearch.since;
+    }else{
+      tsearch.since=since;
+    }
+    setsearch(tsearch);
+    dispatch(listBills(page,tsearch));
+    dispatch(indicatorsBills(search));
+  }, [since]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(until == null){
+      delete tsearch.until;
+    }else{
+      tsearch.until=until;
+    }
+    setsearch(tsearch);
+    dispatch(listBills(page,tsearch));
+    dispatch(indicatorsBills(search));
+  }, [until]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(status == null){
+      delete tsearch.status;
+    }else{
+      tsearch.status=status;
+    }
+    setsearch(tsearch);
+    dispatch(listBills(page,tsearch));
+    dispatch(indicatorsBills(search));
+  }, [status]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(idAsociado == null){
+      delete tsearch.idAsociado;
+    }else{
+      tsearch.idAsociado=idAsociado;
+    }
+    setsearch(tsearch);
+    dispatch(listBills(page,tsearch));
+    dispatch(indicatorsBills(search));
+  }, [idAsociado]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(cobrador == null){
+      delete tsearch.debCollector;
+    }else{
+      tsearch.debCollector=cobrador;
+    }
+    setsearch(tsearch);
+    dispatch(listBills(page,tsearch));
+    dispatch(indicatorsBills(search));
+  }, [cobrador]);
+
+  useEffect(() => {
+    dispatch(listBills(page,search))
+    dispatch(indicatorsBills(search))
+  }, [page]);
+
+  const toggleModal = () => {
+    setShowConfirm(!showConfirm);
+  };
+
+  const toggleModalPay = () => {
+    setshowPay(!showPay);
+  };
+
+  const toggleModalDetail = () => {
+    setshowBillDetail(!showBillDetail);
+  };
+
+  useEffect(() => {
+    if (action==1) {
+      //REGISTRAR
+      var fData = {
+        "idCuenta": idCuenta,
+      }
+      dispatch(anularCuenta(fData))
+      //REGISTRAR
+      setsendConfirm(false);
+      setidCuenta(null);
+      dispatch(listBills(page,search));
+      dispatch(indicatorsBills(search));
+    }
+  }, [sendConfirm]);
+
+  useEffect(() => {
+    if (sendPay) {
+      //REGISTRAR
+      var fData = {
+        "idCuenta": idCuenta,
+        "monto": monto,
+        "fechaPago": fecha,
+      }
+      dispatch(pagarCuenta(fData))
+      //REGISTRAR
+      setsendPay(false);
+      setidCuenta(null);
+      dispatch(listBills(page,search));
+      dispatch(indicatorsBills(search));
+    }
+  }, [sendPay]);
+
   return (
     <>
-      <CuentasHeader />
+      <CuentasHeader 
+      pendientes={billIndicators?.pendientes}
+      cobrado={billIndicators?.cobrado}
+      emitidos={billIndicators?.emitidos}
+      anulado={billIndicators?.anulado}
+      />
+      <PayModal 
+      showPay={showPay} 
+      toggleModal={toggleModalPay}  
+      fecha={fecha}
+      setfecha={setfecha}
+      monto={monto}
+      setmonto={setmonto}
+      setsendPay={setsendPay}
+      />
       {/* Page content */}
       <Container className="mt--7" fluid>
+      <ConfirmDialog
+        question={action==1 ? "¿Seguro de anular cuenta y pagos asociados?" : "¿Seguro de pagar cuenta?"}
+        showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendConfirm} />
+        <PaymentsModal 
+        showDetail={showBillDetail} toggleModal={toggleModalDetail}
+        />
         {/* Table */}
         <Row>
           <div className="col">
@@ -79,9 +233,13 @@ const Cuenta = () => {
                           <Input
                             className="form-control-alternative"
                             defaultValue="lucky.jesse"
-                            id="filterMonth"
-                            placeholder="filterMonth"
+                            id="fitlerSince"
+                            placeholder="fitlerSince"
                             type="date"
+                            value={since}
+                            onChange={(inputValue, actionMeta) => {
+                              setsince(inputValue != null ? inputValue.target.value : null);
+                            }}
                           />
                         </FormGroup >
                       </Col>
@@ -95,10 +253,13 @@ const Cuenta = () => {
                       </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="lucky.jesse"
-                            id="filterMonth"
-                            placeholder="filterMonth"
+                            id="filterUntil"
+                            placeholder="filterUntil"
                             type="date"
+                            value={until}
+                            onChange={(inputValue, actionMeta) => {
+                              setuntil(inputValue != null ? inputValue.target.value : null);
+                            }}
                           />
                         </FormGroup >
                       </Col>
@@ -115,9 +276,9 @@ const Cuenta = () => {
                             className="select-style"
                             name="sexo"
                             onChange={(inputValue, actionMeta) => {
-                              console.log(inputValue.value);
+                              setstatus(inputValue.value);
                             }}
-                            options={[{ value: 1, label: "Por cancelar" }, { value: 2, label: "Pendiente" }, { value: 3, label: "Cancelada" }, { value: 4, label: "Anulada" }]} />
+                            options={[{ value: 1, label: "Por cancelar" }, { value: 2, label: "Cancelada" }, { value: 3, label: "Anulada" }]} />
                         </FormGroup >
                       </Col>
                       <Col lg="4"  >
@@ -128,7 +289,7 @@ const Cuenta = () => {
                           >
                             Asociado
                       </label>
-                          <SearchColaborador />
+                          <SearchAsociado setVal={setidAsociado} />
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -139,7 +300,7 @@ const Cuenta = () => {
                           >
                             Cobrador
                       </label>
-                          <SearchColaborador />
+                          <SearchCobrador setVal={setcobrador} />
                         </FormGroup>
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto">
@@ -157,13 +318,9 @@ const Cuenta = () => {
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Fecha emision</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Serie</th>
-                    <th scope="col">Número</th>
+                    <th scope="col">Serie-Número</th>
                     <th scope="col">Asociado</th>
-                    <th scope="col">Subtotal</th>
                     <th scope="col">Total</th>
-                    <th scope="col">IGV</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Cobrador</th>
                     <th scope="col">Anulación</th>
@@ -172,32 +329,20 @@ const Cuenta = () => {
                 </thead>
                 <tbody>
                   {
-                    cuentas?.map((cuenta,key)=>
+                    billList?.data?.map((cuenta,key)=>
                     
                   <tr key={key}>
                   <td scope="row">
                     {cuenta.fechaEmision}
                   </td>
                   <td>
-                    {cuenta.tipo == 1 ? "Factura" : cuenta.tipo == 3 ? "Boleta" :cuenta.tipo == 7 ? "N. cred" : "N. deb"}
-                  </td>
-                  <td>
-                    {cuenta.serie}
-                  </td>
-                  <td>
-                    {cuenta.numero}
+                    {`${cuenta.serieNumero}`}
                   </td>
                   <td>
                     {cuenta.asociado}
                   </td>
-                  <td className="text-center"> 
-                    <small>S/.</small> {cuenta.subtotal}
-                  </td>
                   <td className="text-center">
                   <small>S/.</small> {cuenta.total}
-                  </td>
-                  <td>
-                    {cuenta.igv}
                   </td>
                   <td>
                     <Badge color="" className="badge-dot mr-4">
@@ -206,10 +351,10 @@ const Cuenta = () => {
                     </Badge>
                   </td>
                   <td>
-                    {cuenta.cobrador}
+                    {cuenta.descripcion}
                   </td>
                   <td>
-                    {cuenta.fAnul}
+                    {cuenta.fechaAnulacion}
                   </td>
                   <td className="text-right">
                     <UncontrolledDropdown>
@@ -226,8 +371,10 @@ const Cuenta = () => {
                       <DropdownMenu className="dropdown-menu-arrow" right>
                         <DropdownItem
                         className="d-flex"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
+                          onClick={(e) => {
+                            dispatch(getBillDetail({"idCuenta":cuenta.idCuenta}));
+                            toggleModalDetail();
+                          }}
                         >
                            <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
                         </DropdownItem>
@@ -236,15 +383,13 @@ const Cuenta = () => {
                           <>
                           <DropdownItem
                           className="d-flex"
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) => {setidCuenta(cuenta.idCuenta); toggleModalPay();}}
                           >
                              <i className="fa fa-credit-card text-success" aria-hidden="true"></i> Cancelar
                           </DropdownItem>
                           <DropdownItem
                           className="d-flex"
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) => {setaction(1);  setidCuenta(cuenta.idCuenta); toggleModal();}}
                           >
                              <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
                           </DropdownItem>
@@ -254,8 +399,7 @@ const Cuenta = () => {
                           <>
                           <DropdownItem
                           className="d-flex"
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) => {setaction(1); setidCuenta(cuenta.idCuenta); toggleModal();}}
                           >
                              <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
                           </DropdownItem>
@@ -273,55 +417,17 @@ const Cuenta = () => {
                 </tbody>
               </Table>
               <CardFooter className="py-4">
-                <nav aria-label="...">
-                  <Pagination
-                    className="pagination justify-content-end mb-0"
+                <nav aria-label="..." className="pagination justify-content-end mb-0"> 
+                  <PaginationComponent
                     listClassName="justify-content-end mb-0"
-                  >
-                    <PaginationItem className="disabled">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                        tabIndex="-1"
-                      >
-                        <i className="fas fa-angle-left" />
-                        <span className="sr-only">Previous</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem className="active">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-angle-right" />
-                        <span className="sr-only">Next</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                  </Pagination>
+                    firstPageText="<<"
+                    lastPageText=">>"
+                    previousPageText="<"
+                    nextPageText=">"
+                    totalItems={billList?.meta?.total ? billList?.meta?.total : 0}
+                    pageSize={10}
+                    onSelect={(selectedPage)=>setPage(selectedPage)}
+                  />
                 </nav>
               </CardFooter>
             </Card>

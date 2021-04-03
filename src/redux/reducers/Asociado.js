@@ -2,7 +2,8 @@ import {
     LIST_ASSOCIATED,
     FILTER_ASSOCIATED,
     ASSOCIATED_STATUS_ACTIONS,
-    INDICATORS_ASSOCIATED
+    INDICATORS_ASSOCIATED,
+    SHOW_ASSOCIATED
   } from "../ActionTypes";
   
   const INIT_STATE = {
@@ -20,7 +21,7 @@ import {
       retreats:0,
       retreatsActualMonth:0,
       inProcess:0,
-    },
+    }
   };
   
   export default (state = INIT_STATE, action) => {
@@ -48,6 +49,13 @@ import {
           return {
               ...state,
               associatedStatusActions:action.payload
+          }
+      }
+      
+      case SHOW_ASSOCIATED: {
+          return {
+              ...state,
+              associatedObject : action.payload
           }
       }
       default:

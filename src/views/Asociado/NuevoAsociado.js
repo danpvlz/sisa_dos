@@ -336,7 +336,7 @@ const Person = () => {
                   id="input-postal-code"
                   type="tel"
                 />
-                <Button className="btn-icon" size="sm" color="primary" type="button">
+                <Button className="btn-icon d-none" size="sm" color="primary" type="button">
                   <span>
                     <i className="fa fa-plus" />
                   </span>
@@ -358,7 +358,7 @@ const Person = () => {
                   id="input-postal-code"
                   type="email"
                 />
-                <Button className="btn-icon" size="sm" color="primary" type="button">
+                <Button className="btn-icon d-none" size="sm" color="primary" type="button">
                   <span>
                     <i className="fa fa-plus" />
                   </span>

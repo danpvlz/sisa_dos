@@ -7,9 +7,14 @@ import {
   Card,
   CardHeader,
   CardFooter,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown,
+  DropdownToggle,
   Pagination,
   PaginationItem,
   PaginationLink,
+  Progress,
   Table,
   Container,
   Row,
@@ -19,83 +24,40 @@ import {
   Input,
 } from "reactstrap";
 // core components
-import PendingsHeader from "components/Headers/PendingsHeader.js";
+import SearchColaborador from "components/Selects/SearchColaborador.js";
+import PaymentsModal from "components/Payments.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listPendings, indicatorsPendings } from "../../redux/actions/Cuenta";
-import SearchAsociado from "components/Selects/SearchAsociado";
-import SearchCobrador from "components/Selects/SearchCobrador";
+import { listMemberships, getBillDetail } from "../../redux/actions/Cuenta";
 
 const EstadoCuenta = () => {
   const dispatch = useDispatch();
-  const { pendingsList, pendingsIndicators } = useSelector(({ cuenta }) => cuenta);
+  const cuentas = require('../../data/cuenta.json');
+  const { membershipList } = useSelector(({ cuenta }) => cuenta);
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/registro-emision'), [history]);
+  const [showDetail, setShowDetail] = useState(false);
+
   const [page, setPage] = useState(1);
-  const [search, setsearch] = useState({"fecha":new Date().toISOString().substring(0, 10)});
-  const [month, setmonth] = useState(null);
-  const [idAsociado, setidAsociado] = useState(null);
-const [debCollector, setdebCollector] = useState(null);
+  const [search, setsearch] = useState({});
 
-const [load, setload] = useState(false);
-
-useEffect(() => {
-  let tsearch=search;
-  if(idAsociado == null){
-    delete tsearch.idAsociado;
-  }else{
-    tsearch.idAsociado=idAsociado;
-  }
-  if(load){
-    setsearch(tsearch);
-    dispatch(listPendings(page,search));
-    dispatch(indicatorsPendings(search));
-  }
-}, [idAsociado]);
-
-useEffect(() => {
-  let tsearch=search;
-  if(debCollector == null){
-    delete tsearch.debCollector;
-  }else{
-    tsearch.debCollector=debCollector;
-  }
-  if(load){
-    setsearch(tsearch);
-    dispatch(listPendings(page,search));
-    dispatch(indicatorsPendings(search));
-  }
-}, [debCollector]);
+  const toggleModal = () => {
+    setShowDetail(!showDetail);
+  };
 
   useEffect(() => {
-    let tsearch=search;
-    if(month == null){
-      tsearch.fecha=new Date().toISOString().substring(0, 10);
-    }else{
-      tsearch.fecha=month;
-    }
-    if(load){
-      setsearch(tsearch);
-      dispatch(listPendings(page,search));
-      dispatch(indicatorsPendings(search));
-    }
-  }, [month]);
-
-  useEffect(() => {
-    dispatch(indicatorsPendings(search));
-    dispatch(listPendings(page,search));
-    setload(true);
+    dispatch(listMemberships(page,search));
   }, [page])
 
   return (
     <>
-    <PendingsHeader 
-    pendientes={pendingsIndicators?.pendientes}
-    cobrado={pendingsIndicators?.cobrado}
-    emitidos={pendingsIndicators?.emitidos}
-    anulado={pendingsIndicators?.anulado}
-    />
+    <div className="header pb-8 pt-9 d-flex align-items-center">
+      <span className="mask bg-gradient-info opacity-8" />
+    </div>
       {/* Page content */}
-      <Container className="mt--7" fluid>
+      <Container className="mt--9" fluid>
+        <PaymentsModal 
+        showDetail={showDetail} toggleModal={toggleModal}
+        />
         {/* Table */}
         <Row>
           <div className="col">
@@ -103,31 +65,27 @@ useEffect(() => {
               <CardHeader className="border-0 bg-secondary">
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">
-                    <h3 className="mb-0">Pendientes</h3>
+                    <h3 className="mb-0">Membresía{process.env.REACT_NUBEFACT_TOKEN}</h3>
                   </Col>
                   <Col lg="12 ">
                     <hr className="my-4 " />
                     <Row className="bg-secondary">
                     <Col lg="3"  >
-                    <FormGroup className="mb-0 pb-4">
-                      <label
-                        className="form-control-label"
-                        htmlFor="filterMonth"
-                      >
-                        Fecha
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Fecha
                       </label>
-                      <Input
-                        className="form-control-alternative"
-                        defaultValue="lucky.jesse"
-                        id="filterMonth"
-                        placeholder="filterMonth"
-                        type="date"
-                        defaultValue={new Date().toISOString().substring(0, 10)}
-                        onChange={(e) => {
-                          setmonth(e.target.value == "" ? null : e.target.value);
-                        }}
-                      />
-                    </FormGroup >
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue="lucky.jesse"
+                            id="filterMonth"
+                            placeholder="filterMonth"
+                            type="date"
+                          />
+                        </FormGroup >
                       </Col>
                       <Col lg="4"  >
                         <FormGroup className="mb-0 pb-4">
@@ -137,7 +95,7 @@ useEffect(() => {
                           >
                             Asociado
                       </label>
-                          <SearchAsociado setVal={setidAsociado} />
+                          <SearchColaborador />
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -148,7 +106,7 @@ useEffect(() => {
                           >
                             Cobrador
                       </label>
-                          <SearchCobrador setVal={setdebCollector} />
+                          <SearchColaborador />
                         </FormGroup>
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto">
@@ -165,43 +123,82 @@ useEffect(() => {
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
-                    <th scope="col">Fecha emision</th>
-                    <th scope="col">Serie-Número</th>
                     <th scope="col">Asociado</th>
-                    <th scope="col">Total</th>
+                    <th scope="col">Mes</th>
                     <th scope="col">Estado</th>
+                    <th scope="col">Cobrado</th>
+                    <th scope="col">Pagado</th>
+                    <th scope="col">Completado</th>
                     <th scope="col">Cobrador</th>
-                    <th scope="col">Anulación</th>
+                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {
-                    pendingsList?.data?.map((cuenta,key)=>
+                    membershipList?.data?.map((cuenta,key)=>
                     
                   <tr key={key}>
                   <td scope="row">
-                    {cuenta.fechaEmision}
-                  </td>
-                  <td>
-                    {`${cuenta.serieNumero}`}
-                  </td>
-                  <td>
                     {cuenta.asociado}
                   </td>
-                  <td className="text-center">
-                  <small>S/.</small> {cuenta.total}
+                  <td>
+                    
+                    {['Enero', 'Febrero', 'Marzo', 'Abril', 'Maayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][cuenta.mes-1]}
                   </td>
                   <td>
                     <Badge color="" className="badge-dot mr-4">
-                      <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger"} />
+                      <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-info" : "bg-danger" } />
                       {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : "Anulada"}
                     </Badge>
                   </td>
+                  <td className="text-center">
+                  <small>S/.</small> 
+                    {cuenta.cobrado}
+                  </td>
+                  <td className="text-center">
+                  <small>S/.</small> {cuenta.pagado}
+                  </td>
+                    <td>
+                      <div className="d-flex align-items-center">
+                        <span className="mr-2">{Math.round(cuenta.pagado/cuenta.cobrado*100)}%</span>
+                        <div>
+                          <Progress
+                            max="100"
+                            value={Math.round(cuenta.pagado/cuenta.cobrado*100)}
+                            barClassName={Math.round(cuenta.pagado/cuenta.cobrado*100)>50 ? "bg-success" : "bg-warning"}
+                          />
+                        </div>
+                      </div>
+                    </td>
                   <td>
                     {cuenta.descripcion}
                   </td>
-                  <td>
-                    {cuenta.fAnul}
+                  <td className="text-right">
+                    <UncontrolledDropdown>
+                      <DropdownToggle
+                        className="btn-icon-only text-light"
+                        href="#pablo"
+                        role="button"
+                        size="sm"
+                        color=""
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <i className="fas fa-ellipsis-v" />
+                      </DropdownToggle>
+                      <DropdownMenu className="dropdown-menu-arrow" right>
+                        <DropdownItem
+                        className="d-flex"
+                          href="#pablo"
+                          onClick={()=>
+                          {
+                            toggleModal();
+                            dispatch(getBillDetail({"idCuenta":cuenta.idCuenta}));
+                          }}
+                        >
+                           <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver pagos
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
                   </td>
                 </tr>
                     )

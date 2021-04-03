@@ -7,9 +7,12 @@ import { Container, Row, Col } from "reactstrap";
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import AuthFooter from "components/Footers/AuthFooter.js";
 
-import routes from "routes.js";
+import {routesSimple,routesMembership,routesAdmin} from "../routes.js";
+
+import { useSelector } from "react-redux";
 
 const Auth = (props) => {
+  const auth = useSelector(({ auth }) => auth.authUser);
   const mainContent = React.useRef(null);
   const location = useLocation();
 
@@ -75,7 +78,7 @@ const Auth = (props) => {
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
             <Switch>
-              {getRoutes(routes)}
+              {getRoutes(auth?.rol==3 ? routesAdmin : auth?.rol==2 ? routesMembership : routesSimple)}
               <Redirect from="*" to="/auth/login" />
             </Switch>
           </Row>

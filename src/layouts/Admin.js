@@ -7,7 +7,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-import routes from "routes.js";
+import {routesSimple,routesMembership,routesAdmin} from "../routes.js";
 
 import { useSelector } from "react-redux";
 
@@ -16,6 +16,7 @@ import axios from '../util/Api';
 const Admin = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
+  const auth = useSelector(({ auth }) => auth.authUser);
   const token = useSelector(({ auth }) => auth.token);
   const [allowed, setallowed] = useState(false)
 
@@ -54,6 +55,7 @@ const Admin = (props) => {
   };
 
   const getBrandText = (path) => {
+    var routes = auth?.rol==1 ? routesSimple : auth?.rol==2 ? routesMembership : routesAdmin;
     for (let i = 0; i < routes.length; i++) {
       if(routes[i].routes){
         for (let j = 0; j < routes[i].routes.length; j++) {
@@ -81,7 +83,7 @@ const Admin = (props) => {
     
       <Sidebar
         {...props}
-        routes={routes}
+        routes={auth?.rol==3 ? routesAdmin : auth?.rol==2 ? routesMembership : routesSimple}
         logo={{
           innerLink: "/admin/index",
           imgSrc: require("../assets/img/brand/argon-react.png").default,
@@ -97,7 +99,7 @@ const Admin = (props) => {
 
 {allowed &&
         <Switch>
-          {getRoutes(routes)}
+          {getRoutes(auth?.rol==3 ? routesAdmin : auth?.rol==2 ? routesMembership : routesSimple)}
           <Redirect from="*" to="/admin/index" />
         </Switch>
         
