@@ -6,7 +6,7 @@ import createRootReducer from '../reducers'
 const createBrowserHistory = require('history').createBrowserHistory;
 
 
-export const history = createBrowserHistory();
+export const history = createBrowserHistory({ basename: "/idl" });
 
 const routeMiddleware = routerMiddleware(history);
 
