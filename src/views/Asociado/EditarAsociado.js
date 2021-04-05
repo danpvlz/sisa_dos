@@ -21,16 +21,19 @@ import Select from 'react-select';
 // core components
 import SearchPromotor from "components/Selects/SearchPromotor.js";
 import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
+import SearchCobrador from "components/Selects/SearchCobrador.js";
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { saveAssociated } from "../../redux/actions/Asociado";
+import { showEditAssociated,resetEditAssociated,update } from "../../redux/actions/Asociado";
 
-const NuevoAsociado = () => {
+const EditarAsociado = (props) => {
   const dispatch = useDispatch();
+  const { associatedEditObject } = useSelector(({ asociado }) => asociado);
   const [promotorSearched, setPromotorSearched] = useState(null);
   const [newPromotorName, setnewPromotorName] = useState(null);
   const [comiteGremial, setcomiteGremial] = useState(null);
+  const [cobrador, setcobrador] = useState(null);
   const [typeAssociated, setTypeAssociated] = useState(null);
   const [tipodocumentorepresentante, settipodocumentorepresentante] = useState(null);
   const [tipodocumentoadicional, settipodocumentoadicional] = useState(null);
@@ -43,6 +46,71 @@ const NuevoAsociado = () => {
   const [sendassociated, setsendassociated] = useState(false);
 
   const history = useHistory();
+
+  useEffect(() => {
+    if(props.location.state?.asociadoSelected){
+      if(associatedEditObject.length == 0){
+        dispatch(showEditAssociated(props.location.state?.asociadoSelected));
+      }
+    }else{
+      history.push('/');
+    }
+    return () => {
+      dispatch(resetEditAssociated());
+    }
+  }, []);
+
+  useEffect(() => {
+    associatedEditObject.asociado && setTypeAssociated(associatedEditObject.asociado.tipoAsociado);
+    return () => {
+      setTypeAssociated(null);
+    }
+  }, [associatedEditObject.asociado]);
+
+  useEffect(() => {
+    associatedEditObject.promotor && setPromotorSearched(associatedEditObject.promotor.idPromotor);
+    return () => {
+      setPromotorSearched(null);
+    }
+  }, [associatedEditObject.promotor]);
+
+  useEffect(() => {
+    associatedEditObject.comite && setcomiteGremial(associatedEditObject.comite.idComite);
+    return () => {
+      setcomiteGremial(null);
+    }
+  }, [associatedEditObject.comite]);
+
+  useEffect(() => {
+    associatedEditObject.sector && setcobrador(associatedEditObject.sector.idSector);
+    return () => {
+      setcobrador(null);
+    }
+  }, [associatedEditObject.sector]);
+  
+  useEffect(() => {
+    associatedEditObject.adicional && settipodocumentoadicional(associatedEditObject.adicional.tipoDoc);
+    return () => {
+      settipodocumentoadicional(null);
+    }
+  }, [associatedEditObject.adicional]);
+  
+  useEffect(() => {
+    associatedEditObject.representante && settipodocumentorepresentante(associatedEditObject.representante.tipoDoc);
+    return () => {
+      settipodocumentorepresentante(null);
+    }
+  }, [associatedEditObject.representante]);
+  
+  useEffect(() => {
+    associatedEditObject.persona && settipodocumentopersona(associatedEditObject.persona.tipoDocumento);
+    associatedEditObject.persona && setsexo(associatedEditObject.persona.sexo);
+    
+    return () => {
+      settipodocumentopersona(null);
+      setsexo(null);
+    }
+  }, [associatedEditObject.persona]);
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -59,12 +127,13 @@ const NuevoAsociado = () => {
       formData.comitegremial = comiteGremial;
       formData.tipoasociado = typeAssociated;
       formData.idPromotor = promotorSearched;
+      formData.idSector = cobrador;
       formData.promotornombre = newPromotorName;
       formData.tipodocumento_representante = tipodocumentorepresentante;
       formData.tipodocumento_adicional = tipodocumentoadicional;
       formData.tipodocumento_persona = tipodocumentopersona;
       formData.sexo = sexo;
-      dispatch(saveAssociated(formData))
+      dispatch(update(props.location.state?.asociadoSelected,formData));
       history.push('/admin/asociado');
       //REGISTRAR
       setsendassociated(false);
@@ -72,7 +141,7 @@ const NuevoAsociado = () => {
     } else {
       setFormData(null);
     }
-  }, [sendassociated])
+  }, [sendassociated]);
 
   return (
     <>
@@ -82,7 +151,7 @@ const NuevoAsociado = () => {
       {/* Page content */}
       <Container className="mt--7" fluid>
       <ConfirmDialog
-        question="¿Seguro de registrar asociado?"
+        question="¿Seguro de actualizar datos del asociado?"
         showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendassociated} />
         <Row>
           <Col className="order-xl-1" xl="12">
@@ -90,7 +159,7 @@ const NuevoAsociado = () => {
               <CardHeader className="bg-white border-0">
                 <Row className="align-items-center">
                   <Col xs="12">
-                    <h3 className="mb-0">Nuevo asociado</h3>
+                    <h3 className="mb-0">Editar asociado</h3>
                   </Col>
                 </Row>
               </CardHeader>
@@ -111,7 +180,12 @@ const NuevoAsociado = () => {
                               >
                                 Promotor
                               </label>
-                              <SearchPromotor setVal={setPromotorSearched} setNew={setnewPromotorName} />
+                              {
+                                associatedEditObject.promotor ?
+                                <SearchPromotor setVal={setPromotorSearched} setNew={setnewPromotorName} defaultVal={{value: associatedEditObject.promotor.idPromotor, label: associatedEditObject.promotor.nombresCompletos}} />
+                              :
+                              ""
+                              }
                             </FormGroup>
                           </Col>
                           <Col lg="4">
@@ -122,7 +196,12 @@ const NuevoAsociado = () => {
                               >
                                 Comité gremial*
                               </label>
-                              <SearchComiteGremial setVal={setcomiteGremial} />
+                              {
+                                associatedEditObject.comite ?
+                                <SearchComiteGremial setVal={setcomiteGremial} defaultVal={{value: associatedEditObject.comite.idComite,label:associatedEditObject.comite.nombre}} />
+                              :
+                              ""
+                              }
                             </FormGroup>
                           </Col>
                           <Col lg="4">
@@ -133,14 +212,21 @@ const NuevoAsociado = () => {
                               >
                                 Tipo de asociado*
                               </label>
-                              <Select
-                                placeholder="Seleccione..."
-                                className="select-style"
-                                name="typeAsociado"
-                                onChange={(inputValue, actionMeta) => {
-                                  setTypeAssociated(inputValue.value);
-                                }}
-                                options={[{ value: 1, label: "Empresa" }, { value: 2, label: "Persona" }]} />
+                              {
+                                associatedEditObject.asociado ?
+                                <Select
+                                  placeholder="Seleccione..."
+                                  className="select-style"
+                                  name="typeAsociado"
+                                  onChange={(inputValue, actionMeta) => {
+                                    setTypeAssociated(inputValue.value);
+                                  }}
+                                  options={[{ value: 1, label: "Empresa" }, { value: 2, label: "Persona" }]} 
+                                  defaultValue={{value:associatedEditObject.asociado.tipoAsociado,label: associatedEditObject.asociado.tipoAsociado == 1 ? "Empresa":associatedEditObject.asociado.tipoAsociado == 2 ? "Persona":null}}
+                                  />
+                                  :
+                                  ""
+                              }
                             </FormGroup>
                           </Col>
                           <Col lg="8">
@@ -156,6 +242,7 @@ const NuevoAsociado = () => {
                                 name="direccionsocial"
                                 type="text"
                                 innerRef={register({ required: false })}
+                                defaultValue={associatedEditObject?.asociado?.direccionSocial}
                               />
                             </FormGroup>
                           </Col>
@@ -178,8 +265,25 @@ const NuevoAsociado = () => {
                                   type="number"
                                   name="importemensual"
                                   innerRef={register({ required: true })}
+                                  defaultValue={associatedEditObject?.asociado?.importeMensual}
                                 />
                               </InputGroup>
+                            </FormGroup>
+                          </Col>
+                          <Col lg="4">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Sector*
+                              </label>
+                              {
+                                associatedEditObject.sector ?
+                                <SearchCobrador setVal={setcobrador} defaultVal={{value: associatedEditObject.sector.idSector,label:`${associatedEditObject.sector.descripcion} (${associatedEditObject.sector.codigo})`}} />
+                               :
+                                ""
+                              }
                             </FormGroup>
                           </Col>
                         </Row>
@@ -209,6 +313,7 @@ const NuevoAsociado = () => {
                                       type="text"
                                       name="ruc"
                                       innerRef={register({ required: typeAssociated == 1 })}
+                                      defaultValue={associatedEditObject?.empresa?.ruc}
                                     />
                                     <Button className="btn-icon" size="sm" color="primary" type="button">
                                       <span>
@@ -231,6 +336,7 @@ const NuevoAsociado = () => {
                                     type="text"
                                     name="razonsocial"
                                     innerRef={register({ required: typeAssociated == 1 })}
+                                    defaultValue={associatedEditObject?.empresa?.razonSocial}
                                   />
                                 </FormGroup>
                               </Col>
@@ -247,6 +353,7 @@ const NuevoAsociado = () => {
                                     type="text"
                                     name="direccionfiscal"
                                     innerRef={register({ required: typeAssociated == 1 })}
+                                    defaultValue={associatedEditObject?.empresa?.direccion}
                                   />
                                 </FormGroup>
                               </Col>
@@ -263,6 +370,7 @@ const NuevoAsociado = () => {
                                     type="date"
                                     name="fundacion"
                                     innerRef={register({ required: typeAssociated == 1 })}
+                                    defaultValue={associatedEditObject?.empresa?.fundacion}
                                   />
                                 </FormGroup>
                               </Col>
@@ -279,6 +387,7 @@ const NuevoAsociado = () => {
                                     type="text"
                                     name="actividad"
                                     innerRef={register({ required: typeAssociated == 1 })}
+                                    defaultValue={associatedEditObject?.empresa?.actividad}
                                   />
                                 </FormGroup>
                               </Col>
@@ -296,6 +405,7 @@ const NuevoAsociado = () => {
                                       type="tel"
                                       name="telefono_asociado"
                                       innerRef={register({ required: typeAssociated == 1 })}
+                                      defaultValue={associatedEditObject?.empresa?.telefonos}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
                                       <span>
@@ -319,6 +429,7 @@ const NuevoAsociado = () => {
                                       type="email"
                                       name="correo_asociado"
                                       innerRef={register({ required: typeAssociated == 1 })}
+                                      defaultValue={associatedEditObject?.empresa?.correos}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
                                       <span>
@@ -346,14 +457,21 @@ const NuevoAsociado = () => {
                                   >
                                     Tipo de documento*
                                   </label>
-                                  <Select
-                                    placeholder="Seleccione..."
-                                    className="select-style"
-                                    name="typeAsociado"
-                                    onChange={(inputValue, actionMeta) => {
-                                      settipodocumentorepresentante(inputValue.value);
-                                    }}
-                                    options={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }]} />
+                                  {
+                                    associatedEditObject.representante ?
+                                    <Select
+                                      placeholder="Seleccione..."
+                                      className="select-style"
+                                      name="typeAsociado"
+                                      onChange={(inputValue, actionMeta) => {
+                                        settipodocumentorepresentante(inputValue.value);
+                                      }}
+                                      options={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }]} 
+                                      defaultValue={{value:associatedEditObject.representante.tipoDoc,label:associatedEditObject.representante.tipoDoc==1?"DNI":associatedEditObject.representante.tipoDoc==6?"RUC":associatedEditObject.representante.tipoDoc==6?"Carnet de extranjería":associatedEditObject.representante.tipoDoc==4?"Pasaporte":""}}
+                                      />
+                                      :
+                                      ""
+                                  }
                                 </FormGroup>
                               </Col>
                               <Col lg="3">
@@ -370,6 +488,7 @@ const NuevoAsociado = () => {
                                       type="tel"
                                       name="documento_representante"
                                       innerRef={register({ required: typeAssociated == 1 })}
+                                      defaultValue={associatedEditObject?.representante?.documento}
                                     />
                                     <Button className="btn-icon" size="sm" color="primary" type="button">
                                       <span>
@@ -394,6 +513,7 @@ const NuevoAsociado = () => {
                                         type="text"
                                         name="nombres_representante"
                                         innerRef={register({ required: typeAssociated == 1 })}
+                                        defaultValue={associatedEditObject?.representante?.nombres}
                                       />
                                     </FormGroup>
                                   </Col>
@@ -410,6 +530,7 @@ const NuevoAsociado = () => {
                                         type="text"
                                         name="paterno_representante"
                                         innerRef={register({ required: typeAssociated == 1 })}
+                                        defaultValue={associatedEditObject?.representante?.apellidoPaterno}
                                       />
                                     </FormGroup>
                                   </Col>
@@ -426,6 +547,7 @@ const NuevoAsociado = () => {
                                         type="text"
                                         name="materno_representante"
                                         innerRef={register({ required: typeAssociated == 1 })}
+                                        defaultValue={associatedEditObject?.representante?.apellidoMaterno}
                                       />
                                     </FormGroup>
                                   </Col>
@@ -446,6 +568,7 @@ const NuevoAsociado = () => {
                                     type="date"
                                     name="fechanacimiento_representante"
                                     innerRef={register({ required: typeAssociated == 1 })}
+                                    defaultValue={associatedEditObject?.representante?.fechaNacimiento}
                                   />
                                 </FormGroup>
                               </Col>
@@ -462,6 +585,7 @@ const NuevoAsociado = () => {
                                     type="text"
                                     name="cargo_representante"
                                     innerRef={register({ required: typeAssociated == 1 })}
+                                    defaultValue={associatedEditObject?.representante?.cargo}
                                   />
                                 </FormGroup>
                               </Col>
@@ -479,6 +603,7 @@ const NuevoAsociado = () => {
                                       type="tel"
                                       name="telefono_representante"
                                       innerRef={register({ required: typeAssociated == 1 })}
+                                      defaultValue={associatedEditObject?.representante?.telefonos}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
                                       <span>
@@ -502,6 +627,7 @@ const NuevoAsociado = () => {
                                       type="email"
                                       name="correo_representante"
                                       innerRef={register({ required: typeAssociated == 1 })}
+                                      defaultValue={associatedEditObject?.representante?.email}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
                                       <span>
@@ -536,7 +662,10 @@ const NuevoAsociado = () => {
                                     onChange={(inputValue, actionMeta) => {
                                       settipodocumentoadicional(inputValue.value);
                                     }}
-                                    options={[{ value: 1, label: "DNI" }, { value: 2, label: "RUC" }, { value: 3, label: "Carnet de extranjería" }]} />
+                                    options={[{ value: 1, label: "DNI" }, { value: 2, label: "RUC" }, { value: 3, label: "Carnet de extranjería" }]} 
+                                    defaultValue={{value:associatedEditObject?.adicional?.tipoDoc,label:associatedEditObject?.adicional?.tipoDoc==1?"DNI":associatedEditObject?.adicional?.tipoDoc==6?"RUC":associatedEditObject?.adicional?.tipoDoc==6?"Carnet de extranjería":associatedEditObject?.adicional?.tipoDoc==4?"Pasaporte":""}}
+                                    />
+                               
                                </FormGroup>
                               </Col>
                               <Col lg="3">
@@ -553,6 +682,7 @@ const NuevoAsociado = () => {
                                       type="tel"
                                       name="documento_adicional"
                                       innerRef={register({ required: false })}
+                                      defaultValue={associatedEditObject?.adicional?.documento}
                                     />
                                     <Button className="btn-icon" size="sm" color="primary" type="button">
                                       <span>
@@ -577,6 +707,7 @@ const NuevoAsociado = () => {
                                         type="text"
                                         name="nombres_adicional"
                                         innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.adicional?.nombres}
                                       />
                                     </FormGroup>
                                   </Col>
@@ -593,6 +724,7 @@ const NuevoAsociado = () => {
                                         type="text"
                                         name="paterno_adicional"
                                         innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.adicional?.apellidoPaterno}
                                       />
                                     </FormGroup>
                                   </Col>
@@ -609,6 +741,7 @@ const NuevoAsociado = () => {
                                         type="text"
                                         name="materno_adicional"
                                         innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.adicional?.apellidoMaterno}
                                       />
                                     </FormGroup>
                                   </Col>
@@ -628,6 +761,7 @@ const NuevoAsociado = () => {
                                     type="date"
                                     name="fechanacimiento_adicional"
                                     innerRef={register({ required: false })}
+                                    defaultValue={associatedEditObject?.adicional?.fechaNacimiento}
                                   />
                                 </FormGroup>
                               </Col>
@@ -644,6 +778,7 @@ const NuevoAsociado = () => {
                                     type="text"
                                     name="cargo_adicional"
                                     innerRef={register({ required: false })}
+                                    defaultValue={associatedEditObject?.adicional?.cargo}
                                   />
                                 </FormGroup>
                               </Col>
@@ -661,6 +796,7 @@ const NuevoAsociado = () => {
                                       type="tel"
                                       name="telefono_adicional"
                                       innerRef={register({ required: false })}
+                                      defaultValue={associatedEditObject?.adicional?.telefonos}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
                                       <span>
@@ -684,6 +820,7 @@ const NuevoAsociado = () => {
                                       type="email"
                                       name="correo_adicional"
                                       innerRef={register({ required: false })}
+                                      defaultValue={associatedEditObject?.adicional?.email}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
                                       <span>
@@ -721,7 +858,9 @@ const NuevoAsociado = () => {
                                     onChange={(inputValue, actionMeta) => {
                                       settipodocumentopersona(inputValue.value);
                                     }}
-                                    options={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }]} />
+                                    options={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }]} 
+                                    defaultValue={{value:associatedEditObject?.persona?.tipoDocumento,label:associatedEditObject?.persona?.tipoDocumento==1?"DNI":associatedEditObject?.persona?.tipoDocumento==6?"RUC":associatedEditObject?.persona?.tipoDocumento==6?"Carnet de extranjería":associatedEditObject?.persona?.tipoDocumento==4?"Pasaporte":""}}
+                                    />
                                 </FormGroup>
                               </Col>
                               <Col lg="3">
@@ -738,6 +877,7 @@ const NuevoAsociado = () => {
                                       type="tel"
                                       name="documento_persona"
                                       innerRef={register({ required: typeAssociated == 2 })}
+                                      defaultValue={associatedEditObject?.persona?.documento}
                                     />
                                     <Button className="btn-icon" size="sm" color="primary" type="button">
                                       <span>
@@ -762,6 +902,7 @@ const NuevoAsociado = () => {
                                         type="text"
                                         name="nombres_persona"
                                         innerRef={register({ required: typeAssociated == 2 })}
+                                        defaultValue={associatedEditObject?.persona?.nombres}
                                       />
                                     </FormGroup>
                                   </Col>
@@ -778,6 +919,7 @@ const NuevoAsociado = () => {
                                         type="text"
                                         name="paterno_persona"
                                         innerRef={register({ required: typeAssociated == 2 })}
+                                        defaultValue={associatedEditObject?.persona?.apellidoPaterno}
                                       />
                                     </FormGroup>
                                   </Col>
@@ -794,6 +936,7 @@ const NuevoAsociado = () => {
                                         type="text"
                                         name="materno_persona"
                                         innerRef={register({ required: typeAssociated == 2 })}
+                                        defaultValue={associatedEditObject?.persona?.apellidoMaterno}
                                       />
                                     </FormGroup>
                                   </Col>
@@ -814,7 +957,9 @@ const NuevoAsociado = () => {
                                     onChange={(inputValue, actionMeta) => {
                                       setsexo(inputValue.value);
                                     }}
-                                    options={[{ value: 0, label: "Hombre" }, { value: 1, label: "Mujer" }]} />
+                                    options={[{ value: 0, label: "Hombre" }, { value: 1, label: "Mujer" }]} 
+                                    defaultValue={{ value: associatedEditObject?.persona?.sexo, label: associatedEditObject?.persona?.sexo==1 ? "Mujer" : "Hombre" }}
+                                    />
                                 </FormGroup>
                               </Col>
                               <Col lg="3">
@@ -830,6 +975,7 @@ const NuevoAsociado = () => {
                                     type="date"
                                     name="fechanacimiento_persona"
                                     innerRef={register({ required: typeAssociated == 2 })}
+                                    defaultValue={associatedEditObject?.persona?.fechaNacimiento}
                                   />
                                 </FormGroup>
                               </Col>
@@ -846,6 +992,7 @@ const NuevoAsociado = () => {
                                     type="text"
                                     name="direccionfiscal_persona"
                                     innerRef={register({ required: typeAssociated == 2 })}
+                                    defaultValue={associatedEditObject?.persona?.direccion}
                                   />
                                 </FormGroup>
                               </Col>
@@ -862,6 +1009,7 @@ const NuevoAsociado = () => {
                                     type="text"
                                     name="actividad_persona"
                                     innerRef={register({ required: typeAssociated == 2 })}
+                                    defaultValue={associatedEditObject?.persona?.actividad}
                                   />
                                 </FormGroup>
                               </Col>
@@ -879,6 +1027,7 @@ const NuevoAsociado = () => {
                                       type="tel"
                                       name="telefono_persona"
                                       innerRef={register({ required: typeAssociated == 2 })}
+                                      defaultValue={associatedEditObject?.persona?.telefonos}
                                     />
                                     <Button className="btn-icon d-none d-none" size="sm" color="primary" type="button">
                                       <span>
@@ -902,6 +1051,7 @@ const NuevoAsociado = () => {
                                       type="email"
                                       name="correo_persona"
                                       innerRef={register({ required: typeAssociated == 2 })}
+                                      defaultValue={associatedEditObject?.persona?.correos}
                                     />
                                     <Button className="btn-icon d-none d-none" size="sm" color="primary" type="button">
                                       <span>
@@ -925,7 +1075,7 @@ const NuevoAsociado = () => {
                     :
                     <div className="text-center mt-5">
                       <Button className="my-4 btn-block" color="primary" type="submit">
-                        Registrar
+                        Actualizar
                       </Button>
                     </div>
                   }
@@ -939,4 +1089,4 @@ const NuevoAsociado = () => {
   );
 };
 
-export default NuevoAsociado;
+export default EditarAsociado;

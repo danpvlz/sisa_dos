@@ -11,6 +11,7 @@ import Login from "views/Auth/Login.js";
 //Asociado
 import Asociado from "views/Asociado/Asociado.js";
 import NuevoAsociado from "views/Asociado/NuevoAsociado.js";
+import EditarAsociado from "views/Asociado/EditarAsociado.js";
 
 //Colaborador
 import Colaborador from "views/Colaborador/Colaborador.js";
@@ -49,6 +50,7 @@ var components=[
   NuevaCobranza,
   Pendientes,
   Membresia,
+  EditarAsociado,
 ]
 
 export const routesSimple = [
@@ -72,7 +74,7 @@ export const routesSimple = [
     path: "/asociado",
     name: "Asociado",
     icon: "ni ni-single-02 text-blue",
-    component: components[2],
+    component: components[15],
     layout: "/admin",
     show: true,
     users: [0]
@@ -205,6 +207,15 @@ export const routesAdmin=[
     component: components[3],
     layout: "/admin",
     show: false
+  },
+  {
+    path: "/editar-asociado",
+    name: "Editar asociado",
+    icon: "ni ni-single-02 text-green",
+    component: EditarAsociado,
+    layout: "/admin",
+    show: false,
+    users:[0]
   },
   {
     path: "/colaborador",

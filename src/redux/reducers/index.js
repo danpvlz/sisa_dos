@@ -9,6 +9,8 @@ import Asociado from './Asociado';
 import Cobrador from './Cobrador';
 import Llamada from './Llamada';
 import Cuenta from './Cuenta';
+import Promotor from './Promotor';
+import ComiteGremial from './ComiteGremial';
 
 export default (history) =>
 combineReducers({
@@ -21,4 +23,6 @@ combineReducers({
   cobrador: Cobrador,
   llamada: Llamada,
   cuenta: Cuenta,
+  promotor: Promotor,
+  comite: ComiteGremial,
 })

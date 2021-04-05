@@ -13,9 +13,6 @@ import {
   Container,
   Row,
   Col,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
 } from "reactstrap";
 import Select from 'react-select';
 // core components

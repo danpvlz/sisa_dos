@@ -3,7 +3,10 @@ import {
     FILTER_ASSOCIATED,
     ASSOCIATED_STATUS_ACTIONS,
     INDICATORS_ASSOCIATED,
-    SHOW_ASSOCIATED
+    SHOW_ASSOCIATED,
+    SHOW_EDIT_ASSOCIATED,
+    SAVE_ASSOCIATED,
+    UPDATE_ASSOCIATED,
   } from "../ActionTypes";
   
   const INIT_STATE = {
@@ -14,6 +17,7 @@ import {
     },
     associatedStatusActions: 0,
     associatedObject: [],
+    associatedEditObject: [],
     associatedFilter:[],
     associatedIndicators:{
       associateds:0,
@@ -51,11 +55,26 @@ import {
               associatedStatusActions:action.payload
           }
       }
-      
+      case SAVE_ASSOCIATED: {
+        return {
+          ...state,
+        }
+      }
+      case UPDATE_ASSOCIATED: {
+        return {
+          ...state,
+        }
+      }
       case SHOW_ASSOCIATED: {
           return {
               ...state,
               associatedObject : action.payload
+          }
+      }
+      case SHOW_EDIT_ASSOCIATED: {
+          return {
+              ...state,
+              associatedEditObject : action.payload
           }
       }
       default:

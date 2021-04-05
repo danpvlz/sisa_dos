@@ -1,26 +1,30 @@
-import React, { useState } from 'react'
+import React, {useEffect} from 'react'
 
 import Select from 'react-select';
+import { useDispatch, useSelector } from "react-redux";
+import { filter } from "../../redux/actions/ComiteGremial";
 
-export default function SearchComiteGremial() {
-    const comiteGremial = require('../../data/filtroComiteGremial.json');
-    const [searchComiteGremial, setSearchComiteGremial] = useState([]);
-    const handleInputChange = (inputValue, actionMeta) => {
-        setSearchComiteGremial(
-        inputValue.length >= 2 ? comiteGremial : []
-      );
-    }
-    
-    return (
-        <Select
-            placeholder="Seleccione..."
-            name="searchComiteGremial"
-            id="searchComiteGremial"
-            className="select-style"
-            onInputChange={handleInputChange}
-            onChange={(inputValue, actionMeta) => {
-                console.log(inputValue.value);
-            }}
-            options={searchComiteGremial} />
-    )
+export default function SearchComiteGremial({setVal, defaultVal}) {
+  const dispatch = useDispatch();
+  const comiteGremialFilter = useSelector(({ comite }) => comite.comiteGremialFilter);
+  const handleInputChange = (inputValue, actionMeta) => {
+      inputValue.length >= 2 && dispatch(filter(inputValue));
+  }
+  useEffect(() => {
+    dispatch(filter());
+  }, [])
+  return (
+    <Select
+      placeholder="Seleccione..."
+      id="searchComite"
+      name="searchComite"
+      className="select-style"
+      //onInputChange={handleInputChange}
+      isClearable={true}
+      onChange={(inputValue, actionMeta) => {
+        setVal(inputValue != null ? inputValue.value : null);
+      }}
+      options={comiteGremialFilter}
+      defaultValue={defaultVal} />
+  )
 }

@@ -25,7 +25,7 @@ import Header from "components/Headers/AsociadoHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listAssociated, exportAssociateds } from "../../redux/actions/Asociado";
+import { listAssociated, exportAssociateds, status } from "../../redux/actions/Asociado";
 
 const Asociado = () => {
   const dispatch = useDispatch();
@@ -226,20 +226,44 @@ const Asociado = () => {
                       <DropdownMenu className="dropdown-menu-arrow" right>
                         <DropdownItem
                         className="d-flex"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
+                          onClick={()=>{
+                            history.push({
+                              pathname: '/admin/editar-asociado',
+                              state: { asociadoSelected: asociado.idAsociado }});
+                          }}
                         >
                            <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
                         </DropdownItem>
+                        {asociado.estado == 1 ?
+                          <DropdownItem
+                          className="d-flex"
+                            onClick={()=>{
+                              dispatch(status(asociado.idAsociado));
+                              dispatch(listAssociated(page,search))
+                            }}
+                          >
+                            <i className="text-danger fa fa-ban" aria-hidden="true"></i> Retirar
+                          </DropdownItem>
+                        : asociado.estado == 2 || asociado.estado == 0 ? 
+                          <DropdownItem
+                          className="d-flex"
+                            onClick={()=>{
+                              dispatch(status(asociado.idAsociado));
+                              dispatch(listAssociated(page,search))
+                            }}
+                          >
+                            <i className="text-green fa fa-check" aria-hidden="true"></i> Activar
+                          </DropdownItem>
+                        : ""}
                         <DropdownItem
-                        className="d-flex"
+                        className="d-none"
                           href="#pablo"
                           onClick={(e) => e.preventDefault()}
                         >
                            <i className="text-blue fa fa-phone fa-rotate-90" aria-hidden="true"></i> Llamadas
                         </DropdownItem>
                         <DropdownItem
-                        className="d-flex"
+                        className="d-none"
                           href="#pablo"
                           onClick={(e) => e.preventDefault()}
                         >

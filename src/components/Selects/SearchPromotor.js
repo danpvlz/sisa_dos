@@ -1,27 +1,24 @@
 import React, { useState } from 'react'
 import CreatableSelect from 'react-select/creatable';
+import { useDispatch, useSelector } from "react-redux";
+import { filter } from "../../redux/actions/Promotor";
 
-export default function SearchPromotor({ searched, setSearched }) {
-    const promotores = require('../../data/filtroPromotor.json');
-    const [searchPromotor, setSearchPromotor] = useState([]);
-
-    const handleChange = (newValue, actionMeta) => {
-        setSearched(newValue)
-    };
-
+export default function SearchPromotor({ setVal, setNew, defaultVal }) {
+    const dispatch = useDispatch();
+    const promotorFilter = useSelector(({ promotor }) => promotor.promotorFilter);
+    const [newOption, setnewOption] = useState(null);
+    const [filterOption, setfilterOption] = useState(null);
     const handleInputChange = (inputValue, actionMeta) => {
-        setSearchPromotor(
-            inputValue.length >= 2 ? promotores : []
-        );
+        inputValue.length >= 2 && dispatch(filter(inputValue));
     }
 
     const handleCreate = (inputValue) => {
-        let newOption = {
+        let newVal = {
             value: 0,
             label: inputValue,
         };
-        setSearchPromotor([newOption]);
-        setSearched(newOption);
+        setNew(inputValue);
+        setnewOption([newVal]);
     };
     
     return (
@@ -31,11 +28,19 @@ export default function SearchPromotor({ searched, setSearched }) {
             className="select-style"
             formatCreateLabel={userInput => `Crear promotor ${userInput}`}
             isClearable
-            onChange={handleChange}
+            onChange={(inputValue, actionMeta) => {
+              if(inputValue){
+                setVal(inputValue != null ? inputValue.value : null);
+                setfilterOption(inputValue != null ? inputValue : null);
+              }else{
+                setNew(null);
+                setnewOption(null);
+              }
+            }}
             onInputChange={handleInputChange}
             onCreateOption={handleCreate}
-            options={searchPromotor}
-            value={searched}
+            options={ newOption ? newOption : promotorFilter }
+            defaultValue={defaultVal}
         />
     )
 }

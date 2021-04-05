@@ -86,7 +86,7 @@ const Admin = (props) => {
         routes={auth?.rol==3 ? routesAdmin : auth?.rol==2 ? routesMembership : routesSimple}
         logo={{
           innerLink: "/admin/index",
-          imgSrc: require("../assets/img/brand/argon-react.png").default,
+          imgSrc: require("../assets/img/brand/logocclam.png").default,
           imgAlt: "...",
         }}
       />
@@ -100,7 +100,7 @@ const Admin = (props) => {
 {allowed &&
         <Switch>
           {getRoutes(auth?.rol==3 ? routesAdmin : auth?.rol==2 ? routesMembership : routesSimple)}
-          <Redirect from="*" to="/admin/index" />
+          <Redirect to="/admin/index" />
         </Switch>
         
       }
