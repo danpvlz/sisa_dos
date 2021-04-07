@@ -37,36 +37,6 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Tardanzas
-                        </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">
-                          {tardanzas}
-                        </span>
-                      </div>
-                      <Col className="col-auto">
-                        <div className="icon icon-shape bg-orange text-white rounded-circle shadow">
-                          <i className="fa fa-clock" />
-                        </div>
-                      </Col>
-                    </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2 d-none">
-                        <i className="fa fa-arrow-up" /> 3.48%
-                      </span>{" "}
-                      <span className="text-nowrap">Total</span>
-                    </p>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
                           Faltas
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
@@ -88,6 +58,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                   </CardBody>
                 </Card>
               </Col>
+              
               <Col lg="6" xl="3">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
@@ -97,10 +68,77 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          H. realizadas
+                          Tardanzas
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          {hRealizadas}h
+                          {tardanzas*-1>60 ? tardanzas*-1%60==0 ? Math.round(tardanzas/60)*-1+"h " : (Math.round(tardanzas/60)*-1+"h " + tardanzas*-1%60+"min") : tardanzas*-1+"min"}
+                        </span>
+                      </div>
+                      <Col className="col-auto">
+                        <div className="icon icon-shape bg-orange text-white rounded-circle shadow">
+                          <i className="fa fa-clock" />
+                        </div>
+                      </Col>
+                    </Row>
+                    <p className="mt-3 mb-0 text-muted text-sm">
+                      <span className="text-success mr-2 d-none">
+                        <i className="fa fa-arrow-up" /> 3.48%
+                      </span>{" "}
+                      <span className="text-nowrap">Total</span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Col>
+              
+              <Col lg="6" xl="3">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
+                          H. compensar
+                        </CardTitle>
+                        <span className="h2 font-weight-bold mb-0">
+                          {hCompensar>60 ? hCompensar%60 == 0 ? Math.round(hCompensar/60)+"h" :(Math.round(hCompensar/60)*-1+"h " + hCompensar%60+"min") : hCompensar+"min"}
+                        </span>
+                      </div>
+                      <Col className="col-auto">
+                        <div className="icon icon-shape bg-success text-white rounded-circle shadow">
+                          <i className="fa fa-address-book" />
+                        </div>
+                      </Col>
+                    </Row>
+                    <p className="mt-3 mb-0 text-muted text-sm">
+                      <span className="text-success mr-2 d-none">
+                        <i className="fas fa-arrow-up"/> 12%
+                      </span>{" "}
+                      <span className="text-nowrap">Total</span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg="6" xl="3">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
+                          H. totales
+                        </CardTitle>
+                        <span className="h2 font-weight-b
+                        old mb-0">
+                          {
+                          hRealizadas>0 ?
+                          hRealizadas>60 ? hRealizadas%60 == 0 ? Math.round(hRealizadas/60)+"h" :(Math.round(hRealizadas/60)*-1+"h " + hRealizadas%60+"min") : hRealizadas+"min"
+                          :
+                          hRealizadas*-1>60 ? hRealizadas*-1%60 == 0 ? Math.round(hRealizadas*-1/60)+"h" :(Math.round(hRealizadas*-1/60)*-1+"h " + hRealizadas*-1%60+"min") : hRealizadas*-1+"min"
+                          }
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -118,36 +156,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          H. compensar
-                        </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">
-                          {hCompensar}h
-                        </span>
-                      </div>
-                      <Col className="col-auto">
-                        <div className="icon icon-shape bg-success text-white rounded-circle shadow">
-                          <i className="fa fa-address-book" />
-                        </div>
-                      </Col>
-                    </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2 d-none">
-                        <i className="fas fa-arrow-up"/> 12%|
-                      </span>{" "}
-                      <span className="text-nowrap">Total</span>
-                    </p>
-                  </CardBody>
-                </Card>
-              </Col>
+              
             </Row>
           </div>
         </Container>

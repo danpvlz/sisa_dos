@@ -508,6 +508,7 @@ const Asistencia = () => {
                               <Badge
                                 id={`tooltip_in_${key}`}
                                 data-placement="top"
+                                className={parseInt(asistencia.estado) == 4 ? "bg-yellow text-default" : ""}
                                 type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "warning" : parseInt(asistencia.estado) == 3 ? "danger" : parseInt(asistencia.estado) == 4 ? "yellow" : "default"}>
                                 {asistencia.hora}
                               </Badge>

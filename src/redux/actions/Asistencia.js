@@ -71,11 +71,10 @@ export const listDetail = (page = 1,params={}) => {
   }
 };
   
-export const myTodayAssistanceList = (page = 1,params={}) => {
+export const myTodayAssistanceList = () => {
   return (dispatch) => {
     dispatch({ type: FETCH_START });
-    axios.post('assistance/mytodayassistance?page=' + page,
-    params
+    axios.post('assistance/mytodayassistance'
     ).then(({ data }) => {  
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
@@ -171,9 +170,9 @@ export const saveAssistance = (assistanceData) => {
     ).then(({ data, status }) => {
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: SAVE_ASSISTANCE });
         dispatch({ type: ASSISTANCE_STATUS_ACTIONS, payload: status });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.message });
       }
@@ -193,9 +192,9 @@ export const saveJustification = (justificationData) => {
     ).then(({ data, status }) => {
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: SAVE_ASSISTANCE_JUSTIFICATION });
         dispatch({ type: ASSISTANCE_STATUS_ACTIONS, payload: status });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.message });
       }

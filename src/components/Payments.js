@@ -62,14 +62,18 @@ export default function Payments({ showDetail, toggleModal }) {
                     <Table className="align-items-center table-flush text-center" responsive>
                         <thead className="thead-light ">
                             <tr>
+                                <th scope="col">Emisión</th>
                                 <th scope="col">Serie-número</th>
                                 <th scope="col">Asociado</th>
-                                <th scope="col">Total</th>
                                 <th scope="col">Estado</th>
+                                <th scope="col">Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
+                                <td>
+                                    {comprobanteObject?.cuenta?.fechaEmision}
+                                </td>
                                 <td>
                                     {comprobanteObject?.cuenta?.serie}-{comprobanteObject?.cuenta?.numero}
                                 </td>
@@ -77,10 +81,10 @@ export default function Payments({ showDetail, toggleModal }) {
                                     {comprobanteObject?.cuenta?.asociado}
                                 </td>
                                 <td>
-                                    s/.{comprobanteObject?.cuenta?.total}
+                                    {comprobanteObject?.cuenta?.estado == 1 ? "Por cancelar" : comprobanteObject?.cuenta?.estado == 2 ? "Cancelada" : "Anulada"}
                                 </td>
                                 <td>
-                                    {comprobanteObject?.cuenta?.estado == 1 ? "Por cancelar" : comprobanteObject?.cuenta?.estado == 2 ? "Cancelada" : "Anulada"}
+                                    s/.{comprobanteObject?.cuenta?.total}
                                 </td>
                             </tr>
                         </tbody>

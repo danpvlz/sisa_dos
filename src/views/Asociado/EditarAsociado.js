@@ -315,11 +315,6 @@ const EditarAsociado = (props) => {
                                       innerRef={register({ required: typeAssociated == 1 })}
                                       defaultValue={associatedEditObject?.empresa?.ruc}
                                     />
-                                    <Button className="btn-icon" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-search" />
-                                      </span>
-                                    </Button>
                                   </div>
                                 </FormGroup>
                               </Col>
@@ -490,11 +485,6 @@ const EditarAsociado = (props) => {
                                       innerRef={register({ required: typeAssociated == 1 })}
                                       defaultValue={associatedEditObject?.representante?.documento}
                                     />
-                                    <Button className="btn-icon" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-search" />
-                                      </span>
-                                    </Button>
                                   </div>
                                 </FormGroup>
                               </Col>
@@ -595,7 +585,7 @@ const EditarAsociado = (props) => {
                                     className="form-control-label"
                                     htmlFor="input-country"
                                   >
-                                    Teléfono*
+                                    Teléfono
                                   </label>
                                   <div className="d-flex">
                                     <Input
@@ -619,7 +609,7 @@ const EditarAsociado = (props) => {
                                     className="form-control-label"
                                     htmlFor="input-country"
                                   >
-                                    Correo*
+                                    Correo
                                   </label>
                                   <div className="d-flex">
                                     <Input
@@ -684,11 +674,6 @@ const EditarAsociado = (props) => {
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.adicional?.documento}
                                     />
-                                    <Button className="btn-icon" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-search" />
-                                      </span>
-                                    </Button>
                                   </div>
                                 </FormGroup>
                               </Col>
@@ -788,7 +773,7 @@ const EditarAsociado = (props) => {
                                     className="form-control-label"
                                     htmlFor="input-country"
                                   >
-                                    Teléfono*
+                                    Teléfono
                                   </label>
                                   <div className="d-flex">
                                     <Input
@@ -812,7 +797,7 @@ const EditarAsociado = (props) => {
                                     className="form-control-label"
                                     htmlFor="input-country"
                                   >
-                                    Correo*
+                                    Correo
                                   </label>
                                   <div className="d-flex">
                                     <Input
@@ -1019,7 +1004,7 @@ const EditarAsociado = (props) => {
                                     className="form-control-label"
                                     htmlFor="input-country"
                                   >
-                                    Teléfono*
+                                    Teléfono
                                     </label>
                                   <div className="d-flex">
                                     <Input
@@ -1043,7 +1028,7 @@ const EditarAsociado = (props) => {
                                     className="form-control-label"
                                     htmlFor="input-country"
                                   >
-                                    Correo*
+                                    Correo
                                   </label>
                                   <div className="d-flex">
                                     <Input

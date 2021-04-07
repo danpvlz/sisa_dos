@@ -33,6 +33,10 @@ import NuevaCobranza from "views/Cuenta/NuevaCobranza.js";
 import Pendientes from "views/Cuenta/Pendientes.js";
 import Membresia from "views/Cuenta/Membresia.js";
 
+//Servicios
+import Servicio from "views/Servicio/Servicio.js";
+import NuevoServicio from "views/Servicio/NuevoServicio.js";
+
 var components=[
   Login,
   Index,
@@ -51,6 +55,8 @@ var components=[
   Pendientes,
   Membresia,
   EditarAsociado,
+  Servicio,
+  NuevoServicio,
 ]
 
 export const routesSimple = [
@@ -172,6 +178,24 @@ export const routesSimple = [
     component: Register,
     layout: "/auth",
     show: false
+  },
+  {
+    path: "/servicios",
+    name: "Servicios",
+    icon: "ni ni-satisfied text-primary",
+    component: components[17],
+    layout: "/admin",
+    show: true,
+    users:[0]
+  },
+  {
+    path: "/registro-servicio",
+    name: "Registro de servicio",
+    icon: "ni ni-satisfied text-primary",
+    component: components[18],
+    layout: "/admin",
+    show: false,
+    users:[0]
   },
 ];
 
@@ -371,6 +395,24 @@ export const routesAdmin=[
     component: Register,
     layout: "/auth",
     show: false
+  },
+  {
+    path: "/servicios",
+    name: "Servicios",
+    icon: "ni ni-satisfied text-primary",
+    component: components[17],
+    layout: "/admin",
+    show: true,
+    users:[0]
+  },
+  {
+    path: "/registro-servicio",
+    name: "Registro de servicio",
+    icon: "ni ni-satisfied text-primary",
+    component: components[18],
+    layout: "/admin",
+    show: false,
+    users:[0]
   },
 ];
 

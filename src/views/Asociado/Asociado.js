@@ -24,8 +24,9 @@ import Select from 'react-select';
 import Header from "components/Headers/AsociadoHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
+import SetCodigoModal from "components/SetCodigoModal.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listAssociated, exportAssociateds, status } from "../../redux/actions/Asociado";
+import { listAssociated, exportAssociateds, status, assignCode } from "../../redux/actions/Asociado";
 
 const Asociado = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,10 @@ const Asociado = () => {
   //const asociados = require('../../data/asociado.json');
   const history = useHistory();
   const handleNewAsociado = useCallback(() => history.push('/admin/nuevo-asociado'), [history]);
-
+  const [selectedAsociado, setSelectedAsociado] = useState(null);
+  const [showSetCodigo, setshowSetCodigo] = useState(false);
+  const [codigo, setcodigo] = useState(null);
+  const [sendcodigo, setsendcodigo] = useState(false);
   useEffect(() => {
     let tsearch=search;
     if(idAsociado == null){
@@ -75,11 +79,38 @@ const Asociado = () => {
   useEffect(() => {
     dispatch(listAssociated(page,search))
   }, [page])
+
+  const toggleModalCodigo = () => {
+    setshowSetCodigo(!showSetCodigo);
+  };
+
+  useEffect(() => {
+    if (sendcodigo) {
+      //REGISTRAR
+      var fData = {
+        "idAsociado": selectedAsociado,
+        "codigo": codigo
+      }
+      dispatch(assignCode(fData))
+      //REGISTRAR
+      setcodigo(null);
+      setsendcodigo(false);
+      setSelectedAsociado(null);
+      dispatch(listAssociated(page,search));
+    }
+  }, [sendcodigo]);
   return (
     <>
       <Header />
       {/* Page content */}
       <Container className="mt--7" fluid>
+      <SetCodigoModal 
+        showSetCodigo={showSetCodigo} 
+        toggleModal={toggleModalCodigo}  
+        codigo={codigo}
+        setcodigo={setcodigo}
+        setSendCodigo={setsendcodigo}
+      />
         {/* Table */}
         <Row>
           <div className="col">
@@ -168,11 +199,12 @@ const Asociado = () => {
                     <th scope="col">Tipo</th>
                     <th scope="col">Documento</th>
                     <th scope="col">Estado</th>
-                    <th scope="col">Actividad</th>
-                    <th scope="col">Comité gremial</th>
                     <th scope="col">Importe</th>
                     <th scope="col">Cobrador</th>
+                    <th scope="col">Comité gremial</th>
                     <th scope="col">Dirección</th>
+                    <th scope="col">Actividad</th>
+                    <th scope="col">Código</th>
                     <th scope="col" />
                   </tr>
                 </thead>
@@ -197,19 +229,22 @@ const Asociado = () => {
                     </Badge>
                   </td>
                   <td>
-                    {asociado.actividad}
-                  </td>
-                  <td>
-                    {asociado.comitegremial}
-                  </td>
-                  <td>
                     <small>s/. </small>{asociado.importeMensual}
                   </td>
                   <td>
                     {asociado.cobrador}
                   </td>
                   <td>
+                    {asociado.comitegremial}
+                  </td>
+                  <td>
                     {asociado.direccionSocial}
+                  </td>
+                  <td>
+                    {asociado.actividad}
+                  </td>
+                  <td>
+                    {asociado.codigo}
                   </td>
                   <td className="text-right">
                     <UncontrolledDropdown>
@@ -233,6 +268,12 @@ const Asociado = () => {
                           }}
                         >
                            <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
+                        </DropdownItem>
+                        <DropdownItem
+                        className="d-flex"
+                        onClick={(e) => {setSelectedAsociado(asociado.idAsociado); toggleModalCodigo();}}
+                        >
+                           <i className="text-blue fa fa-edit" aria-hidden="true"></i> Modificar código
                         </DropdownItem>
                         {asociado.estado == 1 ?
                           <DropdownItem

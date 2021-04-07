@@ -11,8 +11,11 @@ import {
   SAVE_ASSOCIATED,
   SHOW_EDIT_ASSOCIATED,
   UPDATE_ASSOCIATED,
+  SHOW_RUC_SEARCHED,
+  SHOW_DNI_SEARCHED,
 } from "../ActionTypes";
 import axios from '../../util/Api'
+import helper from 'axios';
 
 export const listAssociated = (page = 1, params = {}) => {
   return (dispatch) => {
@@ -196,6 +199,94 @@ export const status = (id) => {
     dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: 0 });
 
     axios.get('associatedstatus/' + id,
+    ).then(({ data, status }) => {
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: UPDATE_ASSOCIATED });
+        dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
+
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.message });
+      }
+
+    })
+      .catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+      });
+  }
+};
+
+export const searchRuc = (rucSearched) =>  {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: 0 });
+    helper.post('https://api.migo.pe/api/v1/ruc', {
+      token: process.env.REACT_APP_MIGOAPI_T,
+      ruc: rucSearched,
+    }
+    ).then(({ data, status }) => {
+      console.log(data);
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
+        dispatch({ type: SHOW_RUC_SEARCHED, payload: data });
+
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.message });
+      }
+    })
+      .catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+      });
+  }
+};
+
+export const searchDni = (dniSearched) =>  {
+  let config = {
+    headers: {
+      "Content-Type": 'application/json',
+      "Authorization": `Bearer ${process.env.REACT_APP_APIPERU_T}`
+    }
+  }
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: 0 });
+    helper.get('https://apiperu.dev/api/dni/'+dniSearched,config
+    ).then(({ data, status }) => {
+      if (data.success) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
+        dispatch({ type: SHOW_DNI_SEARCHED, payload: data.data });
+
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.message });
+      }
+    })
+      .catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+      });
+  }
+};
+
+export const resetSearchRuc = () => {
+  return (dispatch) => {
+    dispatch({ type: SHOW_RUC_SEARCHED, payload: null });
+  }
+};
+
+export const resetSearchDni = () => {
+  return (dispatch) => {
+    dispatch({ type: SHOW_DNI_SEARCHED, payload: null });
+  }
+};
+
+export const assignCode = (params={}) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: 0 });
+
+    axios.post('associatedassigncode/', params
     ).then(({ data, status }) => {
       if (data) {
         dispatch({ type: FETCH_SUCCESS });

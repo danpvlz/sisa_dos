@@ -24,7 +24,8 @@ import {
   Input,
 } from "reactstrap";
 // core components
-import SearchColaborador from "components/Selects/SearchColaborador.js";
+import SearchAsociado from "components/Selects/SearchAsociado.js";
+import SearchCobrador from "components/Selects/SearchCobrador.js";
 import PaymentsModal from "components/Payments.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listMemberships, getBillDetail } from "../../redux/actions/Cuenta";
@@ -76,14 +77,14 @@ const EstadoCuenta = () => {
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
-                            Fecha
+                            Mes
                       </label>
                           <Input
                             className="form-control-alternative"
                             defaultValue="lucky.jesse"
                             id="filterMonth"
                             placeholder="filterMonth"
-                            type="date"
+                            type="month"
                           />
                         </FormGroup >
                       </Col>
@@ -95,7 +96,7 @@ const EstadoCuenta = () => {
                           >
                             Asociado
                       </label>
-                          <SearchColaborador />
+                          <SearchAsociado />
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -106,7 +107,7 @@ const EstadoCuenta = () => {
                           >
                             Cobrador
                       </label>
-                          <SearchColaborador />
+                          <SearchCobrador />
                         </FormGroup>
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto">

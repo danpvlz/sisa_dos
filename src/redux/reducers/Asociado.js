@@ -7,6 +7,8 @@ import {
     SHOW_EDIT_ASSOCIATED,
     SAVE_ASSOCIATED,
     UPDATE_ASSOCIATED,
+    SHOW_RUC_SEARCHED,
+    SHOW_DNI_SEARCHED,
   } from "../ActionTypes";
   
   const INIT_STATE = {
@@ -25,7 +27,9 @@ import {
       retreats:0,
       retreatsActualMonth:0,
       inProcess:0,
-    }
+    },
+    dniSearched:null,
+    rucSearched:null
   };
   
   export default (state = INIT_STATE, action) => {
@@ -75,6 +79,18 @@ import {
           return {
               ...state,
               associatedEditObject : action.payload
+          }
+      }
+      case SHOW_RUC_SEARCHED: {
+          return {
+              ...state,
+              rucSearched : action.payload
+          }
+      }
+      case SHOW_DNI_SEARCHED: {
+          return {
+              ...state,
+              dniSearched : action.payload
           }
       }
       default:

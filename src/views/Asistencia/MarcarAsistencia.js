@@ -53,10 +53,6 @@ const MarcarAsistencia = () => {
   };
 
   useEffect(() => {
-    dispatch(myTodayAssistanceList())
-  }, [])
-
-  useEffect(() => {
     let timer = setInterval(() => {
       getDateNow()
     }, 1000);
@@ -76,7 +72,6 @@ const MarcarAsistencia = () => {
       var now = new Date();
       formData.hora = now.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
       dispatch(saveAssistance(formData))
-      dispatch(myTodayAssistanceList())
       //REGISTRAR
       setSendAssistance(false);
       document.getElementById("form-check-assistance").reset();
@@ -97,11 +92,20 @@ const MarcarAsistencia = () => {
       setSendJustification(false);
       setidAssistance(0);
       setjustificacion("");
-      dispatch(myTodayAssistanceList());
     } else {
       setFormData(null);
     }
   }, [sendJustification])
+
+  useEffect(() => {
+      dispatch(myTodayAssistanceList());
+  }, [])
+
+  useEffect(() => {
+    if (assistanceStatusActions == 200) {
+      dispatch(myTodayAssistanceList());
+    }
+  }, [assistanceStatusActions])
 
   return (
     <>
