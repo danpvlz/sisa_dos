@@ -7,7 +7,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-import {routesSimple,routesMembership,routesAdmin} from "../routes.js";
+import {routesAdmin,routesCobranza,routesContabilidad,routesCuentasVer,routesDirectivos,routesImagenInstitucional,routesServicioAsociado,routesSimple} from "../routes.js";
 
 import { useSelector } from "react-redux";
 
@@ -55,7 +55,7 @@ const Admin = (props) => {
   };
 
   const getBrandText = (path) => {
-    var routes = auth?.rol==1 ? routesSimple : auth?.rol==2 ? routesMembership : routesAdmin;
+    var routes = auth?.rol==6 ? routesAdmin : auth?.rol==8 ? routesImagenInstitucional : auth?.rol==7 ? routesCuentasVer :  auth?.rol==2 ? routesServicioAsociado : auth?.rol==3 ? routesCobranza : auth?.rol==4 ? routesContabilidad : auth?.rol==5 ? routesDirectivos : routesSimple;
     for (let i = 0; i < routes.length; i++) {
       if(routes[i].routes){
         for (let j = 0; j < routes[i].routes.length; j++) {
@@ -83,7 +83,7 @@ const Admin = (props) => {
     
       <Sidebar
         {...props}
-        routes={auth?.rol==3 ? routesAdmin : auth?.rol==2 ? routesMembership : routesSimple}
+        routes={auth?.rol==6 ? routesAdmin : auth?.rol==8 ? routesImagenInstitucional : auth?.rol==7 ? routesCuentasVer : auth?.rol==2 ? routesServicioAsociado : auth?.rol==3 ? routesCobranza : auth?.rol==4 ? routesContabilidad : auth?.rol==5 ? routesDirectivos : routesSimple}
         logo={{
           innerLink: "/admin/index",
           imgSrc: require("../assets/img/brand/logocclam.png").default,
@@ -99,7 +99,7 @@ const Admin = (props) => {
 
 {allowed &&
         <Switch>
-          {getRoutes(auth?.rol==3 ? routesAdmin : auth?.rol==2 ? routesMembership : routesSimple)}
+          {getRoutes(auth?.rol==6 ? routesAdmin : auth?.rol==8 ? routesImagenInstitucional : auth?.rol==7 ? routesCuentasVer : auth?.rol==2 ? routesServicioAsociado : auth?.rol==3 ? routesCobranza : auth?.rol==4 ? routesContabilidad : auth?.rol==5 ? routesDirectivos : routesSimple)}
           <Redirect to="/admin/index" />
         </Switch>
         

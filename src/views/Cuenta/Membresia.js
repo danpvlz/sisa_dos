@@ -24,11 +24,12 @@ import {
   Input,
 } from "reactstrap";
 // core components
+import Select from 'react-select';
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import PaymentsModal from "components/Payments.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listMemberships, getBillDetail } from "../../redux/actions/Cuenta";
+import { listMemberships, getBillDetail, exportMembership } from "../../redux/actions/Cuenta";
 
 const EstadoCuenta = () => {
   const dispatch = useDispatch();
@@ -36,18 +37,54 @@ const EstadoCuenta = () => {
   const { membershipList } = useSelector(({ cuenta }) => cuenta);
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/registro-emision'), [history]);
-  const [showDetail, setShowDetail] = useState(false);
+  const [showBillDetail, setshowBillDetail] = useState(false);
 
   const [page, setPage] = useState(1);
   const [search, setsearch] = useState({});
+  const [status, setstatus] = useState(null);
+  const [idAsociado, setidAsociado] = useState(null);
+  const [cobrador, setcobrador] = useState(null);
 
-  const toggleModal = () => {
-    setShowDetail(!showDetail);
+  const toggleModalDetail = () => {
+    setshowBillDetail(!showBillDetail);
   };
 
   useEffect(() => {
     dispatch(listMemberships(page,search));
-  }, [page])
+  }, [page]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(status == null){
+      delete tsearch.status;
+    }else{
+      tsearch.status=status;
+    }
+    setsearch(tsearch);
+    dispatch(listMemberships(page,search));
+  }, [status]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(idAsociado == null){
+      delete tsearch.idAsociado;
+    }else{
+      tsearch.idAsociado=idAsociado;
+    }
+    setsearch(tsearch);
+    dispatch(listMemberships(page,search));
+  }, [idAsociado]);
+
+  useEffect(() => {
+    let tsearch=search;
+    if(cobrador == null){
+      delete tsearch.debCollector;
+    }else{
+      tsearch.debCollector=cobrador;
+    }
+    setsearch(tsearch);
+    dispatch(listMemberships(page,search));
+  }, [cobrador]);
 
   return (
     <>
@@ -57,7 +94,7 @@ const EstadoCuenta = () => {
       {/* Page content */}
       <Container className="mt--9" fluid>
         <PaymentsModal 
-        showDetail={showDetail} toggleModal={toggleModal}
+        showDetail={showBillDetail} toggleModal={toggleModalDetail}
         />
         {/* Table */}
         <Row>
@@ -71,24 +108,25 @@ const EstadoCuenta = () => {
                   <Col lg="12 ">
                     <hr className="my-4 " />
                     <Row className="bg-secondary">
-                    <Col lg="3"  >
+                      <Col lg="2"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
-                            Mes
+                            Estado
                       </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="lucky.jesse"
-                            id="filterMonth"
-                            placeholder="filterMonth"
-                            type="month"
-                          />
+                          <Select
+                            placeholder="Seleccione..."
+                            className="select-style"
+                            name="sexo"
+                            onChange={(inputValue, actionMeta) => {
+                              setstatus(inputValue.value);
+                            }}
+                            options={[{ value: 1, label: "Por cancelar" }, { value: 2, label: "Cancelada" }, { value: 3, label: "Anulada" }]} />
                         </FormGroup >
                       </Col>
-                      <Col lg="4"  >
+                      <Col lg="5"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
                             className="form-control-label"
@@ -96,7 +134,7 @@ const EstadoCuenta = () => {
                           >
                             Asociado
                       </label>
-                          <SearchAsociado />
+                          <SearchAsociado setVal={setidAsociado}/>
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -107,11 +145,11 @@ const EstadoCuenta = () => {
                           >
                             Cobrador
                       </label>
-                          <SearchCobrador />
+                          <SearchCobrador setVal={setcobrador} />
                         </FormGroup>
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto">
-                        <Button color="success"  type="button">
+                        <Button color="success"  type="button" onClick={()=>dispatch(exportMembership(search))}>
                           <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
                         </Button>
                       </Col>
@@ -137,18 +175,22 @@ const EstadoCuenta = () => {
                 <tbody>
                   {
                     membershipList?.data?.map((cuenta,key)=>
-                    
                   <tr key={key}>
                   <td scope="row">
                     {cuenta.asociado}
                   </td>
                   <td>
+                    {
+                    cuenta.mes== 0 ?
+                    cuenta.masdeuno
+                    :
+                    ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][cuenta.mes-1]
                     
-                    {['Enero', 'Febrero', 'Marzo', 'Abril', 'Maayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][cuenta.mes-1]}
+                    }
                   </td>
                   <td>
                     <Badge color="" className="badge-dot mr-4">
-                      <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-info" : "bg-danger" } />
+                      <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger" } />
                       {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : "Anulada"}
                     </Badge>
                   </td>
@@ -189,14 +231,13 @@ const EstadoCuenta = () => {
                       <DropdownMenu className="dropdown-menu-arrow" right>
                         <DropdownItem
                         className="d-flex"
-                          href="#pablo"
                           onClick={()=>
                           {
-                            toggleModal();
                             dispatch(getBillDetail({"idCuenta":cuenta.idCuenta}));
+                            toggleModalDetail();
                           }}
                         >
-                           <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver pagos
+                           <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
                         </DropdownItem>
                       </DropdownMenu>
                     </UncontrolledDropdown>

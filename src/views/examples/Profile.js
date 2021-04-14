@@ -165,7 +165,6 @@ const Profile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="lucky.jesse"
                             id="input-username"
                             placeholder="Username"
                             type="text"

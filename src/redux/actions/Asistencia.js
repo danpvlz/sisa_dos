@@ -165,12 +165,12 @@ export const saveAssistance = (assistanceData) => {
     dispatch({ type: FETCH_START });
     dispatch({ type: ASSISTANCE_STATUS_ACTIONS, payload: 0 });
 
-    axios.post('/assistance/',
+    axios.post('assistance/store',
     assistanceData
     ).then(({ data, status }) => {
       if (data) {
-        dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: SHOW_MESSAGE, payload: data.message });
+        dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: SAVE_ASSISTANCE });
         dispatch({ type: ASSISTANCE_STATUS_ACTIONS, payload: status });
       } else {
@@ -191,8 +191,8 @@ export const saveJustification = (justificationData) => {
     justificationData
     ).then(({ data, status }) => {
       if (data) {
-        dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: SHOW_MESSAGE, payload: data.message });
+        dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: SAVE_ASSISTANCE_JUSTIFICATION });
         dispatch({ type: ASSISTANCE_STATUS_ACTIONS, payload: status });
       } else {

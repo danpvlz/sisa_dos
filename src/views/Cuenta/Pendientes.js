@@ -89,10 +89,10 @@ useEffect(() => {
   return (
     <>
     <PendingsHeader 
-    pendientes={pendingsIndicators?.pendientes}
-    cobrado={pendingsIndicators?.cobrado}
-    emitidos={pendingsIndicators?.emitidos}
-    anulado={pendingsIndicators?.anulado}
+    pendientes={pendingsIndicators[0]?.pendientes}
+    cobrado={pendingsIndicators[0]?.cobrado}
+    emitidos={pendingsIndicators[0]?.emitidos}
+    anulado={pendingsIndicators[0]?.anulado}
     />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -118,12 +118,12 @@ useEffect(() => {
                       </label>
                       <Input
                         className="form-control-alternative"
-                        defaultValue="lucky.jesse"
                         id="filterMonth"
                         placeholder="filterMonth"
                         type="date"
                         defaultValue={new Date().toISOString().substring(0, 10)}
                         onChange={(e) => {
+                          console.log(e.target.value)
                           setmonth(e.target.value == "" ? null : e.target.value);
                         }}
                       />
@@ -151,7 +151,7 @@ useEffect(() => {
                           <SearchCobrador setVal={setdebCollector} />
                         </FormGroup>
                       </Col>
-                      <Col lg="1" className="text-right my-auto ml-auto">
+                      <Col lg="1" className="text-right my-auto ml-auto d-none">
                         <Button color="success"  type="button">
                           <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
                         </Button>
@@ -183,10 +183,10 @@ useEffect(() => {
                     {cuenta.fechaEmision}
                   </td>
                   <td>
-                    {`${cuenta.serieNumero}`}
+                    {`${cuenta.serie + '-' + cuenta.numero}`}
                   </td>
                   <td>
-                    {cuenta.asociado}
+                    {cuenta.asociado }
                   </td>
                   <td className="text-center">
                   <small>S/.</small> {cuenta.total}
@@ -201,7 +201,7 @@ useEffect(() => {
                     {cuenta.descripcion}
                   </td>
                   <td>
-                    {cuenta.fAnul}
+                    {cuenta.fechaAnulacion}
                   </td>
                 </tr>
                     )

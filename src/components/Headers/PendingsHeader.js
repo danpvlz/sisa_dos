@@ -26,7 +26,7 @@ const Header = ({pendientes,cobrado,emitidos,anulado}) => {
                           <small>S/.</small> {pendientes}
                         </span>
                       </div>
-                      <Col className="col-auto">
+                      <Col className="col-auto col-lg-4">
                         <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
                           <i className="fa fa-clock" />
                         </div>
@@ -54,7 +54,7 @@ const Header = ({pendientes,cobrado,emitidos,anulado}) => {
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0"><small>S/.</small>{emitidos}</span>
                       </div>
-                      <Col className="col-auto">
+                      <Col className="col-auto col-lg-4">
                         <div className="icon icon-shape bg-info text-white rounded-circle shadow">
                           <i className="fa fa-calendar-check" />
                         </div>
@@ -82,7 +82,7 @@ const Header = ({pendientes,cobrado,emitidos,anulado}) => {
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0"><small>S/.</small>{cobrado}</span>
                       </div>
-                      <Col className="col-auto">
+                      <Col className="col-auto col-lg-4">
                         <div className="icon icon-shape bg-success text-white rounded-circle shadow">
                           <i className="ni ni-check-bold" />
                         </div>
@@ -110,7 +110,7 @@ const Header = ({pendientes,cobrado,emitidos,anulado}) => {
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0"><small>S/.</small>{anulado}</span>
                       </div>
-                      <Col className="col-auto">
+                      <Col className="col-auto col-lg-4">
                         <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
                           <i className="ni ni-fat-remove" />
                         </div>

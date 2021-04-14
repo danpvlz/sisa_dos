@@ -1,27 +1,28 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import Select from 'react-select';
 import { useDispatch, useSelector } from "react-redux";
-import { filter } from "../../redux/actions/Asociado";
+import { filter } from "../../redux/actions/Promotor";
 
-export default function SearchAsociado({setVal, selectInputRef}) {
+export default function SearchPromotor({setVal,defaultVal}) {
   const dispatch = useDispatch();
-  const associatedFilter = useSelector(({ asociado }) => asociado.associatedFilter);
+  const promotorFilter = useSelector(({ promotor }) => promotor.promotorFilter);
   const handleInputChange = (inputValue, actionMeta) => {
       inputValue.length >= 2 && dispatch(filter(inputValue));
   }
   return (
     <Select
-      ref={selectInputRef}
       placeholder="Seleccione..."
-      id="searchAsociado"
-      name="searchAsociado"
+      id="searchPromotorFilter"
+      name="searchPromotorFilter"
       className="select-style"
       onInputChange={handleInputChange}
       isClearable={true}
       onChange={(inputValue, actionMeta) => {
         setVal(inputValue != null ? inputValue.value : null);
       }}
-      options={associatedFilter} />
+      options={promotorFilter} 
+      defaultValue={defaultVal}
+      />
   )
 }

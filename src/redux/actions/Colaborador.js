@@ -39,9 +39,9 @@ export const status = (id) => {
     axios.get('/worker/status/' + id
     ).then(({ data, status }) => {
       if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: ACTIVE_WORKER });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: WORKER_STATUS_ACTIONS, payload: status });
 
       } else {
@@ -64,9 +64,9 @@ export const vacations = (id) => {
     axios.get('/worker/vacations/' + id
     ).then(({ data, status }) => {
       if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: ACTIVE_WORKER });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: WORKER_STATUS_ACTIONS, payload: status });
 
       } else {
@@ -102,9 +102,9 @@ export const update = (id,workerData) => {
     config
     ).then(({ data, status }) => {
       if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: UPDATE_WORKER });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: WORKER_STATUS_ACTIONS, payload: status });
 
       } else {
@@ -151,9 +151,9 @@ export const resetPassword = (id) => {
     axios.get('/worker/resetPassword/' + id
     ).then(({ data, status }) => {
       if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: RESET_PASSWORD_WORKER });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: WORKER_STATUS_ACTIONS, payload: status });
 
       } else {

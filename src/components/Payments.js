@@ -122,6 +122,46 @@ export default function Payments({ showDetail, toggleModal }) {
                     </Table>
                 </Row>
                 <Row>
+                    <h3 className="ml-1">MEMBRESÍAS</h3>
+                    <Table className="align-items-center table-flush text-center" responsive>
+                        <thead className="thead-light ">
+                            <tr>
+                                <th scope="col">Mes</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Cobrado</th>
+                                <th scope="col">Pagado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                comprobanteObject?.membresia?.map((membresia, key) => 
+                                <tr key={key}>
+                                    <td>
+                                        {
+                                        membresia.mes== 0 ?
+                                        membresia.masdeuno
+                                        :
+                                        ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][membresia.mes-1]
+                                        
+                                        }
+                                    </td>
+                                    <td>
+                                        {membresia.estado == 1 ? "Por cancelar" : membresia.estado == 2 ? "Cancelada" : "Anulada"}
+                                    </td>
+                                    <td>
+                                        s/. {membresia.cobrado}
+                                    </td>
+                                    <td>
+                                        s/. {membresia.pagado}
+                                    </td>
+                                </tr>
+                                )
+                            }
+                        </tbody>
+                    </Table>
+                </Row>
+            
+                <Row>
                     <h3 className="ml-1">PAGOS</h3>
                     <Table className="align-items-center table-flush text-center" responsive>
                         <thead className="thead-light ">
@@ -129,6 +169,7 @@ export default function Payments({ showDetail, toggleModal }) {
                                 <th scope="col">Fecha</th>
                                 <th scope="col">Monto</th>
                                 <th scope="col">Completado</th>
+                                <th scope="col">Banco</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -159,6 +200,9 @@ export default function Payments({ showDetail, toggleModal }) {
                                                 />
                                             </div>
                                         </div>
+                                    </td>
+                                    <td>
+                                        {pago?.banco ? pago?.banco == 1 ? 'BCP' : "BBVA" : '-'}
                                     </td>
                                 </tr>
                                 )

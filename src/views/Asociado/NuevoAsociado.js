@@ -743,7 +743,7 @@ const NuevoAsociado = () => {
                                     className="form-control-label"
                                     htmlFor="input-country"
                                   >
-                                    Fecha de nacimiento*
+                                    Fecha de nacimiento
                                   </label>
                                   <Input
                                     className="form-control-alternative"

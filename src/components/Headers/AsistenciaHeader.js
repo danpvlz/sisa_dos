@@ -102,7 +102,17 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                           H. compensar
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          {hCompensar>60 ? hCompensar%60 == 0 ? Math.round(hCompensar/60)+"h" :(Math.round(hCompensar/60)*-1+"h " + hCompensar%60+"min") : hCompensar+"min"}
+                          {
+                          hCompensar ?
+                          (
+                          hCompensar>60 ? 
+                            hCompensar%60 == 0 ?
+                              Math.round(hCompensar/60)+"h" :
+                            (Math.round(hCompensar/60)+"h " + hCompensar%60+"min") :
+                          hCompensar+"min"
+                          ) :
+                          '0min'
+                        }
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -135,7 +145,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                         old mb-0">
                           {
                           hRealizadas>0 ?
-                          hRealizadas>60 ? hRealizadas%60 == 0 ? Math.round(hRealizadas/60)+"h" :(Math.round(hRealizadas/60)*-1+"h " + hRealizadas%60+"min") : hRealizadas+"min"
+                          hRealizadas>60 ? hRealizadas%60 == 0 ? Math.round(hRealizadas/60)+"h" :(Math.round(hRealizadas/60)+"h " + hRealizadas%60+"min") : hRealizadas+"min"
                           :
                           hRealizadas*-1>60 ? hRealizadas*-1%60 == 0 ? Math.round(hRealizadas*-1/60)+"h" :(Math.round(hRealizadas*-1/60)*-1+"h " + hRealizadas*-1%60+"min") : hRealizadas*-1+"min"
                           }

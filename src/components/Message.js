@@ -1,28 +1,42 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Col, UncontrolledAlert } from "reactstrap";
 import { useSelector } from "react-redux";
 
 export default function Message() {
-  const {error,message} = useSelector(({ commonData }) => commonData);
+  const history = useHistory();
+  const {error,success,message} = useSelector(({ commonData }) => commonData);
   const [show, setShow] = useState(false);
   const [showmessage, setshowmessage] = useState(null)
   const [type, settype] = useState(0)
 
   useEffect(() => {
-    if(error?.message?.length>0){
-      setVisible(true)
-      settype(1)
-      setshowmessage(error?.message)
+    if(error){
+      settype(1);
+      if( typeof  message == "string"){
+        setVisible(true);
+        setshowmessage(message);
+      }else{
+        message?.message ? setVisible(true) : setVisible(false);
+        setshowmessage(message?.message ? message.message : "");
+  
+        if(message?.message=="Request failed with status code 401"){
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.reload();
+        }
+
+      }
     }
   }, [error])
 
   useEffect(() => {
-    if(message?.length>0){
+    if(success){
       setVisible(true)
       settype(2)
       setshowmessage(message)
     }
-  }, [message])
+  }, [success])
 
   const setVisible = () => {
     setShow(true);

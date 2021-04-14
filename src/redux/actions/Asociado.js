@@ -130,10 +130,10 @@ export const saveAssociated = (associatedData) => {
       associatedData
     ).then(({ data, status }) => {
       if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: SAVE_ASSOCIATED });
         dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.message });
       }
@@ -177,10 +177,10 @@ export const update = (id,associatedData) => {
     associatedData
     ).then(({ data, status }) => {
       if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: UPDATE_ASSOCIATED });
         dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
 
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.message });
@@ -201,10 +201,10 @@ export const status = (id) => {
     axios.get('associatedstatus/' + id,
     ).then(({ data, status }) => {
       if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: UPDATE_ASSOCIATED });
         dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
 
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.message });
@@ -289,10 +289,10 @@ export const assignCode = (params={}) => {
     axios.post('associatedassigncode/', params
     ).then(({ data, status }) => {
       if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: UPDATE_ASSOCIATED });
         dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
 
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.message });
@@ -301,6 +301,51 @@ export const assignCode = (params={}) => {
     })
       .catch(function (error) {
         dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+      });
+  }
+};
+
+export const removeInProcess = (id) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: 0 });
+
+    axios.get('associateddelete/' + id,
+    ).then(({ data, status }) => {
+      if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: UPDATE_ASSOCIATED });
+        dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.message });
+      }
+    })
+      .catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+      });
+  }
+};
+
+export const newAfiliation = (associatedData) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: 0 });
+
+    axios.post('auth/newafiliation',
+      associatedData
+    ).then(({ data, status }) => {
+      if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: SAVE_ASSOCIATED });
+        dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.message });
+      }
+    })
+      .catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error.response });
       });
   }
 };

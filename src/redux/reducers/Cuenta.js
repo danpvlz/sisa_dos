@@ -1,6 +1,7 @@
 import {
     SHOW_COMPROBANTE,
     LIST_BILLS,
+    LIST_BILLS_BY_SECTOR,
     INDICATORS_BILLS,
     LIST_PENDINGS,
     INDICATORS_PENDINGS,
@@ -12,6 +13,7 @@ import {
   const INIT_STATE = {
     comprobanteObject: [],
     billList:[],
+    billListBySector:[],
     billIndicators:[],
     pendingsIndicators:[],
     pendingsList:[],
@@ -21,12 +23,18 @@ import {
   
   export default (state = INIT_STATE, action) => {
     switch (action.type) {
-      case LIST_BILLS: {
-          return {
-              ...state,
-              billList : action.payload
-          }
-      }
+        case LIST_BILLS_BY_SECTOR: {
+            return {
+                ...state,
+                billListBySector : action.payload
+            }
+        }
+        case LIST_BILLS: {
+            return {
+                ...state,
+                billList : action.payload
+            }
+        }
       case INDICATORS_BILLS: {
           return {
               ...state,

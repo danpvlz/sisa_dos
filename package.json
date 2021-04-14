@@ -1,7 +1,7 @@
 {
-  "name": "idl",
+  "name": "globalsoft",
   "version": "1.2.0",
-  "description": "Sistema IDL",
+  "description": "Sistema GLOBALSOFT",
   "keywords": [
     "react",
     "reactjs",
@@ -14,10 +14,7 @@
   ],
   "author": "Daniela",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/argon-dashboard-react/issues"
-  },
-  "homepage": "https://www.cclam.org.pe/idl/",
+  "homepage": "https://www.cclam.org.pe/gs/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

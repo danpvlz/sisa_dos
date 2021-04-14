@@ -59,10 +59,10 @@ import {
       phoeCallData
       ).then(({ data, status }) => {
         if (data) {
+          dispatch({ type: SHOW_MESSAGE, payload: data.message });
           dispatch({ type: FETCH_SUCCESS });
           dispatch({ type: SAVE_CALL });
           dispatch({ type: CALLS_STATUS_ACTIONS, payload: status });
-          dispatch({ type: SHOW_MESSAGE, payload: data.message });
         } else {
           dispatch({ type: FETCH_ERROR, payload: data.message });
         }

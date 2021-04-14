@@ -36,8 +36,8 @@ import {
       serviceData
       ).then(({ data, status }) => {
         if (data) {
-          dispatch({ type: FETCH_SUCCESS });
           dispatch({ type: SHOW_MESSAGE, payload: data.message });
+          dispatch({ type: FETCH_SUCCESS });
           dispatch({ type: SAVE_SERVICE });
           dispatch({ type: SERVICES_STATUS_ACTIONS, payload: status });
         } else {

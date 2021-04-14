@@ -136,23 +136,6 @@ const RegistroServicio = () => {
                                 className="form-control-label"
                                 htmlFor="input-address"
                               >
-                                Actividad actual del asociado
-                              </label>
-                              <Input
-                                className="form-control-alternative"
-                                id="input-detail"
-                                name="actividad"
-                                innerRef={register({ required: true })}
-                                type="text"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col lg="12">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
                                 Servicio brindado
                               </label>
                               <Input

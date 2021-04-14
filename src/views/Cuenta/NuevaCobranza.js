@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import SearchAsociado from "components/Selects/SearchAsociado";
 import {showAssociated} from '../../redux/actions/Asociado';
+import {fetchError,hideMessage} from '../../redux/actions/Common';
 import {saveCuenta} from '../../redux/actions/Cuenta';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
@@ -37,7 +38,8 @@ const NuevaEmision = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [tipoDocumentoEmision, settipoDocumentoEmision] = useState(null);
   const [pagado, setpagado] = useState(null)
-  const [meses, setmeses] = useState(null)
+  const [bancopago, setbancopago] = useState(null)
+  const [meses, setmeses] = useState([]);
 
   useEffect(() => {
     if(idAsociado!=null){
@@ -46,11 +48,25 @@ const NuevaEmision = () => {
   }, [idAsociado]);
 
   const onSubmit = (data) => {
-    setformdata(data)
-    toggleModal()
-    /*hiddenFileInput.current.value = null;
-    setFile(null);
-    reset();*/
+    idAsociado == null ?
+    dispatch(fetchError("Debe elegir un asociado."))
+    :
+    tipoDocumentoEmision == null ?
+    dispatch(fetchError("Debe elegir si es boleta o factura."))
+    :
+    pagado == null ?
+    dispatch(fetchError("Debe elegir si el comprobante fue pagado."))
+    :
+    pagado == 2 && bancopago == null ?
+    dispatch(fetchError("Debe elegir un banco."))
+    :
+    meses.length == 0 ?
+    dispatch(fetchError("Debe elegir al menos un mes."))
+    :
+    toggleModal();
+    setformdata(data);
+
+    dispatch(hideMessage());
   };
 
   const toggleModal = () => {
@@ -62,11 +78,10 @@ const NuevaEmision = () => {
       formdata.idAsociado=idAsociado;
       formdata.tipo_de_comprobante=tipoDocumentoEmision;
       formdata.pagado=pagado;
+      formdata.banco=bancopago;
       formdata.meses=meses;
+      formdata.cantidad=meses.length
       formdata.conafiliacion=showAfiliacion;
-      
-      
-      console.log(formdata);
       dispatch(saveCuenta(formdata));
       history.push('/admin/cuentas');
     }
@@ -153,6 +168,24 @@ const NuevaEmision = () => {
                                 className="form-control-label"
                                 htmlFor="input-address"
                               >
+                                Fecha emisión
+                          </label>
+                              <Input
+                                className="form-control-alternative"
+                                name="fechaEmision"
+                                type="date"
+                                readOnly
+                                value={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
+                                innerRef={register({ required: true })}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col lg="2">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
                                 Tipo de documento
                           </label>
                               <Select
@@ -165,24 +198,7 @@ const NuevaEmision = () => {
                                 options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
                             </FormGroup>
                           </Col>
-                          <Col lg="3">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Fecha emisión
-                          </label>
-                              <Input
-                                className="form-control-alternative"
-                                name="fechaEmision"
-                                type="date"
-                                defaultValue={new Date().toISOString().substring(0, 10)}
-                                innerRef={register({ required: true })}
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col lg="3">
+                          <Col lg="2">
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -204,10 +220,11 @@ const NuevaEmision = () => {
                           </Col>
                           {
                             pagado == 2 ? 
+                            <>
                             <Col lg="3">
                               <FormGroup>
                                 <label
-                                  className="form-control-label"
+                                  className="form-control-label "
                                   htmlFor="input-address"
                                 >
                                   Fecha de pago
@@ -216,11 +233,32 @@ const NuevaEmision = () => {
                                   className="form-control-alternative"
                                   name="fechaPago"
                                   type="date"
-                                  defaultValue={new Date().toISOString().substring(0, 10)}
-                                  innerRef={register({ required: pagado == 2 ? true : false })}
+                                  readOnly
+                                  value={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
+                                  innerRef={register({ required: true })}
                                 />
                               </FormGroup>
                             </Col>
+                            <Col>
+                              <FormGroup className="mb-0 pb-4">
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="filterMonth"
+                                >
+                                  Banco
+                            </label>
+                                <Select
+                                  placeholder="Seleccione..."
+                                  className="select-style"
+                                  name="banco"
+                                  onChange={(inputValue, actionMeta) => {
+                                    setbancopago(inputValue != null ? inputValue.value : null);
+                                  }}
+                                  isClearable
+                                  options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
+                              </FormGroup >
+                            </Col>
+                            </>
                             :
                             ""
                           }
@@ -236,6 +274,22 @@ const NuevaEmision = () => {
                                 className="form-control-alternative"
                                 name="observacion"
                                 type="text"
+                                innerRef={register({ required: false })}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col lg="4">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Correo destino
+                          </label>
+                              <Input
+                                className="form-control-alternative"
+                                name="correo"
+                                type="email"
                                 innerRef={register({ required: false })}
                               />
                             </FormGroup>
@@ -352,10 +406,10 @@ const NuevaEmision = () => {
                           </label>
                               <Input
                                 className="form-control-alternative text-center"
-                                name="cantidad"
                                 type="number"
-                                min="0"
-                                innerRef={register({ required: true })}
+                                min="1"
+                                value={meses.length}
+                                disabled
                               />
                             </FormGroup>
                           </Col>
@@ -393,7 +447,31 @@ const NuevaEmision = () => {
                               />
                             </FormGroup>
                           </Col>
+                          <Col lg="2">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Año
+                              </label>
+                              <Input
+                                className="form-control-alternative text-center"
+                                name="year_pass"
+                                type="number"
+                                min="2019"
+                                max="2022"
+                                defaultValue="2021"
+                                innerRef={register({ required: false })}
+                              />
+                            </FormGroup>
+                          </Col>
                         </Row>
+                          <hr />
+                          <div style={{float: 'right', fontSize:'1.5rem'}}>
+
+                          <small>Total: s/.</small><strong >{idAsociado ? (associatedObject[0]?.importeMensual)*meses?.length : 0}</strong>
+                          </div>
                       </div>
                     </Col>
                   </Row>

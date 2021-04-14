@@ -109,7 +109,7 @@ const EditarAsociado = (props) => {
               <CardHeader className="bg-white border-0">
                 <Row className="align-items-center">
                   <Col xs="12">
-                    <h3 className="mb-0">Editar asociado</h3>
+                    <h3 className="mb-0">Más información</h3>
                   </Col>
                 </Row>
               </CardHeader>
@@ -204,12 +204,10 @@ const EditarAsociado = (props) => {
                               >
                                 Sector*
                               </label>
-                              {
-                                associatedEditObject.sector ?
-                                <SearchCobrador setVal={setcobrador} defaultVal={{value: associatedEditObject.sector.idSector,label:`${associatedEditObject.sector.descripcion} (${associatedEditObject.sector.codigo})`}} />
-                               :
-                                ""
-                              }
+                              <Input 
+                              value={`${associatedEditObject?.sector?.descripcion} (${associatedEditObject?.sector?.codigo})`}
+                              readOnly
+                              />
                             </FormGroup>
                           </Col>
                         </Row>
@@ -348,7 +346,7 @@ const EditarAsociado = (props) => {
                                       className="form-control-alternative"
                                       type="tel"
                                       name="telefono_asociado"
-                                      innerRef={register({ required: false })}
+                                      readOnly
                                       defaultValue={associatedEditObject?.empresa?.telefonos}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
@@ -372,7 +370,7 @@ const EditarAsociado = (props) => {
                                       className="form-control-alternative"
                                       type="email"
                                       name="correo_asociado"
-                                      innerRef={register({ required: false })}
+                                      readOnly
                                       defaultValue={associatedEditObject?.empresa?.correos}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
@@ -535,7 +533,7 @@ const EditarAsociado = (props) => {
                                       className="form-control-alternative"
                                       type="tel"
                                       name="telefono_representante"
-                                      innerRef={register({ required: false })}
+                                      readOnly
                                       defaultValue={associatedEditObject?.representante?.telefonos}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
@@ -559,7 +557,7 @@ const EditarAsociado = (props) => {
                                       className="form-control-alternative"
                                       type="email"
                                       name="correo_representante"
-                                      innerRef={register({ required: false })}
+                                      readOnly
                                       defaultValue={associatedEditObject?.representante?.email}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
@@ -724,7 +722,7 @@ const EditarAsociado = (props) => {
                                       className="form-control-alternative"
                                       type="tel"
                                       name="telefono_adicional"
-                                      innerRef={register({ required: false })}
+                                      readOnly
                                       defaultValue={associatedEditObject?.adicional?.telefonos}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
@@ -748,7 +746,7 @@ const EditarAsociado = (props) => {
                                       className="form-control-alternative"
                                       type="email"
                                       name="correo_adicional"
-                                      innerRef={register({ required: false })}
+                                      readOnly
                                       defaultValue={associatedEditObject?.adicional?.email}
                                     />
                                     <Button className="btn-icon d-none" size="sm" color="primary" type="button">
@@ -799,7 +797,6 @@ const EditarAsociado = (props) => {
                                       type="tel"
                                       name="documento_persona"
                                       defaultValue={associatedEditObject?.persona?.documento}
-                                      innerRef={register({ required: false })}
                                       readOnly
                                     />
                                   </div>
@@ -1003,17 +1000,6 @@ const EditarAsociado = (props) => {
                           ""
                     }
                   </Row>
-
-                  {
-                    typeAssociated == null ?
-                    ""
-                    :
-                    <div className="text-center mt-5">
-                      <Button className="my-4 btn-block" color="primary" type="submit">
-                        Actualizar
-                      </Button>
-                    </div>
-                  }
                 </Form>
               </CardBody>
             </Card>

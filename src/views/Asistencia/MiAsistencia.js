@@ -316,7 +316,7 @@ const Asistencia = () => {
                     lastPageText=">>"
                     previousPageText="<"
                     nextPageText=">"
-                    totalItems={myAssistanceList?.meta?.total}
+                    totalItems={myAssistanceList?.meta?.total ? myAssistanceList?.meta?.total : 0}
                     pageSize={10}
                     onSelect={(selectedPage)=>setPage(selectedPage)}
                   />
@@ -432,7 +432,7 @@ const Asistencia = () => {
                     lastPageText=">>"
                     previousPageText="<"
                     nextPageText=">"
-                    totalItems={myAssistanceDetailList?.meta?.total}
+                    totalItems={myAssistanceDetailList?.meta?.total ? myAssistanceDetailList?.meta?.total : 0}
                     pageSize={10}
                     onSelect={(selectedPage)=>setPageDetail(selectedPage)}
                   />

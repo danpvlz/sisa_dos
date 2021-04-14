@@ -7,10 +7,18 @@ import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 
 const Header = () => {
   const dispatch = useDispatch();
-  const associatedIndicators = useSelector(({ asociado }) => asociado.associatedIndicators);
+  const {associatedIndicators,associatedStatusActions} = useSelector(({ asociado }) => asociado);
+
   useEffect(() => {
-    dispatch(indicators());
-  }, [])
+      dispatch(indicators());
+  }, []);
+
+  useEffect(() => {
+    if (associatedStatusActions == 200) {
+      dispatch(indicators());
+    }
+  }, [associatedStatusActions]);
+
   return (
     <>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">

@@ -7,7 +7,7 @@ import { Container, Row, Col } from "reactstrap";
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import AuthFooter from "components/Footers/AuthFooter.js";
 
-import {routesSimple,routesMembership,routesAdmin} from "../routes.js";
+import {routesSimple,routesCobranza,routesContabilidad,routesDirectivos,routesAdmin} from "../routes.js";
 
 import { useSelector } from "react-redux";
 
@@ -53,7 +53,12 @@ const Auth = (props) => {
             <div className="header-body text-center mb-5 mt-2">
               <Row className="justify-content-center">
                 <Col lg="5" md="6">
-                  <h1 className="text-white">Inicio de sesión</h1>
+                  {
+                    location?.pathname == '/auth/afiliacion' ?
+                    <h1 className="text-white">Afiliación de nuevo asociado</h1>
+                    :
+                    <h1 className="text-white">Inicio de sesión</h1>
+                  }
                 </Col>
               </Row>
             </div>
@@ -78,7 +83,7 @@ const Auth = (props) => {
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
             <Switch>
-              {getRoutes(auth?.rol==3 ? routesAdmin : auth?.rol==2 ? routesMembership : routesSimple)}
+            {getRoutes(auth?.rol==5 ? routesAdmin : auth?.rol==2 ? routesCobranza : auth?.rol==3 ? routesContabilidad : auth?.rol==4 ? routesDirectivos :  routesSimple)}
               <Redirect to="/auth/login" />
             </Switch>
           </Row>

@@ -130,7 +130,6 @@ const Llamadas = () => {
                       </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="lucky.jesse"
                             id="filterMonth"
                             placeholder="filterMonth"
                             type="date"
@@ -150,7 +149,6 @@ const Llamadas = () => {
                       </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="lucky.jesse"
                             id="filterMonth"
                             placeholder="filterMonth"
                             type="date"
@@ -257,7 +255,7 @@ const Llamadas = () => {
                     lastPageText=">>"
                     previousPageText="<"
                     nextPageText=">"
-                    totalItems={phoneCallList?.meta?.total}
+                    totalItems={phoneCallList?.meta?.total ? phoneCallList?.meta?.total : 0}
                     pageSize={10}
                     onSelect={(selectedPage)=>setPage(selectedPage)}
                   />

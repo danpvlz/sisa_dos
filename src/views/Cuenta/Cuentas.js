@@ -1,8 +1,6 @@
-import React, { useCallback, useState, useEffect, useRef  } from "react";
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react";
 import PaginationComponent from "react-reactstrap-pagination";
 import ConfirmDialog from '../../components/ConfirmDialog';
-import PayModal from '../../components/PayModal';
 
 // reactstrap components
 import {
@@ -29,15 +27,15 @@ import CuentasHeader from "components/Headers/CuentasHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listBills, indicatorsBills, anularCuenta, pagarCuenta, getBillDetail, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
+import { listBills, listbysector, indicatorsBills, anularCuenta, pagarCuenta, getBillDetail, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
 
 const Cuenta = () => {
   const selectInputRef = useRef();
   const selectInputRefAsociado = useRef();
   const dispatch = useDispatch();
-  const { billList, billIndicators, billsStatusActions } = useSelector(({ cuenta }) => cuenta);
-  const history = useHistory();
-  const handleNew = useCallback(() => history.push('/admin/registro-emision'), [history]);
+  const { billList, billIndicators, billsStatusActions, billListBySector } = useSelector(({ cuenta }) => cuenta);
+
+  const [loaded, setloaded] = useState(false);
 
   const [page, setPage] = useState(1);
   const [search, setsearch] = useState({});
@@ -54,34 +52,29 @@ const Cuenta = () => {
 
   const [showBillDetail, setshowBillDetail] = useState(false);
 
+  const [showBillsTable, setshowBillsTable] = useState(false);
+
   //Filters
-  const [loaded, setloaded] = useState(false);
   const [since, setsince] = useState(null);
   const [until, setuntil] = useState(null);
+  const [sincePay, setsincepay] = useState(null);
+  const [untilPay, setuntilpay] = useState(null);
   const [status, setstatus] = useState(null);
   const [idAsociado, setidAsociado] = useState(null);
   const [cobrador, setcobrador] = useState(null);
   const [number, setnumber] = useState(null);
-  const [paydate, setpaydate] = useState("");
-  const [sincePay, setsincepay] = useState(null);
-  const [untilPay, setuntilpay] = useState(null);
-
-  const [fechasince, setfechasince] = useState(new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]);
 
   useEffect(() => {
     if (billsStatusActions == 200) {
       dispatch(listBills(page, search));
       dispatch(indicatorsBills(search));
+    dispatch(listbysector(search));
     }
   }, [billsStatusActions]);
+
   
   useEffect(() => {
     let tsearch = search;
-    if (paydate == "") {
-      delete tsearch.paydate;
-    } else {
-      tsearch.paydate = paydate;
-    }
     
     if (cobrador == null) {
       delete tsearch.debCollector;
@@ -134,8 +127,9 @@ const Cuenta = () => {
     setsearch(tsearch);
     dispatch(listBills(page, tsearch));
     dispatch(indicatorsBills(search));
+    dispatch(listbysector(search));
     }
-  }, [page,paydate,cobrador,idAsociado,status ,number,sincePay,untilPay,since,until]);
+  }, [page,cobrador,idAsociado,status ,number,sincePay,untilPay,since,until]);
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -182,11 +176,12 @@ const Cuenta = () => {
   useEffect(() => {
     dispatch(listBills(page, search));
     dispatch(indicatorsBills(search));
+    dispatch(listbysector(search));
     setloaded(true);
     return () => {
-    setloaded(false);
+      setloaded(false);
     }
-  }, [])
+  }, []);
 
   return (
     <>
@@ -195,17 +190,6 @@ const Cuenta = () => {
         cobrado={billIndicators?.cobrado}
         emitidos={billIndicators?.emitidos}
         anulado={billIndicators?.anulado}
-      />
-      <PayModal
-        showPay={showPay}
-        toggleModal={toggleModalPay}
-        fecha={fecha}
-        setfecha={setfecha}
-        monto={monto}
-        setmonto={setmonto}
-        setsendPay={setsendPay}
-        setbancopago={setbancopago}
-        fechasince={fechasince}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -216,6 +200,46 @@ const Cuenta = () => {
           showDetail={showBillDetail} toggleModal={toggleModalDetail}
         />
         {/* Table */}
+        <Row className="mb-3">
+          <div className="col">
+            <Card className="shadow">
+              <Table
+                className="align-items-center table-flush"
+                responsive
+              >
+                <thead>
+                  <tr>
+                    <th scope="col" className="text-left font-weight-bold">Cobrador</th>
+                    <th scope="col" className="text-right font-weight-bold" >Emitido</th>
+                    <th scope="col" className="text-right font-weight-bold">Cobrado</th>
+                    <th scope="col" className="text-right font-weight-bold">Pendiente</th>
+                    <th scope="col" className="text-right font-weight-bold">Anulado</th>
+                  </tr>
+                </thead>
+                <tbody className="text-right">
+                {
+                    billListBySector?.cuentas?.map((bill, key) =>
+                      <tr key={key}>
+                        <td scope="row" className="text-left font-weight-bold">{bill.descripcion}</td>
+                        <td>{bill.emitidos}</td>
+                        <td>{bill.cobrado}</td>
+                        <td>{bill.pendientes}</td>
+                        <td>{bill.anulado}</td>
+                      </tr>
+                    )
+                  }
+                  <tr>
+                    <td scope="row" className="text-left font-weight-bold">Afiliaciones</td>
+                    <td>{billListBySector?.afiliaciones?.emitidos}</td>
+                    <td>{billListBySector?.afiliaciones?.cobrado}</td>
+                    <td>{billListBySector?.afiliaciones?.pendientes}</td>
+                    <td>{billListBySector?.afiliaciones?.anulado}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Card>
+          </div>
+        </Row>
         <Row>
           <div className="col">
             <Card className="shadow">
@@ -224,24 +248,13 @@ const Cuenta = () => {
                   <Col lg="12" className="border-0 d-flex justify-content-between">
                     <h3 className="mb-0">Cuentas</h3>
                     <Button
-                      className="btn-new-xl btn-icon d-none d-md-block"
-                      color="primary"
-                      onClick={handleNew}
+                      className="btn btn-sm btn-new-small icon icon-shape rounded-circle shadow "
+                      onClick={()=>setshowBillsTable(!showBillsTable)}
                     >
-                      <span className="btn-inner--icon">
-
-                        <i className="fa fa-plus" />
-                      </span>
-                      <span className="btn-inner--text">Nueva emisión</span>
-                    </Button>
-                    <Button
-                      className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
-                      onClick={handleNew}
-                    >
-                      <i className="fas fa-plus" />
+                      <i className={showBillsTable ? `fa fa-angle-up` : `fa fa-angle-down`} />
                     </Button>
                   </Col>
-                  <Col lg="12 ">
+                  <Col lg="12 " className={showBillsTable ?  '' : 'd-none'}>
                     <hr className="my-4 " />
                     <Row className="bg-secondary">
                       <Col lg="3"  >
@@ -250,7 +263,7 @@ const Cuenta = () => {
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
-                            Emitido desde
+                            Emisión desde
                       </label>
                           <Input
                             className="form-control-alternative"
@@ -271,7 +284,7 @@ const Cuenta = () => {
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
-                            Emitido hasta
+                            Emisión hasta
                       </label>
                           <Input
                             className="form-control-alternative"
@@ -300,7 +313,7 @@ const Cuenta = () => {
                               setnumber(e.target.value == "" ? null : e.target.value)
                             }}
                             value={number ? number : ""}
-                        />
+                          />
                         </FormGroup >
                       </Col>
                       <Col lg="4"  >
@@ -392,7 +405,6 @@ const Cuenta = () => {
                           setnumber(null);
                           setsincepay(null);
                           setuntilpay(null);
-                          setfechasince(null);
                           selectInputRef.current.select.clearValue();
                           selectInputRefAsociado.current.select.clearValue();
                           setloaded(true);
@@ -406,12 +418,10 @@ const Cuenta = () => {
                         </Button>
                       </Col>
                     </Row>
-
                   </Col>
-
                 </Row>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
+              <Table className={`align-items-center table-flush ${showBillsTable ?  '' : 'd-none'}`} responsive>
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Emision</th>
@@ -483,35 +493,7 @@ const Cuenta = () => {
                               >
                                 <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
                         </DropdownItem>
-                              {
-                                cuenta.estado == 1 ?
-                                  <>
-                                    <DropdownItem
-                                      className="d-flex"
-                                      onClick={(e) => {  setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); toggleModalPay(); }}
-                                    >
-                                      <i className="fa fa-credit-card text-success" aria-hidden="true"></i> Cancelar
-                          </DropdownItem>
-                                    <DropdownItem
-                                      className="d-flex"
-                                      onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal(); }}
-                                    >
-                                      <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
-                          </DropdownItem>
-                                  </>
-                                  :
-                                  cuenta.estado == 2 ?
-                                    <>
-                                      <DropdownItem
-                                        className="d-flex"
-                                        onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal(); }}
-                                      >
-                                        <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
-                          </DropdownItem>
-                                    </>
-                                    :
-                                    ""
-                              }
+
                             </DropdownMenu>
                           </UncontrolledDropdown>
                         </td>
@@ -521,7 +503,7 @@ const Cuenta = () => {
 
                 </tbody>
               </Table>
-              <CardFooter className="py-4">
+              <CardFooter className={`py-4 ${showBillsTable ?  '' : 'd-none'}`}>
                 <nav aria-label="..." className="pagination justify-content-end mb-0">
                   <PaginationComponent
                     listClassName="justify-content-end mb-0"

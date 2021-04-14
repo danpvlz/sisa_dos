@@ -265,7 +265,7 @@ const Asistencia = () => {
                         lastPageText=">>"
                         previousPageText="<"
                         nextPageText=">"
-                        totalItems={assistanceListByWorker?.meta?.total}
+                        totalItems={assistanceListByWorker?.meta?.total ? assistanceListByWorker?.meta?.total : 0}
                         pageSize={10}
                         onSelect={(selectedPage)=>setpageaByWorker(selectedPage)}
                       />
@@ -408,7 +408,7 @@ const Asistencia = () => {
                               {asistencia.tardanza == 0 ? "-" : asistencia.tardanza < 0 ? (asistencia.tardanza*-1)>60 && (asistencia.tardanza*-1)/60+"h"  : asistencia.tardanza*-1+"min"}
                             </td>
                             <td className="text-center">
-                              {asistencia.compensado == 0 ? "-" : asistencia.compensado < 0 ? (asistencia.compensado*-1)>60 && (asistencia.compensado*-1)/60+"h"  : asistencia.compensado*-1+"min"}
+                              {asistencia.compensado == 0 ? "-" : asistencia.compensado < 0 ? (asistencia.compensado*-1)>60 && (asistencia.compensado*-1)/60+"h"  : asistencia.compensado+"min"}
                             </td>
                             <td className="text-center">
                               {asistencia.falta == 0 ? "-" : asistencia.falta < 0 ? (asistencia.falta*-1)>60 ? (asistencia.falta*-1)/60+"h"  : asistencia.falta*-1+"min" : asistencia.falta*-1+"min"}
@@ -429,7 +429,7 @@ const Asistencia = () => {
                         lastPageText=">>"
                         previousPageText="<"
                         nextPageText=">"
-                        totalItems={assistanceListAll?.meta?.total}
+                        totalItems={assistanceListAll?.meta?.total ? assistanceListAll?.meta?.total : 0}
                         pageSize={10}
                         onSelect={(selectedPage)=>setpageall(selectedPage)}
                       />
@@ -549,7 +549,7 @@ const Asistencia = () => {
                     lastPageText=">>"
                     previousPageText="<"
                     nextPageText=">"
-                    totalItems={assistanceList?.meta?.total}
+                    totalItems={assistanceList?.meta?.total ? assistanceList?.meta?.total : 0}
                     pageSize={10}
                     onSelect={(selectedPage)=>setpageall(selectedPage)}
                   />

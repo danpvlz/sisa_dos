@@ -9,7 +9,7 @@ import {
   export const filter = (search="") => {
     return (dispatch) => {
       dispatch({ type: FETCH_START });
-      axios.post('/promotorFilterData',
+      axios.post('auth/promotorFilterData',
       {
           "search": search
       }

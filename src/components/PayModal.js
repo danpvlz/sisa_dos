@@ -1,18 +1,15 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {
   Button,
-  Card,
-  CardBody,
   FormGroup,
-  Form,
   Input,
-  Container,
   Row,
   Col,
   Modal,
 } from "reactstrap";
+import Select from 'react-select';
 
-const Justify = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, setsendPay }) => {
+const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, setsendPay,setbancopago, fechasince }) => {
   const saveJustification = () => {
     setsendPay(true); 
     toggleModal();
@@ -45,12 +42,14 @@ const Justify = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, setse
                 className="form-control-label"
                 htmlFor="filterMonth"
               >
-                Mes</label>
+                Fecha</label>
               <Input
                 className="form-control-alternative"
                 placeholder="fechaPago"
                 type="date"
                 value={fecha}
+                min={fechasince}
+                max={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
                 onChange={(e) => {
                   setfecha(e.target.value == "" ? null : e.target.value)
                 }}
@@ -76,6 +75,25 @@ const Justify = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, setse
               />
             </FormGroup >
           </Col>
+          <Col>
+            <FormGroup className="mb-0 pb-4">
+              <label
+                className="form-control-label"
+                htmlFor="filterMonth"
+              >
+                Banco
+          </label>
+              <Select
+                placeholder="Seleccione..."
+                className="select-style"
+                name="banco"
+                onChange={(inputValue, actionMeta) => {
+                  setbancopago(inputValue != null ? inputValue.value : null);
+                }}
+                isClearable
+                options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
+            </FormGroup >
+          </Col>
         </Row>
       </div>
       <div className="modal-footer">
@@ -96,4 +114,4 @@ const Justify = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, setse
 }
 
 
-export default Justify;
+export default PayModal;

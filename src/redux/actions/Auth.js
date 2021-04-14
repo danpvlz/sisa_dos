@@ -85,9 +85,9 @@ export const updatePassword = (values) => {
       config
     ).then(({ data, status }) => {
       if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: USER_UPDATE_PASSWORD });
-        dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: AUTH_STATUS_ACTIONS, payload: status });
         dispatch({ type: AUTH_MESSAGE, payload: data.message });
       } else {
