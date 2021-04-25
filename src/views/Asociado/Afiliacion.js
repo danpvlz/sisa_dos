@@ -21,7 +21,7 @@ import Select from 'react-select';
 // core components
 import SearchPromotor from "components/Selects/SearchPromotor.js";
 import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { 
@@ -96,7 +96,7 @@ const Afiliacion = () => {
       default:
         break;
     }
-  }, [rucSearched,dniSearched])
+  }, [rucSearched,dniSearched]);
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -112,7 +112,7 @@ const Afiliacion = () => {
       dispatch(resetSearchRuc());
       dispatch(resetSearchDni());
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (sendassociated) {

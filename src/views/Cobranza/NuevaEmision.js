@@ -19,10 +19,10 @@ import Select from 'react-select';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import SearchAsociado from "components/Selects/SearchAsociado";
-import {showAssociated} from '../../redux/actions/Asociado';
-import {fetchError,hideMessage} from '../../redux/actions/Common';
-import {saveCuenta} from '../../redux/actions/Cuenta';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import { showAssociated } from '../../redux/actions/Asociado';
+import { fetchError, hideMessage } from '../../redux/actions/Common';
+import { saveCuenta } from '../../redux/actions/Cuenta';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 
 const NuevaEmision = () => {
   const dispatch = useDispatch();
@@ -40,30 +40,46 @@ const NuevaEmision = () => {
   const [pagado, setpagado] = useState(null)
   const [bancopago, setbancopago] = useState(null)
   const [meses, setmeses] = useState([]);
+  const [descuento, setdescuento] = useState(0);
+
+  const [docModificar, setdocModificar] = useState({
+    tipo: "",
+    serie: "",
+    numero: ""
+  });
 
   useEffect(() => {
-    if(idAsociado!=null){
+    if (idAsociado != null) {
       dispatch(showAssociated(idAsociado));
     }
   }, [idAsociado]);
 
   const onSubmit = (data) => {
     idAsociado == null ?
-    dispatch(fetchError("Debe elegir un asociado."))
-    :
-    tipoDocumentoEmision == null ?
-    dispatch(fetchError("Debe elegir si es boleta o factura."))
-    :
-    pagado == null ?
-    dispatch(fetchError("Debe elegir si el comprobante fue pagado."))
-    :
-    pagado == 2 && bancopago == null ?
-    dispatch(fetchError("Debe elegir un banco."))
-    :
-    meses.length == 0 ?
-    dispatch(fetchError("Debe elegir al menos un mes."))
-    :
-    toggleModal();
+      dispatch(fetchError("Debe elegir un asociado."))
+      :
+      tipoDocumentoEmision == null ?
+        dispatch(fetchError("Debe elegir si es boleta o factura."))
+        :
+        tipoDocumentoEmision != 3 && pagado == null ?
+          dispatch(fetchError("Debe elegir si el comprobante fue pagado."))
+          :
+          pagado == 2 && bancopago == null ?
+            dispatch(fetchError("Debe elegir un banco."))
+            :
+            meses.length == 0 ?
+              dispatch(fetchError("Debe elegir al menos un mes."))
+              :
+              tipoDocumentoEmision == 3 && docModificar.tipo == "" ?
+                dispatch(fetchError("Debe especificar el tipo de documento a modificar."))
+                :
+                tipoDocumentoEmision == 3 && docModificar.serie == "" ?
+                  dispatch(fetchError("Debe especificar la serie del documento a modificar."))
+                  :
+                  tipoDocumentoEmision == 3 && docModificar.numero == "" ?
+                    dispatch(fetchError("Debe especificar el número del documento a modificar."))
+                    :
+                    toggleModal();
     setformdata(data);
 
     dispatch(hideMessage());
@@ -75,13 +91,16 @@ const NuevaEmision = () => {
 
   useEffect(() => {
     if (confirm) {
-      formdata.idAsociado=idAsociado;
-      formdata.tipo_de_comprobante=tipoDocumentoEmision;
-      formdata.pagado=pagado;
-      formdata.banco=bancopago;
-      formdata.meses=meses;
-      formdata.cantidad=meses.length
-      formdata.conafiliacion=showAfiliacion;
+      formdata.idAsociado = idAsociado;
+      formdata.tipo_de_comprobante = tipoDocumentoEmision;
+      formdata.pagado = pagado;
+      formdata.banco = bancopago;
+      formdata.meses = meses;
+      formdata.cantidad = meses.length
+      formdata.conafiliacion = showAfiliacion;
+      formdata.descuento == 0 && delete formdata.descuento;
+      formdata.docModificar = docModificar;
+      console.log(formdata)
       dispatch(saveCuenta(formdata));
       history.push('/admin/cuentas');
     }
@@ -193,74 +212,151 @@ const NuevaEmision = () => {
                                 className="select-style"
                                 onChange={(inputValue, actionMeta) => {
                                   settipoDocumentoEmision(inputValue.value);
+                                  if (inputValue.value == 3) {
+                                    setpagado(null);
+                                  } else {
+                                    setdocModificar({
+                                      tipo: "",
+                                      serie: "",
+                                      numero: ""
+                                    });
+                                  }
                                 }}
                                 defaultValue={idAsociado ? associatedObject[0]?.tipoDocumento == 6 ? { value: 1, label: "Factura" } : null : null}
-                                options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
-                            </FormGroup>
-                          </Col>
-                          <Col lg="2">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                ¿Pagado?
-                          </label>
-                              <Select
-                                placeholder="Seleccione..."
-                                className="select-style"
-                                name="paidOut"
-                                onChange={(inputValue, actionMeta) => {
-                                  setpagado(inputValue.value);
-                                }}
-                                options={[{ value: 2, label: "Sí" }, { value: 1, label: "No" }]} 
-                                innerRef={register({ required: true })}
-                                />
+                                options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }, { value: 3, label: "Nota de crédito" }]} />
                             </FormGroup>
                           </Col>
                           {
-                            pagado == 2 ? 
-                            <>
-                            <Col lg="3">
-                              <FormGroup>
-                                <label
-                                  className="form-control-label "
-                                  htmlFor="input-address"
-                                >
-                                  Fecha de pago
+                            tipoDocumentoEmision == 3 ?
+                              <>
+                                <Col lg="2">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-address"
+                                    >
+                                      Tipo doc. modificar
+                                    </label>
+                                    <Select
+                                      placeholder="Seleccione..."
+                                      className="select-style"
+                                      name="typeDocUpdate"
+                                      id="typeDocUpdate"
+                                      onChange={(inputValue, actionMeta) => {
+                                        setdocModificar({ ...docModificar, tipo: inputValue.value, serie: inputValue.value== 1 ? "F109" : inputValue.value == 2 ? "B109" : ""});
+                                      }}
+                                      options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="2">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-address"
+                                    >
+                                      Serie a modificar
+                                </label>
+                                    <Input
+                                      className="form-control-alternative"
+                                      type="text"
+                                      name="serieUpdate"
+                                      onChange={(e) => {
+                                        setdocModificar({ ...docModificar, serie: e.target.value })
+                                      }}
+                                      value={docModificar.tipo == 1 ? "F109" : docModificar.tipo == 2 ? "B109" : ""}
+                                      readOnly
+                                      innerRef={register({ required: tipoDocumentoEmision == 3 })}
+                                    />
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="2">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-address"
+                                    >
+                                      Num. modificar
+                                </label>
+                                    <Input
+                                      className="form-control-alternative"
+                                      type="text"
+                                      name="numUpdate"
+                                      onChange={(e) => {
+                                        setdocModificar({ ...docModificar, numero: e.target.value })
+                                      }}
+                                      value={docModificar.numero}
+                                      innerRef={register({ required: tipoDocumentoEmision == 3 })}
+                                    />
+                                  </FormGroup>
+                                </Col>
+                              </>
+                              :
+                              <>
+                                <Col lg="2">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-address"
+                                    >
+                                      ¿Pagado?
+                          </label>
+                                    <Select
+                                      placeholder="Seleccione..."
+                                      className="select-style"
+                                      name="paidOut"
+                                      onChange={(inputValue, actionMeta) => {
+                                        setpagado(inputValue.value);
+                                      }}
+                                      options={[{ value: 2, label: "Sí" }, { value: 1, label: "No" }]}
+                                      innerRef={register({ required: true })}
+                                    />
+                                  </FormGroup>
+                                </Col>
+                                {
+                                  pagado == 2 ?
+                                    <>
+                                      <Col lg="3">
+                                        <FormGroup>
+                                          <label
+                                            className="form-control-label "
+                                            htmlFor="input-address"
+                                          >
+                                            Fecha de pago
                             </label>
-                                <Input
-                                  className="form-control-alternative"
-                                  name="fechaPago"
-                                  type="date"
-                                  readOnly
-                                  value={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
-                                  innerRef={register({ required: true })}
-                                />
-                              </FormGroup>
-                            </Col>
-                            <Col>
-                              <FormGroup className="mb-0 pb-4">
-                                <label
-                                  className="form-control-label"
-                                  htmlFor="filterMonth"
-                                >
-                                  Banco
+                                          <Input
+                                            className="form-control-alternative"
+                                            name="fechaPago"
+                                            type="date"
+                                            readOnly
+                                            value={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
+                                            innerRef={register({ required: true })}
+                                          />
+                                        </FormGroup>
+                                      </Col>
+                                      <Col>
+                                        <FormGroup className="mb-0 pb-4">
+                                          <label
+                                            className="form-control-label"
+                                            htmlFor="filterMonth"
+                                          >
+                                            Banco
                             </label>
-                                <Select
-                                  placeholder="Seleccione..."
-                                  className="select-style"
-                                  name="banco"
-                                  onChange={(inputValue, actionMeta) => {
-                                    setbancopago(inputValue != null ? inputValue.value : null);
-                                  }}
-                                  isClearable
-                                  options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
-                              </FormGroup >
-                            </Col>
-                            </>
-                            :
-                            ""
+                                          <Select
+                                            placeholder="Seleccione..."
+                                            className="select-style"
+                                            name="banco"
+                                            onChange={(inputValue, actionMeta) => {
+                                              setbancopago(inputValue != null ? inputValue.value : null);
+                                            }}
+                                            isClearable
+                                            options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
+                                        </FormGroup >
+                                      </Col>
+                                    </>
+                                    :
+                                    ""
+                                }
+                              </>
                           }
                           <Col lg="12">
                             <FormGroup>
@@ -299,21 +395,21 @@ const NuevaEmision = () => {
                       <hr className="my-4 " />
                     </Col>
                     <Col>
-                  <div className="custom-control custom-control-alternative custom-checkbox text-right">
-                    <Input
-                      className="custom-control-input"
-                      id="customCheck5"
-                      type="checkbox"
-                      onChange={(e) => {
-                        setshowAfiliacion(e.target.checked)
-                      }}
-                    />
-                    <label className="custom-control-label" htmlFor="customCheck5">
-                      Afiliación
+                      <div className="custom-control custom-control-alternative custom-checkbox text-right">
+                        <Input
+                          className="custom-control-input"
+                          id="customCheck5"
+                          type="checkbox"
+                          onChange={(e) => {
+                            setshowAfiliacion(e.target.checked)
+                          }}
+                        />
+                        <label className="custom-control-label" htmlFor="customCheck5">
+                          Afiliación
                     </label>
-                  </div>
+                      </div>
                     </Col>
-                    <Col lg="12" className={showAfiliacion?"block":"d-none"}>
+                    <Col lg="12" className={showAfiliacion ? "block" : "d-none"}>
                       <h6 className="heading-small text-muted mb-4">
                         Afiliación
                       </h6>
@@ -347,8 +443,8 @@ const NuevaEmision = () => {
                                 className="form-control-alternative text-center"
                                 name="importe"
                                 type="number"
-                                min="0" 
-                                innerRef={register({ required: showAfiliacion})}
+                                min="0"
+                                innerRef={register({ required: showAfiliacion })}
                               />
                             </FormGroup>
                           </Col>
@@ -391,7 +487,12 @@ const NuevaEmision = () => {
                                 name="ammount"
                                 type="number"
                                 min="0"
-                                value={idAsociado ? associatedObject[0]?.importeMensual : ""}
+                                value={idAsociado ?
+                                  descuento > 0 ?
+                                    associatedObject[0]?.importeMensual - (associatedObject[0]?.importeMensual * descuento / 100)
+                                    :
+                                    associatedObject[0]?.importeMensual
+                                  : ""}
                                 disabled
                               />
                             </FormGroup>
@@ -466,17 +567,52 @@ const NuevaEmision = () => {
                               />
                             </FormGroup>
                           </Col>
+                          <Col lg="2" className="ml-auto">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Descuento
+                              </label>
+                              <div className="d-flex">
+                                <div className="col-10 mx-0 px-0">
+                                  <Input
+                                    className="form-control-alternative text-center"
+                                    name="descuento"
+                                    type="number"
+                                    defaultValue="0"
+                                    min="0"
+                                    step="5"
+                                    innerRef={register({ required: false })}
+                                    onChange={(e) => {
+                                      setdescuento(e.target.value);
+                                    }}
+                                  />
+                                </div>
+                                <div className="col-2 my-auto pl-1">
+                                  <span>%</span>
+                                </div>
+                              </div>
+                            </FormGroup>
+                          </Col>
                         </Row>
-                          <hr />
-                          <div style={{float: 'right', fontSize:'1.5rem'}}>
+                        <hr />
+                        <div style={{ float: 'right', fontSize: '1.5rem' }}>
 
-                          <small>Total: s/.</small><strong >{idAsociado ? (associatedObject[0]?.importeMensual)*meses?.length : 0}</strong>
-                          </div>
+                          <small>Total: s/.</small><strong >
+                            {idAsociado ?
+                              descuento > 0 ?
+                                (associatedObject[0]?.importeMensual - (associatedObject[0]?.importeMensual * descuento / 100)) * meses?.length
+                                :
+                                (associatedObject[0]?.importeMensual) * meses?.length
+                              : 0}</strong>
+                        </div>
                       </div>
                     </Col>
                   </Row>
                   <div className="text-center mt-5">
-                    <Button className="my-4 btn-block" color="primary" type="submit" disabled={idAsociado?false:true}>
+                    <Button className="my-4 btn-block" color="primary" type="submit" disabled={idAsociado ? false : true}>
                       Registrar
                       </Button>
                   </div>

@@ -225,7 +225,7 @@ export const exportBills = (params = {}) => {
       const url = window.URL.createObjectURL(new Blob([data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'Cuentas.xls'); //or any other extension
+      link.setAttribute('download', 'Cuentas.xlsx'); //or any other extension
       document.body.appendChild(link);
       link.click();
       dispatch({ type: FETCH_SUCCESS });
@@ -248,7 +248,7 @@ export const exportBillsDetail = (params = {}) => {
       const url = window.URL.createObjectURL(new Blob([data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'CuentasDetalle.xls'); //or any other extension
+      link.setAttribute('download', 'CuentasDetalle.xlsx'); //or any other extension
       document.body.appendChild(link);
       link.click();
       dispatch({ type: FETCH_SUCCESS });
@@ -271,7 +271,7 @@ export const exportMembership = (params = {}) => {
       const url = window.URL.createObjectURL(new Blob([data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'Membresias.xls'); //or any other extension
+      link.setAttribute('download', 'Membresias.xlsx'); //or any other extension
       document.body.appendChild(link);
       link.click();
       dispatch({ type: FETCH_SUCCESS });

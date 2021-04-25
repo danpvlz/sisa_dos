@@ -22,12 +22,13 @@ import {
 } from "reactstrap";
 // core components
 import Select from 'react-select';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import Header from "components/Headers/AsociadoHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import SearchPromotor from "components/Selects/SearchPromotorFilter";
-import SetCodigoModal from "components/SetCodigoModal.js";
+import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
+import SetCodigoModal from "components/Modals/SetCodigoModal.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listAssociated, exportAssociateds, status, assignCode, removeInProcess } from "../../redux/actions/Asociado";
 
@@ -38,6 +39,7 @@ const Asociado = () => {
   const [idAsociado, setIdAsociado] = useState(null);
   const [state, setState] = useState(null);
   const [debCollector, setdebCollector] = useState(null);
+  const [comiteGremial, setcomiteGremial] = useState(null);
   const [page, setPage] = useState(1)
   //const asociados = require('../../data/asociado.json');
   const history = useHistory();
@@ -53,6 +55,7 @@ const Asociado = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   //Filters
+  const [loaded, setloaded] = useState(false);
   const [since, setsince] = useState(null);
   const [promotorSearched, setPromotorSearched] = useState(null);
 
@@ -78,62 +81,53 @@ const Asociado = () => {
 
   useEffect(() => {
     let tsearch=search;
+
     if(idAsociado == null){
       delete tsearch.idAsociado;
     }else{
       tsearch.idAsociado=idAsociado;
     }
-    setsearch(tsearch);
-    dispatch(listAssociated(page,tsearch))
-  }, [idAsociado]);
-
-  useEffect(() => {
-    let tsearch=search;
     if(debCollector == null){
       delete tsearch.debCollector;
     }else{
       tsearch.debCollector=debCollector;
     }
-    setsearch(tsearch);
-    dispatch(listAssociated(page,tsearch))
-  }, [debCollector]);
-
-  useEffect(() => {
-    let tsearch = search;
+    
+    if(comiteGremial == null){
+      delete tsearch.comite;
+    }else{
+      tsearch.comite=comiteGremial;
+    }
     if (since == null) {
       delete tsearch.since;
     } else {
       tsearch.month = since;
     }
-    setsearch(tsearch);
-    dispatch(listAssociated(page, tsearch));
-  }, [since]);
-
-  useEffect(() => {
-    let tsearch = search;
     if (promotorSearched == null) {
       delete tsearch.promotorSearched;
     } else {
       tsearch.promotor = promotorSearched;
     }
-    setsearch(tsearch);
-    dispatch(listAssociated(page, tsearch));
-  }, [promotorSearched]);
-
-  useEffect(() => {
-    let tsearch=search;
     if(state == null){
       delete tsearch.state;
     }else{
       tsearch.state=state;
     }
+
+    if (loaded) {
     setsearch(tsearch);
     dispatch(listAssociated(page,tsearch))
-  }, [state]);
+    }
+  }, [idAsociado,debCollector,comiteGremial,since,promotorSearched,state,page]);
 
   useEffect(() => {
-    dispatch(listAssociated(page,search))
-  }, [page])
+    setsearch(search);
+    dispatch(listAssociated(page,search));
+    setloaded(true);
+    return () => {
+    setloaded(false);
+    }
+  }, []);
 
   const toggleModalCodigo = () => {
     setshowSetCodigo(!showSetCodigo);
@@ -286,7 +280,18 @@ const Asociado = () => {
                             options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" },{ value: 3, label: "Retiro" }]} />
                         </FormGroup >
                       </Col>
-                      <Col lg="5" className="text-right m-auto">
+                      <Col lg="4"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Comité gremial
+                      </label>
+                          <SearchComiteGremial setVal={setcomiteGremial}/>
+                        </FormGroup>
+                      </Col>
+                      <Col lg="1" className="text-right m-auto">
                         <Button color="success"  type="button" onClick={()=>dispatch(exportAssociateds(search))}>
                           <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
                         </Button>

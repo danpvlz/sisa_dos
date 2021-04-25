@@ -17,7 +17,7 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import { useDispatch, useSelector } from "react-redux";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import {saveService} from '../../redux/actions/Servicio';
 import {showAssociated} from '../../redux/actions/Asociado';
 const RegistroServicio = () => {

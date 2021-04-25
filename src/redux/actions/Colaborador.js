@@ -175,8 +175,6 @@ export const filter = (search="") => {
         "search": search
     }
     ).then(({data}) => {
-      console.log("data")
-      console.log(data)
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: FILTER_WORKER, payload: data });

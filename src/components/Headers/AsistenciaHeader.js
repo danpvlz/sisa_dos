@@ -71,7 +71,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                           Tardanzas
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          {tardanzas*-1>60 ? tardanzas*-1%60==0 ? Math.round(tardanzas/60)*-1+"h " : (Math.round(tardanzas/60)*-1+"h " + tardanzas*-1%60+"min") : tardanzas*-1+"min"}
+                          {tardanzas}
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -99,20 +99,12 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          H. compensar
+                          H. extra
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
                           {
-                          hCompensar ?
-                          (
-                          hCompensar>60 ? 
-                            hCompensar%60 == 0 ?
-                              Math.round(hCompensar/60)+"h" :
-                            (Math.round(hCompensar/60)+"h " + hCompensar%60+"min") :
-                          hCompensar+"min"
-                          ) :
-                          '0min'
-                        }
+                          hCompensar 
+                          }
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -139,15 +131,12 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          H. totales
+                          {hRealizadas[0]!="-" ? "Extra" : "Debe"}
                         </CardTitle>
                         <span className="h2 font-weight-b
                         old mb-0">
                           {
-                          hRealizadas>0 ?
-                          hRealizadas>60 ? hRealizadas%60 == 0 ? Math.round(hRealizadas/60)+"h" :(Math.round(hRealizadas/60)+"h " + hRealizadas%60+"min") : hRealizadas+"min"
-                          :
-                          hRealizadas*-1>60 ? hRealizadas*-1%60 == 0 ? Math.round(hRealizadas*-1/60)+"h" :(Math.round(hRealizadas*-1/60)*-1+"h " + hRealizadas*-1%60+"min") : hRealizadas*-1+"min"
+                          hRealizadas[0]!="-" ? hRealizadas : hRealizadas.substring(1,hRealizadas.length)
                           }
                         </span>
                       </div>

@@ -16,7 +16,7 @@ import {
 } from "reactstrap";
 // core components
 import SearchCobrador from "components/Selects/SearchCobrador.js";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { showEditAssociated,resetEditAssociated,update } from "../../redux/actions/Asociado";

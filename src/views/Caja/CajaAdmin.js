@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useCallback, useState, useEffect, useRef  } from "react";
+import { useHistory } from 'react-router-dom';
 import PaginationComponent from "react-reactstrap-pagination";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
+import PayModal from '../../components/Modals/PayModal';
 
 // reactstrap components
 import {
@@ -22,20 +24,21 @@ import {
 } from "reactstrap";
 // core components
 import Select from 'react-select';
-import PaymentsModal from "components/Payments.js";
+import PaymentsModal from "components/Modals/Payments.js";
 import CuentasHeader from "components/Headers/CuentasHeader.js";
-import SearchAsociado from "components/Selects/SearchAsociado.js";
-import SearchCobrador from "components/Selects/SearchCobrador.js";
+import SearchCliente from "components/Selects/SearchCliente.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listBills, listbysector, indicatorsBills, anularCuenta, pagarCuenta, getBillDetail, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
+import { listbysector, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
+import { listBills, anularCuenta, payCaja, getDetail, indicatorsBills } from "../../redux/actions/Caja";
 
 const Cuenta = () => {
   const selectInputRef = useRef();
-  const selectInputRefAsociado = useRef();
+  const selectInputRefCliente = useRef();
   const dispatch = useDispatch();
-  const { billList, billIndicators, billsStatusActions, billListBySector } = useSelector(({ cuenta }) => cuenta);
-
-  const [loaded, setloaded] = useState(false);
+  const { billsStatusActions } = useSelector(({ cuenta }) => cuenta);
+  const { billListCaja, billIndicatorsCaja } = useSelector(({ caja }) => caja);
+  const history = useHistory();
+  const handleNew = useCallback(() => history.push('/admin/registro-caja'), [history]);
 
   const [page, setPage] = useState(1);
   const [search, setsearch] = useState({});
@@ -52,17 +55,19 @@ const Cuenta = () => {
 
   const [showBillDetail, setshowBillDetail] = useState(false);
 
-  const [showBillsTable, setshowBillsTable] = useState(false);
-
   //Filters
-  const [since, setsince] = useState(null);
-  const [until, setuntil] = useState(null);
-  const [sincePay, setsincepay] = useState(null);
-  const [untilPay, setuntilpay] = useState(null);
+  const [loaded, setloaded] = useState(false);
+  const [since, setsince] = useState(`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-01`);
+  const [until, setuntil] = useState(`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-${new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate()}`);
   const [status, setstatus] = useState(null);
-  const [idAsociado, setidAsociado] = useState(null);
+  const [idCliente, setidCliente] = useState(null);
   const [cobrador, setcobrador] = useState(null);
   const [number, setnumber] = useState(null);
+  const [paydate, setpaydate] = useState("");
+  const [sincePay, setsincepay] = useState(null);
+  const [untilPay, setuntilpay] = useState(null);
+
+  const [fechasince, setfechasince] = useState(new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]);
 
   useEffect(() => {
     if (billsStatusActions == 200) {
@@ -71,10 +76,14 @@ const Cuenta = () => {
     dispatch(listbysector(search));
     }
   }, [billsStatusActions]);
-
   
   useEffect(() => {
     let tsearch = search;
+    if (paydate == "") {
+      delete tsearch.paydate;
+    } else {
+      tsearch.paydate = paydate;
+    }
     
     if (cobrador == null) {
       delete tsearch.debCollector;
@@ -82,10 +91,10 @@ const Cuenta = () => {
       tsearch.debCollector = cobrador;
     }
 
-    if (idAsociado == null) {
-      delete tsearch.idAsociado;
+    if (idCliente == null) {
+      delete tsearch.idCliente;
     } else {
-      tsearch.idAsociado = idAsociado;
+      tsearch.idCliente = idCliente;
     }
 
     if (status == null || status == 0) {
@@ -129,7 +138,7 @@ const Cuenta = () => {
     dispatch(indicatorsBills(search));
     dispatch(listbysector(search));
     }
-  }, [page,cobrador,idAsociado,status ,number,sincePay,untilPay,since,until]);
+  }, [page,paydate,cobrador,idCliente,status ,number,sincePay,untilPay,since,until]);
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -146,10 +155,7 @@ const Cuenta = () => {
   useEffect(() => {
     if (action == 1 && sendConfirm) {
       //REGISTRAR
-      var fData = {
-        "idCuenta": idCuenta,
-      }
-      dispatch(anularCuenta(fData))
+      dispatch(anularCuenta(idCuenta))
       //REGISTRAR
       setsendConfirm(false);
       setidCuenta(null);
@@ -163,9 +169,9 @@ const Cuenta = () => {
         "idCuenta": idCuenta,
         "monto": monto,
         "fechaPago": fecha,
-        "banco": bancopago,
+        "opcion": bancopago,
       }
-      dispatch(pagarCuenta(fData))
+      dispatch(payCaja(fData))
       //REGISTRAR
       setsendPay(false);
       setidCuenta(null);
@@ -179,17 +185,29 @@ const Cuenta = () => {
     dispatch(listbysector(search));
     setloaded(true);
     return () => {
-      setloaded(false);
+    setloaded(false);
     }
-  }, []);
+  }, [])
 
   return (
     <>
       <CuentasHeader
-        pendientes={billIndicators?.pendientes}
-        cobrado={billIndicators?.cobrado}
-        emitidos={billIndicators?.emitidos}
-        anulado={billIndicators?.anulado}
+        pendientes={billIndicatorsCaja?.pendientes}
+        cobrado={billIndicatorsCaja?.cobrado}
+        emitidos={billIndicatorsCaja?.emitidos}
+        anulado={billIndicatorsCaja?.anulado}
+      />
+      <PayModal
+        showPay={showPay}
+        toggleModal={toggleModalPay}
+        opciones={true}
+        fecha={fecha}
+        setfecha={setfecha}
+        monto={monto}
+        setmonto={setmonto}
+        setsendPay={setsendPay}
+        setbancopago={setbancopago}
+        fechasince={fechasince}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -200,46 +218,6 @@ const Cuenta = () => {
           showDetail={showBillDetail} toggleModal={toggleModalDetail}
         />
         {/* Table */}
-        <Row className="mb-3">
-          <div className="col">
-            <Card className="shadow">
-              <Table
-                className="align-items-center table-flush"
-                responsive
-              >
-                <thead>
-                  <tr>
-                    <th scope="col" className="text-left font-weight-bold">Cobrador</th>
-                    <th scope="col" className="text-right font-weight-bold" >Emitido</th>
-                    <th scope="col" className="text-right font-weight-bold">Cobrado</th>
-                    <th scope="col" className="text-right font-weight-bold">Pendiente</th>
-                    <th scope="col" className="text-right font-weight-bold">Anulado</th>
-                  </tr>
-                </thead>
-                <tbody className="text-right">
-                {
-                    billListBySector?.cuentas?.map((bill, key) =>
-                      <tr key={key}>
-                        <td scope="row" className="text-left font-weight-bold">{bill.descripcion}</td>
-                        <td>{bill.emitidos}</td>
-                        <td>{bill.cobrado}</td>
-                        <td>{bill.pendientes}</td>
-                        <td>{bill.anulado}</td>
-                      </tr>
-                    )
-                  }
-                  <tr>
-                    <td scope="row" className="text-left font-weight-bold">Afiliaciones</td>
-                    <td>{billListBySector?.afiliaciones?.emitidos}</td>
-                    <td>{billListBySector?.afiliaciones?.cobrado}</td>
-                    <td>{billListBySector?.afiliaciones?.pendientes}</td>
-                    <td>{billListBySector?.afiliaciones?.anulado}</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </Card>
-          </div>
-        </Row>
         <Row>
           <div className="col">
             <Card className="shadow">
@@ -248,13 +226,24 @@ const Cuenta = () => {
                   <Col lg="12" className="border-0 d-flex justify-content-between">
                     <h3 className="mb-0">Cuentas</h3>
                     <Button
-                      className="btn btn-sm btn-new-small icon icon-shape rounded-circle shadow "
-                      onClick={()=>setshowBillsTable(!showBillsTable)}
+                      className="btn-new-xl btn-icon d-none d-md-block"
+                      color="primary"
+                      onClick={handleNew}
                     >
-                      <i className={showBillsTable ? `fa fa-angle-up` : `fa fa-angle-down`} />
+                      <span className="btn-inner--icon">
+
+                        <i className="fa fa-plus" />
+                      </span>
+                      <span className="btn-inner--text">Nueva emisión</span>
+                    </Button>
+                    <Button
+                      className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
+                      onClick={handleNew}
+                    >
+                      <i className="fas fa-plus" />
                     </Button>
                   </Col>
-                  <Col lg="12 " className={showBillsTable ?  '' : 'd-none'}>
+                  <Col lg="12 ">
                     <hr className="my-4 " />
                     <Row className="bg-secondary">
                       <Col lg="3"  >
@@ -263,7 +252,7 @@ const Cuenta = () => {
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
-                            Emisión desde
+                            Desde
                       </label>
                           <Input
                             className="form-control-alternative"
@@ -272,7 +261,6 @@ const Cuenta = () => {
                             type="date"
                             value={since ? since : ""}
                             onChange={(inputValue, actionMeta) => {
-                              console.log(inputValue)
                               setsince(inputValue != null ? inputValue.target.value : null);
                             }}
                           />
@@ -284,7 +272,7 @@ const Cuenta = () => {
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
-                            Emisión hasta
+                            Hasta
                       </label>
                           <Input
                             className="form-control-alternative"
@@ -313,7 +301,7 @@ const Cuenta = () => {
                               setnumber(e.target.value == "" ? null : e.target.value)
                             }}
                             value={number ? number : ""}
-                          />
+                        />
                         </FormGroup >
                       </Col>
                       <Col lg="4"  >
@@ -322,9 +310,9 @@ const Cuenta = () => {
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
-                            Asociado
+                            Cliente
                       </label>
-                          <SearchAsociado setVal={setidAsociado} selectInputRef={selectInputRefAsociado}/>
+                          <SearchCliente setVal={setidCliente} selectInputRef={selectInputRefCliente}/>
                         </FormGroup>
                       </Col>
                       <Col lg="2"  >
@@ -346,67 +334,20 @@ const Cuenta = () => {
                             options={[{ value: 0, label: "Emitido" }, { value: 1, label: "Por cancelar" }, { value: 2, label: "Cancelada" }, { value: 3, label: "Anulada" }]} />
                         </FormGroup >
                       </Col>
-                      <Col lg="4"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Cobrador
-                      </label>
-                          <SearchCobrador setVal={setcobrador} selectInputRef={selectInputRef}/>
-                        </FormGroup>
-                      </Col>
-                      <Col lg="3"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Pagadas desde
-                      </label>
-                          <Input
-                            className="form-control-alternative"
-                            type="date"
-                            value={sincePay ? sincePay : ""}
-                            onChange={(inputValue) => {
-                              console.log(inputValue.target.value)
-                              setsincepay(inputValue != "" ? inputValue.target.value : null);
-                            }}
-                          />
-                        </FormGroup >
-                      </Col>
-                      <Col lg="3"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Pagadas hasta
-                      </label>
-                          <Input
-                            className="form-control-alternative"
-                            type="date"
-                            value={untilPay ? untilPay : ""}
-                            onChange={(inputValue) => {
-                              setuntilpay(inputValue != "" ? inputValue.target.value : null);
-                            }}
-                          />
-                        </FormGroup >
-                      </Col>
-                      <Col lg="3" className="text-left ">
+                      <Col lg="3" className="text-left my-auto">
                         <Button className="btn-sm" color="info" type="button" onClick={() => {
                           setloaded(false);
                           setsince(null);
                           setuntil(null);
                           setstatus(null);
-                          setidAsociado(null);
+                          setidCliente(null);
                           setcobrador(null);
                           setnumber(null);
                           setsincepay(null);
                           setuntilpay(null);
-                          selectInputRef.current.select.clearValue();
-                          selectInputRefAsociado.current.select.clearValue();
+                          setfechasince(null);
+                          selectInputRef?.current?.select?.clearValue();
+                          selectInputRefCliente?.current?.select?.clearValue();
                           setloaded(true);
                         }}>
                         <i className="fa fa-ban mr-1" aria-hidden="true"></i>Limpiar filtros
@@ -418,19 +359,20 @@ const Cuenta = () => {
                         </Button>
                       </Col>
                     </Row>
+
                   </Col>
+
                 </Row>
               </CardHeader>
-              <Table className={`align-items-center table-flush ${showBillsTable ?  '' : 'd-none'}`} responsive>
+              <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Emision</th>
-                    <th scope="col">Tipo</th>
                     <th scope="col">Serie-Número</th>
-                    <th scope="col">Asociado</th>
+                    <th scope="col">Cliente</th>
                     <th scope="col">Total</th>
                     <th scope="col">Estado</th>
-                    <th scope="col">Cobrador</th>
+                    <th scope="col">Observaciones</th>
                     <th scope="col">Fecha fin pago</th>
                     <th scope="col">Anulación</th>
                     <th scope="col" />
@@ -438,20 +380,17 @@ const Cuenta = () => {
                 </thead>
                 <tbody>
                   {
-                    billList?.data?.map((cuenta, key) =>
+                    billListCaja?.data?.map((cuenta, key) =>
 
                       <tr key={key}>
                         <td scope="row">
                           {cuenta.fechaEmision}
                         </td>
                         <td>
-                          {`${cuenta.tipo}`}
+                          {`${cuenta.serieNumero} ${cuenta.tipo == "NC" ? " - "+cuenta.tipo : ""}`}
                         </td>
                         <td>
-                          {`${cuenta.serieNumero} ${cuenta.tipo == " - NC" ? cuenta.tipo : ""}`}
-                        </td>
-                        <td>
-                          {cuenta.asociado}
+                          {cuenta.denominacion}
                         </td>
                         <td className="text-center">
                           <small>S/.</small> {cuenta.total}
@@ -463,7 +402,7 @@ const Cuenta = () => {
                           </Badge>
                         </td>
                         <td>
-                          {cuenta.descripcion}
+                          {cuenta.observaciones}
                         </td>
                         <td>
                           {cuenta.fechaFinPago}
@@ -475,7 +414,6 @@ const Cuenta = () => {
                           <UncontrolledDropdown>
                             <DropdownToggle
                               className="btn-icon-only text-light"
-                              href="#pablo"
                               role="button"
                               size="sm"
                               color=""
@@ -487,13 +425,41 @@ const Cuenta = () => {
                               <DropdownItem
                                 className="d-flex"
                                 onClick={(e) => {
-                                  dispatch(getBillDetail({ "idCuenta": cuenta.idCuenta }));
+                                  dispatch(getDetail(cuenta.idCuenta));
                                   toggleModalDetail();
                                 }}
                               >
                                 <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
                         </DropdownItem>
-
+                              {
+                                cuenta.estado == 1 ?
+                                  <>
+                                    <DropdownItem
+                                      className="d-flex"
+                                      onClick={(e) => {  setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); toggleModalPay(); }}
+                                    >
+                                      <i className="fa fa-credit-card text-success" aria-hidden="true"></i> Cancelar
+                          </DropdownItem>
+                                    <DropdownItem
+                                      className="d-flex"
+                                      onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal(); }}
+                                    >
+                                      <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
+                          </DropdownItem>
+                                  </>
+                                  :
+                                  cuenta.estado == 2 ?
+                                    <>
+                                      <DropdownItem
+                                        className="d-flex"
+                                        onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal(); }}
+                                      >
+                                        <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
+                          </DropdownItem>
+                                    </>
+                                    :
+                                    ""
+                              }
                             </DropdownMenu>
                           </UncontrolledDropdown>
                         </td>
@@ -503,7 +469,7 @@ const Cuenta = () => {
 
                 </tbody>
               </Table>
-              <CardFooter className={`py-4 ${showBillsTable ?  '' : 'd-none'}`}>
+              <CardFooter className="py-4">
                 <nav aria-label="..." className="pagination justify-content-end mb-0">
                   <PaginationComponent
                     listClassName="justify-content-end mb-0"
@@ -511,7 +477,7 @@ const Cuenta = () => {
                     lastPageText=">>"
                     previousPageText="<"
                     nextPageText=">"
-                    totalItems={billList?.meta?.total ? billList?.meta?.total : 0}
+                    totalItems={billListCaja?.meta?.total ? billListCaja?.meta?.total : 0}
                     pageSize={10}
                     onSelect={(selectedPage) => setPage(selectedPage)}
                   />

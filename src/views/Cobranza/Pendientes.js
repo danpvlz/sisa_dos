@@ -123,7 +123,6 @@ useEffect(() => {
                         type="date"
                         defaultValue={new Date().toISOString().substring(0, 10)}
                         onChange={(e) => {
-                          console.log(e.target.value)
                           setmonth(e.target.value == "" ? null : e.target.value);
                         }}
                       />

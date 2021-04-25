@@ -13,7 +13,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import { updatePassword } from "../../redux/actions/Auth";
 import { useDispatch } from "react-redux";
 export default function ChangePassword({authUser}) {

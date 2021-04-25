@@ -86,7 +86,7 @@ export const exportAssociateds = (params = {}) => {
       const url = window.URL.createObjectURL(new Blob([data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'asociados.xls'); //or any other extension
+      link.setAttribute('download', 'asociados.xlsx'); //or any other extension
       document.body.appendChild(link);
       link.click();
       dispatch({ type: FETCH_SUCCESS });
@@ -221,23 +221,19 @@ export const searchRuc = (rucSearched) =>  {
   return (dispatch) => {
     dispatch({ type: FETCH_START });
     dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: 0 });
-    helper.post('https://api.migo.pe/api/v1/ruc', {
-      token: process.env.REACT_APP_MIGOAPI_T,
-      ruc: rucSearched,
-    }
+    axios.get('searchRuc/' + rucSearched,
     ).then(({ data, status }) => {
-      console.log(data);
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
-        dispatch({ type: SHOW_RUC_SEARCHED, payload: data });
+        dispatch({ type: SHOW_RUC_SEARCHED, payload: data.data });
 
       } else {
-        dispatch({ type: FETCH_ERROR, payload: data.message });
+        dispatch({ type: FETCH_ERROR, payload: data });
       }
     })
       .catch(function (error) {
-        dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+        dispatch({ type: FETCH_ERROR, payload: error });
       });
   }
 };

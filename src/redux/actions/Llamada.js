@@ -40,7 +40,7 @@ import {
         const url = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'llamadas.xls'); //or any other extension
+        link.setAttribute('download', 'llamadas.xlsx'); //or any other extension
         document.body.appendChild(link);
         link.click();
         dispatch({ type: FETCH_SUCCESS });

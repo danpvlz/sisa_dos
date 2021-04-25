@@ -25,9 +25,10 @@ import {
 } from "reactstrap";
 // core components
 import Select from 'react-select';
+import PaginationComponent from "react-reactstrap-pagination";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
-import PaymentsModal from "components/Payments.js";
+import PaymentsModal from "components/Modals/Payments.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listMemberships, getBillDetail, exportMembership } from "../../redux/actions/Cuenta";
 
@@ -164,6 +165,7 @@ const EstadoCuenta = () => {
                   <tr>
                     <th scope="col">Asociado</th>
                     <th scope="col">Mes</th>
+                    <th scope="col">Año</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Cobrado</th>
                     <th scope="col">Pagado</th>
@@ -187,6 +189,9 @@ const EstadoCuenta = () => {
                     ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][cuenta.mes-1]
                     
                     }
+                  </td>
+                  <td>
+                    {cuenta.year}
                   </td>
                   <td>
                     <Badge color="" className="badge-dot mr-4">
@@ -249,55 +254,17 @@ const EstadoCuenta = () => {
                 </tbody>
               </Table>
               <CardFooter className="py-4">
-                <nav aria-label="...">
-                  <Pagination
-                    className="pagination justify-content-end mb-0"
+                <nav aria-label="..." className="pagination justify-content-end mb-0">
+                  <PaginationComponent
                     listClassName="justify-content-end mb-0"
-                  >
-                    <PaginationItem className="disabled">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                        tabIndex="-1"
-                      >
-                        <i className="fas fa-angle-left" />
-                        <span className="sr-only">Previous</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem className="active">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-angle-right" />
-                        <span className="sr-only">Next</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                  </Pagination>
+                    firstPageText="<<"
+                    lastPageText=">>"
+                    previousPageText="<"
+                    nextPageText=">"
+                    totalItems={membershipList?.meta?.total ? membershipList?.meta?.total : 0}
+                    pageSize={10}
+                    onSelect={(selectedPage) => setPage(selectedPage)}
+                  />
                 </nav>
               </CardFooter>
             </Card>

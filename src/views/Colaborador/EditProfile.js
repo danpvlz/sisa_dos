@@ -15,7 +15,7 @@ import {
 import ChangePassword from './ChangePassword';
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import { useDispatch } from "react-redux";
 
 import { update } from "../../redux/actions/Colaborador";

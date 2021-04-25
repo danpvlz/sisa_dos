@@ -16,7 +16,7 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { showWorker, resetShowWorker, update, resetPassword } from "../../redux/actions/Colaborador";
 import { useDispatch, useSelector } from "react-redux";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 
 const NuevoColaborador = (props) => {
   const dispatch = useDispatch();

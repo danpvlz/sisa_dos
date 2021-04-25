@@ -9,7 +9,7 @@ import {
 } from "reactstrap";
 import Select from 'react-select';
 
-const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, setsendPay,setbancopago, fechasince }) => {
+const ChangePayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, setsendPay,setbancopago, fechasince,opciones }) => {
   const saveJustification = () => {
     setsendPay(true); 
     toggleModal();
@@ -64,9 +64,9 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, sets
               >
                 Monto</label>
               <Input
-                className="form-control-alternative"
+                className="form-control-alternative text-center"
                 name="monto"
-                placeholder="s/."
+                placeholder="S/."
                 type="number"
                 value={monto}
                 onChange={(e) => {
@@ -75,25 +75,49 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, sets
               />
             </FormGroup >
           </Col>
-          <Col>
-            <FormGroup className="mb-0 pb-4">
-              <label
-                className="form-control-label"
-                htmlFor="filterMonth"
-              >
-                Banco
-          </label>
-              <Select
-                placeholder="Seleccione..."
-                className="select-style"
-                name="banco"
-                onChange={(inputValue, actionMeta) => {
-                  setbancopago(inputValue != null ? inputValue.value : null);
-                }}
-                isClearable
-                options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
-            </FormGroup >
-          </Col>
+          {
+            opciones ? 
+            <Col>
+              <FormGroup className="mb-0 pb-4">
+                <label
+                  className="form-control-label"
+                  htmlFor="filterMonth"
+                >
+                  Medio de pago
+            </label>
+                <Select
+                  placeholder="Seleccione..."
+                  className="select-style"
+                  name="opciones"
+                  onChange={(inputValue, actionMeta) => {
+                    setbancopago(inputValue != null ? inputValue.value : null);
+                  }}
+                  isClearable
+                  options={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }]}
+                  />
+              </FormGroup >
+            </Col>
+            :
+            <Col>
+              <FormGroup className="mb-0 pb-4">
+                <label
+                  className="form-control-label"
+                  htmlFor="filterMonth"
+                >
+                  Banco
+            </label>
+                <Select
+                  placeholder="Seleccione..."
+                  className="select-style"
+                  name="banco"
+                  onChange={(inputValue, actionMeta) => {
+                    setbancopago(inputValue != null ? inputValue.value : null);
+                  }}
+                  isClearable
+                  options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
+              </FormGroup >
+            </Col>
+          }
         </Row>
       </div>
       <div className="modal-footer">
@@ -114,4 +138,4 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, sets
 }
 
 
-export default PayModal;
+export default ChangePayModal;

@@ -38,16 +38,27 @@ import MarcarAsistencia from "views/Asistencia/MarcarAsistencia.js";
 import Llamada from "views/Llamada/Llamada.js";
 import NuevaLlamada from "views/Llamada/NuevaLlamada.js";
 
-//Cuentas 4
-import Cobranza from "views/Cuenta/Cobranza";
-import Cuentas from "views/Cuenta/Cuentas";
-import NuevaCobranza from "views/Cuenta/NuevaCobranza.js";
-import Pendientes from "views/Cuenta/Pendientes.js";
-import Membresia from "views/Cuenta/Membresia.js";
+//Cobranza 4
+import CuentasAdmin from "views/Cobranza/CuentasAdmin";
+import CuentasVer from "views/Cobranza/CuentasVer";
+import NuevaEmision from "views/Cobranza/NuevaEmision.js";
+import Pendientes from "views/Cobranza/Pendientes.js";
+import Membresia from "views/Cobranza/Membresia.js";
+
+//Caja 4
+import CajaAdmin from "views/Caja/CajaAdmin";
+import NuevaEmisionCaja from "views/Caja/NuevaEmision";
+import CajaDashboard from "views/Caja/Dashboard";
+
+//Concepto
+import Concepto from "views/Concepto/Concepto.js";
 
 //Servicios 2
 import Servicio from "views/Servicio/Servicio.js";
 import NuevoServicio from "views/Servicio/NuevoServicio.js";
+
+//Servicios
+import Cliente from "views/Cliente/Cliente.js";
 
 var components=[
   Login,
@@ -62,8 +73,8 @@ var components=[
   MarcarAsistencia,
   Llamada,
   NuevaLlamada,
-  Cobranza,
-  NuevaCobranza,
+  CuentasAdmin,
+  NuevaEmision,
   Pendientes,
   Membresia,
   EditarAsociado,
@@ -76,9 +87,14 @@ var components=[
   EditarAsociadoCobranza,
   EditarAsociadoSA,
   AsociadoCobranza, //25
-  Cuentas, //26
+  CuentasVer, //26
   AsociadoImagenIns,
   VerMas,
+  CajaAdmin,//29
+  NuevaEmisionCaja,//30
+  CajaDashboard,//31
+  Concepto, //32
+  Cliente, //33
 ]
 //6
 export const routesAdmin = [
@@ -235,7 +251,7 @@ export const routesAdmin = [
         icon: "fa fa-file text-success",
         component: components[13],
         layout: "/admin",
-        show: true
+        show: false
       },
       {
         path: "/cuentas",
@@ -298,6 +314,53 @@ export const routesAdmin = [
     show: false
   },
   {
+    name: "Caja",
+    icon: "ni ni-box-2 text-blue",
+    layout: "/admin",
+    routes: [
+      {
+        path: "/caja-reportes",
+        name: "Dashboard",
+        icon: "ni ni-chart-bar-32 text-blue",
+        component: components[31],
+        layout: "/admin",
+        show: true,
+      },
+      {
+        path: "/cuentas-caja",
+        name: "Cuentas",
+        icon: "ni ni-credit-card text-blue",
+        component: components[29],
+        layout: "/admin",
+        show: true,
+      },
+      {
+        path: "/registro-caja",
+        name: "Nueva emisión",
+        icon: "fa fa-file text-success",
+        component: components[30],
+        layout: "/admin",
+        show: false
+      },
+      {
+        path: "/concepto",
+        name: "Concepto",
+        icon: "ni ni-single-copy-04 text-orange",
+        component: components[32],
+        layout: "/admin",
+        show: true,
+      },
+      {
+        path: "/cliente",
+        name: "Cliente",
+        icon: "ni ni-circle-08 text-blue",
+        component: components[33],
+        layout: "/admin",
+        show: true,
+      },
+    ]
+  },
+  {
     name: "Servicio al asociado",
     icon: "ni ni-like-2 text-blue",
     layout: "/admin",
@@ -353,7 +416,7 @@ export const routesAdmin = [
     ]
   },
 ];
-//8
+//7
 export const routesCuentasVer = [
   {
     path: "/login",
@@ -531,7 +594,7 @@ export const routesCuentasVer = [
     ]
   },
 ];
-//7
+//8
 export const routesImagenInstitucional = [
   {
     path: "/login",
@@ -612,16 +675,6 @@ export const routesImagenInstitucional = [
       },
     ]
   },
-  
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "ni ni-planet text-blue",
-    component: Icons,
-    layout: "/admin",
-    show: false
-  },
-  
   {
     name: "Servicio al asociado",
     icon: "ni ni-like-2 text-blue",

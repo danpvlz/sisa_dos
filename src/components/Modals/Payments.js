@@ -8,21 +8,18 @@ import {
     Progress,
 } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { showComprobante } from "../redux/actions/Cuenta";
+import { showComprobante } from "../../redux/actions/Cuenta";
 
 export default function Payments({ showDetail, toggleModal }) {
     const dispatch = useDispatch();
     const { comprobanteObject } = useSelector(({ cuenta }) => cuenta);
-    const asistencias = require('../data/asistencia.json');
-    const [load, setload] = useState(false);
-    const [acum, setacum] = useState(0);
 
     return (
         <Modal
             className="modal-dialog-centered"
             isOpen={showDetail}
             toggle={toggleModal}
-            size="md"
+            size="lg"
         >
             <div className="modal-header bg-secondary">
                 <h3 className="modal-title" id="modalDetalleAsistencia">
@@ -67,6 +64,7 @@ export default function Payments({ showDetail, toggleModal }) {
                                 <th scope="col">Asociado</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col">Total</th>
+                                <th scope="col">Observaciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,13 +76,16 @@ export default function Payments({ showDetail, toggleModal }) {
                                     {comprobanteObject?.cuenta?.serie}-{comprobanteObject?.cuenta?.numero}
                                 </td>
                                 <td>
-                                    {comprobanteObject?.cuenta?.asociado}
+                                    {comprobanteObject?.cuenta?.denominacion}
                                 </td>
                                 <td>
                                     {comprobanteObject?.cuenta?.estado == 1 ? "Por cancelar" : comprobanteObject?.cuenta?.estado == 2 ? "Cancelada" : "Anulada"}
                                 </td>
                                 <td>
                                     s/.{comprobanteObject?.cuenta?.total}
+                                </td>
+                                <td>
+                                    {comprobanteObject?.cuenta?.observaciones}
                                 </td>
                             </tr>
                         </tbody>
@@ -98,6 +99,9 @@ export default function Payments({ showDetail, toggleModal }) {
                             <tr>
                                 <th scope="col">Concepto</th>
                                 <th scope="col">Cantidad</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Subtotal</th>
+                                <th scope="col">IGV</th>
                                 <th scope="col">Total</th>
                             </tr>
                         </thead>
@@ -112,6 +116,17 @@ export default function Payments({ showDetail, toggleModal }) {
                                         {detalle?.cantidad}
                                     </td>
                                     <td>
+                                        {detalle?.tipoIGV==1 ? "Gravada" : detalle?.tipoIGV==7 ? "Gratuita" : "Exonerada"}
+                                    </td>
+                                    <td>
+                                        s/.
+                                        {detalle?.subtotal}
+                                    </td>
+                                    <td>
+                                        s/.
+                                        {detalle?.totaligv}
+                                    </td>
+                                    <td>
                                         s/.
                                         {detalle?.total}
                                     </td>
@@ -121,46 +136,54 @@ export default function Payments({ showDetail, toggleModal }) {
                         </tbody>
                     </Table>
                 </Row>
-                <Row>
-                    <h3 className="ml-1">MEMBRESÍAS</h3>
-                    <Table className="align-items-center table-flush text-center" responsive>
-                        <thead className="thead-light ">
-                            <tr>
-                                <th scope="col">Mes</th>
-                                <th scope="col">Estado</th>
-                                <th scope="col">Cobrado</th>
-                                <th scope="col">Pagado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                comprobanteObject?.membresia?.map((membresia, key) => 
-                                <tr key={key}>
-                                    <td>
-                                        {
-                                        membresia.mes== 0 ?
-                                        membresia.masdeuno
-                                        :
-                                        ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][membresia.mes-1]
-                                        
-                                        }
-                                    </td>
-                                    <td>
-                                        {membresia.estado == 1 ? "Por cancelar" : membresia.estado == 2 ? "Cancelada" : "Anulada"}
-                                    </td>
-                                    <td>
-                                        s/. {membresia.cobrado}
-                                    </td>
-                                    <td>
-                                        s/. {membresia.pagado}
-                                    </td>
+                {
+                    comprobanteObject?.membresia && 
+                    <Row>
+                        <h3 className="ml-1">MEMBRESÍAS</h3>
+                        <Table className="align-items-center table-flush text-center" responsive>
+                            <thead className="thead-light ">
+                                <tr>
+                                    <th scope="col">Mes</th>
+                                    <th scope="col">Año</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col">Cobrado</th>
+                                    <th scope="col">Pagado</th>
                                 </tr>
-                                )
-                            }
-                        </tbody>
-                    </Table>
-                </Row>
-            
+                            </thead>
+                            <tbody>
+                                {
+                                    comprobanteObject?.membresia?.map((membresia, key) => 
+                                    <tr key={key}>
+                                        <td>
+                                            {
+                                            membresia.mes== 0 ?
+                                            membresia.masdeuno
+                                            :
+                                            ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][membresia.mes-1]
+                                            
+                                            }
+                                        </td>
+                                        <td>
+                                            {membresia.year}
+                                        </td>
+                                        <td>
+                                            {membresia.estado == 1 ? "Por cancelar" : membresia.estado == 2 ? "Cancelada" : "Anulada"}
+                                        </td>
+                                        <td>
+                                            s/. {membresia.cobrado}
+                                        </td>
+                                        <td>
+                                            s/. {membresia.pagado}
+                                        </td>
+                                    </tr>
+                                    )
+                                }
+                            </tbody>
+                        </Table>
+                    </Row>
+                
+                    
+                }
                 <Row>
                     <h3 className="ml-1">PAGOS</h3>
                     <Table className="align-items-center table-flush text-center" responsive>
@@ -202,7 +225,7 @@ export default function Payments({ showDetail, toggleModal }) {
                                         </div>
                                     </td>
                                     <td>
-                                        {pago?.banco ? pago?.banco == 1 ? 'BCP' : "BBVA" : '-'}
+                                        {pago?.banco ? pago?.banco == 1 ? 'BCP' : pago?.banco == 2 ? 'BBVA' : pago?.banco == 3 ? 'BANCOS' : pago?.banco == 4 ? 'CONTADO' :  "-" : '-'}
                                     </td>
                                 </tr>
                                 )

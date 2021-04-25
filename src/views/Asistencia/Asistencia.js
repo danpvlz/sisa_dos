@@ -236,13 +236,22 @@ const Asistencia = () => {
                               {asistencia.faltas}
                             </td>
                             <td className="text-center">
-                              {asistencia.debe*-1}min
+                              {
+                              asistencia.debe==0 ?
+                              "-" :
+                              Math.abs(asistencia.debe)>60 ? Math.round(Math.abs(asistencia.debe)/60)+"h " + Math.round(Math.abs(asistencia.debe)%60)+"min": Math.round(Math.abs(asistencia.debe))+"min"}
                             </td>
                             <td className="text-center">
-                              {asistencia.compensar}min
+                              {
+                              asistencia.compensar==0 ?
+                              "-" :
+                              Math.abs(asistencia.compensar)>60 ? Math.round(Math.abs(asistencia.compensar)/60)+"h " + Math.round(Math.abs(asistencia.compensar)%60)+"min": Math.round(Math.abs(asistencia.compensar))+"min"}
                             </td>
                             <td className="text-center">
-                              {asistencia.vacaciones/60}h
+                              {
+                              asistencia.vacaciones==0 ?
+                              "-" :
+                              asistencia.vacaciones/60+"h"}
                             </td>
                             <td className="d-none">
                               <Button
@@ -272,7 +281,6 @@ const Asistencia = () => {
                     
                     </nav>
                   </CardFooter>
-                  <DetalleAsistencia showDetail={showDetail} toggleModal={toggleModal} />
                 </TabPane>
                 <TabPane tabId="tabs2">
                   <div className="bg-secondary text-center pb-3">
@@ -369,7 +377,7 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_in_fs_${key}`}
                               >
-                                {parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "Compensó" : "Vacaciones"}
+                                {parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "Vacaciones" : ""}
                               </UncontrolledTooltip>
                             </td>
                             <td>
@@ -385,36 +393,48 @@ const Asistencia = () => {
                                 placement="top"
                                 target={`tooltip_in_se_${key}`}
                               >
-                                {parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "Compensó" : "Vacaciones"}
+                                {parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 6 ? "Vacaciones" : ""}
                               </UncontrolledTooltip>
                             </td>
                             <td> 
                               <Badge
-                                id={`tooltip_in_se_${key}`}
+                                id={`tooltip_in_ss_${key}`}
                                 data-placement="top"
                                 className={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "bg-yellow text-default" : ""}
                                 type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "default" : "info"}>
-                                {JSON.parse(asistencia.asistencia)[3]?.hora}
+                                {JSON.parse(asistencia.asistencia)[3]?.hora} 
                               </Badge>
                               <UncontrolledTooltip
                                 delay={0}
                                 placement="top"
-                                target={`tooltip_in_se_${key}`}
+                                target={`tooltip_in_ss_${key}`}
                               >
                                 {parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "Compensó" : "Vacaciones"}
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
-                              {asistencia.tardanza == 0 ? "-" : asistencia.tardanza < 0 ? (asistencia.tardanza*-1)>60 && (asistencia.tardanza*-1)/60+"h"  : asistencia.tardanza*-1+"min"}
+                              {
+                              asistencia.tardanza==0 ?
+                              "-" :
+                              Math.abs(asistencia.tardanza)>60 ? Math.round(Math.abs(asistencia.tardanza)/60)+"h " + Math.round(Math.abs(asistencia.tardanza)%60)+"min": Math.round(Math.abs(asistencia.tardanza))+"min"}
                             </td>
                             <td className="text-center">
-                              {asistencia.compensado == 0 ? "-" : asistencia.compensado < 0 ? (asistencia.compensado*-1)>60 && (asistencia.compensado*-1)/60+"h"  : asistencia.compensado+"min"}
+                              {
+                              asistencia.compensado==0 ?
+                              "-" :
+                              Math.abs(asistencia.compensado)>60 ? Math.round(Math.abs(asistencia.compensado)/60)+"h " + Math.round(Math.abs(asistencia.compensado)%60)+"min": Math.round(Math.abs(asistencia.compensado))+"min"}
                             </td>
                             <td className="text-center">
-                              {asistencia.falta == 0 ? "-" : asistencia.falta < 0 ? (asistencia.falta*-1)>60 ? (asistencia.falta*-1)/60+"h"  : asistencia.falta*-1+"min" : asistencia.falta*-1+"min"}
+                              {
+                              asistencia.falta==0 ?
+                              "-" :
+                              Math.abs(asistencia.falta)>60 ? Math.round(Math.abs(asistencia.falta)/60)+"h " + Math.round(Math.abs(asistencia.falta)%60)+"min": Math.round(Math.abs(asistencia.falta))+"min"}
                             </td>
                             <td className="text-center">
-                              {asistencia.temp == 0 ? "-" : asistencia.temp < 0 ? (asistencia.temp*-1)>60 ? (asistencia.temp*-1)/60+"h"  : asistencia.temp*-1+"min" : asistencia.falta*-1+"min"}
+                              {
+                              asistencia.temp==0 ?
+                              "-" :
+                              Math.abs(asistencia.temp)>60 ? Math.round(Math.abs(asistencia.temp)/60)+"h " + Math.round(Math.abs(asistencia.temp)%60)+"min": Math.round(Math.abs(asistencia.temp))+"min"}
                             </td>
                           </tr>
                         )
@@ -521,13 +541,31 @@ const Asistencia = () => {
                               </UncontrolledTooltip>
                             </td>
                             <td className="text-center">
-                              {parseInt(asistencia.estado) == 2 ?  asistencia.calc*-1>60 ? asistencia.calc*-1/60+"h" : asistencia.calc*-1+"min" : "-"}
+                              {parseInt(asistencia.estado) == 2 ?
+                                asistencia.calc==0 ?
+                                "-" :
+                                Math.abs(asistencia.calc)>60 ? Math.round(Math.abs(asistencia.calc)/60)+"h " + Math.round(Math.abs(asistencia.calc)%60)+"min": Math.round(Math.abs(asistencia.calc))+"min"
+                              :
+                              "-"
+                            }
                             </td>
                             <td className="text-center">
-                              {parseInt(asistencia.estado) == 5 ?  asistencia.calc>60 ? asistencia.calc/60+"h" : asistencia.calc+"min" : "-"}
+                              {parseInt(asistencia.estado) == 5 ?
+                                asistencia.calc==0 ?
+                                "-" :
+                                Math.abs(asistencia.calc)>60 ? Math.round(Math.abs(asistencia.calc)/60)+"h " + Math.round(Math.abs(asistencia.calc)%60)+"min": Math.round(Math.abs(asistencia.calc))+"min"
+                              :
+                              "-"
+                            }
                             </td>
                             <td className="text-center">
-                              {parseInt(asistencia.estado) == 4 ?  asistencia.calc*-1>60 ? asistencia.calc*-1/60+"h" : asistencia.calc*-1+"min" : "-"}
+                              {parseInt(asistencia.estado) == 4 ?
+                                asistencia.calc==0 ?
+                                "-" :
+                                Math.abs(asistencia.calc)>60 ? Math.round(Math.abs(asistencia.calc)/60)+"h " + Math.round(Math.abs(asistencia.calc)%60)+"min": Math.round(Math.abs(asistencia.calc))+"min"
+                              :
+                              "-"
+                            }
                             </td>
                             <td className="text-center">
                               {asistencia.observacion==null ? "-" : asistencia.observacion}
@@ -551,7 +589,7 @@ const Asistencia = () => {
                     nextPageText=">"
                     totalItems={assistanceList?.meta?.total ? assistanceList?.meta?.total : 0}
                     pageSize={10}
-                    onSelect={(selectedPage)=>setpageall(selectedPage)}
+                    onSelect={(selectedPage)=>setPage(selectedPage)}
                   />
                 </nav>
               </CardFooter>
@@ -564,160 +602,5 @@ const Asistencia = () => {
     </>
   );
 };
-
-const DetalleAsistencia = ({ showDetail, toggleModal }) => {
-  const asistencias = require('../../data/asistencia.json');
-  return (
-    <Modal
-      className="modal-dialog-centered"
-      isOpen={showDetail}
-      toggle={toggleModal}
-      size="lg"
-    >
-      <div className="modal-header bg-secondary">
-        <h3 className="modal-title" id="modalDetalleAsistencia">
-          Asistencias
-        </h3>
-        <button
-          aria-label="Close"
-          className="close"
-          data-dismiss="modal"
-          type="button"
-          onClick={toggleModal}
-        >
-          <span aria-hidden={true}>×</span>
-        </button>
-      </div>
-      <div className="modal-body">
-        <Row>
-          <Col className="mb-3">
-            <Media className="align-items-center">
-              <img
-                className="avatar rounded-circle mr-3"
-                alt="..."
-                src={
-                  require("../../assets/img/theme/Gerencia-2-819x1024.png")
-                    .default
-                }
-              />
-              <Media>
-                <span className="mb-0 text-sm">
-                  MARÍA ALEJANDRA PASCO HERRERA
-                 </span>
-              </Media>
-            </Media>
-          </Col>
-          <Col className="align-items-center" style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '1rem' }}><span style={{ fontSize: '.9rem' }}><i className="ni ni-calendar-grid-58"></i> MARZO</span></Col>
-        </Row>
-        <Table className="align-items-center table-flush" responsive>
-          <thead className="thead-light">
-            <tr>
-              <th scope="col">Fecha</th>
-              <th scope="col">Día</th>
-              <th scope="col">Turno</th>
-              <th scope="col">Hora</th>
-              <th scope="col">Estado</th>
-              <th scope="col">Observación</th>
-              <th scope="col">Justificación</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              asistencias.detalleAsistencia?.map((asistencia, key) =>
-                <tr key={key}>
-                  <td>
-                    {"2021-10-05"}
-                  </td>
-                  <td>
-                    {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
-                  </td>
-                  <td>
-                    {asistencia.turno == 1 ? "Primero" : "Segundo"}
-                  </td>
-                  <td>
-                    {asistencia.turno}
-                  </td>
-                  <td>
-                    {asistencia.estado == 1 ? "NORMAL" : asistencia.estado == 2 ? "TARDANZA" : asistencia.estado == 3 ? "Falta" : "COMPENSÓ"}
-                  </td>
-                  <td className="text-center">
-                    {asistencia.observacion.length == 0 ? "-" : asistencia.observacion}
-                  </td>
-                  <td className="text-center">
-                    {asistencia.justificacion.length == 0 ? "-" : asistencia.justificacion}
-                  </td>
-                </tr>
-              )
-            }
-          </tbody>
-        </Table>
-        <CardFooter className="py-4">
-          <nav aria-label="...">
-            <Pagination
-              className="pagination justify-content-end mb-0"
-              listClassName="justify-content-end mb-0"
-            >
-              <PaginationItem className="disabled">
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                  tabIndex="-1"
-                >
-                  <i className="fas fa-angle-left" />
-                  <span className="sr-only">Previous</span>
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem className="active">
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  1
-            </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  2 <span className="sr-only">(current)</span>
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  3
-            </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <i className="fas fa-angle-right" />
-                  <span className="sr-only">Next</span>
-                </PaginationLink>
-              </PaginationItem>
-            </Pagination>
-          </nav>
-        </CardFooter>
-
-      </div>
-      <div className="modal-footer">
-        <Button
-          color="primary"
-          data-dismiss="modal"
-          type="button"
-          onClick={toggleModal}
-        >
-          Cerrar
-        </Button>
-      </div>
-    </Modal>
-  )
-}
 
 export default Asistencia;

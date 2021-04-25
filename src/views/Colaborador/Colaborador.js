@@ -20,7 +20,7 @@ import {
   Row,
   Button
 } from "reactstrap";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 // core components
 import { useDispatch, useSelector } from "react-redux";
 import { listWorker, status, vacations } from "../../redux/actions/Colaborador";

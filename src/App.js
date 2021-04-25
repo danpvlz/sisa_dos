@@ -11,14 +11,6 @@ const App = () => {
     const history = useHistory();
     const token = useSelector(({ auth }) => auth.token);
     const {error} = useSelector(({ commonData }) => commonData);
-/*
-    useEffect(() => {
-        console.log('error')
-        console.log(error?.message)
-        error?.message=="Request failed with status code 401" &&
-        userSignOut();
-    }, [error])*/
-
 
     return (
         <>

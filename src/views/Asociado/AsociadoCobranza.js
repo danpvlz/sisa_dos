@@ -22,12 +22,12 @@ import {
 } from "reactstrap";
 // core components
 import Select from 'react-select';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import Header from "components/Headers/AsociadoHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import SearchPromotor from "components/Selects/SearchPromotorFilter";
-import SetCodigoModal from "components/SetCodigoModal.js";
+import SetCodigoModal from "components/Modals/SetCodigoModal.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listAssociated, exportAssociateds, status, assignCode, removeInProcess } from "../../redux/actions/Asociado";
 
@@ -48,6 +48,7 @@ const Asociado = () => {
   const [sendcodigo, setsendcodigo] = useState(false);
   const [confirm, setComfirm] = useState(false);
   
+  const [loaded, setloaded] = useState(false);
   const [question, setquestion] = useState('');
   const [action, setAction] = useState(1);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -82,58 +83,38 @@ const Asociado = () => {
     }else{
       tsearch.idAsociado=idAsociado;
     }
-    setsearch(tsearch);
-    dispatch(listAssociated(page,tsearch))
-  }, [idAsociado]);
-
-  useEffect(() => {
-    let tsearch=search;
     if(debCollector == null){
       delete tsearch.debCollector;
     }else{
       tsearch.debCollector=debCollector;
     }
-    setsearch(tsearch);
-    dispatch(listAssociated(page,tsearch))
-  }, [debCollector]);
-
-  useEffect(() => {
-    let tsearch = search;
     if (since == null) {
       delete tsearch.since;
     } else {
       tsearch.month = since;
     }
-    setsearch(tsearch);
-    dispatch(listAssociated(page, tsearch));
-  }, [since]);
-
-  useEffect(() => {
-    let tsearch = search;
     if (promotorSearched == null) {
       delete tsearch.promotorSearched;
     } else {
       tsearch.promotor = promotorSearched;
     }
-    setsearch(tsearch);
-    dispatch(listAssociated(page, tsearch));
-  }, [promotorSearched]);
-
-  useEffect(() => {
-    let tsearch=search;
     if(state == null){
       delete tsearch.state;
     }else{
       tsearch.state=state;
     }
-    setsearch(tsearch);
-    dispatch(listAssociated(page,tsearch))
-  }, [state]);
+    if (loaded) {
+      setsearch(tsearch);
+      dispatch(listAssociated(page,tsearch))
+    }
+  }, [idAsociado,debCollector,since,promotorSearched,state,page]);
 
   useEffect(() => {
-    dispatch(listAssociated(page,search))
-  }, [page])
-
+    setloaded(true);
+    return () => {
+    setloaded(false);
+    }
+  }, []);
   const toggleModalCodigo = () => {
     setshowSetCodigo(!showSetCodigo);
   };
@@ -291,11 +272,12 @@ const Asociado = () => {
                         </Button>
                       </Col>
                     </Row>
-
                   </Col>
-
                 </Row>
               </CardHeader>
+              {
+              Object.keys(search).length > 0 ?
+              <>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
@@ -314,7 +296,7 @@ const Asociado = () => {
                 </thead>
                 <tbody>
                   {
-                    associatedList?.data?.map((asociado,key)=>
+                  associatedList?.data?.map((asociado,key)=>
                   <tr key={key}>
                   <td scope="row">
                     {asociado.asociado}
@@ -376,11 +358,11 @@ const Asociado = () => {
                   </td>
                 </tr>
                     )
+                    
                   }
                   
                 </tbody>
               </Table>
-              
               <CardFooter className="py-4">
                 <nav aria-label="..." className="pagination justify-content-end mb-0"> 
                   <PaginationComponent
@@ -396,6 +378,9 @@ const Asociado = () => {
                 </nav>
               
               </CardFooter>
+              </>:
+                <strong className="mx-auto my-4">-- Seleccione al menos un filtro --</strong>
+              }
             </Card>
           </div>
         </Row>

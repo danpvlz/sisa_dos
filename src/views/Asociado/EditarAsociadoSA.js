@@ -21,7 +21,7 @@ import Select from 'react-select';
 // core components
 import SearchPromotor from "components/Selects/SearchPromotor.js";
 import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { showEditAssociated,resetEditAssociated,update } from "../../redux/actions/Asociado";

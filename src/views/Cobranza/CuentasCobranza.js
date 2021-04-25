@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect, useRef  } from "react";
 import { useHistory } from 'react-router-dom';
 import PaginationComponent from "react-reactstrap-pagination";
-import ConfirmDialog from '../../components/ConfirmDialog';
-import PayModal from '../../components/PayModal';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
+import PayModal from '../../components/Modals/PayModal';
 
 // reactstrap components
 import {
@@ -24,10 +24,11 @@ import {
 } from "reactstrap";
 // core components
 import Select from 'react-select';
-import PaymentsModal from "components/Payments.js";
+import PaymentsModal from "components/Modals/Payments.js";
 import CuentasHeader from "components/Headers/CuentasHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
+import BySector from "components/Tables/BySector";
 import { useDispatch, useSelector } from "react-redux";
 import { listBills, indicatorsBills, anularCuenta, pagarCuenta, getBillDetail, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
 
@@ -56,8 +57,8 @@ const Cuenta = () => {
 
   //Filters
   const [loaded, setloaded] = useState(false);
-  const [since, setsince] = useState(null);
-  const [until, setuntil] = useState(null);
+  const [since, setsince] = useState(`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-01`);
+  const [until, setuntil] = useState(`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-${new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate()}`);
   const [status, setstatus] = useState(null);
   const [idAsociado, setidAsociado] = useState(null);
   const [cobrador, setcobrador] = useState(null);
@@ -250,7 +251,7 @@ const Cuenta = () => {
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
-                            Emitido desde
+                            Desde
                       </label>
                           <Input
                             className="form-control-alternative"
@@ -259,7 +260,6 @@ const Cuenta = () => {
                             type="date"
                             value={since ? since : ""}
                             onChange={(inputValue, actionMeta) => {
-                              console.log(inputValue)
                               setsince(inputValue != null ? inputValue.target.value : null);
                             }}
                           />
@@ -271,7 +271,7 @@ const Cuenta = () => {
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
-                            Emitido hasta
+                            Hasta
                       </label>
                           <Input
                             className="form-control-alternative"
@@ -344,44 +344,7 @@ const Cuenta = () => {
                           <SearchCobrador setVal={setcobrador} selectInputRef={selectInputRef}/>
                         </FormGroup>
                       </Col>
-                      <Col lg="3"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Pagadas desde
-                      </label>
-                          <Input
-                            className="form-control-alternative"
-                            type="date"
-                            value={sincePay ? sincePay : ""}
-                            onChange={(inputValue) => {
-                              console.log(inputValue.target.value)
-                              setsincepay(inputValue != "" ? inputValue.target.value : null);
-                            }}
-                          />
-                        </FormGroup >
-                      </Col>
-                      <Col lg="3"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Pagadas hasta
-                      </label>
-                          <Input
-                            className="form-control-alternative"
-                            type="date"
-                            value={untilPay ? untilPay : ""}
-                            onChange={(inputValue) => {
-                              setuntilpay(inputValue != "" ? inputValue.target.value : null);
-                            }}
-                          />
-                        </FormGroup >
-                      </Col>
-                      <Col lg="3" className="text-left ">
+                      <Col lg="3" className="text-left my-auto">
                         <Button className="btn-sm" color="info" type="button" onClick={() => {
                           setloaded(false);
                           setsince(null);
@@ -393,8 +356,8 @@ const Cuenta = () => {
                           setsincepay(null);
                           setuntilpay(null);
                           setfechasince(null);
-                          selectInputRef.current.select.clearValue();
-                          selectInputRefAsociado.current.select.clearValue();
+                          selectInputRef?.current?.select?.clearValue();
+                          selectInputRefAsociado?.current?.select?.clearValue();
                           setloaded(true);
                         }}>
                         <i className="fa fa-ban mr-1" aria-hidden="true"></i>Limpiar filtros
@@ -538,6 +501,7 @@ const Cuenta = () => {
             </Card>
           </div>
         </Row>
+        <BySector since={since} until={until} />
       </Container>
     </>
   );

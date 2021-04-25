@@ -22,12 +22,9 @@ import {
 } from "reactstrap";
 // core components
 import Select from 'react-select';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import Header from "components/Headers/AsociadoHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
-import SearchCobrador from "components/Selects/SearchCobrador.js";
-import SearchPromotor from "components/Selects/SearchPromotorFilter";
-import SetCodigoModal from "components/SetCodigoModal.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listAssociated, exportAssociateds, status, assignCode, removeInProcess } from "../../redux/actions/Asociado";
 
@@ -174,13 +171,6 @@ const Asociado = () => {
       <Header />
       {/* Page content */}
       <Container className="mt--7" fluid>
-      <SetCodigoModal 
-        showSetCodigo={showSetCodigo} 
-        toggleModal={toggleModalCodigo}  
-        codigo={codigo}
-        setcodigo={setcodigo}
-        setSendCodigo={setsendcodigo}
-      />
         {/* Table */}
         <Row>
           <div className="col">
@@ -220,7 +210,7 @@ const Asociado = () => {
                             htmlFor="filterMonth"
                           >
                             Ingreso
-                      </label>
+                          </label>
                           <Input
                             className="form-control-alternative"
                             id="fitlerSince"
@@ -233,7 +223,7 @@ const Asociado = () => {
                           />
                         </FormGroup >
                       </Col>                      
-                      <Col lg="5"  >
+                      <Col lg="6"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
                             className="form-control-label"
@@ -244,17 +234,6 @@ const Asociado = () => {
                           <SearchAsociado setVal={setIdAsociado}/>
                         </FormGroup>
                       </Col>
-                          <Col lg="4">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Promotor
-                              </label>
-                              <SearchPromotor setVal={setPromotorSearched} />
-                            </FormGroup>
-                          </Col>
                       <Col lg="3"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
@@ -262,7 +241,7 @@ const Asociado = () => {
                             htmlFor="filterMonth"
                           >
                             Estado
-                      </label>
+                          </label>
                           <Select
                             placeholder="Seleccione..."
                             className="select-style"
@@ -272,6 +251,26 @@ const Asociado = () => {
                             }}
                             isClearable
                             options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" },{ value: 3, label: "Retiro" }]} />
+                        </FormGroup >
+                      </Col>
+                      <Col lg="3"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Onomásticos
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            id="fitlerSince"
+                            placeholder="fitlerSince"
+                            type="month"
+                            value={since}
+                            onChange={(inputValue, actionMeta) => {
+                              setsince(inputValue != null ? inputValue.target.value : null);
+                            }}
+                          />
                         </FormGroup >
                       </Col>
                       <Col lg="2" className="text-right my-auto ml-auto">
@@ -371,7 +370,6 @@ const Asociado = () => {
                     onSelect={(selectedPage)=>setPage(selectedPage)}
                   />
                 </nav>
-              
               </CardFooter>
             </Card>
           </div>

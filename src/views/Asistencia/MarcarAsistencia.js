@@ -14,8 +14,8 @@ import {
   Modal,
 } from "reactstrap";
 import Select from 'react-select';
-import ConfirmDialog from '../../components/ConfirmDialog';
-import Justify from '../../components/JustifyModal';
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
+import Justify from '../../components/Modals/JustifyModal';
 import { useForm } from "react-hook-form";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -185,7 +185,7 @@ const MarcarAsistencia = () => {
                         Entrada
                           <small className="d-flex justify-content-center font-weight-bold">
                           {myTodayAssistance.asistencia ?
-                            parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 5 ? "Compensó" : "Vacaciones"
+                            parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 5 ? "Compensó" :  parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 6 ? "Vacaciones" : "-"
                             : "-"}
                         </small>
                       </span>
@@ -212,7 +212,7 @@ const MarcarAsistencia = () => {
                         Salida
                         <small className="d-flex justify-content-center font-weight-bold">
                           {myTodayAssistance.asistencia ?
-                            parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 5 ? "Compensó" : "Vacaciones"
+                            parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 6 ? "Vacaciones" : "-"
                             : "-"}</small>
                       </span>
                       <div className="form-control-alternative text-center assistance-input text-center">
@@ -238,7 +238,7 @@ const MarcarAsistencia = () => {
                         Entrada
                           <small className="d-flex justify-content-center font-weight-bold ">
                           {myTodayAssistance.asistencia ?
-                            parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 5 ? "Compensó" : "Vacaciones"
+                            parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 6 ? "Vacaciones" :  "-"
                             : "-"}</small>
                       </span>
                       <div className="form-control-alternative text-center assistance-input text-center">
@@ -264,7 +264,7 @@ const MarcarAsistencia = () => {
                         Salida
                           <small className="d-flex justify-content-center font-weight-bold">
                           {myTodayAssistance.asistencia ?
-                            parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 5 ? "Compensó" : "Vacaciones"
+                            parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 6 ? "Vacaciones" : "-"
                             : "-"}</small>
                       </span>
                       <div className="form-control-alternative text-center assistance-input text-center">
