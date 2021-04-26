@@ -1,4 +1,24 @@
-import {FETCH_ERROR, FETCH_START, FETCH_SUCCESS, HIDE_MESSAGE, SHOW_MESSAGE} from "../ActionTypes";
+import { FETCH_ERROR, FETCH_START, FETCH_SUCCESS, HIDE_MESSAGE, SHOW_MESSAGE, ROUTES_LIST } from "../ActionTypes";
+
+
+import axios from '../../util/Api'
+export const listRoutes = () => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.get('routes',
+    ).then(({ data }) => {
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: ROUTES_LIST, payload: data });
+
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
 
 export const fetchStart = () => {
   return {

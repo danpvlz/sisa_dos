@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
@@ -7,44 +7,54 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-import {routesAdmin,routesCobranza,routesContabilidad,routesCuentasVer,routesDirectivos,routesImagenInstitucional,routesServicioAsociado,routesSimple} from "../routes.js";
-
-import { useSelector } from "react-redux";
+import {components,routesAdmin,routesCobranza,routesContabilidad,routesCuentasVer,routesDirectivos,routesImagenInstitucional,routesServicioAsociado,routesSimple} from "../routes.js";
+import {listRoutes} from "../redux/actions/Common";
+import { useDispatch, useSelector } from "react-redux";
 
 import axios from '../util/Api';
 
 const Admin = (props) => {
+  const dispatch = useDispatch();
   const mainContent = React.useRef(null);
   const location = useLocation();
   const auth = useSelector(({ auth }) => auth.authUser);
   const token = useSelector(({ auth }) => auth.token);
-  const [allowed, setallowed] = useState(false)
+  const [allowed, setallowed] = useState(false);
+  const routesList = useSelector(({ commonData }) => commonData.routesList);
 
   React.useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + token;
-      setallowed(true)
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+        setallowed(true);
+      }
+      
+    if(routesList.length==0){
+      dispatch(listRoutes());
     }
-    document.documentElement.scrollTop = 0;
-    document.scrollingElement.scrollTop = 0;
-    mainContent.current.scrollTop = 0;
+      
+    if(routesList.length>0){
+      document.documentElement.scrollTop = 0;
+      document.scrollingElement.scrollTop = 0;
+      mainContent.current.scrollTop = 0;
+      
+    }
   }, [location]);
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {        
         return (
-          prop.path ? 
+          prop.routes=="" ? 
           <Route
             path={prop.layout + prop.path}
-            component={prop.component}
+            component={components[prop.component]}
             key={key}
           />
           :
-          prop.routes.map((sub,subKey)=>
+          JSON.parse(prop.routes).map((sub,subKey)=>
           <Route
             path={prop.layout + sub.path}
-            component={sub.component}
+            component={components[sub.component]}
             key={subKey}
           />)
         );
@@ -54,8 +64,7 @@ const Admin = (props) => {
     });
   };
 
-  const getBrandText = (path) => {
-    var routes = auth?.rol==6 ? routesAdmin : auth?.rol==8 ? routesImagenInstitucional : auth?.rol==7 ? routesCuentasVer :  auth?.rol==2 ? routesServicioAsociado : auth?.rol==3 ? routesCobranza : auth?.rol==4 ? routesContabilidad : auth?.rol==5 ? routesDirectivos : routesSimple;
+  const getBrandText = (routes) => {
     for (let i = 0; i < routes.length; i++) {
       if(routes[i].routes){
         for (let j = 0; j < routes[i].routes.length; j++) {
@@ -80,10 +89,13 @@ const Admin = (props) => {
 
   return (
     <>
-    
+    {
+      routesList.length>0 ?
+      <>
+      
       <Sidebar
         {...props}
-        routes={auth?.rol==6 ? routesAdmin : auth?.rol==8 ? routesImagenInstitucional : auth?.rol==7 ? routesCuentasVer : auth?.rol==2 ? routesServicioAsociado : auth?.rol==3 ? routesCobranza : auth?.rol==4 ? routesContabilidad : auth?.rol==5 ? routesDirectivos : routesSimple}
+        routes={routesList}
         logo={{
           innerLink: "/admin/index",
           imgSrc: require("../assets/img/brand/logocclam.png").default,
@@ -94,20 +106,22 @@ const Admin = (props) => {
       <div className="main-content" ref={mainContent}>
         <AdminNavbar
           {...props}
-          brandText={getBrandText(props.location.pathname)}
+          brandText={getBrandText(routesList)}
         />
-
-{allowed &&
+      {allowed &&
         <Switch>
-          {getRoutes(auth?.rol==6 ? routesAdmin : auth?.rol==8 ? routesImagenInstitucional : auth?.rol==7 ? routesCuentasVer : auth?.rol==2 ? routesServicioAsociado : auth?.rol==3 ? routesCobranza : auth?.rol==4 ? routesContabilidad : auth?.rol==5 ? routesDirectivos : routesSimple)}
+          {getRoutes(routesList)}
           <Redirect to="/admin/index" />
         </Switch>
-        
       }
         <Container fluid>
           <AdminFooter />
         </Container>
       </div>
+      </>
+      :
+      "..."
+    }
     </>
   );
 };

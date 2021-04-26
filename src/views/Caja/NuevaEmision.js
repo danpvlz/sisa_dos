@@ -20,7 +20,7 @@ import Select from 'react-select';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import SearchCliente from "components/Selects/SearchCliente";
-import { showCliente } from '../../redux/actions/Cliente';
+import { showCliente,resetClienteObject } from '../../redux/actions/Cliente';
 import { fetchError, hideMessage } from '../../redux/actions/Common';
 import { saveCuenta } from '../../redux/actions/Caja';
 import ConfirmDialog from '../../components/Modals/ConfirmDialog';
@@ -147,7 +147,6 @@ const NuevaEmision = () => {
       formdata.typeChange = typeChange;
       formdata.items = items;
       formdata.docModificar = docModificar;
-      console.log(formdata)
       dispatch(saveCuenta(formdata));
       history.push('/admin/cuentas-caja');
     }
@@ -211,7 +210,7 @@ const NuevaEmision = () => {
                                   <SearchCliente setVal={setidCliente} />
                                 </div>
                                 <div className="col-2 ml-0 pl-0">
-                                  <Button color="primary" type="button" onClick={toggleModalNewClient}>
+                                  <Button color="primary" type="button" onClick={()=>{dispatch(resetClienteObject()); toggleModalNewClient();}}>
                                     <i className="fa fa-plus" />
                                   </Button>
                                 </div>

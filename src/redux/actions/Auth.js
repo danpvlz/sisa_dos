@@ -59,8 +59,8 @@ export const getUser = () => {
     ).then(({ data }) => {
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
-        localStorage.setItem("user", JSON.stringify(data));
         dispatch({ type: USER_DATA, payload: data });
+        localStorage.setItem("user", JSON.stringify(data));
 
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.error });

@@ -61,7 +61,9 @@ const Sidebar = (props) => {
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
       return (
-        prop.routes ?
+        prop.routes=="" ?
+        <CreateLink key={key} prop={prop} />
+          :
           <div key={key} >
             <NavItem>
               <NavLink
@@ -74,14 +76,12 @@ const Sidebar = (props) => {
             </NavItem>
             <Collapse className="ml-3" isOpen={isOpen[key]}>
               {
-                prop.routes.map((sub, subKey) =>
+                JSON.parse(prop.routes).map((sub, subKey) =>
                 <CreateLink key={key+"_"+subKey} prop={sub} />
                 )
               }
             </Collapse>
           </div>
-          :
-          <CreateLink key={key} prop={prop} />
       );
     });
   };
@@ -89,7 +89,7 @@ const Sidebar = (props) => {
   const CreateLink = ({prop}) => {
     return (<>
       {
-        prop.show &&
+        prop.show==1 &&
           <NavItem>
             <NavLink
               to={prop.layout + prop.path}
@@ -252,8 +252,6 @@ Sidebar.defaultProps = {
 };
 
 Sidebar.propTypes = {
-  // links that will be displayed inside the component
-  routes: PropTypes.arrayOf(PropTypes.object),
   logo: PropTypes.shape({
     // innerLink is for links that will direct the user within the app
     // it will be rendered as <Link to="...">...</Link> tag

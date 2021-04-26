@@ -59,7 +59,6 @@ const Cliente = () => {
 
   useEffect(() => {
     if(selected){
-      console.log(selected)
       dispatch(showCliente(selected));
     }
     return () => {

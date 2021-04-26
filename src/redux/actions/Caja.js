@@ -59,7 +59,7 @@ export const anularCuenta = (idCuenta) => {
     dispatch({ type: FETCH_START });
     dispatch({ type: BILL_STATUS_ACTIONS, payload: 0 });
 
-    axios.delete('caja/'+idCuenta
+    axios.get('cajaAnul/'+idCuenta
     ).then(({ data, status }) => {
       if (data) {
         dispatch({ type: SHOW_MESSAGE, payload: data.message });

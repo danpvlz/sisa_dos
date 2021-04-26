@@ -100,7 +100,6 @@ const NuevaEmision = () => {
       formdata.conafiliacion = showAfiliacion;
       formdata.descuento == 0 && delete formdata.descuento;
       formdata.docModificar = docModificar;
-      console.log(formdata)
       dispatch(saveCuenta(formdata));
       history.push('/admin/cuentas');
     }

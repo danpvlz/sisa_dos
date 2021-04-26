@@ -415,7 +415,7 @@ const EditarAsociadoSA = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="tel"
+                                      type="text"
                                       name="telefono_asociado"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.empresa?.telefonos}
@@ -439,7 +439,6 @@ const EditarAsociadoSA = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="email"
                                       name="correo_asociado"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.empresa?.correos}
@@ -608,7 +607,7 @@ const EditarAsociadoSA = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="tel"
+                                      type="text"
                                       name="telefono_representante"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.representante?.telefonos}
@@ -632,7 +631,6 @@ const EditarAsociadoSA = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="email"
                                       name="correo_representante"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.representante?.email}
@@ -796,7 +794,7 @@ const EditarAsociadoSA = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="tel"
+                                      type="text"
                                       name="telefono_adicional"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.adicional?.telefonos}
@@ -820,7 +818,6 @@ const EditarAsociadoSA = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="email"
                                       name="correo_adicional"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.adicional?.email}
@@ -1044,7 +1041,7 @@ const EditarAsociadoSA = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="tel"
+                                      type="text"
                                       name="telefono_persona"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.persona?.telefonos}
@@ -1068,7 +1065,6 @@ const EditarAsociadoSA = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="email"
                                       name="correo_persona"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.persona?.correos}

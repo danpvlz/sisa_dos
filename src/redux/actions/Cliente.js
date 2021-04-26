@@ -34,9 +34,7 @@ export const filter = (search="") => {
 export const list = (page = 1,params={}) => {
   return (dispatch) => {
     dispatch({ type: FETCH_START });
-    dispatch({ type: CLIENT_STATUS_ACTIONS, payload: 0 });
-
-    axios.post('clienteList/',params).then(({ data, status }) => {
+    axios.post('cliente/list?page=' + page,params).then(({ data, status }) => {
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: LIST_CLIENTS, payload: data });
@@ -102,7 +100,7 @@ export const update = (clientData,id) => {
     dispatch({ type: FETCH_START });
     dispatch({ type: CLIENT_STATUS_ACTIONS, payload: 0 });
 
-    axios.put('cliente/'+id,
+    axios.post('clienteUpdate/'+id,
     clientData
     ).then(({ data, status }) => {
       if (data) {

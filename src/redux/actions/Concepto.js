@@ -80,7 +80,7 @@ export const update = (conceptData,idConcepto) => {
     dispatch({ type: FETCH_START });
     dispatch({ type: CONCEPT_STATUS_ACTIONS, payload: 0 });
 
-    axios.put('concepto/'+idConcepto,
+    axios.post('conceptoUpdate/'+idConcepto,
     conceptData
     ).then(({ data, status }) => {
       if (data) {

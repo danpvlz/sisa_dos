@@ -14,17 +14,17 @@ import { fetchError, hideMessage } from '../../redux/actions/Common';
 import Select from 'react-select';
 import SearchAreas from '../Selects/SearchAreas';
 import SearchCategories from '../Selects/SearchCategories';
-import { list, store, update } from "../../redux/actions/Concepto";
+import { store, update } from "../../redux/actions/Concepto";
 
 const NewConcept = ({ show, toggleModal }) => {
   const { register, handleSubmit, watch, reset } = useForm();
   const { conceptObject } = useSelector(({ concepto }) => concepto);
   const dispatch = useDispatch();
-  const setCategoriaId =(id)=>{
-    setformdata({...formdata,idCategoria:id});
+  const setCategoriaId = (id) => {
+    setformdata({ ...formdata, idCategoria: id });
   }
-  const setidArea =(id)=>{
-    setformdata({...formdata,idArea:id});
+  const setidArea = (id) => {
+    setformdata({ ...formdata, idArea: id });
   }
   const [formdata, setformdata] = useState({
     codigo: "",
@@ -65,20 +65,14 @@ const NewConcept = ({ show, toggleModal }) => {
   }, [conceptObject])
 
   const onSubmit = (data) => {
-    if (formdata.codigo == "") {
-      dispatch(fetchError("Debe especificar un código para el concepto."))
-    }else {
-      if (formdata.descripcion == "") {
-        dispatch(fetchError("Debe especificar una descripción para el concepto."))
-      }else{
-        if (formdata.idCategoria == "") {
-          dispatch(fetchError("Debe elegir una categoria para el concepto."))
-        }else{
-          if(conceptObject?.idConcepto){
-            dispatch(update(formdata, conceptObject.idConcepto))
-          }else{
-            dispatch(store(formdata));
-          }
+    if (formdata.descripcion == "") {
+      dispatch(fetchError("Debe especificar una descripción para el concepto."))
+    } else {
+      if (formdata.idCategoria == "") {
+        dispatch(fetchError("Debe elegir una categoria para el concepto."))
+      } else {
+        if (conceptObject?.idConcepto) {
+          dispatch(update(formdata, conceptObject.idConcepto));
           setformdata({
             codigo: "",
             descripcion: "",
@@ -90,11 +84,26 @@ const NewConcept = ({ show, toggleModal }) => {
             idArea: ""
           });
           reset();
-          dispatch(list());
+          toggleModal();
+        } else {
+          dispatch(store(formdata));
+          setformdata({
+            codigo: "",
+            descripcion: "",
+            tipoConcepto: "",
+            igv: "",
+            inmutable: "",
+            valor: "",
+            idCategoria: "",
+            idArea: ""
+          });
+          reset();
           toggleModal();
         }
+        dispatch(hideMessage());
       }
     }
+
   };
 
   return (
@@ -123,24 +132,6 @@ const NewConcept = ({ show, toggleModal }) => {
           <Row>
             <Col lg="12">
               <Row>
-                <Col lg="4">
-                  <FormGroup>
-                    <label
-                      className="form-control-label"
-                      htmlFor="input-ruc"
-                    >Código</label>
-                    <Input
-                      className="form-control-alternative"
-                      type="text"
-                      name="codigo"
-                      value={formdata.codigo}
-                      onChange={(e) => {
-                        setformdata({ ...formdata, codigo: e.target.value })
-                      }}
-                      innerRef={register({ required: false })}
-                    />
-                  </FormGroup>
-                </Col>
                 <Col lg="12">
                   <FormGroup>
                     <label
@@ -166,7 +157,7 @@ const NewConcept = ({ show, toggleModal }) => {
                       htmlFor="input-address"
                     >
                       Área</label>
-                    <SearchAreas setVal={setidArea} idArea={formdata.idArea}/>
+                    <SearchAreas setVal={setidArea} idArea={formdata.idArea} />
                   </FormGroup>
                 </Col>
                 <Col lg="6">

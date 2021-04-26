@@ -38,6 +38,15 @@ const NewClient = ({ show, toggleModal }) => {
 
   useEffect(() => {
     setloading(false);
+    if(dniSearched){
+      setformdata({...formdata,
+        denominacion: dniSearched.nombre_completo});
+    }
+    if(rucSearched){
+      setformdata({...formdata,
+        denominacion: rucSearched.nombre_o_razon_social,
+        direccion: rucSearched.direccion ? rucSearched.direccion : ""});
+    }
   }, [rucSearched,dniSearched]);
 
   const onSubmit = (data) => {
@@ -52,12 +61,16 @@ const NewClient = ({ show, toggleModal }) => {
         }else{
           if(clienteObject?.idCliente){
             dispatch(update(formdata,clienteObject.idCliente));
+            dispatch(list());
+            setformdata(null);
+            toggleModal();
           }else{
             dispatch(store(formdata));
+            dispatch(list());
+            setformdata(null);
+            toggleModal();
           }
-          setformdata(null);
-          toggleModal();
-          dispatch(list());
+          dispatch(hideMessage());
         }
       }
     }
@@ -182,7 +195,7 @@ const NewClient = ({ show, toggleModal }) => {
               <label
                 className="form-control-label"
                 htmlFor="input-ruc"
-              >Denominacion</label>
+              >Denominación</label>
                 <Input
                   className="form-control-alternative"
                   type="text"
@@ -190,15 +203,7 @@ const NewClient = ({ show, toggleModal }) => {
                   onChange={(e) => {
                     setformdata({...formdata,denominacion:e.target.value});
                   }}
-                  value={
-                    dniSearched ? 
-                      dniSearched.nombre_completo ? 
-                        dniSearched.nombre_completo 
-                      : 
-                        dniSearched.nombres + " " + dniSearched.apellido_paterno + " " + dniSearched.apellido_materno
-                    :
-                    rucSearched ? rucSearched.nombre_o_razon_social : formdata?.denominacion
-                    }
+                  value={formdata?.denominacion}
                   innerRef={register({ required: true })}
                 />
             </FormGroup>
@@ -216,9 +221,7 @@ const NewClient = ({ show, toggleModal }) => {
                   onChange={(e) => {
                     setformdata({...formdata,direccion:e.target.value});
                   }}
-                  value={
-                    rucSearched ? rucSearched.direccion : formdata?.direccion
-                    }
+                  value={formdata?.direccion}
                   innerRef={register({ required: false })}
                 />
             </FormGroup>

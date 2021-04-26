@@ -6,6 +6,7 @@ import {
     Button,
     Modal,
     Progress,
+    Badge
 } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { showComprobante } from "../../redux/actions/Cuenta";
@@ -24,7 +25,7 @@ export default function Payments({ showDetail, toggleModal }) {
             <div className="modal-header bg-secondary">
                 <h3 className="modal-title" id="modalDetalleAsistencia">
                     Ver más
-          </h3>
+                </h3>
                 <button
                     aria-label="Close"
                     className="close"
@@ -35,6 +36,17 @@ export default function Payments({ showDetail, toggleModal }) {
                     <span aria-hidden={true}>×</span>
                 </button>
             </div>
+            {
+                comprobanteObject?.cuenta?.userLastChanged!="-" ?
+                <Col className="text-center my-2" >
+                    <Badge color="" className="badge-dot mr-4">
+                        <i className="bg-success" />
+                        <small className="text-muted">Última modificación por {comprobanteObject?.cuenta?.userLastChanged}</small>
+                    </Badge>
+                </Col>
+                :
+                ""
+            }
             <div className="modal-body">
                 <Row>
                     <Col className="d-flex justify-content-between p-0">

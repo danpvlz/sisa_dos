@@ -347,7 +347,7 @@ const Asociado = () => {
                         className="d-flex"
                           onClick={()=>{
                             history.push({
-                              pathname: '/admin/editar-asociado-co',
+                              pathname: '/admin/editar-asociado',
                               state: { asociadoSelected: asociado.idAsociado }});
                           }}
                         >

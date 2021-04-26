@@ -60,7 +60,7 @@ import NuevoServicio from "views/Servicio/NuevoServicio.js";
 //Servicios
 import Cliente from "views/Cliente/Cliente.js";
 
-var components=[
+export const components=[
   Login,
   Index,
   Asociado,
@@ -95,6 +95,10 @@ var components=[
   CajaDashboard,//31
   Concepto, //32
   Cliente, //33
+  Tables, //34
+  Icons, //35
+  Register, //36
+  Profile, //37
 ]
 //6
 export const routesAdmin = [
@@ -170,7 +174,7 @@ export const routesAdmin = [
     show: false
   },
   {
-    path: "/editar-asociado-co",
+    path: "/editar-asociado",
     name: "Editar asociado",
     icon: "ni ni-single-02 text-green",
     component: components[23],
@@ -285,7 +289,7 @@ export const routesAdmin = [
     path: "/icons",
     name: "Icons",
     icon: "ni ni-planet text-blue",
-    component: Icons,
+    component: components[35],
     layout: "/admin",
     show: false
   },
@@ -293,7 +297,7 @@ export const routesAdmin = [
     path: "/user-profile",
     name: "User Profile",
     icon: "ni ni-single-02 text-yellow",
-    component: Profile,
+    component: components[37],
     layout: "/admin",
     show: false
   },
@@ -301,7 +305,7 @@ export const routesAdmin = [
     path: "/tables",
     name: "Tables",
     icon: "ni ni-bullet-list-67 text-red",
-    component: Tables,
+    component: components[34],
     layout: "/admin",
     show: false
   },
@@ -309,7 +313,7 @@ export const routesAdmin = [
     path: "/register",
     name: "Register",
     icon: "ni ni-circle-08 text-pink",
-    component: Register,
+    component: components[36],
     layout: "/auth",
     show: false
   },
@@ -459,7 +463,7 @@ export const routesCuentasVer = [
     show: false
   },
   {
-    path: "/editar-asociado-co",
+    path: "/editar-asociado",
     name: "Editar asociado",
     icon: "ni ni-single-02 text-green",
     component: components[23],
@@ -903,7 +907,7 @@ export const routesContabilidad = [
     show: false
   },
   {
-    path: "/editar-asociado-co",
+    path: "/editar-asociado",
     name: "Editar asociado",
     icon: "ni ni-single-02 text-green",
     component: components[23],
@@ -1090,7 +1094,7 @@ export const routesCobranza = [
     show: false
   },
   {
-    path: "/editar-asociado-co",
+    path: "/editar-asociado",
     name: "Editar asociado",
     icon: "ni ni-single-02 text-green",
     component: components[23],
@@ -1305,7 +1309,7 @@ export const routesServicioAsociado = [
     layout: "/admin",
     routes: [
       {
-        path: "/asociado-sa",
+        path: "/asociado",
         name: "Asociado",
         icon: "ni ni-single-02 text-blue",
         component: components[2],
@@ -1313,7 +1317,7 @@ export const routesServicioAsociado = [
         show: true
       },
       {
-        path: "/editar-asociado-sa",
+        path: "/editar-asociado",
         name: "Modificar datos",
         icon: "ni ni-single-02 text-blue",
         component: components[24],

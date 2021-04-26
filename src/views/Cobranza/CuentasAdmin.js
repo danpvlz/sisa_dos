@@ -1,8 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef  } from "react";
 import { useHistory } from 'react-router-dom';
 import PaginationComponent from "react-reactstrap-pagination";
-import ConfirmDialog from '../../components/Modals/ConfirmDialog';
-import PayModal from '../../components/Modals/PayModal';
 
 // reactstrap components
 import {
@@ -25,6 +23,9 @@ import {
 // core components
 import Select from 'react-select';
 import PaymentsModal from "components/Modals/Payments.js";
+import ConfirmDialog from '../../components/Modals/ConfirmDialog';
+import PayModal from '../../components/Modals/PayModal';
+import ChangePayModal from '../../components/Modals/ChangePayModal';
 import CuentasHeader from "components/Headers/CuentasHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
@@ -44,16 +45,19 @@ const Cuenta = () => {
   const [search, setsearch] = useState({});
   const [idCuenta, setidCuenta] = useState(null);
   const [action, setaction] = useState(1);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [sendConfirm, setsendConfirm] = useState(false);
 
-  const [showPay, setshowPay] = useState(false);
   const [fecha, setfecha] = useState({ "fecha": new Date().toISOString().substring(0, 10) });
   const [monto, setmonto] = useState(0);
   const [bancopago, setbancopago] = useState(1);
   const [sendPay, setsendPay] = useState(0);
 
-  const [showBillDetail, setshowBillDetail] = useState(false);
+  const [show, setshow] = useState({
+    confirm:false,
+    pay:false,
+    billDetail:false,
+    changePay:false,
+  });
 
   //Filters
   const [loaded, setloaded] = useState(false);
@@ -138,16 +142,8 @@ const Cuenta = () => {
     }
   }, [page,paydate,cobrador,idAsociado,status ,number,sincePay,untilPay,since,until]);
 
-  const toggleModal = () => {
-    setShowConfirm(!showConfirm);
-  };
-
-  const toggleModalPay = () => {
-    setshowPay(!showPay);
-  };
-
-  const toggleModalDetail = () => {
-    setshowBillDetail(!showBillDetail);
+  const toggleModal = (modal) => {
+    setshow({...show,[modal]:!show[modal]});
   };
 
   useEffect(() => {
@@ -198,8 +194,19 @@ const Cuenta = () => {
         anulado={billIndicators?.anulado}
       />
       <PayModal
-        showPay={showPay}
-        toggleModal={toggleModalPay}
+        showPay={show.pay}
+        toggleModal={()=>toggleModal('pay')}
+        fecha={fecha}
+        setfecha={setfecha}
+        monto={monto}
+        setmonto={setmonto}
+        setsendPay={setsendPay}
+        setbancopago={setbancopago}
+        fechasince={fechasince}
+      />
+      <ChangePayModal
+        showPay={show.changePay}
+        toggleModal={()=>toggleModal('changePay')}
         fecha={fecha}
         setfecha={setfecha}
         monto={monto}
@@ -212,9 +219,9 @@ const Cuenta = () => {
       <Container className="mt--7" fluid>
         <ConfirmDialog
           question={action == 1 ? "¿Seguro de anular cuenta y pagos asociados?" : "¿Seguro de pagar cuenta?"}
-          showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendConfirm} />
+          showConfirm={show.confirm} toggleModal={()=>toggleModal('confirm')} setConfirm={setsendConfirm} />
         <PaymentsModal
-          showDetail={showBillDetail} toggleModal={toggleModalDetail}
+          showDetail={show.billDetail} toggleModal={()=>toggleModal('billDetail')}
         />
         {/* Table */}
         <Row>
@@ -441,7 +448,7 @@ const Cuenta = () => {
                                 className="d-flex"
                                 onClick={(e) => {
                                   dispatch(getBillDetail({ "idCuenta": cuenta.idCuenta }));
-                                  toggleModalDetail();
+                                  toggleModal('billDetail')
                                 }}
                               >
                                 <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
@@ -451,13 +458,13 @@ const Cuenta = () => {
                                   <>
                                     <DropdownItem
                                       className="d-flex"
-                                      onClick={(e) => {  setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); toggleModalPay(); }}
+                                      onClick={(e) => {  setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); toggleModal('pay'); }}
                                     >
                                       <i className="fa fa-credit-card text-success" aria-hidden="true"></i> Cancelar
                           </DropdownItem>
                                     <DropdownItem
                                       className="d-flex"
-                                      onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal(); }}
+                                      onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal('confirm'); }}
                                     >
                                       <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
                           </DropdownItem>
@@ -469,14 +476,14 @@ const Cuenta = () => {
                                       className="d-flex"
                                       onClick={(e) => {
                                         dispatch(getBillDetail({ "idCuenta": cuenta.idCuenta }));
-                                        toggleModalDetail();
+                                        toggleModal('changePay')
                                       }}
                                     >
                                       <i className="text-green fa fa-edit" aria-hidden="true"></i> Cambiar pago
                                     </DropdownItem>
                                       <DropdownItem
                                         className="d-flex"
-                                        onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal(); }}
+                                        onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal('confirm') }}
                                       >
                                         <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
                                       </DropdownItem>

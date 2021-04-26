@@ -4,6 +4,7 @@ export const FETCH_SUCCESS = 'fetch_success';
 export const FETCH_ERROR = 'fetch_error';
 export const SHOW_MESSAGE = 'SHOW_MESSAGE';
 export const HIDE_MESSAGE = 'HIDE_MESSAGE';
+export const ROUTES_LIST = 'ROUTES_LIST';
 
 //AUTH
 export const SIGNIN_USER = 'SIGNIN_USER';

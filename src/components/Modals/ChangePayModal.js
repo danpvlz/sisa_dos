@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {
   Button,
   FormGroup,
@@ -6,14 +6,58 @@ import {
   Row,
   Col,
   Modal,
+  Form,
 } from "reactstrap";
 import Select from 'react-select';
+import { fetchError, hideMessage } from '../../redux/actions/Common';
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { update,listBills } from "../../redux/actions/Cuenta";
 
-const ChangePayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, setsendPay,setbancopago, fechasince,opciones }) => {
-  const saveJustification = () => {
-    setsendPay(true); 
-    toggleModal();
-  }
+const ChangePayModal = ({ showPay, toggleModal, setsendPay,setbancopago, opciones }) => {
+  const { register, handleSubmit, watch, reset } = useForm();
+  const dispatch = useDispatch();
+  const { pagos } = useSelector(({ cuenta }) => cuenta.comprobanteObject);
+  const [formData, setformData] = useState({
+    fecha:"",
+    monto:"",
+    banco:"",
+  });
+  useEffect(() => {
+    if(pagos){
+      setformData({
+        fecha:pagos[pagos.length-1]?.fecha,
+        monto:pagos[pagos.length-1]?.monto,
+        banco:pagos[pagos.length-1]?.banco,
+      });
+    }
+    return () => {
+      setformData({
+        fecha:"",
+        monto:"",
+        banco:"",
+      });
+    }
+  }, [pagos]);
+
+  const onSubmit = (data) => {
+    if(formData.fecha==""){
+      dispatch(fetchError("Debe seleccionar una fecha."))
+    }else{
+      if(formData.monto==""){
+        dispatch(fetchError("Debe especificar un monto."))
+      }else{
+          if(pagos){
+            dispatch(update(formData,pagos[pagos.length-1]?.idPago));
+            setformData(null);
+            toggleModal();
+          }
+          dispatch(hideMessage());
+        
+      }
+    }
+  };
+  
   return (
     <Modal
       className="modal-dialog-centered"
@@ -22,7 +66,7 @@ const ChangePayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto
     >
       <div className="modal-header bg-secondary">
         <h3 className="modal-title">
-          Pagar
+          Modificar pago
         </h3>
         <button
           aria-label="Close"
@@ -34,6 +78,7 @@ const ChangePayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto
           <span aria-hidden={true}>×</span>
         </button>
       </div>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <div className="modal-body pb-0">
         <Row>
           <Col lg="6"  >
@@ -47,12 +92,12 @@ const ChangePayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto
                 className="form-control-alternative"
                 placeholder="fechaPago"
                 type="date"
-                value={fecha}
-                min={fechasince}
+                value={formData?.fecha}
                 max={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
                 onChange={(e) => {
-                  setfecha(e.target.value == "" ? null : e.target.value)
+                  setformData({...formData,fecha:e.target.value})
                 }}
+                innerRef={register({ required: true })}
               />
             </FormGroup >
           </Col>
@@ -68,10 +113,11 @@ const ChangePayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto
                 name="monto"
                 placeholder="S/."
                 type="number"
-                value={monto}
+                value={formData?.monto}
                 onChange={(e) => {
-                  setmonto(e.target.value == "" ? null : e.target.value)
+                  setformData({...formData,monto:e.target.value})
                 }}
+                innerRef={register({ required: true })}
               />
             </FormGroup >
           </Col>
@@ -89,8 +135,9 @@ const ChangePayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto
                   placeholder="Seleccione..."
                   className="select-style"
                   name="opciones"
-                  onChange={(inputValue, actionMeta) => {
-                    setbancopago(inputValue != null ? inputValue.value : null);
+                  value={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }].find(b=>b.value==formData?.banco)}
+                  onChange={(e) => {
+                    setformData({...formData,banco:e.value})
                   }}
                   isClearable
                   options={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }]}
@@ -110,8 +157,9 @@ const ChangePayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto
                   placeholder="Seleccione..."
                   className="select-style"
                   name="banco"
-                  onChange={(inputValue, actionMeta) => {
-                    setbancopago(inputValue != null ? inputValue.value : null);
+                  value={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }].find(b=>b.value==formData?.banco)}
+                  onChange={(e) => {
+                    setformData({...formData,banco:e.value})
                   }}
                   isClearable
                   options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
@@ -130,10 +178,11 @@ const ChangePayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto
         >
           Cerrar
           </Button>
-        <Button className="btn-primary" color="success" type="button" onClick={saveJustification}>
-          Registrar
+        <Button className="btn-primary" color="success" type="submit">
+          Actualizar
           </Button>
       </div>
+      </Form>
     </Modal>);
 }
 

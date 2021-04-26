@@ -22,13 +22,14 @@ import {
 // core components
 import SearchConcepto from "components/Selects/SearchConcepto";
 import NewConcept from "components/Modals/NewConcept.js";
+import SearchAreas from '../../components/Selects/SearchAreas';
 import { useDispatch, useSelector } from "react-redux";
 
 import { list, show, resetConceptObject} from "../../redux/actions/Concepto";
 
 const Conceptos = () => {
   const dispatch = useDispatch();
-  const { conceptoList } = useSelector(({ concepto }) => concepto);
+  const { conceptoList, conceptStatusActions } = useSelector(({ concepto }) => concepto);
   const [search, setsearch] = useState({});
   const [idConcepto, setidConcepto] = useState(null);
   const [labelConcepto, setLabelConcepto] = useState(null);
@@ -36,7 +37,15 @@ const Conceptos = () => {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(null);
   const [showModal, setshow] = useState(false);
+  const [idArea, setidArea] = useState(null);
   const history = useHistory();
+
+  useEffect(() => {
+    if (conceptStatusActions == 200) {
+      dispatch(list(page,search));
+    }
+  }, [conceptStatusActions]);
+
   const handleNew = () => {
     dispatch(resetConceptObject());
     setSelected(null);
@@ -50,9 +59,14 @@ const Conceptos = () => {
     }else{
       tsearch.idConcepto=idConcepto;
     }
+    if(idArea == null){
+      delete tsearch.idArea;
+    }else{
+      tsearch.idArea=idArea;
+    }
     setsearch(tsearch);
     dispatch(list(page,tsearch))
-  }, [idConcepto]);
+  }, [idConcepto,idArea]);
 
   useEffect(() => {
     dispatch(list(page,search))
@@ -117,6 +131,17 @@ const Conceptos = () => {
                             className="form-control-label"
                             htmlFor="filterMonth"
                           >
+                            Área
+                          </label>
+                          <SearchAreas setVal={setidArea} idArea={idArea} />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="4"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
                             Concepto
                       </label>
                           <SearchConcepto setVal={setidConcepto} setLabel={setLabelConcepto} />
@@ -132,6 +157,7 @@ const Conceptos = () => {
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Código</th>
+                    <th scope="col">Ult. Modif.</th>
                     <th scope="col">Concepto</th>
                     <th scope="col">Tipo</th>
                     <th scope="col">IGV</th>
@@ -148,7 +174,14 @@ const Conceptos = () => {
 
                       <tr key={key}>
                         <td scope="row">
-                          {concepto.codigo}
+                          {concepto.idConcepto}
+                        </td>
+                        <td>
+                          {
+                          ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][new Date(concepto.updated_at).getMonth()]
+                                            + ' ' +
+                          new Date(concepto.updated_at).getFullYear() 
+                          }
                         </td>
                         <td>
                           {concepto.descripcion}
