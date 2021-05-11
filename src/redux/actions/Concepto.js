@@ -16,7 +16,6 @@ import axios from '../../util/Api';
   
 export const filter = (search="") => {
   return (dispatch) => {
-    dispatch({ type: FETCH_START });
     axios.post('/conceptoFilterData',
     {
         "search": search
@@ -124,7 +123,6 @@ export const resetConceptObject = () => {
   
 export const filterAreas = (search="") => {
   return (dispatch) => {
-    dispatch({ type: FETCH_START });
     axios.post('/filterAreas',
     {
         "search": search
@@ -144,7 +142,6 @@ export const filterAreas = (search="") => {
   
 export const filterCategories = (idArea) => {
   return (dispatch) => {
-    dispatch({ type: FETCH_START });
     axios.get('filterCategoriaCuenta/'+idArea).then(({data}) => {
       if (data) {
         dispatch({ type: FETCH_SUCCESS });

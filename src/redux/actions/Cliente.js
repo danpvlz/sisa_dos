@@ -13,7 +13,6 @@ import axios from '../../util/Api';
   
 export const filter = (search="") => {
   return (dispatch) => {
-    dispatch({ type: FETCH_START });
     axios.post('/clienteFilterData',
     {
         "search": search

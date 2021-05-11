@@ -124,7 +124,6 @@ import {
   
   export const filter = (search="") => {
     return (dispatch) => {
-      dispatch({ type: FETCH_START });
       axios.post('/filterParticipants',
       {
           "search": search

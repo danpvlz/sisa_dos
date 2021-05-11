@@ -169,7 +169,6 @@ export const resetPassword = (id) => {
   
 export const filter = (search="") => {
   return (dispatch) => {
-    dispatch({ type: FETCH_START });
     axios.post('/workerFilterData',
     {
         "search": search

@@ -37,7 +37,6 @@ export const listAssociated = (page = 1, params = {}) => {
 
 export const filter = (search = "") => {
   return (dispatch) => {
-    dispatch({ type: FETCH_START });
     axios.post('/associatedFilterData',
       {
         "search": search

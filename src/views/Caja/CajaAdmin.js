@@ -32,6 +32,7 @@ import { listbysector, exportBills, exportBillsDetail } from "../../redux/action
 import { listBills, anularCuenta, payCaja, getDetail, indicatorsBills } from "../../redux/actions/Caja";
 import Loading from "../../components/Loaders/LoadingSmall";
 
+var timeOutFunc;
 const Cuenta = () => {
   const dispatch = useDispatch();
   const selectInputRef = useRef();
@@ -83,6 +84,7 @@ const Cuenta = () => {
   
   useEffect(() => {
     let tsearch = search;
+    let wait = false;
     if (paydate == "") {
       delete tsearch.paydate;
     } else {
@@ -111,6 +113,7 @@ const Cuenta = () => {
       delete tsearch.number;
     } else {
       tsearch.number = number;
+      wait=true;
     }
     if (sincePay == null) {
       delete tsearch.sincePay;
@@ -137,10 +140,19 @@ const Cuenta = () => {
     }
 
     if (loaded) {
-    setsearch(tsearch);
-    dispatch(listBills(page, tsearch));
-    dispatch(indicatorsBills(search));
-    dispatch(listbysector(search));
+      if(wait){
+      clearTimeout(timeOutFunc);
+      timeOutFunc = setTimeout(()=>{ 
+        setsearch(tsearch);
+        dispatch(listBills(page, tsearch));
+        dispatch(indicatorsBills(search));
+        dispatch(listbysector(search));
+      }, 1500);
+      }else{
+        setsearch(tsearch);
+        dispatch(listBills(page, tsearch));
+        dispatch(indicatorsBills(search));
+      }
     }
   }, [page,paydate,cobrador,idCliente,status ,number,sincePay,untilPay,since,until]);
 
@@ -377,9 +389,9 @@ const Cuenta = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && billListCaja.data ?
+                !loading ?
                   <>
-              <Table className="align-items-center table-flush" responsive>
+              <Table className="align-items-center table-flush table-sm" responsive>
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Emision</th>

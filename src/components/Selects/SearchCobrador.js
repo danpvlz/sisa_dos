@@ -4,14 +4,15 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from "react-redux";
 import { filter } from "../../redux/actions/Cobrador";
 
-export default function SearchCobrador({setVal,defaultVal}) {
+export default function SearchCobrador({ setVal, defaultVal, selectInputRef }) {
   const dispatch = useDispatch();
   const debCollectorFilter = useSelector(({ cobrador }) => cobrador.debCollectorFilter);
   const handleInputChange = (inputValue, actionMeta) => {
-      inputValue.length >= 2 && dispatch(filter(inputValue));
+    inputValue.length >= 2 && dispatch(filter(inputValue));
   }
   return (
     <Select
+      ref={selectInputRef}
       placeholder="Seleccione..."
       id="searchDebCollector"
       name="searchDebCollector"
@@ -21,8 +22,8 @@ export default function SearchCobrador({setVal,defaultVal}) {
       onChange={(inputValue, actionMeta) => {
         setVal(inputValue != null ? inputValue.value : null);
       }}
-      options={debCollectorFilter} 
+      options={debCollectorFilter}
       defaultValue={defaultVal}
-      />
+    />
   )
 }
