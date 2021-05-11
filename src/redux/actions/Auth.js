@@ -10,7 +10,7 @@ import {
   SHOW_MESSAGE,
   AUTH_STATUS_ACTIONS,
   AUTH_MESSAGE,
-  PASSWORD_REQUIREMENTS
+  POWERBI_CHECK
 } from "../ActionTypes";
 import axios from '../../util/Api'
 
@@ -126,3 +126,44 @@ export const userSignOut = () => {
     });
   }
 };
+
+export const powerBiPass = () => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.get('kpicheck',
+    ).then(({ data }) => {
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: POWERBI_CHECK, payload: data.autorization });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+
+export const askpermission = () => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.get('askpermission',
+    ).then(({ data }) => {
+      if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: POWERBI_CHECK, payload: 0 });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+
+export const resetPowerBiPass = () => {
+  return (dispatch) => {
+    dispatch({ type: POWERBI_CHECK, payload: 0 });
+  }
+}

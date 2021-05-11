@@ -10,7 +10,8 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import {components,routesAdmin,routesCobranza,routesContabilidad,routesCuentasVer,routesDirectivos,routesImagenInstitucional,routesServicioAsociado,routesSimple} from "../routes.js";
 import {listRoutes} from "../redux/actions/Common";
 import { useDispatch, useSelector } from "react-redux";
-
+import Notifications from "components/Notification.js";
+import LoadingPage from "components/Loaders/LoadingPage.js";
 import axios from '../util/Api';
 
 const Admin = (props) => {
@@ -64,25 +65,16 @@ const Admin = (props) => {
     });
   };
 
-  const getBrandText = (routes) => {
-    for (let i = 0; i < routes.length; i++) {
-      if(routes[i].routes){
-        for (let j = 0; j < routes[i].routes.length; j++) {
-          if (
-            props.location.pathname.indexOf(routes[i].layout + routes[i].routes[j].path) !==
-            -1
-          ) {
-            return  routes[i].routes[j].name;
-          }
-        }
-      }
-
-      if (
-        props.location.pathname.indexOf(routes[i].layout + routes[i].path) !==
-        -1
-      ) {
-        return routes[i].name;
-      }
+  const getBrandText = (path) => {
+    let rName = routesList.find(r=>r.layout+r.path==path);
+    if(rName){
+      return rName.name;
+    }
+    let subroutes = [];
+    routesList.filter(r=>r.routes.length>0).map(sr=> {subroutes=subroutes.concat(JSON.parse(sr.routes))});
+    let srName = subroutes.find(r=>r.layout+r.path==path);
+    if(srName){
+      return srName.name;
     }
     return "Brand";
   };
@@ -92,7 +84,7 @@ const Admin = (props) => {
     {
       routesList.length>0 ?
       <>
-      
+      <Notifications />
       <Sidebar
         {...props}
         routes={routesList}
@@ -106,7 +98,7 @@ const Admin = (props) => {
       <div className="main-content" ref={mainContent}>
         <AdminNavbar
           {...props}
-          brandText={getBrandText(routesList)}
+          brandText={getBrandText(props.location.pathname)}
         />
       {allowed &&
         <Switch>
@@ -120,7 +112,7 @@ const Admin = (props) => {
       </div>
       </>
       :
-      "..."
+      <LoadingPage />
     }
     </>
   );

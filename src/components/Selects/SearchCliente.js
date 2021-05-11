@@ -1,15 +1,28 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 
 import Select from 'react-select';
 import { useDispatch, useSelector } from "react-redux";
 import { filter } from "../../redux/actions/Cliente";
 
-export default function SearchCliente({setVal,defaultVal,selectInputRef }) {
+export default function SearchCliente({setVal,idCliente,defaultVal,selectInputRef, searchDoc }) {
   const dispatch = useDispatch();
   const clienteFilter = useSelector(({ cliente }) => cliente.clienteFilter);
   const handleInputChange = (inputValue, actionMeta) => {
       inputValue.length >= 2 && dispatch(filter(inputValue));
   }
+
+  useEffect(() => {
+    if(searchDoc!=null){
+      dispatch(filter(searchDoc));
+    }
+  }, [searchDoc]);
+
+  useEffect(() => {
+    if(clienteFilter.length>0 && searchDoc!=null){      
+      setVal(clienteFilter.find(c=>c.documento==searchDoc).value);
+    }
+  }, [clienteFilter]);
+
   return (
     <Select
       ref={selectInputRef}
@@ -24,6 +37,7 @@ export default function SearchCliente({setVal,defaultVal,selectInputRef }) {
       }}
       options={clienteFilter} 
       defaultValue={defaultVal}
+      value={clienteFilter.find(c=>c.value==idCliente)}
       />
   )
 }

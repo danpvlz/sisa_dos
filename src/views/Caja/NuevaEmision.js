@@ -20,7 +20,7 @@ import Select from 'react-select';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import SearchCliente from "components/Selects/SearchCliente";
-import { showCliente,resetClienteObject } from '../../redux/actions/Cliente';
+import { showCliente, resetClienteObject } from '../../redux/actions/Cliente';
 import { fetchError, hideMessage } from '../../redux/actions/Common';
 import { saveCuenta } from '../../redux/actions/Caja';
 import ConfirmDialog from '../../components/Modals/ConfirmDialog';
@@ -34,6 +34,10 @@ const NuevaEmision = () => {
   const [idConcepto, setidConcepto] = useState(undefined);
   const [labelConcepto, setLabelConcepto] = useState(undefined);
   const [inmutable, setinmutable] = useState(null);
+  const [numPayFilled, setnumPayFilled] = useState({
+    operation: false,
+    sofdoc: false,
+  });
 
   const history = useHistory();
 
@@ -45,12 +49,14 @@ const NuevaEmision = () => {
   const [pagado, setpagado] = useState(null);
   const [opcion, setOpcion] = useState(null);
   const [typeChange, settypeChange] = useState(1);
+  const [searchDoc, setSearchDoc] = useState(null);
 
   const setPriceConcepto = (price) => {
     setitemValues({ ...itemValues, "price": price, "subtotal": price * itemValues.ammount })
   }
-  
+
   const [itemValues, setitemValues] = useState({
+    detail: '',
     price: 0,
     ammount: 0,
     subtotal: 0,
@@ -86,6 +92,7 @@ const NuevaEmision = () => {
               itemValues.labelConcepto = labelConcepto;
               setitems(items.concat(itemValues));
               setitemValues({
+                detail: '',
                 price: 0,
                 ammount: 0,
                 subtotal: 0,
@@ -119,21 +126,24 @@ const NuevaEmision = () => {
           dispatch(fetchError("Debe elegir si el comprobante fue pagado."))
           :
           pagado == 2 && opcion == null ?
-            dispatch(fetchError("Debe la opción."))
+            dispatch(fetchError("Debe elegir una opción."))
             :
-            items.length == 0 ?
-              dispatch(fetchError("Debe agregar al menos un item."))
+            pagado == 2 && (!numPayFilled.operation && !numPayFilled.sofdoc) ?
+              dispatch(fetchError("Debe especificar un número de operación o de sofydoc."))
               :
-              tipoDocumentoEmision == 3 && docModificar.tipo == "" ?
-                dispatch(fetchError("Debe especificar el tipo de documento a modificar."))
+              items.length == 0 ?
+                dispatch(fetchError("Debe agregar al menos un item."))
                 :
-                tipoDocumentoEmision == 3 && docModificar.serie == "" ?
-                  dispatch(fetchError("Debe especificar la serie del documento a modificar."))
+                tipoDocumentoEmision == 3 && docModificar.tipo == "" ?
+                  dispatch(fetchError("Debe especificar el tipo de documento a modificar."))
                   :
-                  tipoDocumentoEmision == 3 && docModificar.numero == "" ?
-                    dispatch(fetchError("Debe especificar el número del documento a modificar."))
+                  tipoDocumentoEmision == 3 && docModificar.serie == "" ?
+                    dispatch(fetchError("Debe especificar la serie del documento a modificar."))
                     :
-                    toggleModal();
+                    tipoDocumentoEmision == 3 && docModificar.numero == "" ?
+                      dispatch(fetchError("Debe especificar el número del documento a modificar."))
+                      :
+                      toggleModal();
     setformdata(data);
     dispatch(hideMessage());
   };
@@ -147,6 +157,7 @@ const NuevaEmision = () => {
       formdata.typeChange = typeChange;
       formdata.items = items;
       formdata.docModificar = docModificar;
+      console.log(formdata);
       dispatch(saveCuenta(formdata));
       history.push('/admin/cuentas-caja');
     }
@@ -162,6 +173,7 @@ const NuevaEmision = () => {
   const toggleModalNewClient = () => {
     setshowNewClient(!showNewClient);
   };
+
   return (
     <>
       <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
@@ -177,6 +189,7 @@ const NuevaEmision = () => {
         <NewClient
           show={showNewClient}
           toggleModal={toggleModalNewClient}
+          setSearchDoc={setSearchDoc}
         />
         <Row>
           <Col className="order-xl-1" xl="12">
@@ -192,8 +205,8 @@ const NuevaEmision = () => {
                 <Form onSubmit={handleSubmit(onSubmit)}>
                   <Row>
                     <Col lg="12">
-                      <h6 className="heading-small text-muted mb-4">
-                        Cuenta
+                      <h6 className="heading-small text-muted mb-4 d-flex">
+                        <i className="fa fa-file mr-2 my-auto" /> Cuenta
                       </h6>
                       <div className="pl-lg-4">
                         <Row>
@@ -207,10 +220,10 @@ const NuevaEmision = () => {
                               </label>
                               <div className="d-flex">
                                 <div className="col-10 mx-0 px-0">
-                                  <SearchCliente setVal={setidCliente} />
+                                  <SearchCliente setVal={setidCliente} searchDoc={searchDoc} idCliente={idCliente} />
                                 </div>
                                 <div className="col-2 ml-0 pl-0">
-                                  <Button color="primary" type="button" onClick={()=>{dispatch(resetClienteObject()); toggleModalNewClient();}}>
+                                  <Button color="primary" type="button" onClick={() => { dispatch(resetClienteObject()); toggleModalNewClient(); }}>
                                     <i className="fa fa-plus" />
                                   </Button>
                                 </div>
@@ -254,7 +267,7 @@ const NuevaEmision = () => {
                               />
                             </FormGroup>
                           </Col>
-                          <Col lg="3">
+                          <Col lg="2">
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -297,7 +310,7 @@ const NuevaEmision = () => {
                                       name="typeDocUpdate"
                                       id="typeDocUpdate"
                                       onChange={(inputValue, actionMeta) => {
-                                        setdocModificar({ ...docModificar, tipo: inputValue.value, serie: inputValue.value== 1 ? "F108" : inputValue.value == 2 ? "B108" : ""});
+                                        setdocModificar({ ...docModificar, tipo: inputValue.value, serie: inputValue.value == 1 ? "F108" : inputValue.value == 2 ? "B108" : "" });
                                       }}
                                       options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
                                   </FormGroup>
@@ -317,7 +330,7 @@ const NuevaEmision = () => {
                                       onChange={(e) => {
                                         setdocModificar({ ...docModificar, serie: e.target.value })
                                       }}
-                                      value={docModificar.tipo ==1 ? "F108" : docModificar.tipo ==2 ? "B108" : ""}
+                                      value={docModificar.tipo == 1 ? "F108" : docModificar.tipo == 2 ? "B108" : ""}
                                       readOnly
                                       innerRef={register({ required: tipoDocumentoEmision == 3 })}
                                     />
@@ -346,7 +359,7 @@ const NuevaEmision = () => {
                               </>
                               :
                               <>
-                                <Col lg="3">
+                                <Col lg="2">
                                   <FormGroup>
                                     <label
                                       className="form-control-label"
@@ -367,33 +380,9 @@ const NuevaEmision = () => {
                                     />
                                   </FormGroup>
                                 </Col>
-                                {
-                                  pagado == 2 &&
-                                  <Col lg="3">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-address"
-                                      >
-                                        Medio de pago
-                                      </label>
-                                      <Select
-                                        placeholder="Seleccione..."
-                                        className="select-style"
-                                        name="option"
-                                        id="option"
-                                        onChange={(inputValue, actionMeta) => {
-                                          setOpcion(inputValue.value);
-                                        }}
-                                        options={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }]}
-                                        innerRef={register({ required: true })}
-                                      />
-                                    </FormGroup>
-                                  </Col>
-                                }
                               </>
                           }
-                          <Col lg="3">
+                          <Col lg="2">
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -449,13 +438,87 @@ const NuevaEmision = () => {
                       </div>
                       <hr className="my-4 " />
                     </Col>
+                    {
+                      pagado == 2 &&
+                      <Col lg="12">
+                        <h6 className="heading-small text-muted mb-4">
+                          <i className="ni ni-money-coins mr-2 my-auto" /> Pago
+                      </h6>
+                        <div className="pl-lg-4">
+                          <Row>
+                            <>
+                              <Col lg="2">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Medio de pago
+                                      </label>
+                                  <Select
+                                    placeholder="Seleccione..."
+                                    className="select-style"
+                                    name="option"
+                                    id="option"
+                                    onChange={(inputValue, actionMeta) => {
+                                      setOpcion(inputValue.value);
+                                    }}
+                                    options={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }]}
+                                    innerRef={register({ required: true })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col lg="2">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Num. Operación
+                                        </label>
+                                  <Input
+                                    className="form-control-alternative"
+                                    name="numoperacion"
+                                    type="text"
+                                    onChange={(e) => {
+                                      setnumPayFilled({ ...numPayFilled, operation: e.target.value != '' ? true : false });
+                                    }}
+                                    innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col lg="2">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Num. SOFDOC
+                                  </label>
+                                  <Input
+                                    className="form-control-alternative"
+                                    name="numsofdoc"
+                                    type="text"
+                                    onChange={(e) => {
+                                      setnumPayFilled({ ...numPayFilled, sofdoc: e.target.value != '' ? true : false });
+                                    }}
+                                    innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                            </>
+                          </Row>
+                        </div>
+                        <hr className="my-4 " />
+                      </Col>
+                    }
                     <Col lg="12 ">
                       <h6 className="heading-small text-muted mb-4">
-                        Items
+                        <i className="ni ni-cart mr-2 my-auto" /> Items
                       </h6>
                       <div className="pl-lg-4">
                         <Row>
-                          <Col lg="3">
+                          <Col lg="4">
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -464,6 +527,25 @@ const NuevaEmision = () => {
                                 Concepto
                           </label>
                               <SearchConcepto setVal={setidConcepto} setLabel={setLabelConcepto} setInmutable={setinmutable} setprice={setPriceConcepto} />
+                            </FormGroup>
+                          </Col>
+                          <Col lg="4">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Detalle
+                          </label>
+                              <Input
+                                className="form-control-alternative text-center"
+                                name="detalle"
+                                type="text"
+                                onChange={(e) => {
+                                  setitemValues({ ...itemValues, "detail": e.target.value })
+                                }}
+                                value={itemValues.detail}
+                              />
                             </FormGroup>
                           </Col>
                           <Col lg="2">
@@ -479,7 +561,7 @@ const NuevaEmision = () => {
                                 className="select-style"
                                 name="typeChange"
                                 id="typeChange"
-                                value={[{ value: 1, label: "Gravada" }, { value: 7, label: "Gratuita" }][itemValues.igv-1]}
+                                value={[{ value: 1, label: "Gravada" }, { value: 7, label: "Gratuita" }][itemValues.igv - 1]}
                                 onChange={(inputValue, actionMeta) => {
                                   setitemValues({ ...itemValues, igv: inputValue.value })
                                 }}
@@ -499,7 +581,7 @@ const NuevaEmision = () => {
                                 name="price"
                                 type="number"
                                 min="0"
-                                readOnly={inmutable==1}
+                                readOnly={inmutable == 1}
                                 onChange={(e) => {
                                   setitemValues({ ...itemValues, "price": e.target.value, "subtotal": e.target.value * itemValues.ammount })
                                 }}
@@ -541,7 +623,7 @@ const NuevaEmision = () => {
                                 name="subtotal"
                                 type="number"
                                 disabled
-                                value={itemValues.subtotal}
+                                value={itemValues.subtotal.toFixed(2)}
                               />
                             </FormGroup>
                           </Col>
@@ -609,7 +691,7 @@ const NuevaEmision = () => {
                           </Col>
                         </Row>
                         <hr />
-                        <div style={{ float: 'right', fontSize: '1.5rem',display:'flex',flexDirection: 'column',textAlign:'right' }}>
+                        <div style={{ float: 'right', fontSize: '1.5rem', display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
                           {
                             items.some(item => item.igv == 2) &&
                             <div><small>Gratuita: s/.</small><strong >{items.reduce((r, a) => { return r + a.subtotal }, 0)}</strong></div>
@@ -618,17 +700,17 @@ const NuevaEmision = () => {
                             items.some(item => item.igv == 1) &&
                             <>
                               <div><small>Gravada: s/.</small><strong >{
-                              (items.filter(item=>item.igv==1).reduce((r, a) => { return r + a.subtotal }, 0) * 100 / 118).toFixed(2)
+                                (items.filter(item => item.igv == 1).reduce((r, a) => { return r + a.subtotal }, 0) * 100 / 118).toFixed(2)
                               }</strong></div>
                               <div><small>IGV: s/.</small><strong >{
-                                
-                                (items.filter(item=>item.igv==1).reduce((r, a) => { return r + a.subtotal }, 0) - (items.filter(item=>item.igv==1).reduce((r, a) => { return r + a.subtotal }, 0) * 100 / 118)).toFixed(2)
-                              
-                              
+
+                                (items.filter(item => item.igv == 1).reduce((r, a) => { return r + a.subtotal }, 0) - (items.filter(item => item.igv == 1).reduce((r, a) => { return r + a.subtotal }, 0) * 100 / 118)).toFixed(2)
+
+
                               }</strong></div>
                             </>
                           }
-                          <div><small>Total: s/.</small><strong >{items.filter(item=>item.igv==1).reduce((r, a) => { return r + a.subtotal }, 0)}</strong></div>
+                          <div><small>Total: s/.</small><strong >{items.filter(item => item.igv == 1).reduce((r, a) => { return r + a.subtotal }, 0).toFixed(2)}</strong></div>
                         </div>
                       </div>
                     </Col>

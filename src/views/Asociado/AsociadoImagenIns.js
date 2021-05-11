@@ -1,4 +1,4 @@
-import React, { useCallback,useState,useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
 import PaginationComponent from "react-reactstrap-pagination";
 
@@ -27,10 +27,12 @@ import Header from "components/Headers/AsociadoHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listAssociated, exportAssociateds, status, assignCode, removeInProcess } from "../../redux/actions/Asociado";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Asociado = () => {
   const dispatch = useDispatch();
   const { associatedList, meta, associatedStatusActions } = useSelector(({ asociado }) => asociado);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [idAsociado, setIdAsociado] = useState(null);
   const [state, setState] = useState(null);
@@ -44,7 +46,7 @@ const Asociado = () => {
   const [codigo, setcodigo] = useState(null);
   const [sendcodigo, setsendcodigo] = useState(false);
   const [confirm, setComfirm] = useState(false);
-  
+
   const [question, setquestion] = useState('');
   const [action, setAction] = useState(1);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -68,30 +70,30 @@ const Asociado = () => {
 
   useEffect(() => {
     if (associatedStatusActions == 200) {
-      dispatch(listAssociated(page,search));
+      dispatch(listAssociated(page, search));
     }
   }, [associatedStatusActions]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(idAsociado == null){
+    let tsearch = search;
+    if (idAsociado == null) {
       delete tsearch.idAsociado;
-    }else{
-      tsearch.idAsociado=idAsociado;
+    } else {
+      tsearch.idAsociado = idAsociado;
     }
     setsearch(tsearch);
-    dispatch(listAssociated(page,tsearch))
+    dispatch(listAssociated(page, tsearch))
   }, [idAsociado]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(debCollector == null){
+    let tsearch = search;
+    if (debCollector == null) {
       delete tsearch.debCollector;
-    }else{
-      tsearch.debCollector=debCollector;
+    } else {
+      tsearch.debCollector = debCollector;
     }
     setsearch(tsearch);
-    dispatch(listAssociated(page,tsearch))
+    dispatch(listAssociated(page, tsearch))
   }, [debCollector]);
 
   useEffect(() => {
@@ -117,18 +119,18 @@ const Asociado = () => {
   }, [promotorSearched]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(state == null){
+    let tsearch = search;
+    if (state == null) {
       delete tsearch.state;
-    }else{
-      tsearch.state=state;
+    } else {
+      tsearch.state = state;
     }
     setsearch(tsearch);
-    dispatch(listAssociated(page,tsearch))
+    dispatch(listAssociated(page, tsearch))
   }, [state]);
 
   useEffect(() => {
-    dispatch(listAssociated(page,search))
+    dispatch(listAssociated(page, search))
   }, [page])
 
   const toggleModalCodigo = () => {
@@ -175,9 +177,9 @@ const Asociado = () => {
         <Row>
           <div className="col">
             <Card className="shadow">
-            <ConfirmDialog
-              question={question}
-              showConfirm={showConfirm} toggleModal={toggleModalConfirm} setConfirm={setComfirm} />
+              <ConfirmDialog
+                question={question}
+                showConfirm={showConfirm} toggleModal={toggleModalConfirm} setConfirm={setComfirm} />
               <CardHeader className="border-0 bg-secondary">
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">
@@ -222,7 +224,7 @@ const Asociado = () => {
                             }}
                           />
                         </FormGroup >
-                      </Col>                      
+                      </Col>
                       <Col lg="6"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
@@ -231,7 +233,7 @@ const Asociado = () => {
                           >
                             Asociado
                       </label>
-                          <SearchAsociado setVal={setIdAsociado}/>
+                          <SearchAsociado setVal={setIdAsociado} />
                         </FormGroup>
                       </Col>
                       <Col lg="3"  >
@@ -250,7 +252,7 @@ const Asociado = () => {
                               setState(inputValue != null ? inputValue.value : null);
                             }}
                             isClearable
-                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" },{ value: 3, label: "Retiro" }]} />
+                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" }, { value: 3, label: "Retiro" }]} />
                         </FormGroup >
                       </Col>
                       <Col lg="3"  >
@@ -274,8 +276,8 @@ const Asociado = () => {
                         </FormGroup >
                       </Col>
                       <Col lg="2" className="text-right my-auto ml-auto">
-                        <Button color="success"  type="button" onClick={()=>dispatch(exportAssociateds(search))}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
+                        <Button color="success" type="button" onClick={() => dispatch(exportAssociateds(search))}>
+                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -284,93 +286,100 @@ const Asociado = () => {
 
                 </Row>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Asociado</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Ingreso</th>
-                    <th scope="col">Onomástico</th>
-                    <th scope="col">Correos</th>
-                    <th scope="col">Teléfonos</th>
-                    <th scope="col" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    associatedList?.data?.map((asociado,key)=>
-                  <tr key={key}>
-                  <td scope="row">
-                    {asociado.asociado}
-                  </td>
-                  <td>
-                    {asociado.tipoAsociado == 1 ? "Empresa" : "Persona"}
-                  </td>
-                  <td>
-                    <Badge color="" className="badge-dot mr-4">
-                      <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : "bg-warning"} />
-                      {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : "Retiro"}
-                    </Badge>
-                  </td>
-                  <td>
-                    {asociado.fechaIngreso}
-                  </td>
-                  <td>
-                    {asociado.onomastico}
-                  </td>
-                  <td>
-                    {asociado.correos}
-                  </td>
-                  <td>
-                    {asociado.telefonos}
-                  </td>
-                  <td className="text-right">
-                    <UncontrolledDropdown>
-                      <DropdownToggle
-                        className="btn-icon-only text-light"
-                        role="button"
-                        size="sm"
-                        color=""
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-ellipsis-v" />
-                      </DropdownToggle>
-                      <DropdownMenu className="dropdown-menu-arrow" right>
-                        <DropdownItem
-                        className="d-flex"
-                          onClick={()=>{
-                            history.push({
-                              pathname: '/admin/ver-asociado',
-                              state: { asociadoSelected: asociado.idAsociado }});
-                          }}
-                        >
-                           <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
+              {
+                !loading && associatedList.data ?
+                  <>
+                    <Table className="align-items-center table-flush" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Asociado</th>
+                          <th scope="col">Tipo</th>
+                          <th scope="col">Estado</th>
+                          <th scope="col">Ingreso</th>
+                          <th scope="col">Onomástico</th>
+                          <th scope="col">Correos</th>
+                          <th scope="col">Teléfonos</th>
+                          <th scope="col" />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          associatedList?.data?.map((asociado, key) =>
+                            <tr key={key}>
+                              <td scope="row">
+                                {asociado.asociado}
+                              </td>
+                              <td>
+                                {asociado.tipoAsociado == 1 ? "Empresa" : "Persona"}
+                              </td>
+                              <td>
+                                <Badge color="" className="badge-dot mr-4">
+                                  <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : "bg-warning"} />
+                                  {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : "Retiro"}
+                                </Badge>
+                              </td>
+                              <td>
+                                {asociado.fechaIngreso}
+                              </td>
+                              <td>
+                                {asociado.onomastico}
+                              </td>
+                              <td>
+                                {asociado.correos}
+                              </td>
+                              <td>
+                                {asociado.telefonos}
+                              </td>
+                              <td className="text-right">
+                                <UncontrolledDropdown>
+                                  <DropdownToggle
+                                    className="btn-icon-only text-light"
+                                    role="button"
+                                    size="sm"
+                                    color=""
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <i className="fas fa-ellipsis-v" />
+                                  </DropdownToggle>
+                                  <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
+                                    <DropdownItem
+                                      className="d-flex"
+                                      onClick={() => {
+                                        history.push({
+                                          pathname: '/admin/ver-asociado',
+                                          state: { asociadoSelected: asociado.idAsociado }
+                                        });
+                                      }}
+                                    >
+                                      <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
                         </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
-                  </td>
-                </tr>
-                    )
-                  }
-                  
-                </tbody>
-              </Table>
-              
-              <CardFooter className="py-4">
-                <nav aria-label="..." className="pagination justify-content-end mb-0"> 
-                  <PaginationComponent
-                    listClassName="justify-content-end mb-0"
-                    firstPageText="<<"
-                    lastPageText=">>"
-                    previousPageText="<"
-                    nextPageText=">"
-                    totalItems={associatedList?.meta?.total ? associatedList?.meta?.total : 0}
-                    pageSize={10}
-                    onSelect={(selectedPage)=>setPage(selectedPage)}
-                  />
-                </nav>
-              </CardFooter>
+                                  </DropdownMenu>
+                                </UncontrolledDropdown>
+                              </td>
+                            </tr>
+                          )
+                        }
+
+                      </tbody>
+                    </Table>
+                    <CardFooter className="py-4">
+                      <nav aria-label="..." className="pagination justify-content-end mb-0">
+                        <PaginationComponent
+                          listClassName="justify-content-end mb-0"
+                          firstPageText="<<"
+                          lastPageText=">>"
+                          previousPageText="<"
+                          nextPageText=">"
+                          totalItems={associatedList?.meta?.total ? associatedList?.meta?.total : 0}
+                          pageSize={10}
+                          onSelect={(selectedPage) => setPage(selectedPage)}
+                        />
+                      </nav>
+                    </CardFooter>
+                  </>
+                  :
+                  <Loading />
+              }
             </Card>
           </div>
         </Row>

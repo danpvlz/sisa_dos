@@ -41,6 +41,10 @@ const NuevaEmision = () => {
   const [bancopago, setbancopago] = useState(null)
   const [meses, setmeses] = useState([]);
   const [descuento, setdescuento] = useState(0);
+  const [numPayFilled, setnumPayFilled] = useState({
+    operation: false,
+    sofdoc: false,
+  });
 
   const [docModificar, setdocModificar] = useState({
     tipo: "",
@@ -67,19 +71,22 @@ const NuevaEmision = () => {
           pagado == 2 && bancopago == null ?
             dispatch(fetchError("Debe elegir un banco."))
             :
-            meses.length == 0 ?
-              dispatch(fetchError("Debe elegir al menos un mes."))
+            pagado == 2 && (!numPayFilled.operation && !numPayFilled.sofdoc) ?
+              dispatch(fetchError("Debe especificar un número de operación o de sofydoc."))
               :
-              tipoDocumentoEmision == 3 && docModificar.tipo == "" ?
-                dispatch(fetchError("Debe especificar el tipo de documento a modificar."))
+              meses.length == 0 ?
+                dispatch(fetchError("Debe elegir al menos un mes."))
                 :
-                tipoDocumentoEmision == 3 && docModificar.serie == "" ?
-                  dispatch(fetchError("Debe especificar la serie del documento a modificar."))
+                tipoDocumentoEmision == 3 && docModificar.tipo == "" ?
+                  dispatch(fetchError("Debe especificar el tipo de documento a modificar."))
                   :
-                  tipoDocumentoEmision == 3 && docModificar.numero == "" ?
-                    dispatch(fetchError("Debe especificar el número del documento a modificar."))
+                  tipoDocumentoEmision == 3 && docModificar.serie == "" ?
+                    dispatch(fetchError("Debe especificar la serie del documento a modificar."))
                     :
-                    toggleModal();
+                    tipoDocumentoEmision == 3 && docModificar.numero == "" ?
+                      dispatch(fetchError("Debe especificar el número del documento a modificar."))
+                      :
+                      toggleModal();
     setformdata(data);
 
     dispatch(hideMessage());
@@ -132,8 +139,8 @@ const NuevaEmision = () => {
                 <Form onSubmit={handleSubmit(onSubmit)}>
                   <Row>
                     <Col lg="12">
-                      <h6 className="heading-small text-muted mb-4">
-                        Cuenta
+                      <h6 className="heading-small text-muted mb-4 d-flex">
+                        <i className="fa fa-file mr-2 my-auto" /> Cuenta
                       </h6>
                       <div className="pl-lg-4">
                         <Row>
@@ -242,7 +249,7 @@ const NuevaEmision = () => {
                                       name="typeDocUpdate"
                                       id="typeDocUpdate"
                                       onChange={(inputValue, actionMeta) => {
-                                        setdocModificar({ ...docModificar, tipo: inputValue.value, serie: inputValue.value== 1 ? "F109" : inputValue.value == 2 ? "B109" : ""});
+                                        setdocModificar({ ...docModificar, tipo: inputValue.value, serie: inputValue.value == 1 ? "F109" : inputValue.value == 2 ? "B109" : "" });
                                       }}
                                       options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
                                   </FormGroup>
@@ -290,72 +297,26 @@ const NuevaEmision = () => {
                                 </Col>
                               </>
                               :
-                              <>
-                                <Col lg="2">
-                                  <FormGroup>
-                                    <label
-                                      className="form-control-label"
-                                      htmlFor="input-address"
-                                    >
-                                      ¿Pagado?
-                          </label>
-                                    <Select
-                                      placeholder="Seleccione..."
-                                      className="select-style"
-                                      name="paidOut"
-                                      onChange={(inputValue, actionMeta) => {
-                                        setpagado(inputValue.value);
-                                      }}
-                                      options={[{ value: 2, label: "Sí" }, { value: 1, label: "No" }]}
-                                      innerRef={register({ required: true })}
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                {
-                                  pagado == 2 ?
-                                    <>
-                                      <Col lg="3">
-                                        <FormGroup>
-                                          <label
-                                            className="form-control-label "
-                                            htmlFor="input-address"
-                                          >
-                                            Fecha de pago
-                            </label>
-                                          <Input
-                                            className="form-control-alternative"
-                                            name="fechaPago"
-                                            type="date"
-                                            readOnly
-                                            value={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
-                                            innerRef={register({ required: true })}
-                                          />
-                                        </FormGroup>
-                                      </Col>
-                                      <Col>
-                                        <FormGroup className="mb-0 pb-4">
-                                          <label
-                                            className="form-control-label"
-                                            htmlFor="filterMonth"
-                                          >
-                                            Banco
-                            </label>
-                                          <Select
-                                            placeholder="Seleccione..."
-                                            className="select-style"
-                                            name="banco"
-                                            onChange={(inputValue, actionMeta) => {
-                                              setbancopago(inputValue != null ? inputValue.value : null);
-                                            }}
-                                            isClearable
-                                            options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
-                                        </FormGroup >
-                                      </Col>
-                                    </>
-                                    :
-                                    ""
-                                }
-                              </>
+                              <Col lg="2">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    ¿Pagado?
+                                    </label>
+                                  <Select
+                                    placeholder="Seleccione..."
+                                    className="select-style"
+                                    name="paidOut"
+                                    onChange={(inputValue, actionMeta) => {
+                                      setpagado(inputValue.value);
+                                    }}
+                                    options={[{ value: 2, label: "Sí" }, { value: 1, label: "No" }]}
+                                    innerRef={register({ required: true })}
+                                  />
+                                </FormGroup>
+                              </Col>
                           }
                           <Col lg="12">
                             <FormGroup>
@@ -393,6 +354,96 @@ const NuevaEmision = () => {
                       </div>
                       <hr className="my-4 " />
                     </Col>
+                    {
+                      pagado == 2 &&
+                      <Col lg="12">
+                        <h6 className="heading-small text-muted mb-4">
+                          <i className="ni ni-money-coins mr-2 my-auto" /> Pago
+                      </h6>
+                        <div className="pl-lg-4">
+                          <Row>
+                            <>
+                              <Col lg="3">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label "
+                                    htmlFor="input-address"
+                                  >
+                                    Fecha de pago
+                              </label>
+                                  <Input
+                                    className="form-control-alternative"
+                                    name="fechaPago"
+                                    type="date"
+                                    readOnly
+                                    value={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
+                                    innerRef={register({ required: true })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col lg="2">
+                                <FormGroup className="mb-0 pb-4">
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="filterMonth"
+                                  >
+                                    Banco
+                                          </label>
+                                  <Select
+                                    placeholder="Seleccione..."
+                                    className="select-style"
+                                    name="banco"
+                                    onChange={(inputValue, actionMeta) => {
+                                      setbancopago(inputValue != null ? inputValue.value : null);
+                                    }}
+                                    isClearable
+                                    options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
+                                </FormGroup >
+                              </Col>
+                              <Col lg="2">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Num. Operación
+                                        </label>
+                                  <Input
+                                    className="form-control-alternative"
+                                    name="numoperacion"
+                                    type="text"
+                                    onChange={(e) => {
+                                      setnumPayFilled({ ...numPayFilled, operation: e.target.value != '' ? true : false });
+                                    }}
+                                    innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col lg="2">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Num. SOFDOC
+                                  </label>
+                                  <Input
+                                    className="form-control-alternative"
+                                    name="numsofdoc"
+                                    type="text"
+                                    onChange={(e) => {
+                                      setnumPayFilled({ ...numPayFilled, sofdoc: e.target.value != '' ? true : false });
+                                    }}
+                                    innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                            </>
+                          </Row>
+                        </div>
+                        <hr className="my-4 " />
+                      </Col>
+                    }
                     <Col>
                       <div className="custom-control custom-control-alternative custom-checkbox text-right">
                         <Input

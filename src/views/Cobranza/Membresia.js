@@ -31,11 +31,13 @@ import SearchCobrador from "components/Selects/SearchCobrador.js";
 import PaymentsModal from "components/Modals/Payments.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listMemberships, getBillDetail, exportMembership } from "../../redux/actions/Cuenta";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const EstadoCuenta = () => {
   const dispatch = useDispatch();
   const cuentas = require('../../data/cuenta.json');
   const { membershipList } = useSelector(({ cuenta }) => cuenta);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/registro-emision'), [history]);
   const [showBillDetail, setshowBillDetail] = useState(false);
@@ -51,51 +53,51 @@ const EstadoCuenta = () => {
   };
 
   useEffect(() => {
-    dispatch(listMemberships(page,search));
+    dispatch(listMemberships(page, search));
   }, [page]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(status == null){
+    let tsearch = search;
+    if (status == null) {
       delete tsearch.status;
-    }else{
-      tsearch.status=status;
+    } else {
+      tsearch.status = status;
     }
     setsearch(tsearch);
-    dispatch(listMemberships(page,search));
+    dispatch(listMemberships(page, search));
   }, [status]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(idAsociado == null){
+    let tsearch = search;
+    if (idAsociado == null) {
       delete tsearch.idAsociado;
-    }else{
-      tsearch.idAsociado=idAsociado;
+    } else {
+      tsearch.idAsociado = idAsociado;
     }
     setsearch(tsearch);
-    dispatch(listMemberships(page,search));
+    dispatch(listMemberships(page, search));
   }, [idAsociado]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(cobrador == null){
+    let tsearch = search;
+    if (cobrador == null) {
       delete tsearch.debCollector;
-    }else{
-      tsearch.debCollector=cobrador;
+    } else {
+      tsearch.debCollector = cobrador;
     }
     setsearch(tsearch);
-    dispatch(listMemberships(page,search));
+    dispatch(listMemberships(page, search));
   }, [cobrador]);
 
   return (
     <>
-    <div className="header pb-8 pt-9 d-flex align-items-center">
-      <span className="mask bg-gradient-info opacity-8" />
-    </div>
+      <div className="header pb-8 pt-9 d-flex align-items-center">
+        <span className="mask bg-gradient-info opacity-8" />
+      </div>
       {/* Page content */}
       <Container className="mt--9" fluid>
-        <PaymentsModal 
-        showDetail={showBillDetail} toggleModal={toggleModalDetail}
+        <PaymentsModal
+          showDetail={showBillDetail} toggleModal={toggleModalDetail}
         />
         {/* Table */}
         <Row>
@@ -135,7 +137,7 @@ const EstadoCuenta = () => {
                           >
                             Asociado
                       </label>
-                          <SearchAsociado setVal={setidAsociado}/>
+                          <SearchAsociado setVal={setidAsociado} />
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -150,8 +152,8 @@ const EstadoCuenta = () => {
                         </FormGroup>
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto">
-                        <Button color="success"  type="button" onClick={()=>dispatch(exportMembership(search))}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
+                        <Button color="success" type="button" onClick={() => dispatch(exportMembership(search))}>
+                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -160,113 +162,119 @@ const EstadoCuenta = () => {
 
                 </Row>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Asociado</th>
-                    <th scope="col">Mes</th>
-                    <th scope="col">Año</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Cobrado</th>
-                    <th scope="col">Pagado</th>
-                    <th scope="col">Completado</th>
-                    <th scope="col">Cobrador</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    membershipList?.data?.map((cuenta,key)=>
-                  <tr key={key}>
-                  <td scope="row">
-                    {cuenta.asociado}
-                  </td>
-                  <td>
-                    {
-                    cuenta.mes== 0 ?
-                    cuenta.masdeuno
-                    :
-                    ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][cuenta.mes-1]
-                    
-                    }
-                  </td>
-                  <td>
-                    {cuenta.year}
-                  </td>
-                  <td>
-                    <Badge color="" className="badge-dot mr-4">
-                      <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger" } />
-                      {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : "Anulada"}
-                    </Badge>
-                  </td>
-                  <td className="text-center">
-                  <small>S/.</small> 
-                    {cuenta.cobrado}
-                  </td>
-                  <td className="text-center">
-                  <small>S/.</small> {cuenta.pagado}
-                  </td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">{Math.round(cuenta.pagado/cuenta.cobrado*100)}%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value={Math.round(cuenta.pagado/cuenta.cobrado*100)}
-                            barClassName={Math.round(cuenta.pagado/cuenta.cobrado*100)>50 ? "bg-success" : "bg-warning"}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  <td>
-                    {cuenta.descripcion}
-                  </td>
-                  <td className="text-right">
-                    <UncontrolledDropdown>
-                      <DropdownToggle
-                        className="btn-icon-only text-light"
-                        href="#pablo"
-                        role="button"
-                        size="sm"
-                        color=""
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-ellipsis-v" />
-                      </DropdownToggle>
-                      <DropdownMenu className="dropdown-menu-arrow" right>
-                        <DropdownItem
-                        className="d-flex"
-                          onClick={()=>
-                          {
-                            dispatch(getBillDetail({"idCuenta":cuenta.idCuenta}));
-                            toggleModalDetail();
-                          }}
-                        >
-                           <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
+              {
+                !loading && membershipList.data ?
+                  <>
+                    <Table className="align-items-center table-flush table-sm" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Asociado</th>
+                          <th scope="col">Mes</th>
+                          <th scope="col">Año</th>
+                          <th scope="col">Estado</th>
+                          <th scope="col">Cobrado</th>
+                          <th scope="col">Pagado</th>
+                          <th scope="col">Completado</th>
+                          <th scope="col">Cobrador</th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          membershipList?.data?.map((cuenta, key) =>
+                            <tr key={key}>
+                              <td scope="row">
+                                {cuenta.asociado}
+                              </td>
+                              <td>
+                                {
+                                  cuenta.mes == 0 ?
+                                    cuenta.masdeuno
+                                    :
+                                    ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'][cuenta.mes - 1]
+
+                                }
+                              </td>
+                              <td>
+                                {cuenta.year}
+                              </td>
+                              <td>
+                                <Badge color="" className="badge-dot mr-4">
+                                  <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger"} />
+                                  {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : "Anulada"}
+                                </Badge>
+                              </td>
+                              <td className="text-center">
+                                <small>S/.</small>
+                                {cuenta.cobrado}
+                              </td>
+                              <td className="text-center">
+                                <small>S/.</small> {cuenta.pagado}
+                              </td>
+                              <td>
+                                <div className="d-flex align-items-center">
+                                  <span className="mr-2">{Math.round(cuenta.pagado / cuenta.cobrado * 100)}%</span>
+                                  <div>
+                                    <Progress
+                                      max="100"
+                                      value={Math.round(cuenta.pagado / cuenta.cobrado * 100)}
+                                      barClassName={Math.round(cuenta.pagado / cuenta.cobrado * 100) > 50 ? "bg-success" : "bg-warning"}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                {cuenta.descripcion}
+                              </td>
+                              <td className="text-right">
+                                <UncontrolledDropdown>
+                                  <DropdownToggle
+                                    className="btn-icon-only text-light"
+                                    href="#pablo"
+                                    role="button"
+                                    size="sm"
+                                    color=""
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <i className="fas fa-ellipsis-v" />
+                                  </DropdownToggle>
+                                  <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
+                                    <DropdownItem
+                                      className="d-flex"
+                                      onClick={() => {
+                                        dispatch(getBillDetail({ "idCuenta": cuenta.idCuenta }));
+                                        toggleModalDetail();
+                                      }}
+                                    >
+                                      <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
                         </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
-                  </td>
-                </tr>
-                    )
-                  }
-                  
-                </tbody>
-              </Table>
-              <CardFooter className="py-4">
-                <nav aria-label="..." className="pagination justify-content-end mb-0">
-                  <PaginationComponent
-                    listClassName="justify-content-end mb-0"
-                    firstPageText="<<"
-                    lastPageText=">>"
-                    previousPageText="<"
-                    nextPageText=">"
-                    totalItems={membershipList?.meta?.total ? membershipList?.meta?.total : 0}
-                    pageSize={10}
-                    onSelect={(selectedPage) => setPage(selectedPage)}
-                  />
-                </nav>
-              </CardFooter>
+                                  </DropdownMenu>
+                                </UncontrolledDropdown>
+                              </td>
+                            </tr>
+                          )
+                        }
+
+                      </tbody>
+                    </Table>
+                    <CardFooter className="py-4">
+                      <nav aria-label="..." className="pagination justify-content-end mb-0">
+                        <PaginationComponent
+                          listClassName="justify-content-end mb-0"
+                          firstPageText="<<"
+                          lastPageText=">>"
+                          previousPageText="<"
+                          nextPageText=">"
+                          totalItems={membershipList?.meta?.total ? membershipList?.meta?.total : 0}
+                          pageSize={10}
+                          onSelect={(selectedPage) => setPage(selectedPage)}
+                        />
+                      </nav>
+                    </CardFooter>
+                  </>
+                  :
+                  <Loading />
+              }
             </Card>
           </div>
         </Row>

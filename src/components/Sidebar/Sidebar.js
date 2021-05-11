@@ -36,6 +36,7 @@ import {
 
 import { userSignOut } from "../../redux/actions/Auth";
 import { useDispatch, useSelector } from "react-redux";
+import NotificationsIndicator from "../NotificationsIndicator";
 
 const Sidebar = (props) => {
   const [isOpen, setIsOpen] = useState({});
@@ -146,21 +147,7 @@ const Sidebar = (props) => {
         ) : null}
         {/* User */}
         <Nav className="align-items-center d-md-none">
-          <UncontrolledDropdown nav>
-            <DropdownToggle nav className="nav-link-icon">
-              <i className="ni ni-bell-55" />
-            </DropdownToggle>
-            <DropdownMenu
-              aria-labelledby="navbar-default_dropdown_1"
-              className="dropdown-menu-arrow"
-              right
-            >
-              <DropdownItem>Action</DropdownItem>
-              <DropdownItem>Another action</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem>Something else here</DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
+          <NotificationsIndicator />
           <UncontrolledDropdown nav>
             <DropdownToggle nav>
               <Media className="align-items-center">

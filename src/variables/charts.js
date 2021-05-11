@@ -1,25 +1,5 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 const Chart = require("chart.js");
-//
-// Chart extension for making the bars rounded
-// Code from: https://codepen.io/jedtrow/full/ygRYgo
-//
+
 
 Chart.elements.Rectangle.prototype.draw = function () {
   var ctx = this._chart.ctx;
@@ -319,7 +299,7 @@ let chartExample1 = {
           ticks: {
             callback: function (value) {
               if (!(value % 10)) {
-                return "$" + value + "k";
+                return 'S/.' + value/1000 + "K";
               }
             },
           },
@@ -336,34 +316,13 @@ let chartExample1 = {
           if (data.datasets.length > 1) {
             content += label;
           }
-
-          content += "$" + yLabel + "k";
+          content += 'S/. ' + yLabel.toLocaleString('en-US', {
+            minimumFractionDigits: 0
+          });
           return content;
         },
       },
     },
-  },
-  data1: (canvas) => {
-    return {
-      labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      datasets: [
-        {
-          label: "Performance",
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60],
-        },
-      ],
-    };
-  },
-  data2: (canvas) => {
-    return {
-      labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      datasets: [
-        {
-          label: "Performance",
-          data: [0, 20, 5, 25, 10, 30, 15, 40, 40],
-        },
-      ],
-    };
   },
 };
 
@@ -409,6 +368,88 @@ let chartExample2 = {
       },
     ],
   },
+};// Example 1 of Chart inside src/views/Index.js (Sales value - Card)
+
+let chartExample3 = {
+  options: {
+    scales: {
+      xAxes: [
+        {
+          gridLines: {
+            color: colors.gray[900],
+            zeroLineColor: colors.gray[900],
+          },
+          ticks: {
+            callback: function (value) {
+              if (!(value % 10)) {
+                return 'S/.' + value/1000 + "K";
+              }
+            },
+          },
+        },
+      ],
+    },
+    tooltips: {
+      callbacks: {
+        label: function (item, data) {
+          var label = data.datasets[item.datasetIndex].label || "";
+          var xLabel = item.xLabel;
+          var content = "";
+
+          if (data.datasets.length > 1) {
+            content += label;
+          }
+          content += 'S/. ' + xLabel.toLocaleString('en-US', {
+            minimumFractionDigits: 0
+          });
+          return content;
+        },
+      },
+    },
+  },
+};
+
+let chartExample4 = {
+  options: {
+    scales: {
+      yAxes: [{
+          stacked: true,
+      }],
+      xAxes: [
+        {
+          stacked: true,
+          gridLines: {
+            color: colors.gray[900],
+            zeroLineColor: colors.gray[900],
+          },
+          ticks: {
+            callback: function (value) {
+              if (!(value % 10)) {
+                return 'S/.' + value/1000 + "K";
+              }
+            },
+          },
+        },
+      ],
+    },
+    tooltips: {
+      callbacks: {
+        label: function (item, data) {
+          var label = data.datasets[item.datasetIndex].label || "";
+          var xLabel = item.xLabel;
+          var content = "";
+
+          if (data.datasets.length > 1) {
+            content += label + ': ';
+          }
+          content += 'S/. ' + xLabel.toLocaleString('en-US', {
+            minimumFractionDigits: 0
+          });
+          return content;
+        },
+      },
+    },
+  },
 };
 
 module.exports = {
@@ -416,4 +457,6 @@ module.exports = {
   parseOptions, // used inside src/views/Index.js
   chartExample1, // used inside src/views/Index.js
   chartExample2, // used inside src/views/Index.js
+  chartExample3,
+  chartExample4
 };

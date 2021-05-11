@@ -320,7 +320,7 @@ const NuevoAsociado = () => {
                                     type="text"
                                     name="direccionfiscal"
                                     innerRef={register({ required: typeAssociated == 1 })}
-                                    defaultValue={searchCompany ? searchCompany?.direccion : ''}
+                                    defaultValue={searchCompany ? searchCompany?.direccion_completa : ''}
                                   />
                                 </FormGroup>
                               </Col>

@@ -819,7 +819,7 @@ const EditarAsociado = (props) => {
                                         className="form-control-alternative"
                                         type="text"
                                         name="nombres_persona"
-                                        defaultValue={associatedEditObject?.persona?.nombres}
+                                        defaultValue={associatedEditObject?.persona?.nombres ? associatedEditObject?.persona?.nombres : associatedEditObject?.persona?.nombresCompletos}
                                         innerRef={register({ required: false })}
                                         readOnly
                                       />

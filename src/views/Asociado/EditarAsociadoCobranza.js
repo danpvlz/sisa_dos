@@ -76,7 +76,7 @@ const EditarAsociado = (props) => {
       formData.comitegremial = associatedEditObject.comite.idComite;
       formData.tipoasociado = associatedEditObject.asociado.tipoAsociado;
       formData.idPromotor = associatedEditObject.promotor.idPromotor;
-      formData.idSector = associatedEditObject.sector.idSector;
+      formData.idSector = cobrador ? cobrador : associatedEditObject.sector.idSector;
       formData.promotornombre = associatedEditObject.promotor.nombresCompletos;
       formData.tipodocumento_representante = associatedEditObject.representante?.tipoDoc ? associatedEditObject.representante.tipoDoc : null;
       formData.tipodocumento_adicional = associatedEditObject.adicional?.tipoDoc ? associatedEditObject.adicional.tipoDoc : null;
@@ -370,7 +370,7 @@ const EditarAsociado = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="email"
+                                      type="text"
                                       name="correo_asociado"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.empresa?.correos}
@@ -557,7 +557,7 @@ const EditarAsociado = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="email"
+                                      type="text"
                                       name="correo_representante"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.representante?.email}
@@ -746,7 +746,7 @@ const EditarAsociado = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="email"
+                                      type="text"
                                       name="correo_adicional"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.adicional?.email}
@@ -819,7 +819,7 @@ const EditarAsociado = (props) => {
                                         className="form-control-alternative"
                                         type="text"
                                         name="nombres_persona"
-                                        defaultValue={associatedEditObject?.persona?.nombres}
+                                        defaultValue={associatedEditObject?.persona?.nombres ? associatedEditObject?.persona?.nombres : associatedEditObject?.persona?.nombresCompletos}
                                         innerRef={register({ required: false })}
                                         readOnly
                                       />
@@ -983,7 +983,7 @@ const EditarAsociado = (props) => {
                                   <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      type="email"
+                                      type="text"
                                       name="correo_persona"
                                       innerRef={register({ required: false })}
                                       defaultValue={associatedEditObject?.persona?.correos}

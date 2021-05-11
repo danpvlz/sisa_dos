@@ -1,4 +1,4 @@
-import React, { useCallback,useState,useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
 import PaginationComponent from "react-reactstrap-pagination";
 
@@ -30,11 +30,13 @@ import SearchPromotor from "components/Selects/SearchPromotorFilter";
 import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
 import SetCodigoModal from "components/Modals/SetCodigoModal.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listAssociated, exportAssociateds, status, assignCode, removeInProcess } from "../../redux/actions/Asociado";
+import { listAssociated, exportAssociateds, status, assignCode, removeInProcess, preactive } from "../../redux/actions/Asociado";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Asociado = () => {
   const dispatch = useDispatch();
-  const { associatedList, meta, associatedStatusActions } = useSelector(({ asociado }) => asociado);
+  const { associatedList, associatedStatusActions } = useSelector(({ asociado }) => asociado);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [idAsociado, setIdAsociado] = useState(null);
   const [state, setState] = useState(null);
@@ -49,7 +51,7 @@ const Asociado = () => {
   const [codigo, setcodigo] = useState(null);
   const [sendcodigo, setsendcodigo] = useState(false);
   const [confirm, setComfirm] = useState(false);
-  
+
   const [question, setquestion] = useState('');
   const [action, setAction] = useState(1);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -75,28 +77,27 @@ const Asociado = () => {
 
   useEffect(() => {
     if (associatedStatusActions == 200) {
-      dispatch(listAssociated(page,search));
+      dispatch(listAssociated(page, search));
     }
   }, [associatedStatusActions]);
 
   useEffect(() => {
-    let tsearch=search;
+    let tsearch = search;
 
-    if(idAsociado == null){
+    if (idAsociado == null) {
       delete tsearch.idAsociado;
-    }else{
-      tsearch.idAsociado=idAsociado;
+    } else {
+      tsearch.idAsociado = idAsociado;
     }
-    if(debCollector == null){
+    if (debCollector == null) {
       delete tsearch.debCollector;
-    }else{
-      tsearch.debCollector=debCollector;
+    } else {
+      tsearch.debCollector = debCollector;
     }
-    
-    if(comiteGremial == null){
+    if (comiteGremial == null) {
       delete tsearch.comite;
-    }else{
-      tsearch.comite=comiteGremial;
+    } else {
+      tsearch.comite = comiteGremial;
     }
     if (since == null) {
       delete tsearch.since;
@@ -108,24 +109,24 @@ const Asociado = () => {
     } else {
       tsearch.promotor = promotorSearched;
     }
-    if(state == null){
+    if (state == null) {
       delete tsearch.state;
-    }else{
-      tsearch.state=state;
+    } else {
+      tsearch.state = state;
     }
 
     if (loaded) {
-    setsearch(tsearch);
-    dispatch(listAssociated(page,tsearch))
+      setsearch(tsearch);
+      dispatch(listAssociated(page, tsearch))
     }
-  }, [idAsociado,debCollector,comiteGremial,since,promotorSearched,state,page]);
+  }, [idAsociado, debCollector, comiteGremial, since, promotorSearched, state, page]);
 
   useEffect(() => {
     setsearch(search);
-    dispatch(listAssociated(page,search));
+    dispatch(listAssociated(page, search));
     setloaded(true);
     return () => {
-    setloaded(false);
+      setloaded(false);
     }
   }, []);
 
@@ -157,8 +158,13 @@ const Asociado = () => {
       if (action == 1) {
         dispatch(status(selectedAsociado)); //CAMBIAR DE ESTADO
       } else {
-        dispatch(removeInProcess(selectedAsociado)); //ELIMINAR
+        if (action == 2) {
+          dispatch(removeInProcess(selectedAsociado)); //ELIMINAR
+        } else {
+          dispatch(preactive(selectedAsociado)); //ELIMINAR
+        }
       }
+
       setComfirm(false);
       setSelectedAsociado(null);
     }
@@ -169,20 +175,20 @@ const Asociado = () => {
       <Header />
       {/* Page content */}
       <Container className="mt--7" fluid>
-      <SetCodigoModal 
-        showSetCodigo={showSetCodigo} 
-        toggleModal={toggleModalCodigo}  
-        codigo={codigo}
-        setcodigo={setcodigo}
-        setSendCodigo={setsendcodigo}
-      />
+        <SetCodigoModal
+          showSetCodigo={showSetCodigo}
+          toggleModal={toggleModalCodigo}
+          codigo={codigo}
+          setcodigo={setcodigo}
+          setSendCodigo={setsendcodigo}
+        />
         {/* Table */}
         <Row>
           <div className="col">
             <Card className="shadow">
-            <ConfirmDialog
-              question={question}
-              showConfirm={showConfirm} toggleModal={toggleModalConfirm} setConfirm={setComfirm} />
+              <ConfirmDialog
+                question={question}
+                showConfirm={showConfirm} toggleModal={toggleModalConfirm} setConfirm={setComfirm} />
               <CardHeader className="border-0 bg-secondary">
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">
@@ -227,7 +233,7 @@ const Asociado = () => {
                             }}
                           />
                         </FormGroup >
-                      </Col>                      
+                      </Col>
                       <Col lg="5"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
@@ -236,7 +242,7 @@ const Asociado = () => {
                           >
                             Asociado
                       </label>
-                          <SearchAsociado setVal={setIdAsociado}/>
+                          <SearchAsociado setVal={setIdAsociado} />
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -247,20 +253,20 @@ const Asociado = () => {
                           >
                             Cobrador
                       </label>
-                          <SearchCobrador setVal={setdebCollector}/>
+                          <SearchCobrador setVal={setdebCollector} />
                         </FormGroup>
                       </Col>
-                          <Col lg="4">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Promotor
+                      <Col lg="4">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-address"
+                          >
+                            Promotor
                               </label>
-                              <SearchPromotor setVal={setPromotorSearched} />
-                            </FormGroup>
-                          </Col>
+                          <SearchPromotor setVal={setPromotorSearched} />
+                        </FormGroup>
+                      </Col>
                       <Col lg="3"  >
                         <FormGroup className="mb-0 pb-4">
                           <label
@@ -277,7 +283,7 @@ const Asociado = () => {
                               setState(inputValue != null ? inputValue.value : null);
                             }}
                             isClearable
-                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" },{ value: 3, label: "Retiro" }]} />
+                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" }, { value: 3, label: "Preactivo" }, { value: 4, label: "Retiro" }]} />
                         </FormGroup >
                       </Col>
                       <Col lg="4"  >
@@ -288,187 +294,217 @@ const Asociado = () => {
                           >
                             Comité gremial
                       </label>
-                          <SearchComiteGremial setVal={setcomiteGremial}/>
+                          <SearchComiteGremial setVal={setcomiteGremial} />
                         </FormGroup>
                       </Col>
                       <Col lg="1" className="text-right m-auto">
-                        <Button color="success"  type="button" onClick={()=>dispatch(exportAssociateds(search))}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
+                        <Button color="success" type="button" onClick={() => dispatch(exportAssociateds(search))}>
+                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
-
                   </Col>
-
                 </Row>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Asociado</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Tipo ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Tipo:!showHeaders.Tipo})}>Tipo</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Documento ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Documento:!showHeaders.Documento})}>Documento</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Estado ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Estado:!showHeaders.Estado})}>Estado</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Importe ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Importe:!showHeaders.Importe})}>Importe</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Cobrador ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Cobrador:!showHeaders.Cobrador})}>Cobrador</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Comite ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Comite:!showHeaders.Comite})}>Comité gremial</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Direccion ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Direccion:!showHeaders.Direccion})}>Dirección</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Actividad ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Actividad:!showHeaders.Actividad})}>Actividad</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Promotor ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Promotor:!showHeaders.Promotor})}>Promotor</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Codigo ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Codigo:!showHeaders.Codigo})}>Código</th>
-                    <th scope="col" style={{cursor:'pointer'}} className={!showHeaders.Ingreso ? 'd-none' : ''} onClick={()=>setshowHeaders({...showHeaders,Ingreso:!showHeaders.Ingreso})}>Ingreso</th>
-                    <th scope="col" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    associatedList?.data?.map((asociado,key)=>
-                  <tr key={key}>
-                  <td scope="row">
-                    {asociado.asociado}
-                  </td>
-                  <td className={!showHeaders.Tipo ? 'd-none' : ''}>
-                    {asociado.tipoAsociado == 1 ? "Empresa" : "Persona"}
-                  </td>
-                  <td className={!showHeaders.Documento ? 'd-none' : ''}>
-                    {asociado.documento}
-                  </td>
-                  <td className={!showHeaders.Estado ? 'd-none' : ''}>
-                    <Badge color="" className="badge-dot mr-4">
-                      <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : "bg-warning"} />
-                      {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : "Retiro"}
-                    </Badge>
-                  </td>
-                  <td className={!showHeaders.Importe ? 'd-none' : ''}>
-                    <small>s/. </small>{asociado.importeMensual}
-                  </td>
-                  <td className={!showHeaders.Cobrador ? 'd-none' : ''}>
-                    {asociado.cobrador}
-                  </td>
-                  <td className={!showHeaders.Comite ? 'd-none' : ''}>
-                    {asociado.comitegremial}
-                  </td>
-                  <td className={!showHeaders.Direccion ? 'd-none' : ''}>
-                    {asociado.direccionSocial}
-                  </td>
-                  <td className={!showHeaders.Actividad ? 'd-none' : ''}>
-                    {asociado.actividad}
-                  </td>
-                  <td className={!showHeaders.Promotor ? 'd-none' : ''}>
-                    {asociado.promotor}
-                  </td>
-                  <td className={!showHeaders.Codigo ? 'd-none' : ''}>
-                    {asociado.codigo}
-                  </td>
-                  <td className={!showHeaders.Ingreso ? 'd-none' : ''}>
-                    {asociado.fechaIngreso}
-                  </td>
-                  <td className="text-right">
-                    <UncontrolledDropdown>
-                      <DropdownToggle
-                        className="btn-icon-only text-light"
-                        href="#pablo"
-                        role="button"
-                        size="sm"
-                        color=""
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-ellipsis-v" />
-                      </DropdownToggle>
-                      <DropdownMenu className="dropdown-menu-arrow" right>
-                        <DropdownItem
-                        className="d-flex"
-                          onClick={()=>{
-                            history.push({
-                              pathname: '/admin/editar-asociado-sa',
-                              state: { asociadoSelected: asociado.idAsociado }});
-                          }}
-                        >
-                           <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
+              {
+                !loading && associatedList.data ?
+                  <>
+                    <Table className="align-items-center table-flush table-sm" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Asociado</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Tipo ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Tipo: !showHeaders.Tipo })}>Tipo</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Documento ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Documento: !showHeaders.Documento })}>Documento</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Estado ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Estado: !showHeaders.Estado })}>Estado</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Importe ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Importe: !showHeaders.Importe })}>Importe</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Cobrador ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Cobrador: !showHeaders.Cobrador })}>Cobrador</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Comite ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Comite: !showHeaders.Comite })}>Comité gremial</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Direccion ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Direccion: !showHeaders.Direccion })}>Dirección</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Actividad ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Actividad: !showHeaders.Actividad })}>Actividad</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Promotor ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Promotor: !showHeaders.Promotor })}>Promotor</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Codigo ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Codigo: !showHeaders.Codigo })}>Código</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Ingreso ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Ingreso: !showHeaders.Ingreso })}>Ingreso</th>
+                          <th scope="col" />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          associatedList?.data?.map((asociado, key) =>
+                            <tr key={key}>
+                              <td scope="row">
+                                {asociado.asociado}
+                              </td>
+                              <td className={!showHeaders.Tipo ? 'd-none' : ''}>
+                                {asociado.tipoAsociado == 1 ? "Empresa" : "Persona"}
+                              </td>
+                              <td className={!showHeaders.Documento ? 'd-none' : ''}>
+                                {asociado.documento}
+                              </td>
+                              <td className={!showHeaders.Estado ? 'd-none' : ''}>
+                                <Badge color="" className="badge-dot mr-4">
+                                  <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : asociado.estado == 3 ? "bg-yellow" : "bg-warning"} />
+                                  {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : asociado.estado == 3 ? "Preactivo" : "Retiro"}
+                                </Badge>
+                              </td>
+                              <td className={!showHeaders.Importe ? 'd-none' : ''}>
+                                <small>s/. </small>{asociado.importeMensual}
+                              </td>
+                              <td className={!showHeaders.Cobrador ? 'd-none' : ''}>
+                                {asociado.cobrador}
+                              </td>
+                              <td className={!showHeaders.Comite ? 'd-none' : ''}>
+                                {asociado.comitegremial}
+                              </td>
+                              <td className={!showHeaders.Direccion ? 'd-none' : ''}>
+                                {asociado.direccionSocial}
+                              </td>
+                              <td className={!showHeaders.Actividad ? 'd-none' : ''}>
+                                {asociado.actividad}
+                              </td>
+                              <td className={!showHeaders.Promotor ? 'd-none' : ''}>
+                                {asociado.promotor}
+                              </td>
+                              <td className={!showHeaders.Codigo ? 'd-none' : ''}>
+                                {asociado.codigo}
+                              </td>
+                              <td className={!showHeaders.Ingreso ? 'd-none' : ''}>
+                                {asociado.fechaIngreso}
+                              </td>
+                              <td className="text-right">
+                                <UncontrolledDropdown>
+                                  <DropdownToggle
+                                    className="btn-icon-only text-light"
+                                    href="#pablo"
+                                    role="button"
+                                    size="sm"
+                                    color=""
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <i className="fas fa-ellipsis-v" />
+                                  </DropdownToggle>
+                                  <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
+                                    <DropdownItem
+                                      className="d-flex"
+                                      onClick={() => {
+                                        history.push({
+                                          pathname: '/admin/editar-asociado-sa',
+                                          state: { asociadoSelected: asociado.idAsociado }
+                                        });
+                                      }}
+                                    >
+                                      <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
                         </DropdownItem>
-                        <DropdownItem
-                        className="d-flex"
-                        onClick={(e) => {setSelectedAsociado(asociado.idAsociado); toggleModalCodigo();}}
-                        >
-                           <i className="text-blue fa fa-edit" aria-hidden="true"></i> Modificar código
+                                    <DropdownItem
+                                      className="d-flex"
+                                      onClick={(e) => { setSelectedAsociado(asociado.idAsociado); toggleModalCodigo(); }}
+                                    >
+                                      <i className="text-blue fa fa-edit" aria-hidden="true"></i> Modificar código
                         </DropdownItem>
-                        {asociado.estado == 1 ?
-                          <DropdownItem
-                          className="d-flex"
-                            onClick={()=>{
-                                setquestion(`¿Seguro de retirar al asociado?`);
-                                setAction(1);
-                                setSelectedAsociado(asociado.idAsociado);
-                                toggleModalConfirm();
-                            }}
-                          >
-                            <i className="text-danger fa fa-ban" aria-hidden="true"></i> Retirar
+                                    {asociado.estado == 1 || asociado.estado == 3 ?
+                                      <>
+                                        {asociado.estado == 3 ?
+                                          <DropdownItem
+                                            className="d-flex"
+                                            onClick={() => {
+                                              setquestion(`¿Seguro de activar al asociado?`);
+                                              setAction(3);
+                                              setSelectedAsociado(asociado.idAsociado);
+                                              toggleModalConfirm();
+                                            }}
+                                          >
+                                            <i className="text-green fa fa-check" aria-hidden="true"></i> Activar
                           </DropdownItem>
-                        : asociado.estado == 2 || asociado.estado == 0 ? 
-                          <DropdownItem
-                          className="d-flex"
-                          onClick={()=>{
-                              setquestion(`¿Seguro de activar al asociado?`);
-                              setAction(1);
-                              setSelectedAsociado(asociado.idAsociado);
-                              toggleModalConfirm();
-                          }}
-                          >
-                            <i className="text-green fa fa-check" aria-hidden="true"></i> Activar
+                                          :
+                                          <DropdownItem
+                                            className="d-flex"
+                                            onClick={() => {
+                                              setquestion(`¿Seguro de cambiar a preactivo?`);
+                                              setAction(3);
+                                              setSelectedAsociado(asociado.idAsociado);
+                                              toggleModalConfirm();
+                                            }}
+                                          >
+                                            <i className="text-yellow fa fa-ban" aria-hidden="true"></i> Preactivo
                           </DropdownItem>
-                        : ""}
-                        <DropdownItem
-                        className="d-none"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                           <i className="text-blue fa fa-phone fa-rotate-90" aria-hidden="true"></i> Llamadas
+                                        }
+                                        <DropdownItem
+                                          className="d-flex"
+                                          onClick={() => {
+                                            setquestion(`¿Seguro de retirar al asociado?`);
+                                            setAction(1);
+                                            setSelectedAsociado(asociado.idAsociado);
+                                            toggleModalConfirm();
+                                          }}
+                                        >
+                                          <i className="text-danger fa fa-ban" aria-hidden="true"></i> Retirar
+                          </DropdownItem>
+                                      </>
+                                      : asociado.estado == 2 || asociado.estado == 0 ?
+                                        <DropdownItem
+                                          className="d-flex"
+                                          onClick={() => {
+                                            setquestion(`¿Seguro de activar al asociado?`);
+                                            setAction(1);
+                                            setSelectedAsociado(asociado.idAsociado);
+                                            toggleModalConfirm();
+                                          }}
+                                        >
+                                          <i className="text-green fa fa-check" aria-hidden="true"></i> Activar
+                          </DropdownItem>
+                                        : ""}
+                                    <DropdownItem
+                                      className="d-none"
+                                      href="#pablo"
+                                      onClick={(e) => e.preventDefault()}
+                                    >
+                                      <i className="text-blue fa fa-phone fa-rotate-90" aria-hidden="true"></i> Llamadas
                         </DropdownItem>
-                        <DropdownItem
-                        className="d-none"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="text-blue fa fa-credit-card" aria-hidden="true"></i> Cuentas 
+                                    <DropdownItem
+                                      className="d-none"
+                                      href="#pablo"
+                                      onClick={(e) => e.preventDefault()}
+                                    >
+                                      <i className="text-blue fa fa-credit-card" aria-hidden="true"></i> Cuentas
                         </DropdownItem>
-                        {asociado.estado == 2 &&
-                        <DropdownItem
-                        className="d-flex"
-                        onClick={()=>{
-                            setquestion(`¿Seguro de eliminar al asociado en proceso?`);
-                            setAction(2);
-                            setSelectedAsociado(asociado.idAsociado);
-                            toggleModalConfirm();
-                        }}
-                        >
-                           <i className="text-danger fa fa-trash" aria-hidden="true"></i> Eliminar
+                                    {asociado.estado == 2 &&
+                                      <DropdownItem
+                                        className="d-flex"
+                                        onClick={() => {
+                                          setquestion(`¿Seguro de eliminar al asociado en proceso?`);
+                                          setAction(2);
+                                          setSelectedAsociado(asociado.idAsociado);
+                                          toggleModalConfirm();
+                                        }}
+                                      >
+                                        <i className="text-danger fa fa-trash" aria-hidden="true"></i> Eliminar
                         </DropdownItem>
+                                    }
+                                  </DropdownMenu>
+                                </UncontrolledDropdown>
+                              </td>
+                            </tr>
+                          )
                         }
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
-                  </td>
-                </tr>
-                    )
-                  }
-                  
-                </tbody>
-              </Table>
-              
-              <CardFooter className="py-4">
-                <nav aria-label="..." className="pagination justify-content-end mb-0"> 
-                  <PaginationComponent
-                    listClassName="justify-content-end mb-0"
-                    firstPageText="<<"
-                    lastPageText=">>"
-                    previousPageText="<"
-                    nextPageText=">"
-                    totalItems={associatedList?.meta?.total ? associatedList?.meta?.total : 0}
-                    pageSize={10}
-                    onSelect={(selectedPage)=>setPage(selectedPage)}
-                  />
-                </nav>
-              
-              </CardFooter>
+                      </tbody>
+                    </Table>
+                    <CardFooter className="py-4">
+                      <nav aria-label="..." className="pagination justify-content-end mb-0">
+                        <PaginationComponent
+                          listClassName="justify-content-end mb-0"
+                          firstPageText="<<"
+                          lastPageText=">>"
+                          previousPageText="<"
+                          nextPageText=">"
+                          totalItems={associatedList?.meta?.total ? associatedList?.meta?.total : 0}
+                          pageSize={10}
+                          onSelect={(selectedPage) => setPage(selectedPage)}
+                        />
+                      </nav>
+                    </CardFooter>
+                  </>
+                  :
+                  <Loading />
+              }
             </Card>
           </div>
         </Row>

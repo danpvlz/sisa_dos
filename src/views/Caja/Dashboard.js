@@ -1,10 +1,7 @@
-import React, { useState } from "react";
-// node.js library that concatenates classes (strings)
+import React, { useState, useEffect } from "react";
 import classnames from "classnames";
-// javascipt plugin for creating charts
 import Chart from "chart.js";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Pie } from "react-chartjs-2";
 // reactstrap components
 import {
   Button,
@@ -29,26 +26,31 @@ import {
   chartExample2,
 } from "variables/charts.js";
 
-import Header from "components/Headers/Header.js";
+import { useDispatch, useSelector } from "react-redux";
+import { loadDashboard } from "../../redux/actions/Caja";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Index = (props) => {
-  const [activeNav, setActiveNav] = useState(1);
-  const [chartExample1Data, setChartExample1Data] = useState("data1");
+  const dispatch = useDispatch();
+  const { cajaDashboard } = useSelector(({ caja }) => caja);
+  const { loading } = useSelector(({ commonData }) => commonData);
+  const [currentmonth, setcurrentmonth] = useState(['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][new Date().getMonth()])
 
   if (window.Chart) {
     parseOptions(Chart, chartOptions());
   }
 
-  const toggleNavs = (e, index) => {
-    e.preventDefault();
-    setActiveNav(index);
-    setChartExample1Data("data" + index);
-  };
+  useEffect(() => {
+    dispatch(loadDashboard());
+  }, [])
+
   return (
     <>
-      <Header />
+      <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
+        <span className="mask bg-gradient-info opacity-8" />
+      </div>
       {/* Page content */}
-      <Container className="mt--7" fluid>
+      <Container className="mt--9" fluid>
         <Row>
           <Col className="mb-5 mb-xl-0" xl="8">
             <Card className="bg-gradient-default shadow">
@@ -56,49 +58,33 @@ const Index = (props) => {
                 <Row className="align-items-center">
                   <div className="col">
                     <h6 className="text-uppercase text-light ls-1 mb-1">
-                      Overview
+                      Información general serie 108
                     </h6>
-                    <h2 className="text-white mb-0">Sales value</h2>
-                  </div>
-                  <div className="col">
-                    <Nav className="justify-content-end" pills>
-                      <NavItem>
-                        <NavLink
-                          className={classnames("py-2 px-3", {
-                            active: activeNav === 1,
-                          })}
-                          href="#pablo"
-                          onClick={(e) => toggleNavs(e, 1)}
-                        >
-                          <span className="d-none d-md-block">Month</span>
-                          <span className="d-md-none">M</span>
-                        </NavLink>
-                      </NavItem>
-                      <NavItem>
-                        <NavLink
-                          className={classnames("py-2 px-3", {
-                            active: activeNav === 2,
-                          })}
-                          data-toggle="tab"
-                          href="#pablo"
-                          onClick={(e) => toggleNavs(e, 2)}
-                        >
-                          <span className="d-none d-md-block">Week</span>
-                          <span className="d-md-none">W</span>
-                        </NavLink>
-                      </NavItem>
-                    </Nav>
+                    <h2 className="text-white mb-0">Ingresos {new Date().getFullYear()}</h2>
                   </div>
                 </Row>
               </CardHeader>
               <CardBody>
                 {/* Chart */}
                 <div className="chart">
-                  <Line
-                    data={chartExample1[chartExample1Data]}
-                    options={chartExample1.options}
-                    getDatasetAtEvent={(e) => console.log(e)}
-                  />
+                  {
+                    cajaDashboard?.line ? 
+                    <Line
+                      data={{
+                        labels: cajaDashboard?.line?.map(a => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", 'Sep', 'Oct', 'Nov', 'Dic'][a.mes - 1]),
+                        datasets: [
+                          {
+                            label: "Performance",
+                            data: cajaDashboard?.line?.map(a => a.monto),
+                          },
+                        ],
+                      }}
+                      options={chartExample1.options}
+                      getDatasetAtEvent={(e) => console.log(e)}
+                    />
+                    :
+                    ""
+                  }
                 </div>
               </CardBody>
             </Card>
@@ -109,19 +95,51 @@ const Index = (props) => {
                 <Row className="align-items-center">
                   <div className="col">
                     <h6 className="text-uppercase text-muted ls-1 mb-1">
-                      Performance
+                      Distribución
                     </h6>
-                    <h2 className="mb-0">Total orders</h2>
+                    <h2 className="mb-0">Ingresos {new Date().getFullYear()} por área</h2>
                   </div>
                 </Row>
               </CardHeader>
               <CardBody>
                 {/* Chart */}
                 <div className="chart">
-                  <Bar
-                    data={chartExample2.data}
-                    options={chartExample2.options}
+                  {
+                    cajaDashboard?.bars ? 
+                  <Pie
+                    data={{
+                      labels: cajaDashboard?.bars?.map(a => a.area),
+                      datasets: [{
+                        data: cajaDashboard?.bars?.map(a => Math.round(a.monto/cajaDashboard?.bars.reduce((a, b) => a + b.monto, 0)*100)),
+                        borderWidth: 1,
+                        backgroundColor: ['#04009a', '#77acf1', '#1cc5dc', '#02475e', '#7b6079'],
+                      }]
+                    }}
+                    options={{
+                      responsive: true,
+                      plugins: {
+                        legend: {
+                          position: 'top',
+                        },
+                      },
+                      tooltips: {
+                        callbacks: {
+                          label: function(tooltipItem, data) {
+                            var dataset = data.datasets[tooltipItem.datasetIndex];
+                            var currentValue = dataset.data[tooltipItem.index];
+                      
+                            return currentValue + "%";
+                          },
+                          title: function(tooltipItem, data) {
+                            return data.labels[tooltipItem[0].index];
+                          }
+                        }
+                      } 
+                    }}
                   />
+                  :
+                  ""
+                }
                 </div>
               </CardBody>
             </Card>
@@ -133,183 +151,68 @@ const Index = (props) => {
               <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h3 className="mb-0">Page visits</h3>
-                  </div>
-                  <div className="col text-right">
-                    <Button
-                      color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      size="sm"
-                    >
-                      See all
-                    </Button>
+                    <h3 className="mb-0">Resumen {currentmonth}</h3>
                   </div>
                 </Row>
               </CardHeader>
+              {
+                !loading && cajaDashboard.tableCurrent ?
+                  <>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
-                    <th scope="col">Page name</th>
-                    <th scope="col">Visitors</th>
-                    <th scope="col">Unique users</th>
-                    <th scope="col">Bounce rate</th>
+                    <th scope="col">Área</th>
+                    <th scope="col" className="text-right">Emitido</th>
+                    <th scope="col" className="text-right">Cobrado</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">/argon/</th>
-                    <td>4,569</td>
-                    <td>340</td>
-                    <td>
-                      <i className="fas fa-arrow-up text-success mr-3" /> 46,53%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/index.html</th>
-                    <td>3,985</td>
-                    <td>319</td>
-                    <td>
-                      <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                      46,53%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/charts.html</th>
-                    <td>3,513</td>
-                    <td>294</td>
-                    <td>
-                      <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                      36,49%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/tables.html</th>
-                    <td>2,050</td>
-                    <td>147</td>
-                    <td>
-                      <i className="fas fa-arrow-up text-success mr-3" /> 50,87%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/profile.html</th>
-                    <td>1,795</td>
-                    <td>190</td>
-                    <td>
-                      <i className="fas fa-arrow-down text-danger mr-3" />{" "}
-                      46,53%
-                    </td>
-                  </tr>
+                  {
+                    cajaDashboard?.tableCurrent?.map((current, key) =>
+                      <tr key={key}>
+                        <th scope="row">{current.area}</th>
+                        <th className="text-right">{'S/. ' + current.monto.toLocaleString('en-US', {
+                          minimumFractionDigits: 0
+                        })}</th>
+                        <th className="text-right">{'S/. ' + cajaDashboard?.currentPaidMonthBars[key]?.monto.toLocaleString('en-US', {
+                          minimumFractionDigits: 0
+                        })}</th>
+                      </tr>)
+                  }
                 </tbody>
               </Table>
+              </>              
+                  :
+                <Loading />
+              }
             </Card>
           </Col>
           <Col xl="4">
             <Card className="shadow">
-              <CardHeader className="border-0">
+              <CardHeader className="bg-transparent">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h3 className="mb-0">Social traffic</h3>
-                  </div>
-                  <div className="col text-right">
-                    <Button
-                      color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      size="sm"
-                    >
-                      See all
-                    </Button>
+                    <h6 className="text-uppercase text-muted ls-1 mb-1">
+                      Distribución
+                    </h6>
+                    <h2 className="mb-0">Ingresos de {currentmonth}</h2>
                   </div>
                 </Row>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Referral</th>
-                    <th scope="col">Visitors</th>
-                    <th scope="col" />
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">Facebook</th>
-                    <td>1,480</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">60%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="60"
-                            barClassName="bg-gradient-danger"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Facebook</th>
-                    <td>5,480</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">70%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="70"
-                            barClassName="bg-gradient-success"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Google</th>
-                    <td>4,807</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">80%</span>
-                        <div>
-                          <Progress max="100" value="80" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Instagram</th>
-                    <td>3,678</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">75%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="75"
-                            barClassName="bg-gradient-info"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">twitter</th>
-                    <td>2,645</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">30%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="30"
-                            barClassName="bg-gradient-warning"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+              <CardBody>
+                {/* Chart */}
+                <div className="chart">
+                  <Bar
+                    data={{
+                      labels: cajaDashboard?.currentPaidMonthBars?.sort((a, b) => a.monto > b.monto ? - 1 : Number(a.monto < b.monto)).map(a => a.area),
+                      datasets: [{
+                        data: cajaDashboard?.currentPaidMonthBars?.sort((a, b) => a.monto > b.monto ? - 1 : Number(a.monto < b.monto)).map(a => a.monto),
+                      }]
+                    }}
+                    options={chartExample1.options}
+                  />
+                </div>
+              </CardBody>
             </Card>
           </Col>
         </Row>

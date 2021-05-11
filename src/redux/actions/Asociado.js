@@ -217,6 +217,30 @@ export const status = (id) => {
   }
 };
 
+export const preactive = (id) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: 0 });
+
+    axios.get('associatedpreactive/' + id,
+    ).then(({ data, status }) => {
+      if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: UPDATE_ASSOCIATED });
+        dispatch({ type: ASSOCIATED_STATUS_ACTIONS, payload: status });
+
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.message });
+      }
+
+    })
+      .catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+      });
+  }
+};
+
 export const searchRuc = (rucSearched) =>  {
   return (dispatch) => {
     dispatch({ type: FETCH_START });

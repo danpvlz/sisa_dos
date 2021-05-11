@@ -14,6 +14,8 @@ import {
     SAVE_BILL,
     ANUL_BILL,
     PAY_BILL,
+    LIST_REPEATED,
+    BILL_DASHBOARD_DATA
 } from "../ActionTypes";
 import axios from '../../util/Api';
   
@@ -311,6 +313,64 @@ export const update = (pagoData,id) => {
         dispatch({ type: SHOW_MESSAGE, payload: data.message });
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: PAY_BILL });
+        dispatch({ type: BILL_STATUS_ACTIONS, payload: status });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.message });
+      }
+    })
+      .catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+      });
+  }
+};
+  
+export const listRepeated = (params={}) => {
+    return (dispatch) => {
+      dispatch({ type: FETCH_START });
+      axios.post('listRepeated',
+      params
+      ).then(({ data }) => {  
+        if (data) {
+          dispatch({ type: FETCH_SUCCESS });
+          dispatch({ type: LIST_REPEATED, payload: data });
+        } else {
+          dispatch({ type: FETCH_ERROR, payload: data.error });
+        }
+      }).catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error });
+      });
+    }
+};
+
+export const loadDashboard = (params={}) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('billDashboard',
+    params
+    ).then(({ data }) => {  
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: BILL_DASHBOARD_DATA, payload: data });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+
+export const toPending = (idCuenta) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    dispatch({ type: BILL_STATUS_ACTIONS, payload: 0 });
+
+    axios.get('toPending/'+idCuenta
+    ).then(({ data, status }) => {
+      if (data) {
+        dispatch({ type: SHOW_MESSAGE, payload: data.message });
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: ANUL_BILL });
         dispatch({ type: BILL_STATUS_ACTIONS, payload: status });
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.message });

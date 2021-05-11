@@ -902,7 +902,7 @@ const EditarAsociadoSA = (props) => {
                                         type="text"
                                         name="nombres_persona"
                                         innerRef={register({ required: typeAssociated == 2 })}
-                                        defaultValue={associatedEditObject?.persona?.nombres}
+                                        defaultValue={associatedEditObject?.persona?.nombres ? associatedEditObject?.persona?.nombres : associatedEditObject?.persona?.nombresCompletos}
                                       />
                                     </FormGroup>
                                   </Col>

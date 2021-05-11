@@ -9,7 +9,8 @@ import {
   ANUL_BILL,
   PAY_BILL,
   SHOW_COMPROBANTE,
-  INDICATORS_BILLS_CAJA
+  INDICATORS_BILLS_CAJA,
+  DASHBOARD_DATA,
 } from "../ActionTypes";
 import axios from '../../util/Api';
 
@@ -132,4 +133,22 @@ export const indicatorsBills = (params={}) => {
         dispatch({ type: FETCH_ERROR, payload: error });
       });
     }
+};
+
+export const loadDashboard = (params={}) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('cajaDashboard',
+    params
+    ).then(({ data }) => {  
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: DASHBOARD_DATA, payload: data });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
 };

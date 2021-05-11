@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React, { useEffect } from 'react'
 
 import {
   Card,
@@ -8,11 +8,12 @@ import {
 } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { listbysector } from "../../redux/actions/Cuenta";
+import Loading from "../../components/Loaders/LoadingSmall";
 
-
-export default function BySector({since,until}) {
+export default function BySector({ since, until }) {
   const dispatch = useDispatch();
   const { billListBySector } = useSelector(({ cuenta }) => cuenta);
+  const { loading } = useSelector(({ commonData }) => commonData);
   useEffect(() => {
     let tsearch = {};
     if (since == null) {
@@ -29,71 +30,78 @@ export default function BySector({since,until}) {
     dispatch(listbysector(tsearch));
   }, [since, until]);
 
-    return (
-        <Row className="mb-3">
-          <div className="col">
-            <Card className="shadow">
-              <Table
-                className="align-items-center table-flush"
-                responsive
-              >
-                <thead>
-                  <tr>
-                    <th scope="col" className="text-left font-weight-bold">Cobrador</th>
-                    <th scope="col" className="text-right font-weight-bold" >Emitido</th>
-                    <th scope="col" className="text-right font-weight-bold">Cobrado</th>
-                    <th scope="col" className="text-right font-weight-bold">Asociados</th>
-                    <th scope="col" className="text-right font-weight-bold">Meta</th>
-                    <th scope="col">Completion</th>
-                  </tr>
-                </thead>
-                <tbody className="text-right">
-                {
-                    billListBySector?.cuentas?.map((bill, key) =>
-                      <tr key={key}>
-                        <td scope="row" className="text-left font-weight-bold">{bill.descripcion}</td>
-                        <td>{bill.emitidos}</td>
-                        <td>{bill.cobrado}</td>
-                        <td>{bill.asociados}</td>
-                        <td>{bill.meta}</td>
-                        <td>
-                          {
-                            bill.meta==0 ? 
-                            "" :
-                            <div className="d-flex align-items-center">
-                              <div>
-                                <Progress
-                                  max="100"
-                                  value={bill.cobrado/bill.meta*100}
-                                  barClassName={
-                                    Math.round(bill.cobrado/bill.meta*100)<50 ?
-                                    'bg-danger'
-                                    :
-                                    'bg-success'
-                                  }
-                                />
-                              </div>
-                              <span className="ml-2">{Math.round(bill.cobrado/bill.meta*100)}%</span>
-                            </div>
+  return (
+    <Row className="mb-3">
+      <div className="col">
+        <Card className="shadow">
+          {
+            !loading && billListBySector.cuentas ?
+              <>
+                <Table
+                  className="align-items-center table-flush"
+                  responsive
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col" className="text-left font-weight-bold">Cobrador</th>
+                      <th scope="col" className="text-right font-weight-bold" >Emitido</th>
+                      <th scope="col" className="text-right font-weight-bold">Cobrado</th>
+                      <th scope="col" className="text-right font-weight-bold">Asociados</th>
+                      <th scope="col" className="text-right font-weight-bold">Meta</th>
+                      <th scope="col">Completion</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-right">
+                    {
+                      billListBySector?.cuentas?.map((bill, key) =>
+                        <tr key={key}>
+                          <td scope="row" className="text-left font-weight-bold">{bill.descripcion}</td>
+                          <td>{bill.emitidos}</td>
+                          <td>{bill.cobrado}</td>
+                          <td>{bill.asociados}</td>
+                          <td>{bill.meta}</td>
+                          <td>
+                            {
+                              bill.meta == 0 ?
+                                "" :
+                                <div className="d-flex align-items-center">
+                                  <div>
+                                    <Progress
+                                      max="100"
+                                      value={bill.cobrado / bill.meta * 100}
+                                      barClassName={
+                                        Math.round(bill.cobrado / bill.meta * 100) < 50 ?
+                                          'bg-danger'
+                                          :
+                                          'bg-success'
+                                      }
+                                    />
+                                  </div>
+                                  <span className="ml-2">{Math.round(bill.cobrado / bill.meta * 100)}%</span>
+                                </div>
 
-                          }
-                        </td>
-                      </tr>
-                    )
-                  }
-                  <tr>
-                    <td scope="row" className="text-left font-weight-bold">Afiliaciones</td>
-                    <td>{billListBySector?.afiliaciones?.emitidos}</td>
-                    <td>{billListBySector?.afiliaciones?.cobrado}</td>
-                    <td>{billListBySector?.afiliaciones?.meta}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </Table>
-            </Card>
-          </div>
-        </Row>
-    )
+                            }
+                          </td>
+                        </tr>
+                      )
+                    }
+                    <tr>
+                      <td scope="row" className="text-left font-weight-bold">Afiliaciones</td>
+                      <td>{billListBySector?.afiliaciones?.emitidos}</td>
+                      <td>{billListBySector?.afiliaciones?.cobrado}</td>
+                      <td>{billListBySector?.afiliaciones?.meta}</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </>
+              :
+              <Loading />
+          }
+        </Card>
+      </div>
+    </Row>
+  )
 }

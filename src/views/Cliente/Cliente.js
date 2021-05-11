@@ -23,12 +23,14 @@ import {
 import SearchCliente from "components/Selects/SearchCliente";
 import NewClient from "components/Modals/NewClient.js";
 import { useDispatch, useSelector } from "react-redux";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 import { list, showCliente, resetClienteObject } from "../../redux/actions/Cliente";
 
 const Cliente = () => {
   const dispatch = useDispatch();
-  const { clientList, clienteObject } = useSelector(({ cliente }) => cliente);
+  const { clientList, clientStatusActions } = useSelector(({ cliente }) => cliente);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [idCliente, setidCliente] = useState(null);
   const [debCollector, setdebCollector] = useState(null);
@@ -36,6 +38,11 @@ const Cliente = () => {
   const [selected, setSelected] = useState(null);
   const [showModal, setshow] = useState(false);
   const history = useHistory();
+  useEffect(() => {
+    if (clientStatusActions == 200) {
+      dispatch(list(page,search));
+    }
+  }, [clientStatusActions]);
   const handleNew = () => {
     dispatch(resetClienteObject());
     setSelected(null);
@@ -125,6 +132,9 @@ const Cliente = () => {
                   </Col>
                 </Row>
               </CardHeader>
+              {
+                !loading && clientList.data ?
+                  <>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
@@ -172,7 +182,7 @@ const Cliente = () => {
                             >
                               <i className="fas fa-ellipsis-v" />
                             </DropdownToggle>
-                            <DropdownMenu className="dropdown-menu-arrow" right>
+                            <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
                               <DropdownItem
                                 className="d-flex"
                                 onClick={(e) => {setSelected(cliente.idCliente); toggleModal();}}
@@ -201,6 +211,10 @@ const Cliente = () => {
                   />
                 </nav>
               </CardFooter>
+              </>              
+                  :
+                <Loading />
+              }
             </Card>
           </div>
         </Row>

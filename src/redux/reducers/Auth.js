@@ -1,6 +1,6 @@
 import {INIT_URL, SIGNOUT_USER_SUCCESS, USER_DATA, USER_TOKEN_SET, USER_UPDATE_PASSWORD,
   AUTH_STATUS_ACTIONS,
-    AUTH_MESSAGE, PASSWORD_REQUIREMENTS
+    AUTH_MESSAGE, POWERBI_CHECK
 } from "../ActionTypes";
 
 const INIT_STATE = {
@@ -9,7 +9,7 @@ const INIT_STATE = {
   authUser: JSON.parse(localStorage.getItem('user')),
   authStatusActions:0,
   auth_message:'',
-  password_requirements: [],
+  powerBiAuthorization: 0,
   forgotPassword: null
 };
 
@@ -37,10 +37,10 @@ export default (state = INIT_STATE, action) => {
       };
     }
 
-    case PASSWORD_REQUIREMENTS:{
+    case POWERBI_CHECK:{
       return {
         ...state,
-        password_requirements: action.payload,
+        powerBiAuthorization: action.payload,
       };
     }
 

@@ -25,11 +25,13 @@ import NewConcept from "components/Modals/NewConcept.js";
 import SearchAreas from '../../components/Selects/SearchAreas';
 import { useDispatch, useSelector } from "react-redux";
 
-import { list, show, resetConceptObject} from "../../redux/actions/Concepto";
+import { list, show, resetConceptObject } from "../../redux/actions/Concepto";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Conceptos = () => {
   const dispatch = useDispatch();
   const { conceptoList, conceptStatusActions } = useSelector(({ concepto }) => concepto);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [idConcepto, setidConcepto] = useState(null);
   const [labelConcepto, setLabelConcepto] = useState(null);
@@ -42,7 +44,7 @@ const Conceptos = () => {
 
   useEffect(() => {
     if (conceptStatusActions == 200) {
-      dispatch(list(page,search));
+      dispatch(list(page, search));
     }
   }, [conceptStatusActions]);
 
@@ -53,27 +55,27 @@ const Conceptos = () => {
   };
 
   useEffect(() => {
-    let tsearch=search;
-    if(idConcepto == null){
+    let tsearch = search;
+    if (idConcepto == null) {
       delete tsearch.idConcepto;
-    }else{
-      tsearch.idConcepto=idConcepto;
+    } else {
+      tsearch.idConcepto = idConcepto;
     }
-    if(idArea == null){
+    if (idArea == null) {
       delete tsearch.idArea;
-    }else{
-      tsearch.idArea=idArea;
+    } else {
+      tsearch.idArea = idArea;
     }
     setsearch(tsearch);
-    dispatch(list(page,tsearch))
-  }, [idConcepto,idArea]);
+    dispatch(list(page, tsearch))
+  }, [idConcepto, idArea]);
 
   useEffect(() => {
-    dispatch(list(page,search))
+    dispatch(list(page, search))
   }, [page]);
 
   useEffect(() => {
-    if(selected){
+    if (selected) {
       dispatch(show(selected));
     }
     return () => {
@@ -92,10 +94,10 @@ const Conceptos = () => {
       </div>
       {/* Page content */}
       <Container className="mt--9" fluid>
-      <NewConcept 
-        show={showModal} 
-        toggleModal={toggleModal}
-      />
+        <NewConcept
+          show={showModal}
+          toggleModal={toggleModal}
+        />
         {/* Table */}
         <Row>
           <div className="col">
@@ -153,103 +155,109 @@ const Conceptos = () => {
 
                 </Row>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Código</th>
-                    <th scope="col">Ult. Modif.</th>
-                    <th scope="col">Concepto</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">IGV</th>
-                    <th scope="col">Valor</th>
-                    <th scope="col">Inmutable</th>
-                    <th scope="col">Categoría</th>
-                    <th scope="col">Área</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    conceptoList?.data?.map((concepto, key) =>
+              {
+                !loading && conceptoList.data ?
+                  <>
+                    <Table className="align-items-center table-flush" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Código</th>
+                          <th scope="col">Ult. Modif.</th>
+                          <th scope="col">Concepto</th>
+                          <th scope="col">Tipo</th>
+                          <th scope="col">IGV</th>
+                          <th scope="col">Valor</th>
+                          <th scope="col">Inmutable</th>
+                          <th scope="col">Categoría</th>
+                          <th scope="col">Área</th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          conceptoList?.data?.map((concepto, key) =>
 
-                      <tr key={key}>
-                        <td scope="row">
-                          {concepto.idConcepto}
-                        </td>
-                        <td>
-                          {
-                          ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][new Date(concepto.updated_at).getMonth()]
-                                            + ' ' +
-                          new Date(concepto.updated_at).getFullYear() 
-                          }
-                        </td>
-                        <td>
-                          {concepto.descripcion}
-                        </td>
-                        <td>
-                          {concepto.tipoConcepto == 1 ? "Servicio" : "Producto"}
-                        </td>
-                        <td>
-                          {concepto.tipoIGV == 1 ? "Gravada" : concepto.tipoIGV == 8 ? "Exonerado" : "Gratuita"}
-                        </td>
-                        <td>
-                          {concepto.valorConIGV ? 'S/.'+concepto.valorConIGV : '-'}
-                        </td>
-                        <td>
-                          <Badge color="" className="badge-dot mr-4">
-                            <i className={concepto.priceInmutable == 1 ? "bg-success" : "bg-info"} />
-                            {concepto.priceInmutable == 1 ? "Sí" : "No"}
-                          </Badge>
-                        </td>
-                        <td>
-                          {concepto.categoriaNombre}
-                        </td>
-                        <td>
-                          {concepto.area}
-                        </td>
-                        <td className="text-right">
-                          <UncontrolledDropdown>
-                            <DropdownToggle
-                              className="btn-icon-only text-light"
-                              href="#pablo"
-                              role="button"
-                              size="sm"
-                              color=""
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              <i className="fas fa-ellipsis-v" />
-                            </DropdownToggle>
-                            <DropdownMenu className="dropdown-menu-arrow" right>
-                              <DropdownItem
-                                className="d-flex"
-                                onClick={(e) => {setSelected(concepto.idConcepto); toggleModal();}}
-                              >
-                              <i className="text-blue fa fa-edit" aria-hidden="true"></i> Editar
+                            <tr key={key}>
+                              <td scope="row">
+                                {concepto.idConcepto}
+                              </td>
+                              <td>
+                                {
+                                  ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'][new Date(concepto.updated_at).getMonth()]
+                                  + ' ' +
+                                  new Date(concepto.updated_at).getFullYear()
+                                }
+                              </td>
+                              <td>
+                                {concepto.descripcion}
+                              </td>
+                              <td>
+                                {concepto.tipoConcepto == 1 ? "Servicio" : "Producto"}
+                              </td>
+                              <td>
+                                {concepto.tipoIGV == 1 ? "Gravada" : concepto.tipoIGV == 8 ? "Exonerado" : "Gratuita"}
+                              </td>
+                              <td>
+                                {concepto.valorConIGV ? 'S/.' + concepto.valorConIGV : '-'}
+                              </td>
+                              <td>
+                                <Badge color="" className="badge-dot mr-4">
+                                  <i className={concepto.priceInmutable == 1 ? "bg-success" : "bg-info"} />
+                                  {concepto.priceInmutable == 1 ? "Sí" : "No"}
+                                </Badge>
+                              </td>
+                              <td>
+                                {concepto.categoriaNombre}
+                              </td>
+                              <td>
+                                {concepto.area}
+                              </td>
+                              <td className="text-right">
+                                <UncontrolledDropdown>
+                                  <DropdownToggle
+                                    className="btn-icon-only text-light"
+                                    href="#pablo"
+                                    role="button"
+                                    size="sm"
+                                    color=""
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <i className="fas fa-ellipsis-v" />
+                                  </DropdownToggle>
+                                  <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
+                                    <DropdownItem
+                                      className="d-flex"
+                                      onClick={(e) => { setSelected(concepto.idConcepto); toggleModal(); }}
+                                    >
+                                      <i className="text-blue fa fa-edit" aria-hidden="true"></i> Editar
                               </DropdownItem>
-                            </DropdownMenu>
-                          </UncontrolledDropdown>
-                        </td>
-                      </tr>
-                    )
-                  }
+                                  </DropdownMenu>
+                                </UncontrolledDropdown>
+                              </td>
+                            </tr>
+                          )
+                        }
 
-                </tbody>
-              </Table>
-              
-              <CardFooter className="py-4">
-                <nav aria-label="..." className="pagination justify-content-end mb-0"> 
-                  <PaginationComponent
-                    listClassName="justify-content-end mb-0"
-                    firstPageText="<<"
-                    lastPageText=">>"
-                    previousPageText="<"
-                    nextPageText=">"
-                    totalItems={conceptoList?.meta?.total ? conceptoList?.meta?.total : 0}
-                    pageSize={10}
-                    onSelect={(selectedPage)=>setPage(selectedPage)}
-                  />
-                </nav>
-              </CardFooter>
+                      </tbody>
+                    </Table>
+                    <CardFooter className="py-4">
+                      <nav aria-label="..." className="pagination justify-content-end mb-0">
+                        <PaginationComponent
+                          listClassName="justify-content-end mb-0"
+                          firstPageText="<<"
+                          lastPageText=">>"
+                          previousPageText="<"
+                          nextPageText=">"
+                          totalItems={conceptoList?.meta?.total ? conceptoList?.meta?.total : 0}
+                          pageSize={10}
+                          onSelect={(selectedPage) => setPage(selectedPage)}
+                        />
+                      </nav>
+                    </CardFooter>
+                  </>
+                  :
+                  <Loading />
+              }
             </Card>
           </div>
         </Row>

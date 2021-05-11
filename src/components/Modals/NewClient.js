@@ -18,9 +18,9 @@ import {
   resetSearchRuc,
   resetSearchDni 
 } from "../../redux/actions/Asociado";
-import {store,update,list} from "../../redux/actions/Cliente";
+import {store,update} from "../../redux/actions/Cliente";
 
-const NewClient = ({ show, toggleModal }) => {
+const NewClient = ({ show, toggleModal, setSearchDoc }) => {
   const { register, handleSubmit, watch, reset } = useForm();
   const dispatch = useDispatch();
   const [formdata, setformdata] = useState({
@@ -45,7 +45,7 @@ const NewClient = ({ show, toggleModal }) => {
     if(rucSearched){
       setformdata({...formdata,
         denominacion: rucSearched.nombre_o_razon_social,
-        direccion: rucSearched.direccion ? rucSearched.direccion : ""});
+        direccion: rucSearched.direccion_completa ? rucSearched.direccion_completa : ""});
     }
   }, [rucSearched,dniSearched]);
 
@@ -61,12 +61,13 @@ const NewClient = ({ show, toggleModal }) => {
         }else{
           if(clienteObject?.idCliente){
             dispatch(update(formdata,clienteObject.idCliente));
-            dispatch(list());
             setformdata(null);
             toggleModal();
           }else{
             dispatch(store(formdata));
-            dispatch(list());
+            if(setSearchDoc){
+              setSearchDoc(formdata.documento);
+            }
             setformdata(null);
             toggleModal();
           }

@@ -39,6 +39,7 @@ import Llamada from "views/Llamada/Llamada.js";
 import NuevaLlamada from "views/Llamada/NuevaLlamada.js";
 
 //Cobranza 4
+import CobranzaDashboard from "views/Cobranza/Dashboard";
 import CuentasAdmin from "views/Cobranza/CuentasAdmin";
 import CuentasVer from "views/Cobranza/CuentasVer";
 import NuevaEmision from "views/Cobranza/NuevaEmision.js";
@@ -59,6 +60,13 @@ import NuevoServicio from "views/Servicio/NuevoServicio.js";
 
 //Servicios
 import Cliente from "views/Cliente/Cliente.js";
+
+//Formalización y desarrollo
+import Inscripcion from "views/FormalizacionYDesarrollo/Inscripcion/index";
+import Curso from "views/FormalizacionYDesarrollo/Curso/index";
+import Participante from "views/FormalizacionYDesarrollo/Participante/index";
+
+import Notificaciones from "views/Notificaciones/index";
 
 export const components=[
   Login,
@@ -99,6 +107,11 @@ export const components=[
   Icons, //35
   Register, //36
   Profile, //37
+  Inscripcion,//38
+  Curso,//39
+  Participante,//40
+  Notificaciones,//41
+  CobranzaDashboard,//42
 ]
 //6
 export const routesAdmin = [

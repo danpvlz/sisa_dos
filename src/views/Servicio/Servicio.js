@@ -24,10 +24,12 @@ import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listServices } from "../../redux/actions/Servicio";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Servicios = () => {
   const dispatch = useDispatch();
   const { servicesList, meta } = useSelector(({ servicio }) => servicio);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [since, setsince] = useState(null);
   const [until, setuntil] = useState(null);
@@ -38,51 +40,51 @@ const Servicios = () => {
   const handleNew = useCallback(() => history.push('/admin/registro-servicio'), [history]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(idAsociado == null){
+    let tsearch = search;
+    if (idAsociado == null) {
       delete tsearch.idAsociado;
-    }else{
-      tsearch.idAsociado=idAsociado;
+    } else {
+      tsearch.idAsociado = idAsociado;
     }
     setsearch(tsearch);
-    dispatch(listServices(page,tsearch))
+    dispatch(listServices(page, tsearch))
   }, [idAsociado]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(debCollector == null){
+    let tsearch = search;
+    if (debCollector == null) {
       delete tsearch.debCollector;
-    }else{
-      tsearch.debCollector=debCollector;
+    } else {
+      tsearch.debCollector = debCollector;
     }
     setsearch(tsearch);
-    dispatch(listServices(page,tsearch))
+    dispatch(listServices(page, tsearch))
   }, [debCollector]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(since == null){
+    let tsearch = search;
+    if (since == null) {
       delete tsearch.since;
-    }else{
-      tsearch.since=since;
+    } else {
+      tsearch.since = since;
     }
     setsearch(tsearch);
-    dispatch(listServices(page,tsearch))
+    dispatch(listServices(page, tsearch))
   }, [since]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(until == null){
+    let tsearch = search;
+    if (until == null) {
       delete tsearch.until;
-    }else{
-      tsearch.until=until;
+    } else {
+      tsearch.until = until;
     }
     setsearch(tsearch);
-    dispatch(listServices(page,tsearch))
+    dispatch(listServices(page, tsearch))
   }, [until]);
 
   useEffect(() => {
-    dispatch(listServices(page,search))
+    dispatch(listServices(page, search))
   }, [page])
   return (
     <>
@@ -166,7 +168,7 @@ const Servicios = () => {
                           >
                             Asociado
                       </label>
-                          <SearchAsociado  setVal={setIdAsociado}/>
+                          <SearchAsociado setVal={setIdAsociado} />
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -177,66 +179,70 @@ const Servicios = () => {
                           >
                             Cobrador
                       </label>
-                          <SearchCobrador setVal={setdebCollector}/>
+                          <SearchCobrador setVal={setdebCollector} />
                         </FormGroup>
                       </Col>
                     </Row>
-
                   </Col>
-
                 </Row>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Asociado</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Servicio</th>
-                    <th scope="col">Actividad actual</th>
-                    <th scope="col">Usuario</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    servicesList?.data?.map((servicio, key) =>
+              {
+                !loading && servicesList.data ?
+                  <>
+                    <Table className="align-items-center table-flush" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Asociado</th>
+                          <th scope="col">Fecha</th>
+                          <th scope="col">Servicio</th>
+                          <th scope="col">Actividad actual</th>
+                          <th scope="col">Usuario</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          servicesList?.data?.map((servicio, key) =>
 
-                      <tr key={key}>
-                        <td scope="row">
-                          {servicio.asociado}
-                        </td>
-                        <td>
-                          {servicio.fecha}
-                        </td>
-                        <td>
-                          {servicio.descripcionServicio}
-                        </td>
-                        <td>
-                          {servicio.actividadActual}
-                        </td>
-                        <td>
-                          {servicio.nombres}
-                        </td>
-                      </tr>
-                    )
-                  }
+                            <tr key={key}>
+                              <td scope="row">
+                                {servicio.asociado}
+                              </td>
+                              <td>
+                                {servicio.fecha}
+                              </td>
+                              <td>
+                                {servicio.descripcionServicio}
+                              </td>
+                              <td>
+                                {servicio.actividadActual}
+                              </td>
+                              <td>
+                                {servicio.nombres}
+                              </td>
+                            </tr>
+                          )
+                        }
 
-                </tbody>
-              </Table>
-              
-              <CardFooter className="py-4">
-                <nav aria-label="..." className="pagination justify-content-end mb-0"> 
-                  <PaginationComponent
-                    listClassName="justify-content-end mb-0"
-                    firstPageText="<<"
-                    lastPageText=">>"
-                    previousPageText="<"
-                    nextPageText=">"
-                    totalItems={servicesList?.meta?.total ? servicesList?.meta?.total : 0}
-                    pageSize={10}
-                    onSelect={(selectedPage)=>setPage(selectedPage)}
-                  />
-                </nav>
-              </CardFooter>
+                      </tbody>
+                    </Table>
+                    <CardFooter className="py-4">
+                      <nav aria-label="..." className="pagination justify-content-end mb-0">
+                        <PaginationComponent
+                          listClassName="justify-content-end mb-0"
+                          firstPageText="<<"
+                          lastPageText=">>"
+                          previousPageText="<"
+                          nextPageText=">"
+                          totalItems={servicesList?.meta?.total ? servicesList?.meta?.total : 0}
+                          pageSize={10}
+                          onSelect={(selectedPage) => setPage(selectedPage)}
+                        />
+                      </nav>
+                    </CardFooter>
+                  </>
+                  :
+                  <Loading />
+              }
             </Card>
           </div>
         </Row>

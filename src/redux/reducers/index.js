@@ -15,6 +15,10 @@ import Servicio from './Servicio';
 import Cliente from './Cliente';
 import Concepto from './Concepto';
 import Caja from './Caja';
+import Inscripcion from './Inscripcion';
+import Curso from './Curso';
+import Participante from './Participante';
+import Firebase from './Firebase';
 
 export default (history) =>
 combineReducers({
@@ -33,4 +37,8 @@ combineReducers({
   cliente: Cliente,
   concepto: Concepto,
   caja: Caja,
+  inscripcion: Inscripcion,
+  curso: Curso,
+  participante: Participante,
+  firebase: Firebase,
 })

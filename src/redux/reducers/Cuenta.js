@@ -8,6 +8,8 @@ import {
     LIST_MEMBERSHIPS,
     BILL_STATUS_ACTIONS,
     SAVE_BILL,
+    LIST_REPEATED,
+    BILL_DASHBOARD_DATA
   } from "../ActionTypes";
   
   const INIT_STATE = {
@@ -18,11 +20,25 @@ import {
     pendingsIndicators:[],
     pendingsList:[],
     membershipList:[],
-    billsStatusActions:0
+    billsStatusActions:0,
+    reapetedList:[],
+    billDashboard:[]
   };
   
   export default (state = INIT_STATE, action) => {
     switch (action.type) {
+        case BILL_DASHBOARD_DATA: {
+            return {
+                ...state,
+                billDashboard: action.payload
+            }
+        }
+        case LIST_REPEATED: {
+            return {
+                ...state,
+                reapetedList : action.payload
+            }
+        }
         case LIST_BILLS_BY_SECTOR: {
             return {
                 ...state,

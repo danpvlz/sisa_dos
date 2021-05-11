@@ -7,11 +7,13 @@ import { filterCategories } from "../../redux/actions/Concepto";
 export default function SearchCategories({setVal,idCategoria,idArea}) {
   const dispatch = useDispatch();
   const categoriasFilter = useSelector(({ concepto }) => concepto.categoriasFilter);
+
   useEffect(() => {
     if(idArea){
       dispatch(filterCategories(idArea));
     }
-  }, [idArea])
+  }, [idArea]);
+
   return (
     <Select
       placeholder="Seleccione..."

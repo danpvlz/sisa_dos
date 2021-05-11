@@ -16,11 +16,13 @@ import {
   Nav,
   Container,
   Media,
-  Button
+  Button,
+  Badge
 } from "reactstrap";
 
 import { userSignOut } from "../../redux/actions/Auth";
 import {useDispatch, useSelector} from "react-redux";
+import NotificationsIndicator from "../NotificationsIndicator";
 
 const AdminNavbar = (props) => {
   const { authUser } = useSelector(({ auth }) => auth);
@@ -51,6 +53,7 @@ const AdminNavbar = (props) => {
             </FormGroup>
           </Form>
           <Nav className="align-items-center d-none d-md-flex" navbar>
+            <NotificationsIndicator />
             <UncontrolledDropdown nav>
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">

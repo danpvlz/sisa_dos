@@ -30,12 +30,14 @@ import SearchCliente from "components/Selects/SearchCliente.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listbysector, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
 import { listBills, anularCuenta, payCaja, getDetail, indicatorsBills } from "../../redux/actions/Caja";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Cuenta = () => {
+  const dispatch = useDispatch();
   const selectInputRef = useRef();
   const selectInputRefCliente = useRef();
-  const dispatch = useDispatch();
   const { billsStatusActions } = useSelector(({ cuenta }) => cuenta);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const { billListCaja, billIndicatorsCaja } = useSelector(({ caja }) => caja);
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/registro-caja'), [history]);
@@ -48,9 +50,11 @@ const Cuenta = () => {
   const [sendConfirm, setsendConfirm] = useState(false);
 
   const [showPay, setshowPay] = useState(false);
-  const [fecha, setfecha] = useState({ "fecha": new Date().toISOString().substring(0, 10) });
+  const [fecha, setfecha] = useState("");
   const [monto, setmonto] = useState(0);
   const [bancopago, setbancopago] = useState(1);
+  const [numoperacion, setNumOperacion] = useState("");
+  const [numsofdoc, setNumSofdoc] = useState("");
   const [sendPay, setsendPay] = useState(0);
 
   const [showBillDetail, setshowBillDetail] = useState(false);
@@ -170,12 +174,18 @@ const Cuenta = () => {
         "monto": monto,
         "fechaPago": fecha,
         "opcion": bancopago,
+        "numoperacion": numoperacion,
+        "numsofdoc": numsofdoc,
       }
       dispatch(payCaja(fData))
       //REGISTRAR
       setsendPay(false);
       setidCuenta(null);
       setbancopago(1);
+      setmonto("");
+      setfecha("");
+      setNumOperacion("");
+      setNumSofdoc("");
     }
   }, [sendPay]);
 
@@ -208,6 +218,10 @@ const Cuenta = () => {
         setsendPay={setsendPay}
         setbancopago={setbancopago}
         fechasince={fechasince}
+        numoperacion={numoperacion}
+        numsofdoc={numsofdoc}
+        setNumOperacion={setNumOperacion}
+        setNumSofdoc={setNumSofdoc}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -359,11 +373,12 @@ const Cuenta = () => {
                         </Button>
                       </Col>
                     </Row>
-
                   </Col>
-
                 </Row>
               </CardHeader>
+              {
+                !loading && billListCaja.data ?
+                  <>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
@@ -421,7 +436,7 @@ const Cuenta = () => {
                             >
                               <i className="fas fa-ellipsis-v" />
                             </DropdownToggle>
-                            <DropdownMenu className="dropdown-menu-arrow" right>
+                            <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
                               <DropdownItem
                                 className="d-flex"
                                 onClick={(e) => {
@@ -430,22 +445,22 @@ const Cuenta = () => {
                                 }}
                               >
                                 <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
-                        </DropdownItem>
+                              </DropdownItem>
                               {
                                 cuenta.estado == 1 ?
                                   <>
                                     <DropdownItem
                                       className="d-flex"
-                                      onClick={(e) => {  setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); toggleModalPay(); }}
+                                      onClick={(e) => { setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); toggleModalPay(); }}
                                     >
                                       <i className="fa fa-credit-card text-success" aria-hidden="true"></i> Cancelar
-                          </DropdownItem>
+                                    </DropdownItem>
                                     <DropdownItem
                                       className="d-flex"
                                       onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal(); }}
                                     >
                                       <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
-                          </DropdownItem>
+                                    </DropdownItem>
                                   </>
                                   :
                                   cuenta.estado == 2 ?
@@ -483,6 +498,10 @@ const Cuenta = () => {
                   />
                 </nav>
               </CardFooter>
+              </>
+                  :
+                  <Loading />
+              }
             </Card>
           </div>
         </Row>

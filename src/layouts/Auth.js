@@ -10,6 +10,7 @@ import AuthFooter from "components/Footers/AuthFooter.js";
 import {routesSimple} from "../routes.js";
 
 import { useSelector } from "react-redux";
+import Loading from "components/Loaders/LoadingModal";
 
 const Auth = (props) => {
   const auth = useSelector(({ auth }) => auth.authUser);
@@ -46,6 +47,7 @@ const Auth = (props) => {
 
   return (
     <>
+    <Loading />
       <div className="main-content" ref={mainContent}>
         <AuthNavbar />
         <div className="header bg-gradient-info py-7 py-lg-8">

@@ -22,11 +22,11 @@ export default function SearchConcepto({setVal,setLabel,defaultVal,selectInputRe
       onChange={(inputValue, actionMeta) => {
         setVal(inputValue != null ? inputValue.value : null);
         setLabel(inputValue != null ? inputValue.label : null);
+        setprice(inputValue && inputValue.price ? inputValue.price : 0);
         if(setInmutable){
           setInmutable(inputValue != null ? inputValue.inmutable : null);
-          setprice(inputValue != null ? inputValue.price : null);
-
         }
+        
       }}
       options={conceptoFilter} 
       defaultValue={defaultVal}

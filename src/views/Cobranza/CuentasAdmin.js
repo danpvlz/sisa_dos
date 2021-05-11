@@ -31,13 +31,15 @@ import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import BySector from "components/Tables/BySector";
 import { useDispatch, useSelector } from "react-redux";
-import { listBills, indicatorsBills, anularCuenta, pagarCuenta, getBillDetail, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
+import { listBills, indicatorsBills, anularCuenta, pagarCuenta, getBillDetail, exportBills, exportBillsDetail, toPending } from "../../redux/actions/Cuenta";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Cuenta = () => {
   const selectInputRef = useRef();
   const selectInputRefAsociado = useRef();
   const dispatch = useDispatch();
   const { billList, billIndicators, billsStatusActions } = useSelector(({ cuenta }) => cuenta);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/registro-emision'), [history]);
 
@@ -47,9 +49,11 @@ const Cuenta = () => {
   const [action, setaction] = useState(1);
   const [sendConfirm, setsendConfirm] = useState(false);
 
-  const [fecha, setfecha] = useState({ "fecha": new Date().toISOString().substring(0, 10) });
+  const [fecha, setfecha] = useState("");
   const [monto, setmonto] = useState(0);
   const [bancopago, setbancopago] = useState(1);
+  const [numoperacion, setNumOperacion] = useState("");
+  const [numsofdoc, setNumSofdoc] = useState("");
   const [sendPay, setsendPay] = useState(0);
 
   const [show, setshow] = useState({
@@ -64,6 +68,7 @@ const Cuenta = () => {
   const [since, setsince] = useState(`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-01`);
   const [until, setuntil] = useState(`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-${new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate()}`);
   const [status, setstatus] = useState(null);
+  const [typeDetail, settypeDetail] = useState(null);
   const [idAsociado, setidAsociado] = useState(null);
   const [cobrador, setcobrador] = useState(null);
   const [number, setnumber] = useState(null);
@@ -106,6 +111,12 @@ const Cuenta = () => {
       tsearch.status = status;
     }
 
+    if (typeDetail == null || typeDetail == 0) {
+      delete tsearch.typeDetail;
+    } else {
+      tsearch.typeDetail = typeDetail;
+    }
+    
     if (number == null || number == 0) {
       delete tsearch.number;
     } else {
@@ -140,19 +151,23 @@ const Cuenta = () => {
     dispatch(listBills(page, tsearch));
     dispatch(indicatorsBills(search));
     }
-  }, [page,paydate,cobrador,idAsociado,status ,number,sincePay,untilPay,since,until]);
+  }, [page,paydate,cobrador,idAsociado,status,typeDetail,number,sincePay,untilPay,since,until]);
 
   const toggleModal = (modal) => {
     setshow({...show,[modal]:!show[modal]});
   };
 
   useEffect(() => {
-    if (action == 1 && sendConfirm) {
+    if (sendConfirm) {
       //REGISTRAR
       var fData = {
         "idCuenta": idCuenta,
       }
-      dispatch(anularCuenta(fData))
+      if(action==1){
+        dispatch(anularCuenta(fData))
+      }else{
+        dispatch(toPending(idCuenta))
+      }
       //REGISTRAR
       setsendConfirm(false);
       setidCuenta(null);
@@ -167,12 +182,18 @@ const Cuenta = () => {
         "monto": monto,
         "fechaPago": fecha,
         "banco": bancopago,
+        "numoperacion": numoperacion,
+        "numsofdoc": numsofdoc,
       }
       dispatch(pagarCuenta(fData))
       //REGISTRAR
       setsendPay(false);
       setidCuenta(null);
       setbancopago(1);
+      setmonto("");
+      setfecha("");
+      setNumOperacion("");
+      setNumSofdoc("");
     }
   }, [sendPay]);
 
@@ -203,6 +224,10 @@ const Cuenta = () => {
         setsendPay={setsendPay}
         setbancopago={setbancopago}
         fechasince={fechasince}
+        numoperacion={numoperacion}
+        numsofdoc={numsofdoc}
+        setNumOperacion={setNumOperacion}
+        setNumSofdoc={setNumSofdoc}
       />
       <ChangePayModal
         showPay={show.changePay}
@@ -218,7 +243,7 @@ const Cuenta = () => {
       {/* Page content */}
       <Container className="mt--7" fluid>
         <ConfirmDialog
-          question={action == 1 ? "¿Seguro de anular cuenta y pagos asociados?" : "¿Seguro de pagar cuenta?"}
+          question={action == 1 ? "¿Seguro de anular cuenta y pagos asociados?" : action == 2 ? "¿Seguro de regresar cuenta a pendiente?" : "¿Seguro de pagar cuenta?"}
           showConfirm={show.confirm} toggleModal={()=>toggleModal('confirm')} setConfirm={setsendConfirm} />
         <PaymentsModal
           showDetail={show.billDetail} toggleModal={()=>toggleModal('billDetail')}
@@ -351,12 +376,32 @@ const Cuenta = () => {
                           <SearchCobrador setVal={setcobrador} selectInputRef={selectInputRef}/>
                         </FormGroup>
                       </Col>
+                      <Col lg="3"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Tipo
+                      </label>
+                          <Select
+                            placeholder="Seleccione..."
+                            className="select-style"
+                            name="typeDetail"
+                            onChange={(inputValue, actionMeta) => {
+                              settypeDetail(inputValue.value);
+                            }}
+                            value={typeDetail ? [{ value: 0, label: "Todos" }, { value: 69, label: "Afiliaciones" }][typeDetail] : ""}
+                            options={[{ value: 0, label: "Todos" }, { value: 69, label: "Afiliaciones" }]} />
+                        </FormGroup >
+                      </Col>
                       <Col lg="3" className="text-left my-auto">
                         <Button className="btn-sm" color="info" type="button" onClick={() => {
                           setloaded(false);
                           setsince(null);
                           setuntil(null);
                           setstatus(null);
+                          settypeDetail(null);
                           setidAsociado(null);
                           setcobrador(null);
                           setnumber(null);
@@ -381,7 +426,10 @@ const Cuenta = () => {
 
                 </Row>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
+              {
+                !loading && billList.data ?
+                  <>
+              <Table className="align-items-center table-flush table-sm" responsive>
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Emision</th>
@@ -443,7 +491,7 @@ const Cuenta = () => {
                             >
                               <i className="fas fa-ellipsis-v" />
                             </DropdownToggle>
-                            <DropdownMenu className="dropdown-menu-arrow" right>
+                            <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
                               <DropdownItem
                                 className="d-flex"
                                 onClick={(e) => {
@@ -461,13 +509,13 @@ const Cuenta = () => {
                                       onClick={(e) => {  setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); toggleModal('pay'); }}
                                     >
                                       <i className="fa fa-credit-card text-success" aria-hidden="true"></i> Cancelar
-                          </DropdownItem>
+                                    </DropdownItem>
                                     <DropdownItem
                                       className="d-flex"
                                       onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal('confirm'); }}
                                     >
                                       <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
-                          </DropdownItem>
+                                    </DropdownItem>
                                   </>
                                   :
                                   cuenta.estado == 2 ?
@@ -480,6 +528,12 @@ const Cuenta = () => {
                                       }}
                                     >
                                       <i className="text-green fa fa-edit" aria-hidden="true"></i> Cambiar pago
+                                    </DropdownItem>
+                                    <DropdownItem
+                                      className="d-flex"
+                                      onClick={(e) => { setaction(2); setidCuenta(cuenta.idCuenta); toggleModal('confirm'); }}
+                                    >
+                                      <i className="text-yellow fa fa-eraser" aria-hidden="true"></i> Cambiar a pendiente
                                     </DropdownItem>
                                       <DropdownItem
                                         className="d-flex"
@@ -514,6 +568,10 @@ const Cuenta = () => {
                   />
                 </nav>
               </CardFooter>
+              </>              
+                  :
+                <Loading />
+              }
             </Card>
           </div>
         </Row>

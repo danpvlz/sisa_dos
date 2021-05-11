@@ -34,11 +34,13 @@ import PaginationComponent from "react-reactstrap-pagination";
 import AsistenciaHeader from "components/Headers/AsistenciaHeader.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
 import { useDispatch, useSelector } from "react-redux";
-import { indicatorsAll,listAssistanceByWorker,listAssistance,listDetail } from "../../redux/actions/Asistencia";
+import { indicatorsAll, listAssistanceByWorker, listAssistance, listDetail } from "../../redux/actions/Asistencia";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Asistencia = () => {
   const dispatch = useDispatch();
   const { assistanceListAll, assistanceList, assistanceListByWorker, assistanceIndicatorsAll } = useSelector(({ asistencia }) => asistencia);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const [pageByWorker, setpageaByWorker] = useState(1);
   const [pageall, setpageall] = useState(1);
   const [page, setPage] = useState(1);
@@ -50,43 +52,43 @@ const Asistencia = () => {
   const [showDetail, setShowDetail] = useState(false);
 
   useEffect(() => {
-    dispatch(listAssistanceByWorker(pageByWorker,search))
+    dispatch(listAssistanceByWorker(pageByWorker, search))
   }, [pageByWorker]);
 
   useEffect(() => {
-    dispatch(listAssistance(pageall,search))
+    dispatch(listAssistance(pageall, search))
   }, [pageall]);
 
   useEffect(() => {
-    dispatch(listDetail(page,search))
+    dispatch(listDetail(page, search))
   }, [page]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(month == null){
+    let tsearch = search;
+    if (month == null) {
       delete tsearch.month;
-    }else{
-      tsearch.month=month;
+    } else {
+      tsearch.month = month;
     }
     setsearch(tsearch);
     dispatch(indicatorsAll(search));
-    dispatch(listAssistanceByWorker(pageByWorker,search));
-    dispatch(listAssistance(pageall,tsearch));
-    dispatch(listDetail(page,tsearch));
+    dispatch(listAssistanceByWorker(pageByWorker, search));
+    dispatch(listAssistance(pageall, tsearch));
+    dispatch(listDetail(page, tsearch));
   }, [month]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(idColaborador == null){
+    let tsearch = search;
+    if (idColaborador == null) {
       delete tsearch.idColaborador;
-    }else{
-      tsearch.idColaborador=idColaborador;
+    } else {
+      tsearch.idColaborador = idColaborador;
     }
     setsearch(tsearch);
     dispatch(indicatorsAll(search));
-    dispatch(listAssistanceByWorker(pageByWorker,search));
-    dispatch(listAssistance(pageall,tsearch));
-    dispatch(listDetail(page,tsearch));
+    dispatch(listAssistanceByWorker(pageByWorker, search));
+    dispatch(listAssistance(pageall, tsearch));
+    dispatch(listDetail(page, tsearch));
   }, [idColaborador]);
 
   const toggleModal = () => {
@@ -196,405 +198,420 @@ const Asistencia = () => {
                   </Nav>
                 </div>
               </CardHeader>
-              <TabContent activeTab={"tabs" + state.tabs} >
-                <TabPane tabId="tabs1">
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Colaborador</th>
-                        <th className="text-center" scope="col">Faltas</th>
-                        <th className="text-center" scope="col">Debe</th>
-                        <th className="text-center" scope="col">Compensar</th>
-                        <th className="text-center" scope="col">Vacaciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        assistanceListByWorker?.data?.map((asistencia, key) =>
-                          <tr key={key}>
-                            <th scope="row">
-                              <Media className="align-items-center">
-                                <img
-                                  className="avatar rounded-circle mr-3"
-                                  alt="..."
-                                  src={
-                                    asistencia.foto == null || asistencia.foto == "" ?
-                                    require("../../assets/img/theme/default.png")
-                                      .default
-                                    :
-                                    process.env.REACT_APP_BASE + 'storage/colaborador/'+asistencia.foto}
-                                />
-                                <Media>
-                                  <span className="mb-0 text-sm">
-                                    {asistencia.colaborador}
-                                  </span>
-                                </Media>
-                              </Media>
+              {
+                !loading && assistanceListByWorker.data ?
+                  <>
+                    <TabContent activeTab={"tabs" + state.tabs} >
+                      <TabPane tabId="tabs1">
+                        <Table className="align-items-center table-flush" responsive>
+                          <thead className="thead-light">
+                            <tr>
+                              <th scope="col">Colaborador</th>
+                              <th className="text-center" scope="col">Faltas</th>
+                              <th className="text-center" scope="col">Debe</th>
+                              <th className="text-center" scope="col">Compensar</th>
+                              <th className="text-center" scope="col">Vacaciones</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                              assistanceListByWorker?.data?.map((asistencia, key) =>
+                                <tr key={key}>
+                                  <th scope="row">
+                                    <Media className="align-items-center">
+                                      <img
+                                        className="avatar rounded-circle mr-3"
+                                        alt="..."
+                                        src={
+                                          asistencia.foto == null || asistencia.foto == "" ?
+                                            require("../../assets/img/theme/default.png")
+                                              .default
+                                            :
+                                            process.env.REACT_APP_BASE + 'storage/colaborador/' + asistencia.foto}
+                                      />
+                                      <Media>
+                                        <span className="mb-0 text-sm">
+                                          {asistencia.colaborador}
+                                        </span>
+                                      </Media>
+                                    </Media>
 
-                            </th>
-                            <td className="text-center">
-                              {asistencia.faltas}
-                            </td>
-                            <td className="text-center">
-                              {
-                              asistencia.debe==0 ?
-                              "-" :
-                              Math.abs(asistencia.debe)>60 ? Math.round(Math.abs(asistencia.debe)/60)+"h " + Math.round(Math.abs(asistencia.debe)%60)+"min": Math.round(Math.abs(asistencia.debe))+"min"}
-                            </td>
-                            <td className="text-center">
-                              {
-                              asistencia.compensar==0 ?
-                              "-" :
-                              Math.abs(asistencia.compensar)>60 ? Math.round(Math.abs(asistencia.compensar)/60)+"h " + Math.round(Math.abs(asistencia.compensar)%60)+"min": Math.round(Math.abs(asistencia.compensar))+"min"}
-                            </td>
-                            <td className="text-center">
-                              {
-                              asistencia.vacaciones==0 ?
-                              "-" :
-                              asistencia.vacaciones/60+"h"}
-                            </td>
-                            <td className="d-none">
-                              <Button
-                                className="icon icon-shape bg-secondary rounded-circle shadow "
-                                onClick={toggleModal}
-                              >
-                                <i className="fas fa-eye" style={{ color: "#1279ee" }} />
-                              </Button>
-                            </td>
-                          </tr>
-                        )
-                      }
-                    </tbody>
-                  </Table>
-                  <CardFooter className="py-4">
-                    <nav aria-label="..." className="pagination justify-content-end mb-0">
-                      <PaginationComponent
-                        listClassName="justify-content-end mb-0"
-                        firstPageText="<<"
-                        lastPageText=">>"
-                        previousPageText="<"
-                        nextPageText=">"
-                        totalItems={assistanceListByWorker?.meta?.total ? assistanceListByWorker?.meta?.total : 0}
-                        pageSize={10}
-                        onSelect={(selectedPage)=>setpageaByWorker(selectedPage)}
-                      />
-                    
-                    </nav>
-                  </CardFooter>
-                </TabPane>
-                <TabPane tabId="tabs2">
-                  <div className="bg-secondary text-center pb-3">
-                    <Col className="not-selectble">
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
-                        Normal
-                      </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="warning">
-                        Tardanza
-                      </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger">
-                        Falta
-                      </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} className="bg-yellow text-default">
-                        Salió temprano
-                      </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default" className="text-default">
-                        Compensó
-                      </Badge>
-                    </Col>
-                  </div>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Colaborador</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Día</th>
-                        <th scope="col">Entrada</th>
-                        <th scope="col">Salida</th>
-                        <th scope="col">Entrada</th>
-                        <th scope="col">Salida</th>
-                        <th scope="col">Tardanza</th>
-                        <th scope="col">Compensado</th>
-                        <th scope="col">Falta</th>
-                        <th scope="col">Salió temprano</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        assistanceListAll?.data?.map((asistencia, key) =>
-                          <tr key={key}>
-                            <th scope="row">
-                              <Media className="align-items-center">
-                                <img
-                                  className="avatar rounded-circle mr-3"
-                                  alt="..."
-                                  src={
-                                    asistencia.foto == null || asistencia.foto == "" ?
-                                    require("../../assets/img/theme/default.png")
-                                      .default
-                                    :
-                                    process.env.REACT_APP_BASE + 'storage/colaborador/'+asistencia.foto}
-                                />
-                                <Media>
-                                  <span className="mb-0 text-sm">
-                                    {asistencia.colaborador}
-                                  </span>
-                                </Media>
-                              </Media>
+                                  </th>
+                                  <td className="text-center">
+                                    {asistencia.faltas}
+                                  </td>
+                                  <td className="text-center">
+                                    {
+                                      asistencia.debe == 0 ?
+                                        "-" :
+                                        Math.abs(asistencia.debe) > 60 ? Math.trunc(Math.abs(asistencia.debe) / 60) + "h " + Math.trunc(Math.abs(asistencia.debe) % 60) + "min" : Math.trunc(Math.abs(asistencia.debe)) + "min"}
+                                  </td>
+                                  <td className="text-center">
+                                    {
+                                      asistencia.compensar == 0 ?
+                                        "-" :
+                                        Math.abs(asistencia.compensar) > 60 ? Math.trunc(Math.abs(asistencia.compensar) / 60) + "h " + Math.trunc(Math.abs(asistencia.compensar) % 60) + "min" : Math.trunc(Math.abs(asistencia.compensar)) + "min"}
+                                  </td>
+                                  <td className="text-center">
+                                    {
+                                      asistencia.vacaciones == 0 ?
+                                        "-" :
+                                        asistencia.vacaciones / 60 + "h"}
+                                  </td>
+                                  <td className="d-none">
+                                    <Button
+                                      className="icon icon-shape bg-secondary rounded-circle shadow "
+                                      onClick={toggleModal}
+                                    >
+                                      <i className="fas fa-eye" style={{ color: "#1279ee" }} />
+                                    </Button>
+                                  </td>
+                                </tr>
+                              )
+                            }
+                          </tbody>
+                        </Table>
+                        <CardFooter className="py-4">
+                          <nav aria-label="..." className="pagination justify-content-end mb-0">
+                            <PaginationComponent
+                              listClassName="justify-content-end mb-0"
+                              firstPageText="<<"
+                              lastPageText=">>"
+                              previousPageText="<"
+                              nextPageText=">"
+                              totalItems={assistanceListByWorker?.meta?.total ? assistanceListByWorker?.meta?.total : 0}
+                              pageSize={10}
+                              onSelect={(selectedPage) => setpageaByWorker(selectedPage)}
+                            />
 
-                            </th>
-                            <td>
-                              {asistencia.fecha}
-                            </td>
-                            <td>
-                              {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
-                            </td>
-                            <td>
-                              <Badge
-                                id={`tooltip_in_fe_${key}`}
-                                data-placement="top"
-                                className={parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 4 ? "bg-yellow text-default" : ""}
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 4 ? "yellow" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 5 ? "default" : "info"}>
-                                {JSON.parse(asistencia.asistencia)[0]?.hora}
-                              </Badge>
-                              <UncontrolledTooltip
-                                delay={0}
-                                placement="top"
-                                target={`tooltip_in_fe_${key}`}
-                              >
-                                {parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 5 ? "Compensó" : "Vacaciones"}
-                              </UncontrolledTooltip>
-                            </td>
-                            <td> 
-                              <Badge
-                                id={`tooltip_in_fs_${key}`}
-                                data-placement="top"
-                                className={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "bg-yellow text-default" : ""}
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "default" : "info"}>
-                                {JSON.parse(asistencia.asistencia)[1]?.hora}
-                              </Badge>
-                              <UncontrolledTooltip
-                                delay={0}
-                                placement="top"
-                                target={`tooltip_in_fs_${key}`}
-                              >
-                                {parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "Vacaciones" : ""}
-                              </UncontrolledTooltip>
-                            </td>
-                            <td>
-                              <Badge
-                                id={`tooltip_in_se_${key}`}
-                                data-placement="top"
-                                className={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "bg-yellow text-default" : ""}
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "default" : "info"}>
-                                {JSON.parse(asistencia.asistencia)[2]?.hora}
-                              </Badge>
-                              <UncontrolledTooltip
-                                delay={0}
-                                placement="top"
-                                target={`tooltip_in_se_${key}`}
-                              >
-                                {parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 6 ? "Vacaciones" : ""}
-                              </UncontrolledTooltip>
-                            </td>
-                            <td> 
-                              <Badge
-                                id={`tooltip_in_ss_${key}`}
-                                data-placement="top"
-                                className={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "bg-yellow text-default" : ""}
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "default" : "info"}>
-                                {JSON.parse(asistencia.asistencia)[3]?.hora} 
-                              </Badge>
-                              <UncontrolledTooltip
-                                delay={0}
-                                placement="top"
-                                target={`tooltip_in_ss_${key}`}
-                              >
-                                {parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "Compensó" : "Vacaciones"}
-                              </UncontrolledTooltip>
-                            </td>
-                            <td className="text-center">
-                              {
-                              asistencia.tardanza==0 ?
-                              "-" :
-                              Math.abs(asistencia.tardanza)>60 ? Math.round(Math.abs(asistencia.tardanza)/60)+"h " + Math.round(Math.abs(asistencia.tardanza)%60)+"min": Math.round(Math.abs(asistencia.tardanza))+"min"}
-                            </td>
-                            <td className="text-center">
-                              {
-                              asistencia.compensado==0 ?
-                              "-" :
-                              Math.abs(asistencia.compensado)>60 ? Math.round(Math.abs(asistencia.compensado)/60)+"h " + Math.round(Math.abs(asistencia.compensado)%60)+"min": Math.round(Math.abs(asistencia.compensado))+"min"}
-                            </td>
-                            <td className="text-center">
-                              {
-                              asistencia.falta==0 ?
-                              "-" :
-                              Math.abs(asistencia.falta)>60 ? Math.round(Math.abs(asistencia.falta)/60)+"h " + Math.round(Math.abs(asistencia.falta)%60)+"min": Math.round(Math.abs(asistencia.falta))+"min"}
-                            </td>
-                            <td className="text-center">
-                              {
-                              asistencia.temp==0 ?
-                              "-" :
-                              Math.abs(asistencia.temp)>60 ? Math.round(Math.abs(asistencia.temp)/60)+"h " + Math.round(Math.abs(asistencia.temp)%60)+"min": Math.round(Math.abs(asistencia.temp))+"min"}
-                            </td>
-                          </tr>
-                        )
-                      }
-                    </tbody>
-                  </Table>
-                  <CardFooter className="py-4">
-                    <nav aria-label="..." className="pagination justify-content-end mb-0">
-                      <PaginationComponent
-                        listClassName="justify-content-end mb-0"
-                        firstPageText="<<"
-                        lastPageText=">>"
-                        previousPageText="<"
-                        nextPageText=">"
-                        totalItems={assistanceListAll?.meta?.total ? assistanceListAll?.meta?.total : 0}
-                        pageSize={10}
-                        onSelect={(selectedPage)=>setpageall(selectedPage)}
-                      />
-                    </nav>
-                  </CardFooter>
-                </TabPane>
-                <TabPane tabId="tabs3">
-                  <div className="bg-secondary text-center pb-3">
-                    <Col className="not-selectble">
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success" type="button">
-                        Normal
+                          </nav>
+                        </CardFooter>
+                      </TabPane>
+                      <TabPane tabId="tabs2">
+                        <div className="bg-secondary text-center pb-3">
+                          <Col className="not-selectble">
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
+                              Normal
                       </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="warning" type="button">
-                        Tardanza
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="warning">
+                              Tardanza
                       </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger" type="button">
-                        Falta
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger">
+                              Falta
                       </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} className="bg-yellow text-default" type="button">
-                        Salió temprano
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} className="bg-yellow text-default">
+                              Salió temprano
                       </Badge>
-                      <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default" className="text-default" type="button">
-                        Compensó
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default" className="text-default">
+                              H. extra
                       </Badge>
-                    </Col>
-                  </div>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Colaborador</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Día</th>
-                        <th scope="col">Tipo</th>
-                        <th scope="col">Hora</th>
-                        <th scope="col">Tardanza</th>
-                        <th scope="col">Compensado</th>
-                        <th scope="col">Salió temprano</th>
-                        <th scope="col">Observación</th>
-                        <th scope="col">Justificación</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        assistanceList?.data?.map((asistencia, key) =>
-                          <tr key={key}>
-                            <th scope="row">
-                              <Media className="align-items-center">
-                                <img
-                                  className="avatar rounded-circle mr-3"
-                                  alt="..."
-                                  src={
-                                    asistencia.foto == null || asistencia.foto == "" ?
-                                    require("../../assets/img/theme/default.png")
-                                      .default
-                                    :
-                                    process.env.REACT_APP_BASE + 'storage/colaborador/'+asistencia.foto}
-                                />
-                                <Media>
-                                  <span className="mb-0 text-sm">
-                                    {`${asistencia?.nombres} ${asistencia?.apellidoPaterno} ${asistencia?.apellidoMaterno}`}
-                                  </span>
-                                </Media>
-                              </Media>
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="primary" className="text-default">
+                              Compensó
+                      </Badge>
+                          </Col>
+                        </div>
+                        <Table className="align-items-center table-flush" responsive>
+                          <thead className="thead-light">
+                            <tr>
+                              <th scope="col">Colaborador</th>
+                              <th scope="col">Fecha</th>
+                              <th scope="col">Día</th>
+                              <th scope="col">Entrada</th>
+                              <th scope="col">Salida</th>
+                              <th scope="col">Entrada</th>
+                              <th scope="col">Salida</th>
+                              <th scope="col">Tardanza</th>
+                              <th scope="col">H. extra</th>
+                              <th scope="col">Compensado</th>
+                              <th scope="col">Falta</th>
+                              <th scope="col">Salió temprano</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                              assistanceListAll?.data?.map((asistencia, key) =>
+                                <tr key={key}>
+                                  <th scope="row">
+                                    <Media className="align-items-center">
+                                      <img
+                                        className="avatar rounded-circle mr-3"
+                                        alt="..."
+                                        src={
+                                          asistencia.foto == null || asistencia.foto == "" ?
+                                            require("../../assets/img/theme/default.png")
+                                              .default
+                                            :
+                                            process.env.REACT_APP_BASE + 'storage/colaborador/' + asistencia.foto}
+                                      />
+                                      <Media>
+                                        <span className="mb-0 text-sm">
+                                          {asistencia.colaborador}
+                                        </span>
+                                      </Media>
+                                    </Media>
 
-                            </th>
-                            <td>
-                              {asistencia.fecha}
-                            </td>
-                            <td>
-                              {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
-                            </td>
-                            <td>
-                              {asistencia.tipo == 1 ? "Entrada" : "Salida"}
-                            </td>
-                            <td>
-                              <Badge
-                                id={`tooltip_in_${key}`}
-                                data-placement="top"
-                                className={parseInt(asistencia.estado) == 4 ? "bg-yellow text-default" : ""}
-                                type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "warning" : parseInt(asistencia.estado) == 3 ? "danger" : parseInt(asistencia.estado) == 4 ? "yellow" : "default"}>
-                                {asistencia.hora}
-                              </Badge>
-                              <UncontrolledTooltip
-                                delay={0}
-                                placement="top"
-                                target={`tooltip_in_${key}`}
-                              >
-                                {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "Tardanza" : parseInt(asistencia.estado) == 3 ? "Falta" : parseInt(asistencia.estado) == 4 ? "Salió temprano" : "Compensó"}
-                              </UncontrolledTooltip>
-                            </td>
-                            <td className="text-center">
-                              {parseInt(asistencia.estado) == 2 ?
-                                asistencia.calc==0 ?
-                                "-" :
-                                Math.abs(asistencia.calc)>60 ? Math.round(Math.abs(asistencia.calc)/60)+"h " + Math.round(Math.abs(asistencia.calc)%60)+"min": Math.round(Math.abs(asistencia.calc))+"min"
-                              :
-                              "-"
+                                  </th>
+                                  <td>
+                                    {asistencia.fecha}
+                                  </td>
+                                  <td>
+                                    {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
+                                  </td>
+                                  <td>
+                                    <Badge
+                                      id={`tooltip_in_fe_${key}`}
+                                      data-placement="top"
+                                      className={parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 4 ? "yellow" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 5 ? "default" : "info"}>
+                                      {JSON.parse(asistencia.asistencia)[0]?.hora}
+                                    </Badge>
+                                    <UncontrolledTooltip
+                                      delay={0}
+                                      placement="top"
+                                      target={`tooltip_in_fe_${key}`}
+                                    >
+                                      {parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[0]?.estado) == 5 ? "H. extra" : "Vacaciones"}
+                                    </UncontrolledTooltip>
+                                  </td>
+                                  <td>
+                                    <Badge
+                                      id={`tooltip_in_fs_${key}`}
+                                      data-placement="top"
+                                      className={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "default" : "info"}>
+                                      {JSON.parse(asistencia.asistencia)[1]?.hora}
+                                    </Badge>
+                                    <UncontrolledTooltip
+                                      delay={0}
+                                      placement="top"
+                                      target={`tooltip_in_fs_${key}`}
+                                    >
+                                      {parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "H. extra" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "Vacaciones" : ""}
+                                    </UncontrolledTooltip>
+                                  </td>
+                                  <td>
+                                    <Badge
+                                      id={`tooltip_in_se_${key}`}
+                                      data-placement="top"
+                                      className={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "default" : "info"}>
+                                      {JSON.parse(asistencia.asistencia)[2]?.hora}
+                                    </Badge>
+                                    <UncontrolledTooltip
+                                      delay={0}
+                                      placement="top"
+                                      target={`tooltip_in_se_${key}`}
+                                    >
+                                      {parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "H. extra" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 6 ? "Vacaciones" : ""}
+                                    </UncontrolledTooltip>
+                                  </td>
+                                  <td>
+                                    <Badge
+                                      id={`tooltip_in_ss_${key}`}
+                                      data-placement="top"
+                                      className={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "default" : "info"}>
+                                      {JSON.parse(asistencia.asistencia)[3]?.hora}
+                                    </Badge>
+                                    <UncontrolledTooltip
+                                      delay={0}
+                                      placement="top"
+                                      target={`tooltip_in_ss_${key}`}
+                                    >
+                                      {parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "H. extra" : "Vacaciones"}
+                                    </UncontrolledTooltip>
+                                  </td>
+                                  <td className="text-center">
+                                    {
+                                      asistencia.tardanza == 0 ?
+                                        "-" :
+                                        Math.abs(asistencia.tardanza) > 60 ? Math.trunc(Math.abs(asistencia.tardanza) / 60) + "h " + Math.trunc(Math.abs(asistencia.tardanza) % 60) + "min" : Math.trunc(Math.abs(asistencia.tardanza)) + "min"}
+                                  </td>
+                                  <td className="text-center">
+                                    {
+                                      asistencia.compensado == 0 ?
+                                        "-" :
+                                        Math.abs(asistencia.compensado) > 60 ? Math.trunc(Math.abs(asistencia.compensado) / 60) + "h " + Math.trunc(Math.abs(asistencia.compensado) % 60) + "min" : Math.trunc(Math.abs(asistencia.compensado)) + "min"}
+                                  </td>
+                                  <td className="text-center">
+                                    {
+                                      asistencia.falta == 0 ?
+                                        "-" :
+                                        Math.abs(asistencia.falta) > 60 ? Math.trunc(Math.abs(asistencia.falta) / 60) + "h " + Math.trunc(Math.abs(asistencia.falta) % 60) + "min" : Math.trunc(Math.abs(asistencia.falta)) + "min"}
+                                  </td>
+                                  <td className="text-center">
+                                    {
+                                      asistencia.temp == 0 ?
+                                        "-" :
+                                        Math.abs(asistencia.temp) > 60 ? Math.trunc(Math.abs(asistencia.temp) / 60) + "h " + Math.trunc(Math.abs(asistencia.temp) % 60) + "min" : Math.trunc(Math.abs(asistencia.temp)) + "min"}
+                                  </td>
+                                </tr>
+                              )
                             }
-                            </td>
-                            <td className="text-center">
-                              {parseInt(asistencia.estado) == 5 ?
-                                asistencia.calc==0 ?
-                                "-" :
-                                Math.abs(asistencia.calc)>60 ? Math.round(Math.abs(asistencia.calc)/60)+"h " + Math.round(Math.abs(asistencia.calc)%60)+"min": Math.round(Math.abs(asistencia.calc))+"min"
-                              :
-                              "-"
+                          </tbody>
+                        </Table>
+                        <CardFooter className="py-4">
+                          <nav aria-label="..." className="pagination justify-content-end mb-0">
+                            <PaginationComponent
+                              listClassName="justify-content-end mb-0"
+                              firstPageText="<<"
+                              lastPageText=">>"
+                              previousPageText="<"
+                              nextPageText=">"
+                              totalItems={assistanceListAll?.meta?.total ? assistanceListAll?.meta?.total : 0}
+                              pageSize={10}
+                              onSelect={(selectedPage) => setpageall(selectedPage)}
+                            />
+                          </nav>
+                        </CardFooter>
+                      </TabPane>
+                      <TabPane tabId="tabs3">
+                        <div className="bg-secondary text-center pb-3">
+                          <Col className="not-selectble">
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success" type="button">
+                              Normal
+                      </Badge>
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="warning" type="button">
+                              Tardanza
+                      </Badge>
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger" type="button">
+                              Falta
+                      </Badge>
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} className="bg-yellow text-default" type="button">
+                              Salió temprano
+                      </Badge>
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default" className="text-default">
+                              H. extra
+                      </Badge>
+                            <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="primary" className="text-default">
+                              Compensó
+                      </Badge>
+                          </Col>
+                        </div>
+                        <Table className="align-items-center table-flush" responsive>
+                          <thead className="thead-light">
+                            <tr>
+                              <th scope="col">Colaborador</th>
+                              <th scope="col">Fecha</th>
+                              <th scope="col">Día</th>
+                              <th scope="col">Tipo</th>
+                              <th scope="col">Hora</th>
+                              <th scope="col">Tardanza</th>
+                              <th scope="col">H. extra</th>
+                              <th scope="col">Compensado</th>
+                              <th scope="col">Salió temprano</th>
+                              <th scope="col">Observación</th>
+                              <th scope="col">Justificación</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                              assistanceList?.data?.map((asistencia, key) =>
+                                <tr key={key}>
+                                  <th scope="row">
+                                    <Media className="align-items-center">
+                                      <img
+                                        className="avatar rounded-circle mr-3"
+                                        alt="..."
+                                        src={
+                                          asistencia.foto == null || asistencia.foto == "" ?
+                                            require("../../assets/img/theme/default.png")
+                                              .default
+                                            :
+                                            process.env.REACT_APP_BASE + 'storage/colaborador/' + asistencia.foto}
+                                      />
+                                      <Media>
+                                        <span className="mb-0 text-sm">
+                                          {`${asistencia?.nombres} ${asistencia?.apellidoPaterno} ${asistencia?.apellidoMaterno}`}
+                                        </span>
+                                      </Media>
+                                    </Media>
+
+                                  </th>
+                                  <td>
+                                    {asistencia.fecha}
+                                  </td>
+                                  <td>
+                                    {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
+                                  </td>
+                                  <td>
+                                    {asistencia.tipo == 1 ? "Entrada" : "Salida"}
+                                  </td>
+                                  <td>
+                                    <Badge
+                                      id={`tooltip_in_${key}`}
+                                      data-placement="top"
+                                      className={parseInt(asistencia.estado) == 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "warning" : parseInt(asistencia.estado) == 3 ? "danger" : parseInt(asistencia.estado) == 4 ? "yellow" : "default"}>
+                                      {asistencia.hora}
+                                    </Badge>
+                                    <UncontrolledTooltip
+                                      delay={0}
+                                      placement="top"
+                                      target={`tooltip_in_${key}`}
+                                    >
+                                      {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "Tardanza" : parseInt(asistencia.estado) == 3 ? "Falta" : parseInt(asistencia.estado) == 4 ? "Salió temprano" : "H. extra"}
+                                    </UncontrolledTooltip>
+                                  </td>
+                                  <td className="text-center">
+                                    {parseInt(asistencia.estado) == 2 ?
+                                      asistencia.calc == 0 ?
+                                        "-" :
+                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
+                                      :
+                                      "-"
+                                    }
+                                  </td>
+                                  <td className="text-center">
+                                    {parseInt(asistencia.estado) == 5 ?
+                                      asistencia.calc == 0 ?
+                                        "-" :
+                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
+                                      :
+                                      "-"
+                                    }
+                                  </td>
+                                  <td className="text-center">
+                                    {parseInt(asistencia.estado) == 4 ?
+                                      asistencia.calc == 0 ?
+                                        "-" :
+                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
+                                      :
+                                      "-"
+                                    }
+                                  </td>
+                                  <td className="text-center">
+                                    {asistencia.observacion == null ? "-" : asistencia.observacion}
+                                  </td>
+                                  <td className="text-center">
+                                    {asistencia.justificacion == null ? "-" : asistencia.justificacion}
+                                  </td>
+                                </tr>
+                              )
                             }
-                            </td>
-                            <td className="text-center">
-                              {parseInt(asistencia.estado) == 4 ?
-                                asistencia.calc==0 ?
-                                "-" :
-                                Math.abs(asistencia.calc)>60 ? Math.round(Math.abs(asistencia.calc)/60)+"h " + Math.round(Math.abs(asistencia.calc)%60)+"min": Math.round(Math.abs(asistencia.calc))+"min"
-                              :
-                              "-"
-                            }
-                            </td>
-                            <td className="text-center">
-                              {asistencia.observacion==null ? "-" : asistencia.observacion}
-                            </td>
-                            <td className="text-center">
-                              {asistencia.justificacion==null ? "-" : asistencia.justificacion}
-                            </td>
-                          </tr>
-                        )
-                      }
-                    </tbody>
-                  </Table>
-              
-              <CardFooter className="py-4">
-                <nav aria-label="..." className="pagination justify-content-end mb-0">
-                  <PaginationComponent
-                    listClassName="justify-content-end mb-0"
-                    firstPageText="<<"
-                    lastPageText=">>"
-                    previousPageText="<"
-                    nextPageText=">"
-                    totalItems={assistanceList?.meta?.total ? assistanceList?.meta?.total : 0}
-                    pageSize={10}
-                    onSelect={(selectedPage)=>setPage(selectedPage)}
-                  />
-                </nav>
-              </CardFooter>
-                </TabPane>
-              </TabContent>
+                          </tbody>
+                        </Table>
+
+                        <CardFooter className="py-4">
+                          <nav aria-label="..." className="pagination justify-content-end mb-0">
+                            <PaginationComponent
+                              listClassName="justify-content-end mb-0"
+                              firstPageText="<<"
+                              lastPageText=">>"
+                              previousPageText="<"
+                              nextPageText=">"
+                              totalItems={assistanceList?.meta?.total ? assistanceList?.meta?.total : 0}
+                              pageSize={10}
+                              onSelect={(selectedPage) => setPage(selectedPage)}
+                            />
+                          </nav>
+                        </CardFooter>
+                      </TabPane>
+                    </TabContent>
+                  </>
+                  :
+                  <Loading />
+              }
             </Card>
           </div>
         </Row>

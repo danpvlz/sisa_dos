@@ -29,13 +29,14 @@ import SearchCobrador from "components/Selects/SearchCobrador.js";
 import BySector from "components/Tables/BySector";
 import { useDispatch, useSelector } from "react-redux";
 import { listBills, indicatorsBills, anularCuenta, pagarCuenta, getBillDetail, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Cuenta = () => {
   const selectInputRef = useRef();
   const selectInputRefAsociado = useRef();
   const dispatch = useDispatch();
   const { billList, billIndicators, billsStatusActions } = useSelector(({ cuenta }) => cuenta);
-
+  const { loading } = useSelector(({ commonData }) => commonData);
   const [loaded, setloaded] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -56,11 +57,12 @@ const Cuenta = () => {
   const [showBillsTable, setshowBillsTable] = useState(false);
 
   //Filters
-  const [since, setsince] = useState(`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-01`);
-  const [until, setuntil] = useState(`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-${new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate()}`);
+  const [since, setsince] = useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 1) : new Date().getMonth() + 1}-01`);
+  const [until, setuntil] = useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 1) : new Date().getMonth() + 1}-${new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()}`);
   const [sincePay, setsincepay] = useState(null);
   const [untilPay, setuntilpay] = useState(null);
   const [status, setstatus] = useState(null);
+  const [typeDetail, settypeDetail] = useState(null);
   const [idAsociado, setidAsociado] = useState(null);
   const [cobrador, setcobrador] = useState(null);
   const [number, setnumber] = useState(null);
@@ -72,10 +74,10 @@ const Cuenta = () => {
     }
   }, [billsStatusActions]);
 
-  
+
   useEffect(() => {
     let tsearch = search;
-    
+
     if (cobrador == null) {
       delete tsearch.debCollector;
     } else {
@@ -92,6 +94,12 @@ const Cuenta = () => {
       delete tsearch.status;
     } else {
       tsearch.status = status;
+    }
+
+    if (typeDetail == null || typeDetail == 0) {
+      delete tsearch.typeDetail;
+    } else {
+      tsearch.typeDetail = typeDetail;
     }
 
     if (number == null || number == 0) {
@@ -124,11 +132,11 @@ const Cuenta = () => {
     }
 
     if (loaded) {
-    setsearch(tsearch);
-    dispatch(listBills(page, tsearch));
-    dispatch(indicatorsBills(search));
+      setsearch(tsearch);
+      dispatch(listBills(page, tsearch));
+      dispatch(indicatorsBills(search));
     }
-  }, [page,cobrador,idAsociado,status ,number,sincePay,untilPay,since,until]);
+  }, [page, cobrador, idAsociado, status, typeDetail, number, sincePay, untilPay, since, until]);
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -208,12 +216,12 @@ const Cuenta = () => {
                     <h3 className="mb-0">Cuentas</h3>
                     <Button
                       className="btn btn-sm btn-new-small icon icon-shape rounded-circle shadow "
-                      onClick={()=>setshowBillsTable(!showBillsTable)}
+                      onClick={() => setshowBillsTable(!showBillsTable)}
                     >
                       <i className={showBillsTable ? `fa fa-angle-up` : `fa fa-angle-down`} />
                     </Button>
                   </Col>
-                  <Col lg="12 " className={showBillsTable ?  '' : 'd-none'}>
+                  <Col lg="12 " className={showBillsTable ? '' : 'd-none'}>
                     <hr className="my-4 " />
                     <Row className="bg-secondary">
                       <Col lg="3"  >
@@ -282,7 +290,7 @@ const Cuenta = () => {
                           >
                             Asociado
                       </label>
-                          <SearchAsociado setVal={setidAsociado} selectInputRef={selectInputRefAsociado}/>
+                          <SearchAsociado setVal={setidAsociado} selectInputRef={selectInputRefAsociado} />
                         </FormGroup>
                       </Col>
                       <Col lg="2"  >
@@ -312,8 +320,27 @@ const Cuenta = () => {
                           >
                             Cobrador
                       </label>
-                          <SearchCobrador setVal={setcobrador} selectInputRef={selectInputRef}/>
+                          <SearchCobrador setVal={setcobrador} selectInputRef={selectInputRef} />
                         </FormGroup>
+                      </Col>
+                      <Col lg="3"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Tipo
+                      </label>
+                          <Select
+                            placeholder="Seleccione..."
+                            className="select-style"
+                            name="typeDetail"
+                            onChange={(inputValue, actionMeta) => {
+                              settypeDetail(inputValue.value);
+                            }}
+                            value={typeDetail ? [{ value: 0, label: "Todos" }, { value: 69, label: "Afiliaciones" }][typeDetail] : ""}
+                            options={[{ value: 0, label: "Todos" }, { value: 69, label: "Afiliaciones" }]} />
+                        </FormGroup >
                       </Col>
                       <Col lg="3" className="text-left my-auto">
                         <Button className="btn-sm" color="info" type="button" onClick={() => {
@@ -321,6 +348,7 @@ const Cuenta = () => {
                           setsince(null);
                           setuntil(null);
                           setstatus(null);
+                          settypeDetail(null);
                           setidAsociado(null);
                           setcobrador(null);
                           setnumber(null);
@@ -330,7 +358,7 @@ const Cuenta = () => {
                           selectInputRefAsociado?.current?.select?.clearValue();
                           setloaded(true);
                         }}>
-                        <i className="fa fa-ban mr-1" aria-hidden="true"></i>Limpiar filtros
+                          <i className="fa fa-ban mr-1" aria-hidden="true"></i>Limpiar filtros
                         </Button>
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto">
@@ -342,102 +370,109 @@ const Cuenta = () => {
                   </Col>
                 </Row>
               </CardHeader>
-              <Table className={`align-items-center table-flush ${showBillsTable ?  '' : 'd-none'}`} responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Emision</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Serie-Número</th>
-                    <th scope="col">Asociado</th>
-                    <th scope="col">Total</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Cobrador</th>
-                    <th scope="col">Fecha fin pago</th>
-                    <th scope="col">Anulación</th>
-                    <th scope="col" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    billList?.data?.map((cuenta, key) =>
+              {
+                !loading && billList.data ?
+                  <>
+                    <Table className={`align-items-center table-flush ${showBillsTable ? '' : 'd-none'}`} responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Emision</th>
+                          <th scope="col">Tipo</th>
+                          <th scope="col">Serie-Número</th>
+                          <th scope="col">Asociado</th>
+                          <th scope="col">Total</th>
+                          <th scope="col">Estado</th>
+                          <th scope="col">Cobrador</th>
+                          <th scope="col">Fecha fin pago</th>
+                          <th scope="col">Anulación</th>
+                          <th scope="col" />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          billList?.data?.map((cuenta, key) =>
 
-                      <tr key={key}>
-                        <td scope="row">
-                          {cuenta.fechaEmision}
-                        </td>
-                        <td>
-                          {`${cuenta.tipo}`}
-                        </td>
-                        <td>
-                          {`${cuenta.serieNumero} ${cuenta.tipo == " - NC" ? cuenta.tipo : ""}`}
-                        </td>
-                        <td>
-                          {cuenta.asociado}
-                        </td>
-                        <td className="text-center">
-                          <small>S/.</small> {cuenta.total}
-                        </td>
-                        <td>
-                          <Badge color="" className="badge-dot mr-4">
-                            <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger"} />
-                            {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : cuenta.estado == 0 ? "Emitido" : "Anulada"}
-                          </Badge>
-                        </td>
-                        <td>
-                          {cuenta.descripcion}
-                        </td>
-                        <td>
-                          {cuenta.fechaFinPago}
-                        </td>
-                        <td>
-                          {cuenta.fechaAnulacion}
-                        </td>
-                        <td className="text-right">
-                          <UncontrolledDropdown>
-                            <DropdownToggle
-                              className="btn-icon-only text-light"
-                              href="#pablo"
-                              role="button"
-                              size="sm"
-                              color=""
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              <i className="fas fa-ellipsis-v" />
-                            </DropdownToggle>
-                            <DropdownMenu className="dropdown-menu-arrow" right>
-                              <DropdownItem
-                                className="d-flex"
-                                onClick={(e) => {
-                                  dispatch(getBillDetail({ "idCuenta": cuenta.idCuenta }));
-                                  toggleModalDetail();
-                                }}
-                              >
-                                <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
+                            <tr key={key}>
+                              <td scope="row">
+                                {cuenta.fechaEmision}
+                              </td>
+                              <td>
+                                {`${cuenta.tipo}`}
+                              </td>
+                              <td>
+                                {`${cuenta.serieNumero} ${cuenta.tipo == " - NC" ? cuenta.tipo : ""}`}
+                              </td>
+                              <td>
+                                {cuenta.asociado}
+                              </td>
+                              <td className="text-center">
+                                <small>S/.</small> {cuenta.total}
+                              </td>
+                              <td>
+                                <Badge color="" className="badge-dot mr-4">
+                                  <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger"} />
+                                  {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : cuenta.estado == 0 ? "Emitido" : "Anulada"}
+                                </Badge>
+                              </td>
+                              <td>
+                                {cuenta.descripcion}
+                              </td>
+                              <td>
+                                {cuenta.fechaFinPago}
+                              </td>
+                              <td>
+                                {cuenta.fechaAnulacion}
+                              </td>
+                              <td className="text-right">
+                                <UncontrolledDropdown>
+                                  <DropdownToggle
+                                    className="btn-icon-only text-light"
+                                    href="#pablo"
+                                    role="button"
+                                    size="sm"
+                                    color=""
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    <i className="fas fa-ellipsis-v" />
+                                  </DropdownToggle>
+                                  <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
+                                    <DropdownItem
+                                      className="d-flex"
+                                      onClick={(e) => {
+                                        dispatch(getBillDetail({ "idCuenta": cuenta.idCuenta }));
+                                        toggleModalDetail();
+                                      }}
+                                    >
+                                      <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
                         </DropdownItem>
 
-                            </DropdownMenu>
-                          </UncontrolledDropdown>
-                        </td>
-                      </tr>
-                    )
-                  }
+                                  </DropdownMenu>
+                                </UncontrolledDropdown>
+                              </td>
+                            </tr>
+                          )
+                        }
 
-                </tbody>
-              </Table>
-              <CardFooter className={`py-4 ${showBillsTable ?  '' : 'd-none'}`}>
-                <nav aria-label="..." className="pagination justify-content-end mb-0">
-                  <PaginationComponent
-                    listClassName="justify-content-end mb-0"
-                    firstPageText="<<"
-                    lastPageText=">>"
-                    previousPageText="<"
-                    nextPageText=">"
-                    totalItems={billList?.meta?.total ? billList?.meta?.total : 0}
-                    pageSize={10}
-                    onSelect={(selectedPage) => setPage(selectedPage)}
-                  />
-                </nav>
-              </CardFooter>
+                      </tbody>
+                    </Table>
+                    <CardFooter className={`py-4 ${showBillsTable ? '' : 'd-none'}`}>
+                      <nav aria-label="..." className="pagination justify-content-end mb-0">
+                        <PaginationComponent
+                          listClassName="justify-content-end mb-0"
+                          firstPageText="<<"
+                          lastPageText=">>"
+                          previousPageText="<"
+                          nextPageText=">"
+                          totalItems={billList?.meta?.total ? billList?.meta?.total : 0}
+                          pageSize={10}
+                          onSelect={(selectedPage) => setPage(selectedPage)}
+                        />
+                      </nav>
+                    </CardFooter>
+                  </>
+                  :
+                  <Loading />
+              }
             </Card>
           </div>
         </Row>

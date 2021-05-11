@@ -26,6 +26,7 @@ import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import Header from "components/Headers/AsociadoHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
+import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
 import SearchPromotor from "components/Selects/SearchPromotorFilter";
 import SetCodigoModal from "components/Modals/SetCodigoModal.js";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +39,7 @@ const Asociado = () => {
   const [idAsociado, setIdAsociado] = useState(null);
   const [state, setState] = useState(null);
   const [debCollector, setdebCollector] = useState(null);
+  const [comiteGremial, setcomiteGremial] = useState(null);
   const [page, setPage] = useState(1)
   //const asociados = require('../../data/asociado.json');
   const history = useHistory();
@@ -88,6 +90,11 @@ const Asociado = () => {
     }else{
       tsearch.debCollector=debCollector;
     }
+    if(comiteGremial == null){
+      delete tsearch.comite;
+    }else{
+      tsearch.comite=comiteGremial;
+    }
     if (since == null) {
       delete tsearch.since;
     } else {
@@ -107,7 +114,7 @@ const Asociado = () => {
       setsearch(tsearch);
       dispatch(listAssociated(page,tsearch))
     }
-  }, [idAsociado,debCollector,since,promotorSearched,state,page]);
+  }, [idAsociado,debCollector,comiteGremial,since,promotorSearched,state,page]);
 
   useEffect(() => {
     setloaded(true);
@@ -263,13 +270,19 @@ const Asociado = () => {
                               setState(inputValue != null ? inputValue.value : null);
                             }}
                             isClearable
-                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" },{ value: 3, label: "Retiro" }]} />
+                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" },{ value: 3, label: "Preactivo" },{ value: 4, label: "Retiro" }]} />
                         </FormGroup >
                       </Col>
-                      <Col lg="5" className="text-right m-auto">
-                        <Button color="success"  type="button" onClick={()=>dispatch(exportAssociateds(search))}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{height:"20px"}} /> 
-                        </Button>
+                      <Col lg="4"  >
+                        <FormGroup className="mb-0 pb-4">
+                          <label
+                            className="form-control-label"
+                            htmlFor="filterMonth"
+                          >
+                            Comité gremial
+                      </label>
+                          <SearchComiteGremial setVal={setcomiteGremial}/>
+                        </FormGroup>
                       </Col>
                     </Row>
                   </Col>
@@ -278,7 +291,7 @@ const Asociado = () => {
               {
               Object.keys(search).length > 0 ?
               <>
-              <Table className="align-items-center table-flush" responsive>
+              <Table className="align-items-center table-flush table-sm" responsive>
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Asociado</th>
@@ -309,8 +322,8 @@ const Asociado = () => {
                   </td>
                   <td className={!showHeaders.Estado ? 'd-none' : ''}>
                     <Badge color="" className="badge-dot mr-4">
-                      <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : "bg-warning"} />
-                      {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : "Retiro"}
+                      <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : asociado.estado == 3 ? "bg-yellow" : "bg-warning"} />
+                      {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : asociado.estado == 3 ? "Preactivo" : "Retiro"}
                     </Badge>
                   </td>
                   <td className={!showHeaders.Importe ? 'd-none' : ''}>
@@ -342,7 +355,7 @@ const Asociado = () => {
                       >
                         <i className="fas fa-ellipsis-v" />
                       </DropdownToggle>
-                      <DropdownMenu className="dropdown-menu-arrow" right>
+                      <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
                         <DropdownItem
                         className="d-flex"
                           onClick={()=>{

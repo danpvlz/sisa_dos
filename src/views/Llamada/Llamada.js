@@ -24,10 +24,12 @@ import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import { useDispatch, useSelector } from "react-redux";
 import { listCalls, exportPhoneCalls } from "../../redux/actions/Llamada";
+import Loading from "../../components/Loaders/LoadingSmall";
 
 const Llamadas = () => {
   const dispatch = useDispatch();
   const { phoneCallList, meta } = useSelector(({ llamada }) => llamada);
+  const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [since, setsince] = useState(null);
   const [until, setuntil] = useState(null);
@@ -38,51 +40,51 @@ const Llamadas = () => {
   const handleNew = useCallback(() => history.push('/admin/registro-llamada'), [history]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(idAsociado == null){
+    let tsearch = search;
+    if (idAsociado == null) {
       delete tsearch.idAsociado;
-    }else{
-      tsearch.idAsociado=idAsociado;
+    } else {
+      tsearch.idAsociado = idAsociado;
     }
     setsearch(tsearch);
-    dispatch(listCalls(page,tsearch))
+    dispatch(listCalls(page, tsearch))
   }, [idAsociado]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(debCollector == null){
+    let tsearch = search;
+    if (debCollector == null) {
       delete tsearch.debCollector;
-    }else{
-      tsearch.debCollector=debCollector;
+    } else {
+      tsearch.debCollector = debCollector;
     }
     setsearch(tsearch);
-    dispatch(listCalls(page,tsearch))
+    dispatch(listCalls(page, tsearch))
   }, [debCollector]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(since == null){
+    let tsearch = search;
+    if (since == null) {
       delete tsearch.since;
-    }else{
-      tsearch.since=since;
+    } else {
+      tsearch.since = since;
     }
     setsearch(tsearch);
-    dispatch(listCalls(page,tsearch))
+    dispatch(listCalls(page, tsearch))
   }, [since]);
 
   useEffect(() => {
-    let tsearch=search;
-    if(until == null){
+    let tsearch = search;
+    if (until == null) {
       delete tsearch.until;
-    }else{
-      tsearch.until=until;
+    } else {
+      tsearch.until = until;
     }
     setsearch(tsearch);
-    dispatch(listCalls(page,tsearch))
+    dispatch(listCalls(page, tsearch))
   }, [until]);
 
   useEffect(() => {
-    dispatch(listCalls(page,search))
+    dispatch(listCalls(page, search))
   }, [page])
   return (
     <>
@@ -166,7 +168,7 @@ const Llamadas = () => {
                           >
                             Asociado
                       </label>
-                          <SearchAsociado  setVal={setIdAsociado}/>
+                          <SearchAsociado setVal={setIdAsociado} />
                         </FormGroup>
                       </Col>
                       <Col lg="4"  >
@@ -177,90 +179,92 @@ const Llamadas = () => {
                           >
                             Cobrador
                       </label>
-                          <SearchCobrador setVal={setdebCollector}/>
+                          <SearchCobrador setVal={setdebCollector} />
                         </FormGroup>
                       </Col>
                       <Col lg="2" className="text-right ml-auto">
-                        <Button color="success" type="button" onClick={()=>dispatch(exportPhoneCalls(search))}>
+                        <Button color="success" type="button" onClick={() => dispatch(exportPhoneCalls(search))}>
                           <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
-
                   </Col>
-
                 </Row>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Asociado</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Sector</th>
-                    <th scope="col">Cobrador</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">H. inicio</th>
-                    <th scope="col">H. fin</th>
-                    <th scope="col">Detalle</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    phoneCallList?.data?.map((llamada, key) =>
-
-                      <tr key={key}>
-                        <td scope="row">
-                          {llamada.asociado}
-                        </td>
-                        <td>
-                          {llamada.tipo == 1 ? "Empresa" : "Persona"}
-                        </td>
-                        <td>
-                          <Badge color="" className="badge-dot mr-4">
-                            <i className={llamada.estado == 1 ? "bg-success" : "bg-warning"} />
-                            {llamada.estado == 1 ? "Activo" : "Retiro"}
-                          </Badge>
-                        </td>
-                        <td>
-                          {llamada.sector}
-                        </td>
-                        <td>
-                          {llamada.cobrador}
-                        </td>
-                        <td>
-                          {llamada.fecha}
-                        </td>
-                        <td>
-                          {llamada.inicio}
-                        </td>
-                        <td>
-                          {llamada.fin}
-                        </td>
-                        <td>
-                          {llamada.detalle}
-                        </td>
-                      </tr>
-                    )
-                  }
-
-                </tbody>
-              </Table>
-              
-              <CardFooter className="py-4">
-                <nav aria-label="..." className="pagination justify-content-end mb-0"> 
-                  <PaginationComponent
-                    listClassName="justify-content-end mb-0"
-                    firstPageText="<<"
-                    lastPageText=">>"
-                    previousPageText="<"
-                    nextPageText=">"
-                    totalItems={phoneCallList?.meta?.total ? phoneCallList?.meta?.total : 0}
-                    pageSize={10}
-                    onSelect={(selectedPage)=>setPage(selectedPage)}
-                  />
-                </nav>
-              </CardFooter>
+              {
+                !loading && phoneCallList.data ?
+                  <>
+                    <Table className="align-items-center table-flush" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col">Asociado</th>
+                          <th scope="col">Tipo</th>
+                          <th scope="col">Estado</th>
+                          <th scope="col">Sector</th>
+                          <th scope="col">Cobrador</th>
+                          <th scope="col">Fecha</th>
+                          <th scope="col">H. inicio</th>
+                          <th scope="col">H. fin</th>
+                          <th scope="col">Detalle</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          phoneCallList?.data?.map((llamada, key) =>
+                            <tr key={key}>
+                              <td scope="row">
+                                {llamada.asociado}
+                              </td>
+                              <td>
+                                {llamada.tipo == 1 ? "Empresa" : "Persona"}
+                              </td>
+                              <td>
+                                <Badge color="" className="badge-dot mr-4">
+                                  <i className={llamada.estado == 1 ? "bg-success" : "bg-warning"} />
+                                  {llamada.estado == 1 ? "Activo" : "Retiro"}
+                                </Badge>
+                              </td>
+                              <td>
+                                {llamada.sector}
+                              </td>
+                              <td>
+                                {llamada.cobrador}
+                              </td>
+                              <td>
+                                {llamada.fecha}
+                              </td>
+                              <td>
+                                {llamada.inicio}
+                              </td>
+                              <td>
+                                {llamada.fin}
+                              </td>
+                              <td>
+                                {llamada.detalle}
+                              </td>
+                            </tr>
+                          )
+                        }
+                      </tbody>
+                    </Table>
+                    <CardFooter className="py-4">
+                      <nav aria-label="..." className="pagination justify-content-end mb-0">
+                        <PaginationComponent
+                          listClassName="justify-content-end mb-0"
+                          firstPageText="<<"
+                          lastPageText=">>"
+                          previousPageText="<"
+                          nextPageText=">"
+                          totalItems={phoneCallList?.meta?.total ? phoneCallList?.meta?.total : 0}
+                          pageSize={10}
+                          onSelect={(selectedPage) => setPage(selectedPage)}
+                        />
+                      </nav>
+                    </CardFooter>
+                  </>              
+                  :
+                <Loading />
+              }
             </Card>
           </div>
         </Row>
