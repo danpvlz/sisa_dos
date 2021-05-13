@@ -4,24 +4,18 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from "react-redux";
 import { filter } from "../../redux/actions/Participante";
 
-export default function SearchParticipants({setVal,participant,searched}) {
+export default function SearchParticipants({ setVal, val, searchVal }) {
   const dispatch = useDispatch();
   const filterParticipants = useSelector(({ participante }) => participante.filterParticipants);
   const handleInputChange = (inputValue, actionMeta) => {
-      inputValue.length >= 2 && dispatch(filter(inputValue));
+    inputValue.length >= 2 && dispatch(filter(inputValue));
   }
 
   useEffect(() => {
-    if(searched!=null){
-      dispatch(filter(searched));
+    if(searchVal!=null){
+      dispatch(filter(searchVal,true));
     }
-  }, [searched]);
-
-  useEffect(() => {
-    if(filterParticipants.length>0 && searched!=null){      
-      setVal(filterParticipants.find(c=>c.dni==searched));
-    }
-  }, [filterParticipants]);
+  }, [searchVal]);
 
   return (
     <Select
@@ -29,13 +23,14 @@ export default function SearchParticipants({setVal,participant,searched}) {
       id="searchParticipants"
       name="searchParticipants"
       className="select-style"
-      isClearable={true}
       onInputChange={handleInputChange}
+      isClearable={true}
       onChange={(inputValue, actionMeta) => {
-        setVal(inputValue);
+        let newVal=inputValue != null ? inputValue.value : null;
+        setVal('idParticipante',newVal);
       }}
       options={filterParticipants} 
-      value={participant}
+      value={filterParticipants.find(c=>c.value==val)}
       />
   )
 }

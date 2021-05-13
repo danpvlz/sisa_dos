@@ -62,6 +62,7 @@ import NuevoServicio from "views/Servicio/NuevoServicio.js";
 import Cliente from "views/Cliente/Cliente.js";
 
 //Formalización y desarrollo
+import NuevaInscripcion from "views/FormalizacionYDesarrollo/Inscripcion/new";
 import Inscripcion from "views/FormalizacionYDesarrollo/Inscripcion/index";
 import Curso from "views/FormalizacionYDesarrollo/Curso/index";
 import Participante from "views/FormalizacionYDesarrollo/Participante/index";
@@ -112,6 +113,7 @@ export const components=[
   Participante,//40
   Notificaciones,//41
   CobranzaDashboard,//42
+  NuevaInscripcion, //43
 ]
 //6
 export const routesAdmin = [

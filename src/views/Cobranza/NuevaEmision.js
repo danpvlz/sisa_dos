@@ -575,6 +575,7 @@ const NuevaEmision = () => {
 
                               <Select
                                 placeholder="Seleccione..."
+                                closeMenuOnSelect={false}
                                 className="select-style select-multiple-height"
                                 isMulti
                                 name="months"

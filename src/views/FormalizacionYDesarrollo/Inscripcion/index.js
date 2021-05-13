@@ -21,59 +21,66 @@ import {
   Input,
 } from "reactstrap";
 // core components
-import New from "./new";
 import ConfirmDialog from '../../../components/Modals/ConfirmDialog';
 import { useDispatch, useSelector } from "react-redux";
-import { list, show, destroy, resetObject } from "../../../redux/actions/Participante";
+import { list, show, destroy, reset } from "../../../redux/actions/Inscripcion";
 import Loading from "../../../components/Loaders/LoadingSmall";
+import SearchParticipants from "../../../components/Selects/SearchParticipants";
+import SearchCursoFilter from "../../../components/Selects/SearchCursoFilter";
+import Edit from "./edit";
+import moment from "moment";
+import 'moment/locale/es';
+moment.locale('es');
 
 const Index = () => {
   const dispatch = useDispatch();
-  const { participanteList, participanteStatusActions } = useSelector(({ participante }) => participante);
+  const { inscripcionList, inscripcionStatusActions } = useSelector(({ inscripcion }) => inscripcion);
   const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
-  const [searchParticipante, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [showModal, setshow] = useState({
     confirm: false,
-    new: false,
+    edit: false,
   });
   const [selected, setSelected] = useState(null);
   const [confirm, setconfirm] = useState(false);
   const [action, setAction] = useState(1);
+  const [participantSearched, setParticipant] = useState(null);
+  const [cursoSearched, setCursoSearched] = useState(null);
+
   const history = useHistory();
 
-  const handleNew = () => {
-    dispatch(resetObject());
-    setSelected(null);
-    toggleModal('new');
-  };
+  /*
+    const handleNew = () => {
+      dispatch(resetObject());
+      setSelected(null);
+      toggleModal('new');
+    };
+  */
+
+  const handleNew = useCallback(() => history.push('/admin/formalizacion-y-desarrollo/nueva-inscripcion'), [history]);
 
   useEffect(() => {
-    if (participanteStatusActions == 200) {
+    if (inscripcionStatusActions == 200) {
       dispatch(list(page, search));
     }
-  }, [participanteStatusActions]);
+  }, [inscripcionStatusActions]);
 
   useEffect(() => {
     let tsearch = search;
-    if (searchParticipante == "") {
-      delete tsearch.searchParticipante;
+    if (participantSearched == null) {
+      delete tsearch.participante;
     } else {
-      tsearch.searchParticipante = searchParticipante;
+      tsearch.participante = participantSearched.value;
+    }
+    if (cursoSearched == null) {
+      delete tsearch.curso;
+    } else {
+      tsearch.curso = cursoSearched;
     }
     setsearch(tsearch);
     dispatch(list(page, tsearch));
-  }, [page, searchParticipante]);
-
-  useEffect(() => {
-    if (selected) {
-      dispatch(show(selected));
-    }
-    return () => {
-      setSelected(null);
-    }
-  }, [selected])
+  }, [page, participantSearched,cursoSearched]);
 
   const toggleModal = (modal) => {
     setshow({ ...showModal, [modal]: !showModal[modal] });
@@ -86,17 +93,21 @@ const Index = () => {
     }
   }, [confirm]);
 
+  useEffect(() => {
+    if (action == 1 && selected!=null) { dispatch(show(selected)); }
+  },[selected])
+
   return (
     <>
       <div className="header pb-8 pt-9 d-flex align-items-center">
         <span className="mask bg-gradient-info opacity-8" />
       </div>
       <ConfirmDialog
-        question={action == 1 ? "¿Seguro de desactivar el participante?" : action == 2 ? "¿Seguro de eliminar el participante?" : "¿Seguro de activar el participante?"}
+        question={action == 1 ? "¿Seguro de desactivar el participante?" : action == 2 ? "¿Seguro de eliminar inscripción?" : "¿Seguro de activar el participante?"}
         showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} setConfirm={setconfirm} />
-      <New
-        show={showModal.new}
-        toggleModal={() => toggleModal('new')}
+      <Edit
+        show={showModal.edit}
+        toggleModal={() => toggleModal('edit')}
       />
       {/* Page content */}
       <Container className="mt--9" fluid>
@@ -126,65 +137,69 @@ const Index = () => {
                       <i className="fas fa-plus" />
                     </Button>
                   </Col>
+                  <Col lg="12 ">
+                    <hr className="my-4" />
+                    <Row className="bg-secondary">
+                      <Col lg="6">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-ruc"
+                          >Curso</label>
+                          <SearchCursoFilter setVal={setCursoSearched} val={cursoSearched} />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                          >Participante</label>
+                          <SearchParticipants setVal={setParticipant} participant={participantSearched} />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </Col>
                 </Row>
               </CardHeader>
               {
-                !loading && participanteList.data ?
+                !loading && inscripcionList.data ?
                   <>
-                    <Table className="align-items-center table-flush" responsive>
+                    <Table className="align-items-center table-flush table-sm" responsive>
                       <thead className="thead-light">
                         <tr>
                           <th scope="col">Participante</th>
                           <th scope="col">DNI</th>
-                          <th scope="col">Email</th>
-                          <th scope="col">Celular.</th>
-                          <th scope="col">Empresa</th>
-                          <th scope="col">RUC</th>
-                          <th scope="col">Cargo</th>
+                          <th scope="col">Curso</th>
+                          <th scope="col">Inscripción</th>
                           <th scope="col"></th>
                         </tr>
                       </thead>
                       <tbody>
                         {
-                          participanteList?.data?.map((participante, key) =>
+                          inscripcionList?.data?.map((inscription, key) =>
                             <tr key={key}>
                               <td scope="row">
-                                {participante.nombres + ' ' + participante.apellidoPaterno + ' ' + participante.apellidoMaterno}
+                                {inscription.participante}
                               </td>
                               <td>
-                                {participante.dni}
+                                {inscription.dni}
                               </td>
                               <td>
-                                {participante.correo}
+                                {inscription.curso}
                               </td>
                               <td>
-                                {participante.celular}
-                              </td>
-                              <td>
-                                {participante.empresa}
-                              </td>
-                              <td>
-                                {participante.ruc}
-                              </td>
-                              <td>
-                                {participante.cargo}
+                                {moment(inscription.fecha, "YYYY-MM-DD h:m:s").fromNow()}
                               </td>
                               <td className="text-right">
                                 <Button
                                   className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
-                                  onClick={(e) => { setSelected(participante.idParticipante); toggleModal('new'); }}
+                                  onClick={(e) => { setAction(1); setSelected(inscription.idInscripcion); toggleModal('edit'); }}
                                 >
                                   <i className="text-blue fa fa-eye fa-2x" aria-hidden="true"></i>
                                 </Button>
                                 <Button
                                   className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
-                                  onClick={(e) => { setAction(participante.estado); setSelected(participante.idParticipante); toggleModal('confirm'); }}
-                                >
-                                  <i className={`text-${participante.estado == 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}  fa-2x`} aria-hidden="true"></i>
-                                </Button>
-                                <Button
-                                  className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
-                                  onClick={(e) => { setAction(2); setSelected(participante.idParticipante); toggleModal('confirm'); }}
+                                  onClick={(e) => { setAction(2); setSelected(inscription.idInscripcion); toggleModal('confirm'); }}
                                 >
                                   <i className="text-danger fa fa-trash fa-2x" aria-hidden="true"></i>
                                 </Button>
@@ -203,7 +218,7 @@ const Index = () => {
                           lastPageText=">>"
                           previousPageText="<"
                           nextPageText=">"
-                          totalItems={participanteList?.meta?.total ? participanteList?.meta?.total : 0}
+                          totalItems={inscripcionList?.meta?.total ? inscripcionList?.meta?.total : 0}
                           pageSize={10}
                           onSelect={(selectedPage) => setPage(selectedPage)}
                         />

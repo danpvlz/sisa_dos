@@ -100,7 +100,6 @@ import {
   
   export const show = (id) => {
     return (dispatch) => {
-      dispatch({ type: FETCH_START });
       axios.get('course/'+id,
       ).then(({ data }) => {
         if (data) {
@@ -144,12 +143,12 @@ import {
     }
   };
   
-  export const filter = (search="") => {
+  export const filter = (search="",isId=false) => {
     return (dispatch) => {
-      dispatch({ type: FETCH_START });
       axios.post('/filterCursos',
       {
-          "search": search
+          "search": search,
+          "isId": isId
       }
       ).then(({data}) => {
         if (data) {

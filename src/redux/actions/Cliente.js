@@ -96,7 +96,6 @@ export const store = (clientData) => {
 
 export const update = (clientData,id) => {
   return (dispatch) => {
-    dispatch({ type: FETCH_START });
     dispatch({ type: CLIENT_STATUS_ACTIONS, payload: 0 });
 
     axios.post('clienteUpdate/'+id,

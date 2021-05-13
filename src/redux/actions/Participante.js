@@ -78,7 +78,6 @@ import {
   
   export const show = (id) => {
     return (dispatch) => {
-      dispatch({ type: FETCH_START });
       axios.get('participant/'+id,
       ).then(({ data }) => {
         if (data) {
@@ -122,11 +121,12 @@ import {
     }
   };
   
-  export const filter = (search="") => {
+  export const filter = (search="",isId=false) => {
     return (dispatch) => {
       axios.post('/filterParticipants',
       {
-          "search": search
+          "search": search,
+          "isId": isId
       }
       ).then(({data}) => {
         if (data) {

@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchError, hideMessage } from '../../../redux/actions/Common';
 import { store, update } from "../../../redux/actions/Participante";
 
-const New = ({ show, toggleModal }) => {
+const New = ({ show, toggleModal, setSearched }) => {
   const { register, handleSubmit, watch, reset } = useForm();
   const { participanteObject } = useSelector(({ participante }) => participante);
   const dispatch = useDispatch();
@@ -51,6 +51,9 @@ const New = ({ show, toggleModal }) => {
               toggleModal();
             } else {
               dispatch(store(formdata));
+              if(setSearched){
+                setSearched(formdata.dni);
+              }
               setformdata(null);
               toggleModal();
             }

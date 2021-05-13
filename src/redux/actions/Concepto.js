@@ -99,7 +99,6 @@ export const update = (conceptData,idConcepto) => {
 
 export const show = (id) => {
   return (dispatch) => {
-    dispatch({ type: FETCH_START });
     axios.get('concepto/'+id,
     ).then(({ data }) => {
       if (data) {

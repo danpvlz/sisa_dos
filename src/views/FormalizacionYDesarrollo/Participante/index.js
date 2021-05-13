@@ -195,24 +195,27 @@ const Index = () => {
                                 {participante.cargo}
                               </td>
                               <td className="text-right">
-                                <Button
-                                  className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
+                                <span
+                                  className="mx-2"
+                                  style={{cursor: 'pointer' }}
                                   onClick={(e) => { setSelected(participante.idParticipante); toggleModal('new'); }}
                                 >
-                                  <i className="text-blue fa fa-eye fa-2x" aria-hidden="true"></i>
-                                </Button>
-                                <Button
-                                  className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
+                                  <i className="fa-lg text-blue fa fa-eye" aria-hidden="true"></i>
+                                </span>
+                                <span
+                                  className="mx-2"
+                                  style={{cursor: 'pointer' }}
                                   onClick={(e) => { setAction(participante.estado); setSelected(participante.idParticipante); toggleModal('confirm'); }}
                                 >
-                                  <i className={`text-${participante.estado == 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}  fa-2x`} aria-hidden="true"></i>
-                                </Button>
-                                <Button
-                                  className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
+                                  <i className={`fa-lg text-${participante.estado == 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}`} aria-hidden="true"></i>
+                                </span>
+                                <span
+                                  className="mx-2"
+                                  style={{cursor: 'pointer' }}
                                   onClick={(e) => { setAction(2); setSelected(participante.idParticipante); toggleModal('confirm'); }}
                                 >
-                                  <i className="text-danger fa fa-trash fa-2x" aria-hidden="true"></i>
-                                </Button>
+                                  <i className="fa-lg text-danger fa fa-trash" aria-hidden="true"></i>
+                                </span>
                               </td>
                             </tr>
                           )

@@ -26,6 +26,9 @@ import ConfirmDialog from '../../../components/Modals/ConfirmDialog';
 import { useDispatch, useSelector } from "react-redux";
 import { list, show, changeStatus, destroy, resetCursoObject } from "../../../redux/actions/Curso";
 import Loading from "../../../components/Loaders/LoadingSmall";
+import moment from "moment";
+import 'moment/locale/es';
+moment.locale('es');
 
 const Index = () => {
   const dispatch = useDispatch();
@@ -158,7 +161,7 @@ const Index = () => {
               {
                 !loading && cursoList.data ?
                   <>
-                    <Table className="align-items-center table-flush" responsive>
+                    <Table className="align-items-center table-flush table-sm" responsive>
                       <thead className="thead-light">
                         <tr>
                           <th scope="col">Curso</th>
@@ -181,7 +184,7 @@ const Index = () => {
                                 </Badge>
                               </td>
                               <td>
-                                {curso.updated_at}
+                                {moment(curso.updated_at, "YYYY-MM-DD h:m:s").fromNow()}
                               </td>
                               <td className="text-right">
                                 <Button
