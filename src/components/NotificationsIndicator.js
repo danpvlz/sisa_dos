@@ -22,8 +22,8 @@ export default function NotificationsIndicator() {
     <UncontrolledDropdown nav>
       <DropdownToggle nav className="nav-link-icon">
         {
-          notifications.filter(n => n.clicked == false).length > 0 ?
-            <span className="fa-stack " data-count={notifications.filter(n => n.clicked == false).length}>
+          notifications.filter(n => n.seen == 0).length > 0 ?
+            <span className="fa-stack " data-count={notifications.filter(n => n.seen == 0).length}>
               <i className="ni ni-bell-55" style={{ fontSize: '1.2rem' }} />
             </span>
             :
@@ -38,7 +38,7 @@ export default function NotificationsIndicator() {
         {
           notifications.length > 0 ?
             notifications.sort((a, b) => moment(b.timestamp).diff(a.timestamp)).map((notification, key) =>
-              <div key={key} className={notification.clicked ? 'seen' : 'not-seen'}>
+              <div key={key} className={notification.seen==1 ? 'seen' : 'not-seen'}>
                 <DropdownItem
                   onClick={() => {
                     history.push({

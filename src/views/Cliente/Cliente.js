@@ -208,6 +208,7 @@ const Cliente = () => {
                     totalItems={clientList?.meta?.total ? clientList?.meta?.total : 0}
                     pageSize={10}
                     onSelect={(selectedPage)=>setPage(selectedPage)}
+                    defaultActivePage={page}
                   />
                 </nav>
               </CardFooter>

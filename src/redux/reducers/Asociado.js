@@ -9,6 +9,8 @@ import {
     UPDATE_ASSOCIATED,
     SHOW_RUC_SEARCHED,
     SHOW_DNI_SEARCHED,
+    LIST_MONTH_CALENDAR_ASSOCIATED, 
+    LIST_WEEK_CALENDAR_ASSOCIATED,
   } from "../ActionTypes";
   
   const INIT_STATE = {
@@ -29,11 +31,25 @@ import {
       inProcess:0,
     },
     dniSearched:null,
-    rucSearched:null
+    rucSearched:null,
+    associatedMonthCalendar: [],
+    associatedWeekCalendar: [],
   };
   
   export default (state = INIT_STATE, action) => {
     switch (action.type) {
+      case LIST_MONTH_CALENDAR_ASSOCIATED: {
+        return {
+          ...state,
+          associatedMonthCalendar: action.payload
+        }
+      }
+      case LIST_WEEK_CALENDAR_ASSOCIATED: {
+        return {
+          ...state,
+          associatedWeekCalendar: action.payload
+        }
+      }
       case LIST_ASSOCIATED: {
         return {
           ...state,

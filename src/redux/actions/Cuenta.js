@@ -323,24 +323,6 @@ export const update = (pagoData,id) => {
       });
   }
 };
-  
-export const listRepeated = (params={}) => {
-    return (dispatch) => {
-      dispatch({ type: FETCH_START });
-      axios.post('listRepeated',
-      params
-      ).then(({ data }) => {  
-        if (data) {
-          dispatch({ type: FETCH_SUCCESS });
-          dispatch({ type: LIST_REPEATED, payload: data });
-        } else {
-          dispatch({ type: FETCH_ERROR, payload: data.error });
-        }
-      }).catch(function (error) {
-        dispatch({ type: FETCH_ERROR, payload: error });
-      });
-    }
-};
 
 export const loadDashboard = (params={}) => {
   return (dispatch) => {

@@ -339,6 +339,7 @@ const Asistencia = () => {
                               totalItems={myAssistanceList?.meta?.total ? myAssistanceList?.meta?.total : 0}
                               pageSize={10}
                               onSelect={(selectedPage) => setPage(selectedPage)}
+                              defaultActivePage={page}
                             />
                           </nav>
                         </CardFooter>
@@ -478,6 +479,7 @@ const Asistencia = () => {
                               totalItems={myAssistanceDetailList?.meta?.total ? myAssistanceDetailList?.meta?.total : 0}
                               pageSize={10}
                               onSelect={(selectedPage) => setPageDetail(selectedPage)}
+                              defaultActivePage={pageDetail}
                             />
                           </nav>
                         </CardFooter>

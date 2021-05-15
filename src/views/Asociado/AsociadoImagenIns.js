@@ -1,391 +1,476 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
-import PaginationComponent from "react-reactstrap-pagination";
 
 // reactstrap components
 import {
-  Badge,
   Card,
   CardHeader,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Table,
   Container,
   Row,
   Button,
   Col,
-  FormGroup,
-  Input
+  CardBody
 } from "reactstrap";
 // core components
-import Select from 'react-select';
-import ConfirmDialog from '../../components/Modals/ConfirmDialog';
-import Header from "components/Headers/AsociadoHeader.js";
-import SearchAsociado from "components/Selects/SearchAsociado.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listAssociated, exportAssociateds, status, assignCode, removeInProcess } from "../../redux/actions/Asociado";
+import { listMonth, listWeek } from "../../redux/actions/Asociado";
 import Loading from "../../components/Loaders/LoadingSmall";
+import { Collapse } from "bootstrap";
+
+var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+var daysNames = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+var daysNamesSM = ["L", "M", "M", "J", "V", "S", "D"];
 
 const Asociado = () => {
   const dispatch = useDispatch();
   const { associatedList, meta, associatedStatusActions } = useSelector(({ asociado }) => asociado);
   const { loading } = useSelector(({ commonData }) => commonData);
-  const [search, setsearch] = useState({});
-  const [idAsociado, setIdAsociado] = useState(null);
-  const [state, setState] = useState(null);
-  const [debCollector, setdebCollector] = useState(null);
-  const [page, setPage] = useState(1)
-  //const asociados = require('../../data/asociado.json');
   const history = useHistory();
-  const handleNewAsociado = useCallback(() => history.push('/admin/nuevo-asociado'), [history]);
-  const [selectedAsociado, setSelectedAsociado] = useState(null);
-  const [showSetCodigo, setshowSetCodigo] = useState(false);
-  const [codigo, setcodigo] = useState(null);
-  const [sendcodigo, setsendcodigo] = useState(false);
-  const [confirm, setComfirm] = useState(false);
-
-  const [question, setquestion] = useState('');
-  const [action, setAction] = useState(1);
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  //Filters
-  const [since, setsince] = useState(null);
-  const [promotorSearched, setPromotorSearched] = useState(null);
-
-  const [showHeaders, setshowHeaders] = useState({
-    Tipo: true,
-    Documento: true,
-    Estado: true,
-    Importe: true,
-    Cobrador: true,
-    Comite: true,
-    Direccion: true,
-    Ingreso: true,
-    Promotor: true,
-    Codigo: true,
-  });
-
-  useEffect(() => {
-    if (associatedStatusActions == 200) {
-      dispatch(listAssociated(page, search));
-    }
-  }, [associatedStatusActions]);
-
-  useEffect(() => {
-    let tsearch = search;
-    if (idAsociado == null) {
-      delete tsearch.idAsociado;
-    } else {
-      tsearch.idAsociado = idAsociado;
-    }
-    setsearch(tsearch);
-    dispatch(listAssociated(page, tsearch))
-  }, [idAsociado]);
-
-  useEffect(() => {
-    let tsearch = search;
-    if (debCollector == null) {
-      delete tsearch.debCollector;
-    } else {
-      tsearch.debCollector = debCollector;
-    }
-    setsearch(tsearch);
-    dispatch(listAssociated(page, tsearch))
-  }, [debCollector]);
-
-  useEffect(() => {
-    let tsearch = search;
-    if (since == null) {
-      delete tsearch.since;
-    } else {
-      tsearch.month = since;
-    }
-    setsearch(tsearch);
-    dispatch(listAssociated(page, tsearch));
-  }, [since]);
-
-  useEffect(() => {
-    let tsearch = search;
-    if (promotorSearched == null) {
-      delete tsearch.promotorSearched;
-    } else {
-      tsearch.promotor = promotorSearched;
-    }
-    setsearch(tsearch);
-    dispatch(listAssociated(page, tsearch));
-  }, [promotorSearched]);
-
-  useEffect(() => {
-    let tsearch = search;
-    if (state == null) {
-      delete tsearch.state;
-    } else {
-      tsearch.state = state;
-    }
-    setsearch(tsearch);
-    dispatch(listAssociated(page, tsearch))
-  }, [state]);
-
-  useEffect(() => {
-    dispatch(listAssociated(page, search))
-  }, [page])
-
-  const toggleModalCodigo = () => {
-    setshowSetCodigo(!showSetCodigo);
-  };
-
-  useEffect(() => {
-    if (sendcodigo) {
-      //REGISTRAR
-      var fData = {
-        "idAsociado": selectedAsociado,
-        "codigo": codigo
-      }
-      dispatch(assignCode(fData))
-      //REGISTRAR
-      setcodigo(null);
-      setsendcodigo(false);
-      setSelectedAsociado(null);
-    }
-  }, [sendcodigo]);
-
-  const toggleModalConfirm = () => {
-    setShowConfirm(!showConfirm);
-  };
-
-  useEffect(() => {
-    if (confirm) {
-      if (action == 1) {
-        dispatch(status(selectedAsociado)); //CAMBIAR DE ESTADO
-      } else {
-        dispatch(removeInProcess(selectedAsociado)); //ELIMINAR
-      }
-      setComfirm(false);
-      setSelectedAsociado(null);
-    }
-  }, [confirm, action]);
+  const [typeCalendar, settypeCalendar] = useState(1);
 
   return (
     <>
-      <Header />
+      <div className="header pb-8 pt-8 d-flex align-items-center">
+        <span className="mask bg-gradient-info opacity-8" />
+      </div>
       {/* Page content */}
-      <Container className="mt--7" fluid>
+      <Container className="mt--9" fluid>
         {/* Table */}
         <Row>
           <div className="col">
-            <Card className="shadow">
-              <ConfirmDialog
-                question={question}
-                showConfirm={showConfirm} toggleModal={toggleModalConfirm} setConfirm={setComfirm} />
-              <CardHeader className="border-0 bg-secondary">
-                <Row >
-                  <Col lg="12" className="border-0 d-flex justify-content-between">
-                    <h3 className="mb-0">Asociados</h3>
-                    <Button
-                      className="btn-new-xl btn-icon d-none d-md-block"
-                      color="primary"
-                      onClick={handleNewAsociado}
-                    >
-                      <span className="btn-inner--icon">
-
-                        <i className="fa fa-plus" />
-                      </span>
-                      <span className="btn-inner--text">Nuevo asociado</span>
-                    </Button>
-                    <Button
-                      className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
-                      onClick={handleNewAsociado}
-                    >
-                      <i className="fas fa-plus" />
-                    </Button>
-                  </Col>
-                  <Col lg="12 ">
-                    <hr className="my-4 " />
-                    <Row className="bg-secondary">
-                      <Col lg="3"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Ingreso
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="fitlerSince"
-                            placeholder="fitlerSince"
-                            type="month"
-                            value={since}
-                            onChange={(inputValue, actionMeta) => {
-                              setsince(inputValue != null ? inputValue.target.value : null);
-                            }}
-                          />
-                        </FormGroup >
-                      </Col>
-                      <Col lg="6"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Asociado
-                      </label>
-                          <SearchAsociado setVal={setIdAsociado} />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="3"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Estado
-                          </label>
-                          <Select
-                            placeholder="Seleccione..."
-                            className="select-style"
-                            name="sexo"
-                            onChange={(inputValue, actionMeta) => {
-                              setState(inputValue != null ? inputValue.value : null);
-                            }}
-                            isClearable
-                            options={[{ value: 1, label: "Activo" }, { value: 2, label: "En proceso" }, { value: 3, label: "Retiro" }]} />
-                        </FormGroup >
-                      </Col>
-                      <Col lg="3"  >
-                        <FormGroup className="mb-0 pb-4">
-                          <label
-                            className="form-control-label"
-                            htmlFor="filterMonth"
-                          >
-                            Onomásticos
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="fitlerSince"
-                            placeholder="fitlerSince"
-                            type="month"
-                            value={since}
-                            onChange={(inputValue, actionMeta) => {
-                              setsince(inputValue != null ? inputValue.target.value : null);
-                            }}
-                          />
-                        </FormGroup >
-                      </Col>
-                      <Col lg="2" className="text-right my-auto ml-auto">
-                        <Button color="success" type="button" onClick={() => dispatch(exportAssociateds(search))}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
-                        </Button>
-                      </Col>
-                    </Row>
-
-                  </Col>
-
-                </Row>
-              </CardHeader>
-              {
-                !loading && associatedList.data ?
-                  <>
-                    <Table className="align-items-center table-flush" responsive>
-                      <thead className="thead-light">
-                        <tr>
-                          <th scope="col">Asociado</th>
-                          <th scope="col">Tipo</th>
-                          <th scope="col">Estado</th>
-                          <th scope="col">Ingreso</th>
-                          <th scope="col">Onomástico</th>
-                          <th scope="col">Correos</th>
-                          <th scope="col">Teléfonos</th>
-                          <th scope="col" />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                          associatedList?.data?.map((asociado, key) =>
-                            <tr key={key}>
-                              <td scope="row">
-                                {asociado.asociado}
-                              </td>
-                              <td>
-                                {asociado.tipoAsociado == 1 ? "Empresa" : "Persona"}
-                              </td>
-                              <td>
-                                <Badge color="" className="badge-dot mr-4">
-                                  <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : "bg-warning"} />
-                                  {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : "Retiro"}
-                                </Badge>
-                              </td>
-                              <td>
-                                {asociado.fechaIngreso}
-                              </td>
-                              <td>
-                                {asociado.onomastico}
-                              </td>
-                              <td>
-                                {asociado.correos}
-                              </td>
-                              <td>
-                                {asociado.telefonos}
-                              </td>
-                              <td className="text-right">
-                                <UncontrolledDropdown>
-                                  <DropdownToggle
-                                    className="btn-icon-only text-light"
-                                    role="button"
-                                    size="sm"
-                                    color=""
-                                    onClick={(e) => e.preventDefault()}
-                                  >
-                                    <i className="fas fa-ellipsis-v" />
-                                  </DropdownToggle>
-                                  <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
-                                    <DropdownItem
-                                      className="d-flex"
-                                      onClick={() => {
-                                        history.push({
-                                          pathname: '/admin/ver-asociado',
-                                          state: { asociadoSelected: asociado.idAsociado }
-                                        });
-                                      }}
-                                    >
-                                      <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
-                        </DropdownItem>
-                                  </DropdownMenu>
-                                </UncontrolledDropdown>
-                              </td>
-                            </tr>
-                          )
-                        }
-
-                      </tbody>
-                    </Table>
-                    <CardFooter className="py-4">
-                      <nav aria-label="..." className="pagination justify-content-end mb-0">
-                        <PaginationComponent
-                          listClassName="justify-content-end mb-0"
-                          firstPageText="<<"
-                          lastPageText=">>"
-                          previousPageText="<"
-                          nextPageText=">"
-                          totalItems={associatedList?.meta?.total ? associatedList?.meta?.total : 0}
-                          pageSize={10}
-                          onSelect={(selectedPage) => setPage(selectedPage)}
-                        />
-                      </nav>
-                    </CardFooter>
-                  </>
-                  :
-                  <Loading />
-              }
-            </Card>
+            {
+              typeCalendar == 1 ?
+                <>
+                  <WeekCalendar typeCalendar={typeCalendar} settypeCalendar={settypeCalendar} />
+                  <DayCalendar typeCalendar={typeCalendar} settypeCalendar={settypeCalendar} />
+                </>
+                :
+                <MonthCalendar typeCalendar={typeCalendar} settypeCalendar={settypeCalendar} />
+            }
           </div>
         </Row>
       </Container>
     </>
   );
 };
+
+const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
+  const dispatch = useDispatch();
+  const { associatedMonthCalendar } = useSelector(({ asociado }) => asociado);
+  const [firstDay, setfirstDay] = useState(new Date());
+  const [prevMonth, setprevMonth] = useState(new Date().getMonth());
+
+  const currentDay = () => {
+    setfirstDay(new Date());
+    if (new Date.getMonth() != prevMonth) {
+      setprevMonth(new Date.getMonth());
+    }
+  }
+
+  const addDay = () => {
+    let ini = new Date(firstDay);
+    let newDate = new Date(ini.setDate(ini.getDate() + parseInt(1)));
+    setfirstDay(newDate);
+    if (newDate.getMonth() != prevMonth) {
+      setprevMonth(newDate.getMonth());
+    }
+  }
+
+  const minusDay = () => {
+    let ini = new Date(firstDay);
+    let newDate = new Date(ini.setDate(ini.getDate() - parseInt(1)));
+    setfirstDay(newDate);
+    if (newDate.getMonth() != prevMonth) {
+      setprevMonth(newDate.getMonth());
+    }
+  }
+
+  useEffect(() => {
+    dispatch(listMonth({ month: prevMonth + 1 }));
+  }, [prevMonth]);
+
+  return (
+
+    <Card className="shadow d-sm-none">
+      <CardHeader className="border-0">
+        <Row className="m-auto">
+          <Col lg={2}>
+            <div className="d-block text-center">
+              <Button color={typeCalendar == 1 ? "primary" : "white"} size="sm" type="button" onClick={() => settypeCalendar(1)}>Día</Button>
+              <Button color={typeCalendar == 1 ? "white" : "primary"} size="sm" type="button" onClick={() => settypeCalendar(2)}>Mes</Button>
+            </div>
+          </Col>
+        </Row>
+      </CardHeader>
+      <CardBody>
+        <Row className="text-center pb-4 mx-auto">
+          <Col className="d-flex">
+            <Button
+              className="icon icon-shape text-primary rounded-circle shadow"
+              onClick={minusDay}
+            >
+              <i className="ni ni-bold-left " />
+            </Button>
+            <div className={`flex-column text-center mx-3`}>
+              <h3 className="text-primary p-0 m-0">
+                {daysNames[firstDay.getDay() == 0 ? 6 : firstDay.getDay() - 1]}
+              </h3>
+              <h3 className="text-primary p-0 m-0">
+                {firstDay.getDate() + ' ' + monthNames[firstDay.getMonth()] +
+                  ' ' + firstDay.getFullYear()}
+              </h3>
+              <Button color="secondary" outline size="sm" type="button" onClick={currentDay}>Hoy</Button>
+            </div>
+            <Button
+              className="btn-sm  icon icon-shape text-primary rounded-circle shadow"
+              onClick={addDay}
+            >
+              <i className="ni ni-bold-right" />
+            </Button>
+          </Col>
+        </Row>
+        <Row className="border rounded bg-secondary p-2">
+          <Col className="text-center">
+            {
+              associatedMonthCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == firstDay.getDate())?.length == 0 &&
+              <p className="mx-auto mt-3 text-muted">No hay eventos</p>
+            }
+            {
+              associatedMonthCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == firstDay.getDate())?.map((item, key) =>
+                <div key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico'}`}>
+                  <span className="type-calendar-item d-block">{item.tipo.toUpperCase()}</span>
+                  <strong className="calendar-item-name my-2 d-block">
+                    {item.nombres.toUpperCase()}
+                  </strong>
+                  <small>{item.fecha}</small>
+                </div>
+              )
+            }
+          </Col>
+        </Row>
+      </CardBody>
+    </Card>
+  );
+}
+
+const WeekCalendar = ({ typeCalendar, settypeCalendar }) => {
+  const dispatch = useDispatch();
+  const { associatedWeekCalendar } = useSelector(({ asociado }) => asociado);
+  const [firstDay, setfirstDay] = useState(new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1)));
+  const getCalendarDate = (addDays) => {
+    let ini = new Date(firstDay);
+    return new Date(ini.setDate(ini.getDate() + parseInt(addDays)));
+  }
+
+  const currentWeek = () => {
+    setfirstDay(new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1)));
+  }
+
+  const addWeek = () => {
+    let ini = firstDay;
+    setfirstDay(new Date(ini.setDate(ini.getDate() + parseInt(7))));
+  }
+
+  const minusWeek = () => {
+    let ini = firstDay;
+    setfirstDay(new Date(ini.setDate(ini.getDate() - parseInt(7))));
+  }
+
+  const constructDate = (date) => {
+    let month = date.getMonth() + 1;
+    return date.getFullYear() + '-' + (month < 10 ? '0' + month : month) + '-' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+  }
+
+  const getContentCalendar = () => {
+    let ini = new Date(firstDay);
+    let end = new Date(ini.setDate(ini.getDate() + parseInt(6)));
+    dispatch(listWeek({ start: constructDate(firstDay), end: constructDate(end) }));
+  }
+
+  useEffect(() => {
+    getContentCalendar()
+  }, [firstDay]);
+
+  return (
+    <Card className="shadow d-none d-md-flex">
+      <CardHeader className="border-0">
+        <Row className="m-auto">
+          <Col lg={10} className="d-flex mb-3">
+            <Button
+              className="icon icon-shape text-primary rounded-circle shadow"
+              onClick={minusWeek}
+            >
+              <i className="ni ni-bold-left " />
+            </Button>
+            <div className="flex-column text-primary text-center mx-3">
+              <h1 className="text-primary p-0 m-0">
+                {monthNames[getCalendarDate(6).getMonth()] +
+                  ', ' + getCalendarDate(6).getFullYear() + ' (' +
+                  firstDay.getDate() + ' - ' +
+                  (getCalendarDate(6).getDate()) + ')'}
+              </h1>
+              <Button color="secondary" outline size="sm" type="button" onClick={currentWeek}>Esta semana</Button>
+            </div>
+            <Button
+              className="btn-sm  icon icon-shape text-primary rounded-circle shadow"
+              onClick={addWeek}
+            >
+              <i className="ni ni-bold-right" />
+            </Button>
+          </Col>
+          <Col lg={2}>
+            <div className="d-block text-center">
+              <Button color={typeCalendar == 1 ? "primary" : "white"} size="sm" type="button" onClick={() => settypeCalendar(1)}>Semana</Button>
+              <Button color={typeCalendar == 1 ? "white" : "primary"} size="sm" type="button" onClick={() => settypeCalendar(2)}>Mes</Button>
+            </div>
+          </Col>
+        </Row>
+      </CardHeader>
+      <CardBody>
+        <Row className="text-center pb-4">
+          {
+            [...Array(7).keys()].map((day, i) =>
+              <Col key={i}>
+                <Row className={firstDay.getDate() + i == new Date().getDate() ? 'text-primary' : 'day'}>
+                  <Col className="col-12 mb-2 day-name">
+                    {daysNames[i]}
+                  </Col>
+                  <Col className="col-12">
+                    <span className="day-number">{getCalendarDate(i).getDate()}</span>
+                  </Col>
+                </Row>
+              </Col>
+            )
+          }
+        </Row>
+        <div className="d-flex border rounded bg-secondary">{
+          [...Array(7).keys()].map((day, i) =>
+            <div key={i} className="m-0 p-0 day-container">
+              {
+                associatedWeekCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == getCalendarDate(i).getDate())?.map((item, key) =>
+                  <div key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico'}`}>
+                    <span className="type-calendar-item d-block">{item.tipo.toUpperCase()}</span>
+                    <strong className="calendar-item-name my-2 d-block">
+                      {item.nombres.toUpperCase()}
+                    </strong>
+                    <small>{item.fecha}</small>
+                  </div>
+                )
+              }
+            </div>
+          )
+        }
+        </div>
+      </CardBody>
+    </Card>
+  );
+}
+
+const MonthCalendar = ({ typeCalendar, settypeCalendar }) => {
+  const dispatch = useDispatch();
+  const { associatedMonthCalendar } = useSelector(({ asociado }) => asociado);
+  const [startMonth, setstartMonth] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  const [endMonth, setendMonth] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
+  const [selectedDay, setselectedDay] = useState(null);
+  const [selectedDate, setselectedDate] = useState(null);
+
+  const currentMonth = () => {
+    setstartMonth(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+    setendMonth(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
+  }
+
+  const addMonth = () => {
+    let ini = startMonth;
+    let newIni = new Date(ini.setMonth(ini.getMonth() + parseInt(1)));
+    setstartMonth(newIni);
+    setendMonth(new Date(newIni.getFullYear(), newIni.getMonth() + 1, 0));
+  }
+
+  const minusMonth = () => {
+    let ini = startMonth;
+    let newIni = new Date(ini.setMonth(ini.getMonth() - parseInt(1)));
+    setstartMonth(newIni);
+    setendMonth(new Date(newIni.getFullYear(), newIni.getMonth() + 1, 0));
+  }
+
+  const getDayMonth = (key, i) => {
+    let returnDay = startMonth.getDate() + i + (7 * (key - 1) + (7 - (startMonth.getDay() - 1)));
+    return returnDay > endMonth.getDate() ? '' : returnDay;
+  }
+
+  const checkCurrent = (d) => {
+    let ini = new Date();
+
+    return ini.getMonth() + '-' + ini.getDate() == startMonth.getMonth() + '-' + d;
+  }
+
+  useEffect(() => {
+    dispatch(listMonth({ month: startMonth.getMonth() + 1 }));
+    setselectedDate(null);
+    setselectedDay(null);
+  }, [startMonth]);
+
+  const getSelected = (key, i) => {
+    let day = startMonth.getDate() + i + (7 * (key - 1) + (7 - (startMonth.getDay() - 1)));
+    let returnDate = startMonth.getFullYear()+'-'+(startMonth.getMonth()<10 ? '0'+startMonth.getMonth() : startMonth.getMonth())+'-'+(day<10 ? '0'+day : day);
+    return day > endMonth.getDate() ? '' : returnDate;
+  }
+
+  const getSelectedByDate=(i)=>{
+    return startMonth.getFullYear()+'-'+(startMonth.getMonth()<10?'0'+startMonth.getMonth():startMonth.getMonth())+'-'+(startMonth.getDate()+i<10?'0'+(startMonth.getDate()+parseInt(i)):(startMonth.getDate()+parseInt(i)));
+  }
+
+  return (
+    <>
+      <Card className="shadow">
+        <CardHeader className="border-0">
+          <Row className="m-auto">
+            <Col lg={10} className="d-flex mb-3">
+              <Button
+                className="icon icon-shape text-primary rounded-circle shadow"
+                onClick={minusMonth}
+              >
+                <i className="ni ni-bold-left " />
+              </Button>
+              <div className="flex-column text-primary text-center mx-3">
+                <h2 className="text-primary p-0 m-0">
+                  {monthNames[startMonth.getMonth()] + ', ' + startMonth.getFullYear()}
+                </h2>
+                <Button color="secondary" outline size="sm" type="button" onClick={currentMonth}>Este mes</Button>
+              </div>
+              <Button
+                className="btn-sm  icon icon-shape text-primary rounded-circle shadow"
+                onClick={addMonth}
+              >
+                <i className="ni ni-bold-right" />
+              </Button>
+            </Col>
+            <Col lg={2}>
+              <div className="d-block text-center">
+                <Button color={typeCalendar == 1 ? "primary" : "white"} size="sm" type="button" onClick={() => settypeCalendar(1)}><span className="d-none d-md-flex">Semana</span><span className="d-sm-none">Día</span></Button>
+                <Button color={typeCalendar == 1 ? "white" : "primary"} size="sm" type="button" onClick={() => settypeCalendar(2)}>Mes</Button>
+              </div>
+            </Col>
+          </Row>
+        </CardHeader>
+        <CardBody>
+          <Row className="pb-4 d-none d-md-flex">
+            {
+              daysNames.map((day, i) =>
+                <Col key={i} className="text-center">
+                  {day}
+                </Col>
+              )
+            }
+          </Row>
+          <Row className="pb-4 d-sm-none">
+            {
+              daysNamesSM.map((day, i) =>
+                <Col key={i} className="text-center">
+                  {day}
+                </Col>
+              )
+            }
+          </Row>
+          {[...Array(Math.ceil((startMonth.getDay() - 1 + endMonth.getDate()) / 7))].map((week, key) =>
+            <Row key={key}>
+              {
+                key == 0 &&
+                [...Array(startMonth.getDay() == 0 ? 6 : startMonth.getDay() - 1).keys()].map((empty, i) =>
+                  <Col className="text-center m-0 p-0 my-2" key={i}></Col>
+                )
+              }
+              {
+                key == 0 ?
+                  [...Array(7 - (startMonth.getDay() == 0 ? 6 : startMonth.getDay() - 1)).keys()].map((day, i) =>
+                    <Col className={`${checkCurrent(startMonth.getDate() + i) ? "text-primary font-weight-bold" : ""} text-center m-0 p-0`} key={i}>
+                      <div className="d-flex flex-column my-2">
+                        <p className="calendar-number-month " onClick={() => {setselectedDay(startMonth.getDate() + i); setselectedDate(getSelectedByDate(i));}}>{startMonth.getDate() + i}</p>
+                        <div className="d-flex justify-content-center">
+                          {
+                            associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == (startMonth.getDate() + i) && item.codTipo == 1).length > 0 &&
+                            <span className="calendar-indicator calendar-indicator-aniversario"></span>
+                          }
+                          {
+                            associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == (startMonth.getDate() + i) && item.codTipo == 2).length > 0 &&
+                            <span className="calendar-indicator calendar-indicator-fundacion"></span>
+                          }
+                          {
+                            associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == (startMonth.getDate() + i) && item.codTipo == 3).length > 0 &&
+                            <span className="calendar-indicator calendar-indicator-onomastico"></span>
+                          }
+                        </div>
+                      </div>
+                    </Col>
+                  )
+                  :
+                  [...Array(7).keys()].map((day, i) =>
+                    <Col className={`${checkCurrent(getDayMonth(key, i)) ? "text-primary font-weight-bold" : ""} text-center m-0 p-0`} key={i}>
+                      <div className="d-flex flex-column my-2">
+                        {getDayMonth(key, i) == "" ?
+                          ""
+                          :
+                          <>
+                            <p className="calendar-number-month " onClick={() => {setselectedDay(getDayMonth(key, i));  setselectedDate(getSelected(key,i));}}>{getDayMonth(key, i)}</p>
+                            <div className="d-flex justify-content-center">
+                              {
+                                associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == getDayMonth(key, i) && item.codTipo == 1).length > 0 &&
+                                <span className="calendar-indicator calendar-indicator-aniversario"></span>
+                              }
+                              {
+                                associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == getDayMonth(key, i) && item.codTipo == 2).length > 0 &&
+                                <span className="calendar-indicator calendar-indicator-fundacion"></span>
+                              }
+                              {
+                                associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == getDayMonth(key, i) && item.codTipo == 3).length > 0 &&
+                                <span className="calendar-indicator calendar-indicator-onomastico"></span>
+                              }
+                            </div>
+                          </>
+                        }
+                      </div>
+                    </Col>
+                  )
+              }
+            </Row>
+          )
+          }
+        </CardBody>
+      </Card>
+      <DetailMonth items={associatedMonthCalendar} selected={selectedDay} date={selectedDate} />
+    </>
+  );
+}
+
+const DetailMonth = ({ items,selected,date }) => {
+  return (
+    <Card className={selected ? 'shadow' : 'd-none'}>
+      <CardBody>
+        <Row>
+        </Row>
+        <Row className="border rounded bg-secondary p-2  mx-auto">
+              <Col className="col-12 my-2">
+              <small className="d-flex"><i className="fa fa-calendar text-muted my-auto mr-2" /> {date}</small>
+              </Col>
+            {
+              items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == selected)?.length == 0 &&
+              <p className="mx-auto mt-3 text-muted">No hay eventos</p> 
+            }
+            {
+              items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == selected)?.map((item, key) =>
+                <Col lg={3} key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico item-month-detail'}`}>
+                  <span className="type-calendar-item d-block">{item.tipo.toUpperCase()}</span>
+                  <strong className="calendar-item-name my-2 d-block">
+                    {item.nombres.toUpperCase()}
+                  </strong>
+                  <small>{item.fecha}</small>
+                </Col>
+              )
+            }
+        </Row>
+      </CardBody>
+    </Card>
+  );
+}
 
 export default Asociado;

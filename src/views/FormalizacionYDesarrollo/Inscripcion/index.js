@@ -221,6 +221,7 @@ const Index = () => {
                           totalItems={inscripcionList?.meta?.total ? inscripcionList?.meta?.total : 0}
                           pageSize={10}
                           onSelect={(selectedPage) => setPage(selectedPage)}
+                          defaultActivePage={page}
                         />
                       </nav>
                     </CardFooter>

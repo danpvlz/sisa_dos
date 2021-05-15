@@ -498,6 +498,7 @@ const Asociado = () => {
                           totalItems={associatedList?.meta?.total ? associatedList?.meta?.total : 0}
                           pageSize={10}
                           onSelect={(selectedPage) => setPage(selectedPage)}
+                          defaultActivePage={page}
                         />
                       </nav>
                     </CardFooter>

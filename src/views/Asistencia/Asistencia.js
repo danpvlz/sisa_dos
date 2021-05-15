@@ -282,6 +282,8 @@ const Asistencia = () => {
                               totalItems={assistanceListByWorker?.meta?.total ? assistanceListByWorker?.meta?.total : 0}
                               pageSize={10}
                               onSelect={(selectedPage) => setpageaByWorker(selectedPage)}
+                              defaultActivePage={pageByWorker}
+                              
                             />
 
                           </nav>
@@ -461,6 +463,7 @@ const Asistencia = () => {
                               totalItems={assistanceListAll?.meta?.total ? assistanceListAll?.meta?.total : 0}
                               pageSize={10}
                               onSelect={(selectedPage) => setpageall(selectedPage)}
+                              defaultActivePage={pageall}
                             />
                           </nav>
                         </CardFooter>
@@ -603,6 +606,7 @@ const Asistencia = () => {
                               totalItems={assistanceList?.meta?.total ? assistanceList?.meta?.total : 0}
                               pageSize={10}
                               onSelect={(selectedPage) => setPage(selectedPage)}
+                              defaultActivePage={page}
                             />
                           </nav>
                         </CardFooter>

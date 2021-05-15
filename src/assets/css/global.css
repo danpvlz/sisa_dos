@@ -105,8 +105,16 @@
     background-color: #e5e9ff;
   }
 
+  .not-clicked{
+    background-color: #e5e9ff;
+    border-radius: 1rem;
+    box-shadow:rgb(117 117 117 / 10%) -4px 9px 25px -6px;
+  }
+
   .notif-selected{
-    background-color: rgb(236, 236, 255);
+    background-color: rgb(228 254 236);
+    border-radius: 1rem;
+    box-shadow:rgb(117 117 117 / 10%) -4px 9px 25px -6px;
   }
 
   .loading-logo{
@@ -168,4 +176,158 @@
       transform: translate(0, 0);
     }
   }
+
+  .calendar-header{
+    background-color:#e2edff;
+  }
+
+  .day-name{
+    font-size: .65rem;
+    font-weight: bold;
+  }
+
+  .day-number{
+    font-size: .95rem;
+    font-weight: bold;
+  }
+
+  .day-active{
+    width: .5rem;
+    border-radius: 100%;
+    background-color: #28a5f1;
+    height: .5rem;
+    margin: auto;
+  }
+
+  .calendar-item{
+    border-radius: 1rem;
+    padding: .7rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    margin: .5rem;
+    line-break: anywhere;
+    background-color: white;
+  }
+
+  .calendar-item-name{
+    font-size: 13px;
+    display: -webkit-inline-box;
+  }
+
+  .item-aniversario span{
+    font-size: 11px;
+    color: #8691ff;
+    font-weight: bolder;
+  }
+
+  .item-onomastico span{
+    font-size: 11px;
+    color: #ff6767;
+    font-weight: bolder;
+  }
+
+  .item-fundacion span{
+    font-size: 11px;
+    color: #37da53;
+    font-weight: bolder;
+  }
+
+  .calendar-number-month{
+   user-select: none;
+   cursor: pointer;
+   margin: auto;
+   width: 32px;
+   height: 32px;
+   border-radius: 100%;
+  }
+
+  .calendar-number-month:hover{
+    background-color: #a1ddea;
+  }
+
+  .calendar-indicator{
+    width: 5px;
+    height: 5px;
+    border-radius: 100%;
+    margin: 0 .1rem;
+  }
+
+  .calendar-indicator-aniversario{
+    background-color: #8691ff;
+  }
+
+  .calendar-indicator-fundacion{
+    background-color: #37da53;
+  }
+
+  .calendar-indicator-onomastico{
+    background-color: #ff6767;
+  }
+
+  .day-container{
+    min-width: 136px;
+  }
   
+  .item-month-detail-container{
+    background-color: white;
+  }
+
+  .item-month-detail{
+    border-radius: 1rem;
+    padding: .7rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    margin: .5rem 0;
+    line-break: anywhere;
+    background-color: white;
+    
+  }
+
+  .notif-bar-item{
+    background-color: transparent;
+    border: 0px none;
+    display: inline-block;
+    line-height: 1;
+    color: #686868;
+    cursor: pointer;
+    font-weight: 300;
+    width: 100%;
+    padding: 1rem;
+    border-left: solid;
+    border-width: .32rem;
+    border-radius: .3rem;
+    border-color: transparent;
+  }
+
+  .notif-bar-item div{
+    align-items: center;
+    display: flex;
+  }
+
+  .notif-bar-item div i{ 
+    vertical-align: middle;
+    font-size: 1.3rem;
+
+  }
+
+  .notif-bar-item div span{ 
+    font-size: 15px;
+    margin-left: 16px;
+  }
+
+  .bar-notif-container{
+    box-shadow: rgb(172 172 172 / 15%) 2.4px 2.4px 3.2px;
+  }
+
+  .notif-bar-item-selected{
+    background-color:white !important ;
+    border-color: var(--primary);
+  }
+
+  .notif-bar-item-selected div i{
+    color: var(--primary);
+  }
+
+  .notif-normal{
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow:rgb(117 117 117 / 10%) -4px 9px 25px -6px;
+  }

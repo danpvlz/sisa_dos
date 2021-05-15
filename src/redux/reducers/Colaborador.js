@@ -5,7 +5,8 @@ import {
   UPDATE_WORKER,
   GET_WORKER,
   RESET_PASSWORD_WORKER,
-  FILTER_WORKER
+  FILTER_WORKER,
+  LIST_WORKER_FOLDERS
 } from "../ActionTypes";
 
 const INIT_STATE = {
@@ -17,10 +18,17 @@ const INIT_STATE = {
   workerStatusActions: 0,
   workerObject: [],
   workersFilter: [],
+  myFolders: [],
 };
 
 export default (state = INIT_STATE, action) => {
   switch (action.type) {
+    case LIST_WORKER_FOLDERS: {
+      return {
+        ...state,
+        myFolders: action.payload,
+      }
+    }
     case LIST_WORKER: {
       return {
         ...state,

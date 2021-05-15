@@ -13,6 +13,8 @@ import {
   UPDATE_ASSOCIATED,
   SHOW_RUC_SEARCHED,
   SHOW_DNI_SEARCHED,
+  LIST_MONTH_CALENDAR_ASSOCIATED, 
+  LIST_WEEK_CALENDAR_ASSOCIATED,
 } from "../ActionTypes";
 import axios from '../../util/Api'
 import helper from 'axios';
@@ -366,5 +368,41 @@ export const newAfiliation = (associatedData) => {
       .catch(function (error) {
         dispatch({ type: FETCH_ERROR, payload: error.response });
       });
+  }
+};
+
+export const listMonth = ( params = {}) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('/associatedMonthCalendar',
+      params
+    ).then(({ data }) => {
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: LIST_MONTH_CALENDAR_ASSOCIATED, payload: data });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+
+export const listWeek = ( params = {}) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('/associatedWeekCalendar',
+      params
+    ).then(({ data }) => {
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: LIST_WEEK_CALENDAR_ASSOCIATED, payload: data });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
   }
 };

@@ -258,6 +258,7 @@ const Llamadas = () => {
                           totalItems={phoneCallList?.meta?.total ? phoneCallList?.meta?.total : 0}
                           pageSize={10}
                           onSelect={(selectedPage) => setPage(selectedPage)}
+                          defaultActivePage={page}
                         />
                       </nav>
                     </CardFooter>
