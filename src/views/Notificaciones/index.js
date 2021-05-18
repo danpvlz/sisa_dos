@@ -10,23 +10,30 @@ import {
     Button,
     Collapse,
     Modal,
-    CardHeader,
+    UncontrolledDropdown,
+    DropdownToggle,
     Form,
     FormGroup,
     InputGroupAddon,
     InputGroupText,
     Input,
     InputGroup,
+    DropdownMenu,
+    DropdownItem,
 } from "reactstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { showMessage, hideMessage } from '../../redux/actions/Common';
 import { getMyFolders, storeFolderContent, storeFolder } from '../../redux/actions/Colaborador';
 import DataService from "../../firebase/services/notifications";
+import NotificationPagos from "./Tables/NotificationPagos";
+import NotificationAsociado from "./Tables/NotificationAsociado";
+import NotificationAsociadoEdit from "./Tables/NotificationAsociadoEdit";
 import moment from "moment";
 import 'moment/locale/es';
 moment.locale('es');
 
 const Notification = (props) => {
+    const [width, setWidth] = useState(0);
     const dispatch = useDispatch();
     const { notifications } = useSelector(({ firebase }) => firebase);
     const { myFolders } = useSelector(({ colaborador }) => colaborador);
@@ -40,8 +47,35 @@ const Notification = (props) => {
     }
 
     useEffect(() => {
+
         dispatch(getMyFolders());
+
     }, []);
+
+    useEffect(() => {
+        const updateWidth = () => {
+            const width = document.body.clientWidth
+            if (width > 767) {
+                document.getElementById('sidenav-main')?.classList?.add('d-none');
+                document.getElementById('admin-main-content')?.classList?.add('ml-0');
+            } else {
+                document.getElementById('sidenav-main')?.classList?.remove('d-none');
+                document.getElementById('admin-main-content')?.classList?.remove('ml-0');
+            }
+            setWidth(width)
+        }
+        // Actualizaremos el width al montar el componente
+        updateWidth()
+        // Nos suscribimos al evento resize de window
+        window.addEventListener("resize", updateWidth)
+
+        // Devolvemos una función para anular la suscripción al evento
+        return () => {
+            document.getElementById('sidenav-main')?.classList?.remove('d-none');
+            document.getElementById('admin-main-content')?.classList?.remove('ml-0');
+            window.removeEventListener("resize", updateWidth);
+        }
+    })
 
     useEffect(() => {
         let a_folders = [];
@@ -60,82 +94,80 @@ const Notification = (props) => {
             <Container className="mt--9" fluid>
                 {/* Table */}
                 <Row>
-                    <div className="col">
-                        <Card className="shadow container">
-                            <Row className=" bg-secondary rounded">
-                                <Col className="col-3 text-muted bar-notif-container">
-                                    <Row>
-                                        <Col className="p-0">
-                                            <button
-                                                className={`notif-bar-item ${selectItem == 'notif' ? ' notif-bar-item-selected' : 'notif-bar-item-not-selected'}`}
-                                                type="button"
-                                                onClick={() => setselectItem('notif')}
-                                            >
-                                                <div className="ml-2">
-                                                    <i className="ni ni-email-83 mr-2" />
-                                                    <span>Notificaciones</span>
-                                                    {
-                                                        notifications?.length > 0 &&
-                                                        <Badge color="primary" pill style={{ fontSize:'10px', marginLeft: 'auto'}}>
-                                                            {notifications?.length}
-                                                        </Badge>
-                                                    }
-                                                </div>
-                                            </button>
-                                        </Col>
-                                        <Col className="mt-4">
-                                            <div className="d-flex justify-content-between" style={{ cursor: 'pointer' }}>
-                                                <strong>Carpetas</strong>
-                                                <Badge className="badge-success" onClick={toggleModal}><i className="fa fa-plus mr-2" /> Nuevo</Badge>
-                                            </div>
-                                            <Row className="mt-2">
+                    <Col className="shadow mx-2">
+                        <Row className=" bg-secondary rounded">
+                            <Col className="col-3 text-muted bar-notif-container">
+                                <Row>
+                                    <div className="col-12 p-0">
+                                        <button
+                                            className={`notif-bar-item ${selectItem == 'notif' ? ' notif-bar-item-selected' : 'notif-bar-item-not-selected'}`}
+                                            type="button"
+                                            onClick={() => setselectItem('notif')}
+                                        >
+                                            <div className="ml-2">
+                                                <i className="ni ni-email-83 mr-2" />
+                                                <span className="d-none d-md-block">Notificaciones</span>
                                                 {
-                                                    folders.sort((a, b) => {
-                                                        if (a.folder > b.folder) {
-                                                            return 1;
-                                                        }
-                                                        if (a.folder < b.folder) {
-                                                            return -1;
-                                                        }
-                                                        return 0;
-                                                    }).map((folder, key) =>
-                                                        <Col className="p-0" key={key}>
-                                                            <button
-                                                                className={`notif-bar-item ${selectItem == folder.idFolder ? ' notif-bar-item-selected' : 'notif-bar-item-not-selected'}`}
-                                                                type="button"
-                                                                onClick={() => setselectItem(folder.idFolder)}
-                                                            >
-                                                                <div className="ml-2">
-                                                                    <i className="fa fa-folder mr-2" style={{ color: folder.color ? folder.color : '#fed86f' }} />
-                                                                    <span>{folder.folder} </span>
-                                                                    {
-                                                                        myFolders?.filter(n => n.idFolder == folder.idFolder  && n.contenido != null)?.length>0 &&
-                                                                        <Badge color="primary" pill style={{ fontSize:'10px', marginLeft: 'auto'}}>
-                                                                            {myFolders?.filter(n => n.idFolder == folder.idFolder  && n.contenido != null)?.length}
-                                                                        </Badge>
-                                                                    }
-                                                                </div>
-                                                            </button>
-                                                        </Col>
-                                                    )
+                                                    notifications?.length > 0 &&
+                                                    <Badge color="primary" pill style={{ fontSize: '10px', marginLeft: 'auto' }}>
+                                                        {notifications?.length}
+                                                    </Badge>
                                                 }
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                                <Col className="col-9">
-                                    <Row className="p-3" style={{ overflow: 'auto', maxHeight: '550px' }}>
-                                        {
-                                            selectItem == 'notif' ?
-                                                <NotificationContainer props={props} folders={folders} />
-                                                :
-                                                <FolderContainer folders={myFolders} selected={selectItem} />
-                                        }
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </Card>
-                    </div>
+                                            </div>
+                                        </button>
+                                    </div>
+                                    <div className="col-12 mt-4">
+                                        <Row className="d-flex justify-content-between m-0">
+                                            <strong>Carpetas</strong>
+                                            <Badge className="badge-success" style={{ cursor: 'pointer' }} onClick={toggleModal}><i className="fa fa-plus mr-2" /> Nuevo</Badge>
+                                        </Row>
+                                        <Row className="mt-2">
+                                            {
+                                                folders.sort((a, b) => {
+                                                    if (a.folder > b.folder) {
+                                                        return 1;
+                                                    }
+                                                    if (a.folder < b.folder) {
+                                                        return -1;
+                                                    }
+                                                    return 0;
+                                                }).map((folder, key) =>
+                                                    <div className="col-12 p-0" key={key}>
+                                                        <button
+                                                            className={`notif-bar-item ${selectItem == folder.idFolder ? ' notif-bar-item-selected' : 'notif-bar-item-not-selected'}`}
+                                                            type="button"
+                                                            onClick={() => setselectItem(folder.idFolder)}
+                                                        >
+                                                            <Row >
+                                                                <i className="fa fa-folder folder-icon" style={{ color: folder.color ? folder.color : '#fed86f' }} />
+                                                                <span className="mx-1">{folder.folder} </span>
+                                                                {
+                                                                    myFolders?.filter(n => n.idFolder == folder.idFolder && n.contenido != null)?.length > 0 &&
+                                                                    <Badge className="d-none d-md-block" color="primary" pill style={{ fontSize: '10px', marginLeft: 'auto', marginRight: '1rem' }}>
+                                                                        {myFolders?.filter(n => n.idFolder == folder.idFolder && n.contenido != null)?.length}
+                                                                    </Badge>
+                                                                }
+                                                            </Row>
+                                                        </button>
+                                                    </div>
+                                                )
+                                            }
+                                        </Row>
+                                    </div>
+                                </Row>
+                            </Col>
+                            <Col className="col-9">
+                                <Row className="p-3  styled-scroll" style={{ overflow: 'auto', maxHeight: '550px', margin: '.3rem 0' }}>
+                                    {
+                                        selectItem == 'notif' ?
+                                            <NotificationContainer props={props} folders={folders} />
+                                            :
+                                            <FolderContainer folders={myFolders} selected={selectItem} />
+                                    }
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Col>
                 </Row>
                 <AddNewFolder isOpen={addFolterModal} toggleModal={toggleModal} />
             </Container>
@@ -155,13 +187,14 @@ const FolderContainer = ({ folders, selected }) => {
     return (
         <>
             {
-                folders?.filter(n => n.idFolder == selected  && n.contenido != null)?.length > 0 ?
-                    folders?.filter(n => n.idFolder == selected )?.map(n => JSON.parse(n.contenido))?.sort((a, b) => moment(b.timestamp).diff(a.timestamp))?.map((notification, key) =>
+                folders?.filter(n => n.idFolder == selected && n.contenido != null)?.length > 0 ?
+                    folders?.filter(n => n.idFolder == selected)?.map(n => JSON.parse(n.contenido))?.sort((a, b) => moment(b.timestamp).diff(a.timestamp))?.map((notification, key) =>
                         <Col className={`col-12 my-2 p-2 notif-normal`} key={key}>
-                            <div className="d-flex justify-content-between">
-                                <div className="d-flex py-2 px-3">
+                            <div className="d-flex justify-content-between"
+                            >
+                                <div className="d-flex py-2 px-3" onClick={() => toggle(notification.key)} style={{ cursor: 'pointer' }}>
                                     <div style={{ padding: '0 .8rem 0 0', fontSize: '1.2rem' }}>
-                                        <i className="ni ni-bell-55 text-danger" />
+                                        <i className={`ni ni-bell-55 text-${notification.color ? notification.color : 'danger'}`} />
                                     </div>
                                     <div>
                                         <strong style={{ display: 'block' }}>{notification.title}
@@ -170,65 +203,18 @@ const FolderContainer = ({ folders, selected }) => {
                                         <small className="d-block mt-2">{moment(notification.timestamp, "YYYY-MM-DD h:m:s").fromNow()}</small>
                                     </div>
                                 </div>
-                                <div style={{ padding: '0 .8rem 0 0', fontSize: '.7rem', display: 'block', margin: 'auto 0', color: '#949494' }}>
-                                    <Button
-                                        className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
-                                        onClick={() => toggle(notification.key)}
-                                    >
-                                        <i className="fa fa-angle-down" aria-hidden="true"></i>
-                                    </Button>
-                                </div>
                             </div>
                             <Collapse className="mt-3" isOpen={isOpen[notification.key]}>
                                 <Card>
                                     <CardBody>
                                         {
-                                            notification?.detail?.map((detail, kdetail) =>
-                                                <div key={kdetail}>
-                                                    <strong>{detail.serieNumero} - <span className="font-weight-normal">{detail.fechaEmision}</span></strong>
-                                                    <p className="mb-0">{detail.asociado}</p>
-                                                    <p>
-                                                        <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
-                                                            {detail.estado == 1 ? 'Por cancelar' : detail.estado == 2 ? 'Cancelada' : 'Anulada'}
-                                                        </Badge>
-                                                        <span className="font-weight-bold">S/.{detail.total}</span>
-                                                    </p>
-                                                    <table className="table-sm align-items-center table-flush text-center">
-                                                        <thead className="thead-light ">
-                                                            <tr>
-                                                                <th scope="col">Fecha</th>
-                                                                <th scope="col">Monto</th>
-                                                                <th scope="col">Banco</th>
-                                                                <th scope="col">Operación</th>
-                                                                <th scope="col">SofDoc</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {JSON.parse(detail.pagos).map((pago, key) =>
-                                                                <tr key={key}>
-                                                                    <td>
-                                                                        {pago.fecha}
-                                                                    </td>
-                                                                    <td>
-                                                                        {pago.monto}
-                                                                    </td>
-                                                                    <td>
-                                                                        {pago.banco ?
-                                                                            pago.banco == 1 ? 'BCP' : pago.banco == 2 ? 'BBVA' : pago.banco == 3 ? 'BANCOS' : pago.banco == 4 ? 'CONTADO' : 'CRÉDITO'
-                                                                            : '-'}
-                                                                    </td>
-                                                                    <td className={`${notification.numoperacion ? 'text-danger font-weight-bold' : 'd-block'}`}>
-                                                                        {pago.numoperacion}
-                                                                    </td>
-                                                                    <td className={`${notification.numsofdoc ? 'text-danger font-weight-bold' : 'd-block'}`}>
-                                                                        {pago.numsofdoc ? pago.numsofdoc : '-'}
-                                                                    </td>
-                                                                </tr>)}
-                                                        </tbody>
-                                                    </table>
-                                                    <hr className="my-4 " />
-                                                </div>
-                                            )
+                                            notification?.tipo == 2 ?
+                                                <NotificationAsociado detail={notification?.detail} timestamp={notification?.timestamp} />
+                                                :
+                                                notification?.tipo == 3 ?
+                                                    <NotificationAsociadoEdit detail={notification?.detail} />
+                                                    :
+                                                    <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
                                         }
                                     </CardBody>
                                 </Card>
@@ -266,10 +252,10 @@ const NotificationContainer = ({ props, folders }) => {
                 notifications.length > 0 ?
                     notifications?.sort((a, b) => moment(b.timestamp).diff(a.timestamp))?.map((notification, key) =>
                         <Col className={`col-12 my-2 p-2 ${props?.location?.state?.notifSelected == notification.key ? 'notif-selected' : notification.clicked ? 'notif-normal' : 'not-clicked'}`} key={key}>
-                            <div className="d-flex justify-content-between">
-                                <div className="d-flex py-2 px-3">
+                            <div className="d-flex justify-content-between" >
+                                <div className="d-flex py-2 px-3" onClick={() => toggle(notification.key)} style={{ cursor: 'pointer' }}>
                                     <div style={{ padding: '0 .8rem 0 0', fontSize: '1.2rem' }}>
-                                        <i className="ni ni-bell-55 text-danger" />
+                                        <i className={`ni ni-bell-55 text-${notification.color ? notification.color : 'danger'}`} />
                                     </div>
                                     <div>
                                         <strong style={{ display: 'block' }}>{notification.title}
@@ -278,74 +264,29 @@ const NotificationContainer = ({ props, folders }) => {
                                         <small className="d-block mt-2">{moment(notification.timestamp, "YYYY-MM-DD h:m:s").fromNow()}</small>
                                     </div>
                                 </div>
-                                <div style={{ padding: '0 .8rem 0 0', fontSize: '.7rem', display: 'block', margin: 'auto 0', color: '#949494' }}>
-                                    <Button
-                                        className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
-                                        onClick={() => toggle(notification.key)}
+                                <UncontrolledDropdown>
+                                    <DropdownToggle
+                                        className="text-primary mt-1"
+                                        role="button"
+                                        size="sm"
+                                        color=""
+                                        onClick={(e) => e.preventDefault()}
                                     >
-                                        <i className="fa fa-angle-down" aria-hidden="true"></i>
-                                    </Button>
-                                </div>
-                            </div>
-                            <Collapse className="mt-3" isOpen={isOpen[notification.key]}>
-                                <Card>
-                                    <CardBody>
-                                        {
-                                            notification?.detail?.map((detail, kdetail) =>
-                                                <div key={kdetail}>
-                                                    <strong>{detail.serieNumero} - <span className="font-weight-normal">{detail.fechaEmision}</span></strong>
-                                                    <p className="mb-0">{detail.asociado}</p>
-                                                    <p>
-                                                        <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
-                                                            {detail.estado == 1 ? 'Por cancelar' : detail.estado == 2 ? 'Cancelada' : 'Anulada'}
-                                                        </Badge>
-                                                        <span className="font-weight-bold">S/.{detail.total}</span>
-                                                    </p>
-                                                    <table className="table-sm align-items-center table-flush text-center">
-                                                        <thead className="thead-light ">
-                                                            <tr>
-                                                                <th scope="col">Fecha</th>
-                                                                <th scope="col">Monto</th>
-                                                                <th scope="col">Banco</th>
-                                                                <th scope="col">Operación</th>
-                                                                <th scope="col">SofDoc</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {JSON.parse(detail.pagos).map((pago, key) =>
-                                                                <tr key={key}>
-                                                                    <td>
-                                                                        {pago.fecha}
-                                                                    </td>
-                                                                    <td>
-                                                                        {pago.monto}
-                                                                    </td>
-                                                                    <td>
-                                                                        {pago.banco ?
-                                                                            pago.banco == 1 ? 'BCP' : pago.banco == 2 ? 'BBVA' : pago.banco == 3 ? 'BANCOS' : pago.banco == 4 ? 'CONTADO' : 'CRÉDITO'
-                                                                            : '-'}
-                                                                    </td>
-                                                                    <td className={`${notification.numoperacion ? 'text-danger font-weight-bold' : 'd-block'}`}>
-                                                                        {pago.numoperacion}
-                                                                    </td>
-                                                                    <td className={`${notification.numsofdoc ? 'text-danger font-weight-bold' : 'd-block'}`}>
-                                                                        {pago.numsofdoc ? pago.numsofdoc : '-'}
-                                                                    </td>
-                                                                </tr>)}
-                                                        </tbody>
-                                                    </table>
-                                                    <hr className="my-4 " />
-                                                </div>
-                                            )
-                                        }
-                                        <div className="d-flex">
+                                    <i className="ni ni-archive-2 fa-lg" />
+                                    </DropdownToggle>
+                                    <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
                                             {
                                                 folders?.map((f, k) =>
-                                                    <Button
-                                                        className="btn d-block m-auto mb-1"
-                                                        style={{ backgroundColor: f.color ? f.color : '#fed86f', color: 'white' }}
-                                                        type="button"
+                                                    <DropdownItem
+                                                        key={k}
+                                                        className="d-flex"
+                                                        onClick={(e) => e.preventDefault()}
+
                                                         onClick={() => {
+                                                            if(notification.detail.hasOwnProperty('id')){
+                                                                let not=notification.detail;
+                                                                delete not.id;
+                                                            }
                                                             dispatch(storeFolderContent({
                                                                 idFolder: f.idFolder,
                                                                 content: JSON.stringify(notification),
@@ -358,11 +299,26 @@ const NotificationContainer = ({ props, folders }) => {
                                                             }, 3000);
                                                         }}
                                                     >
-                                                        {f.folder}
-                                                    </Button>
+                                                    <i className="fa fa-folder folder-icon"  aria-hidden="true" style={{ color: f.color ? f.color : '#fed86f' }} />
+                                                     {f.folder}
+                                                    </DropdownItem>
                                                 )
                                             }
-                                        </div>
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
+                            </div>
+                            <Collapse className="mt-3" isOpen={isOpen[notification.key]}>
+                                <Card>
+                                    <CardBody>
+                                        {
+                                            notification?.tipo == 2 ?
+                                                <NotificationAsociado detail={notification?.detail} timestamp={notification?.timestamp} />
+                                                :
+                                                notification?.tipo == 3 ?
+                                                    <NotificationAsociadoEdit detail={notification?.detail} />
+                                                    :
+                                                    <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
+                                        }
                                     </CardBody>
                                 </Card>
                             </Collapse>

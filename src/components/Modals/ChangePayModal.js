@@ -51,7 +51,6 @@ const ChangePayModal = ({ showPay, toggleModal, setsendPay,setbancopago,  opcion
   }, [pagos]);
 
   const onSubmit = (data) => {
-    console.log(formData)
     if(formData.fecha==""){
       seterror({ ...error, fecha: true });
     }else{

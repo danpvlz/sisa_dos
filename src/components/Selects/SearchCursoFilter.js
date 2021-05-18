@@ -27,7 +27,7 @@ export default function SearchCursoFilter({setVal,val,searchVal}) {
       isClearable={true}
       onChange={(inputValue, actionMeta) => {
         let newVal=inputValue != null ? inputValue.value : null;
-        setVal('idCurso',newVal);
+        setVal(newVal);
       }}
       options={filterCursos}
       value={filterCursos.find(c=>c.value==val)}

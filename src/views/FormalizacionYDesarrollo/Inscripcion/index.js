@@ -23,7 +23,7 @@ import {
 // core components
 import ConfirmDialog from '../../../components/Modals/ConfirmDialog';
 import { useDispatch, useSelector } from "react-redux";
-import { list, show, destroy, reset } from "../../../redux/actions/Inscripcion";
+import { list, show, destroy, exportInscripciones } from "../../../redux/actions/Inscripcion";
 import Loading from "../../../components/Loaders/LoadingSmall";
 import SearchParticipants from "../../../components/Selects/SearchParticipants";
 import SearchCursoFilter from "../../../components/Selects/SearchCursoFilter";
@@ -140,7 +140,7 @@ const Index = () => {
                   <Col lg="12 ">
                     <hr className="my-4" />
                     <Row className="bg-secondary">
-                      <Col lg="6">
+                      <Col lg="5">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -156,6 +156,11 @@ const Index = () => {
                           >Participante</label>
                           <SearchParticipants setVal={setParticipant} participant={participantSearched} />
                         </FormGroup>
+                      </Col>
+                      <Col lg="1" className="text-right m-auto">
+                        <Button color="success" type="button" onClick={() => dispatch(exportInscripciones(search))}>
+                          <img src={require("../../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
+                        </Button>
                       </Col>
                     </Row>
                   </Col>

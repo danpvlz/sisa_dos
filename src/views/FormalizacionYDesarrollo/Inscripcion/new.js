@@ -56,7 +56,6 @@ const NewInscripcion = () => {
   useEffect(() => {
     if (confirm) {
       formdata.items = items;
-      console.log(items)
       dispatch(store(formdata));
       history.push('/admin/formalizacion-y-desarrollo/inscripcion');
     }

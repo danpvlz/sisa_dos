@@ -107,13 +107,13 @@
 
   .not-clicked{
     background-color: #e5e9ff;
-    border-radius: 1rem;
+    border-radius: .5rem;
     box-shadow:rgb(117 117 117 / 10%) -4px 9px 25px -6px;
   }
 
   .notif-selected{
     background-color: rgb(228 254 236);
-    border-radius: 1rem;
+    border-radius: .5rem;
     box-shadow:rgb(117 117 117 / 10%) -4px 9px 25px -6px;
   }
 
@@ -311,6 +311,7 @@
   .notif-bar-item div span{ 
     font-size: 15px;
     margin-left: 16px;
+    line-break: anywhere;
   }
 
   .bar-notif-container{
@@ -328,6 +329,54 @@
 
   .notif-normal{
     background-color: white;
-    border-radius: 1rem;
+    border-radius: .5rem;
     box-shadow:rgb(117 117 117 / 10%) -4px 9px 25px -6px;
   }
+
+  .styled-scroll::-webkit-scrollbar {
+    width: 8px;     /* Tamaño del scroll en vertical */
+    height: 8px;    /* Tamaño del scroll en horizontal */
+}
+
+.styled-scroll::-webkit-scrollbar-thumb {
+  background: rgb(175, 175, 175);
+  border-radius: 4px;
+}
+
+/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
+.styled-scroll::-webkit-scrollbar-thumb:hover {
+  background: #969595;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Cambiamos el fondo cuando esté en active */
+.styled-scroll::-webkit-scrollbar-thumb:active {
+  background-color: #999999;
+}
+
+/* Ponemos un color de fondo y redondeamos las esquinas del track */
+.styled-scroll::-webkit-scrollbar-track {
+  background: #e1e1e1;
+  border-radius: 4px;
+}
+
+/* Cambiamos el fondo cuando esté en active o hover */
+.styled-scroll::-webkit-scrollbar-track:hover,
+.styled-scroll::-webkit-scrollbar-track:active {
+background: #c2c2c2;
+}
+
+.folder-icon{
+  margin: 0 0.5rem 0 1.5rem;
+}
+
+@media (max-width: 767px) { 
+
+  .folder-icon{
+    margin: 0 auto;
+  }  
+  .notif-bar-item div {
+    display: inline-grid;
+  }
+  
+ }

@@ -206,29 +206,6 @@ const Afiliacion = () => {
                               />
                             </FormGroup>
                           </Col>
-                          <Col lg="4">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Importe mensual*
-                          </label>
-                              <InputGroup className="input-group-alternative mb-4">
-                                <InputGroupAddon addonType="prepend">
-                                  <InputGroupText>
-                                    S/.
-                              </InputGroupText>
-                                </InputGroupAddon>
-                                <Input
-                                  className="form-control-alternative"
-                                  type="number"
-                                  name="importemensual"
-                                  innerRef={register({ required: true })}
-                                />
-                              </InputGroup>
-                            </FormGroup>
-                          </Col>
                         </Row>
                       </div>
                     </Col>

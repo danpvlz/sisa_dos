@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { useHistory } from 'react-router-dom';
+import { useHistory,
+  Link } from 'react-router-dom';
 
 import {
   DropdownMenu,
@@ -38,7 +39,7 @@ export default function NotificationsIndicator() {
         {
           notifications.length > 0 ?
             notifications.sort((a, b) => moment(b.timestamp).diff(a.timestamp)).map((notification, key) =>
-              <div key={key} className={notification.seen==1 ? 'seen' : 'not-seen'}>
+              <div key={key} className={notification.seen == 1 ? 'seen' : 'not-seen'}>
                 <DropdownItem
                   onClick={() => {
                     history.push({
@@ -48,7 +49,7 @@ export default function NotificationsIndicator() {
                   }}>
                   <div className="notification-nav-bar d-flex">
                     <div style={{ padding: '0 .8rem 0 0', fontSize: '1.2rem' }}>
-                      <i className="ni ni-bell-55 text-danger" />
+                      <i className={`ni ni-bell-55 text-${notification.color ? notification.color : 'danger'}`} />
                     </div>
                     <div>
                       <strong style={{ display: 'block' }}>{notification.title}</strong>
@@ -63,6 +64,10 @@ export default function NotificationsIndicator() {
             :
             <div className="text-center">
               <small className="text-muted p-1 user-select-none">No tienes notificaciones</small>
+              <hr className="mt-2 mb-2 text-primary" />
+              <Link to="/admin/notificaciones" className="text-sm mt-0">
+                  Ver todo
+              </Link>
             </div>
         }
       </DropdownMenu>

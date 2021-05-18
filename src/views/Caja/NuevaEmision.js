@@ -157,7 +157,6 @@ const NuevaEmision = () => {
       formdata.typeChange = typeChange;
       formdata.items = items;
       formdata.docModificar = docModificar;
-      console.log(formdata);
       dispatch(saveCuenta(formdata));
       history.push('/admin/cuentas-caja');
     }

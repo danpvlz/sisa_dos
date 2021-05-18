@@ -141,3 +141,26 @@ import {
         });
     }
   };
+
+  export const exportInscripciones = (params = {}) => {
+    let config = {
+      responseType: 'blob', // important
+    }
+    return (dispatch) => {
+      dispatch({ type: FETCH_START });
+      axios.post('/inscriptionsExport',
+        params,
+        config
+      ).then(({ data }) => {
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Estructura_Certificados.xlsx'); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+        dispatch({ type: FETCH_SUCCESS });
+      }).catch(function (error) {
+        dispatch({ type: FETCH_ERROR, payload: error });
+      });
+    }
+  };

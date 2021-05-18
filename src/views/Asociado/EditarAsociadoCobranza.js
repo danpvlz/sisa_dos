@@ -84,7 +84,7 @@ const EditarAsociado = (props) => {
       formData.sexo = associatedEditObject.persona?.sexo ? associatedEditObject.persona.sexo : null;
       formData.importemensual=associatedEditObject.asociado?.importeMensual;
       dispatch(update(props.location.state?.asociadoSelected,formData));
-      history.push('/admin/asociado');
+      history.push('/admin/asociado-co');
       //REGISTRAR
       setsendassociated(false);
       document.getElementById("form-save-associated").reset();

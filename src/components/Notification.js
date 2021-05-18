@@ -11,7 +11,7 @@ moment.locale('es')
 
 const Notification = ({ notification, setOnClick }) => {
     return (
-        <Col className="notification bg-danger" style={{cursor: 'pointer'}} onClick={setOnClick} >
+        <Col className={`notification bg-${notification.color ? notification.color : 'danger'}`} style={{cursor: 'pointer'}} onClick={setOnClick} >
             <Row className="text-white">
                 <Col className="col-2">
                     <i className="ni ni-bell-55 r icon-alert"></i>
@@ -50,21 +50,10 @@ export default function NotificationContainer() {
             let key = item.key;
             let data = item.val();
             notifications.push({
-                key: key,
-                title: data.title,
-                description: data.description,
-                seen: data.seen,
-                clicked: data.clicked,
-                numoperacion: data.operacion,
-                numsofdoc: data.numsofdoc,
-                detail: data.detail,
-                timestamp: data.timestamp,
+                key,...data
             });
         });
-        dispatch(setNotifications(notifications))
-        /*this.setState({
-          tutorials: tutorials,
-        });*/
+        dispatch(setNotifications(notifications));
     }
 
     const onNewAdded = (snapshot) => {
@@ -72,17 +61,13 @@ export default function NotificationContainer() {
         let data = snapshot.val();
         if(data.seen==0){
             setnewNotifications(newNotifications.concat({
-                key: key,
-                description: data.description,
-                seen: data.seen,
-                clicked: data.clicked,
-                timestamp: data.timestamp,
+                key,...data
             }));
     
             setTimeout(() => {
                 firebaseNotif.update(key,{
                     ...data,
-                    seen: 1,
+                    seen: 1
                 })
                 setnewNotifications(newNotifications.filter(n => n.key != key));
             }, 7000);

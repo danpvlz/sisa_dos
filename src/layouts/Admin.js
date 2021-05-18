@@ -94,8 +94,8 @@ const Admin = (props) => {
           imgAlt: "...",
         }}
       />
-      
-      <div className="main-content" ref={mainContent}>
+
+      <div id="admin-main-content" className="main-content" ref={mainContent}>
         <AdminNavbar
           {...props}
           brandText={getBrandText(props.location.pathname)}
