@@ -133,7 +133,7 @@ const Cliente = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && clientList.data ?
+                !loading || clientList?.data ?
                   <>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">

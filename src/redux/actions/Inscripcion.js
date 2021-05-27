@@ -125,7 +125,7 @@ import {
       dispatch({ type: FETCH_START });
       dispatch({ type: INSCRIPTION_STATUS_ACTIONS, payload: 0 });
   
-      axios.delete('inscription/'+id
+      axios.post('inscriptionDelete/'+id
       ).then(({ data, status }) => {
         if (data) {
           dispatch({ type: SHOW_MESSAGE, payload: data.message });

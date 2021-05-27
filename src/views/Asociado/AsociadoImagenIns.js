@@ -9,23 +9,19 @@ import {
   Row,
   Button,
   Col,
-  CardBody
+  CardBody,
+  Collapse
 } from "reactstrap";
 // core components
 import { useDispatch, useSelector } from "react-redux";
 import { listMonth, listWeek } from "../../redux/actions/Asociado";
 import Loading from "../../components/Loaders/LoadingSmall";
-import { Collapse } from "bootstrap";
 
 var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 var daysNames = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 var daysNamesSM = ["L", "M", "M", "J", "V", "S", "D"];
 
 const Asociado = () => {
-  const dispatch = useDispatch();
-  const { associatedList, meta, associatedStatusActions } = useSelector(({ asociado }) => asociado);
-  const { loading } = useSelector(({ commonData }) => commonData);
-  const history = useHistory();
   const [typeCalendar, settypeCalendar] = useState(1);
 
   return (
@@ -55,6 +51,7 @@ const Asociado = () => {
 };
 
 const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
+  const [isOpen, setisOpen] = useState({});
   const dispatch = useDispatch();
   const { associatedMonthCalendar } = useSelector(({ asociado }) => asociado);
   const [firstDay, setfirstDay] = useState(new Date());
@@ -137,12 +134,28 @@ const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
             }
             {
               associatedMonthCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == firstDay.getDate())?.map((item, key) =>
-                <div key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico'}`}>
+                <div
+                  onClick={() => setisOpen({ ...isOpen, [item.fecha + key]: isOpen.hasOwnProperty(item.fecha + key) ? !isOpen[item.fecha + key] : true })}
+                  key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico'}`}>
                   <span className="type-calendar-item d-block">{item.tipo.toUpperCase()}</span>
                   <strong className="calendar-item-name my-2 d-block">
                     {item.nombres.toUpperCase()}
                   </strong>
                   <small>{item.fecha}</small>
+                  <Collapse isOpen={isOpen[item.fecha + key]}>
+                    <hr className="my-2" />
+                    <div className="text-center">
+                      {
+                        item.empresa != "-" &&
+                        <>
+                          <i className="ni ni-building d-block"></i>
+                          <small>{item.empresa}</small>
+                        </>
+                      }
+                      <i className="fa fa-at d-block"></i>
+                      <small>{item.correo ? item.correo : '--No tiene--'}</small>
+                    </div>
+                  </Collapse>
                 </div>
               )
             }
@@ -154,6 +167,7 @@ const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
 }
 
 const WeekCalendar = ({ typeCalendar, settypeCalendar }) => {
+  const [isOpen, setisOpen] = useState({});
   const dispatch = useDispatch();
   const { associatedWeekCalendar } = useSelector(({ asociado }) => asociado);
   const [firstDay, setfirstDay] = useState(new Date(new Date().setDate(new Date().getDate() - new Date().getDay() + 1)));
@@ -248,12 +262,28 @@ const WeekCalendar = ({ typeCalendar, settypeCalendar }) => {
             <div key={i} className="m-0 p-0 day-container">
               {
                 associatedWeekCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == getCalendarDate(i).getDate())?.map((item, key) =>
-                  <div key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico'}`}>
+                  <div
+                    onClick={() => setisOpen({ ...isOpen, [item.fecha + key]: isOpen.hasOwnProperty(item.fecha + key) ? !isOpen[item.fecha + key] : true })}
+                    key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico'}`}>
                     <span className="type-calendar-item d-block">{item.tipo.toUpperCase()}</span>
                     <strong className="calendar-item-name my-2 d-block">
                       {item.nombres.toUpperCase()}
                     </strong>
                     <small>{item.fecha}</small>
+                    <Collapse isOpen={isOpen[item.fecha + key]}>
+                      <hr className="my-2" />
+                      <div className="text-center">
+                        {
+                          item.empresa != "-" &&
+                          <>
+                            <i className="ni ni-building d-block"></i>
+                            <small>{item.empresa}</small>
+                          </>
+                        }
+                        <i className="fa fa-at d-block"></i>
+                        <small>{item.correo ? item.correo : '--No tiene--'}</small>
+                      </div>
+                    </Collapse>
                   </div>
                 )
               }
@@ -312,12 +342,12 @@ const MonthCalendar = ({ typeCalendar, settypeCalendar }) => {
 
   const getSelected = (key, i) => {
     let day = startMonth.getDate() + i + (7 * (key - 1) + (7 - (startMonth.getDay() - 1)));
-    let returnDate = startMonth.getFullYear()+'-'+(startMonth.getMonth()<10 ? '0'+startMonth.getMonth() : startMonth.getMonth())+'-'+(day<10 ? '0'+day : day);
+    let returnDate = startMonth.getFullYear() + '-' + (startMonth.getMonth() < 10 ? '0' + startMonth.getMonth() : startMonth.getMonth()) + '-' + (day < 10 ? '0' + day : day);
     return day > endMonth.getDate() ? '' : returnDate;
   }
 
-  const getSelectedByDate=(i)=>{
-    return startMonth.getFullYear()+'-'+(startMonth.getMonth()<10?'0'+startMonth.getMonth():startMonth.getMonth())+'-'+(startMonth.getDate()+i<10?'0'+(startMonth.getDate()+parseInt(i)):(startMonth.getDate()+parseInt(i)));
+  const getSelectedByDate = (i) => {
+    return startMonth.getFullYear() + '-' + (startMonth.getMonth() < 10 ? '0' + startMonth.getMonth() : startMonth.getMonth()) + '-' + (startMonth.getDate() + i < 10 ? '0' + (startMonth.getDate() + parseInt(i)) : (startMonth.getDate() + parseInt(i)));
   }
 
   return (
@@ -385,7 +415,7 @@ const MonthCalendar = ({ typeCalendar, settypeCalendar }) => {
                   [...Array(7 - (startMonth.getDay() == 0 ? 6 : startMonth.getDay() - 1)).keys()].map((day, i) =>
                     <Col className={`${checkCurrent(startMonth.getDate() + i) ? "text-primary font-weight-bold" : ""} text-center m-0 p-0`} key={i}>
                       <div className="d-flex flex-column my-2">
-                        <p className="calendar-number-month " onClick={() => {setselectedDay(startMonth.getDate() + i); setselectedDate(getSelectedByDate(i));}}>{startMonth.getDate() + i}</p>
+                        <p className="calendar-number-month " onClick={() => { setselectedDay(startMonth.getDate() + i); setselectedDate(getSelectedByDate(i)); }}>{startMonth.getDate() + i}</p>
                         <div className="d-flex justify-content-center">
                           {
                             associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == (startMonth.getDate() + i) && item.codTipo == 1).length > 0 &&
@@ -411,7 +441,7 @@ const MonthCalendar = ({ typeCalendar, settypeCalendar }) => {
                           ""
                           :
                           <>
-                            <p className="calendar-number-month " onClick={() => {setselectedDay(getDayMonth(key, i));  setselectedDate(getSelected(key,i));}}>{getDayMonth(key, i)}</p>
+                            <p className="calendar-number-month " onClick={() => { setselectedDay(getDayMonth(key, i)); setselectedDate(getSelected(key, i)); }}>{getDayMonth(key, i)}</p>
                             <div className="d-flex justify-content-center">
                               {
                                 associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == getDayMonth(key, i) && item.codTipo == 1).length > 0 &&
@@ -442,31 +472,49 @@ const MonthCalendar = ({ typeCalendar, settypeCalendar }) => {
   );
 }
 
-const DetailMonth = ({ items,selected,date }) => {
+const DetailMonth = ({ items, selected, date }) => {
+  const [isOpen, setisOpen] = useState({});
   return (
     <Card className={selected ? 'shadow' : 'd-none'}>
       <CardBody>
-        <Row>
-        </Row>
         <Row className="border rounded bg-secondary p-2  mx-auto">
-              <Col className="col-12 my-2">
-              <small className="d-flex"><i className="fa fa-calendar text-muted my-auto mr-2" /> {date}</small>
-              </Col>
-            {
-              items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == selected)?.length == 0 &&
-              <p className="mx-auto mt-3 text-muted">No hay eventos</p> 
-            }
-            {
-              items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == selected)?.map((item, key) =>
-                <Col lg={3} key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico item-month-detail'}`}>
+          <Col className="col-12 my-2">
+            <small className="d-flex"><i className="fa fa-calendar text-muted my-auto mr-2" /> {date}</small>
+          </Col>
+          {
+            items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == selected)?.length == 0 &&
+            <p className="mx-auto mt-3 text-muted">No hay eventos</p>
+          }
+          {
+            items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == selected)?.map((item, key) =>
+              <Col
+                onClick={() => setisOpen({ ...isOpen, [item.fecha + key]: isOpen.hasOwnProperty(item.fecha + key) ? !isOpen[item.fecha + key] : true })}
+                lg={3} key={key} className="px-0">
+                <div className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico item-month-detail'}`}>
+
                   <span className="type-calendar-item d-block">{item.tipo.toUpperCase()}</span>
                   <strong className="calendar-item-name my-2 d-block">
                     {item.nombres.toUpperCase()}
                   </strong>
                   <small>{item.fecha}</small>
-                </Col>
-              )
-            }
+                  <Collapse isOpen={isOpen[item.fecha + key]}>
+                    <hr className="my-2" />
+                    <div className="text-center">
+                      {
+                        item.empresa != "-" &&
+                        <>
+                          <i className="ni ni-building d-block"></i>
+                          <small>{item.empresa}</small>
+                        </>
+                      }
+                      <i className="fa fa-at d-block"></i>
+                      <small>{item.correo ? item.correo : '--No tiene--'}</small>
+                    </div>
+                  </Collapse>
+                </div>
+              </Col>
+            )
+          }
         </Row>
       </CardBody>
     </Card>

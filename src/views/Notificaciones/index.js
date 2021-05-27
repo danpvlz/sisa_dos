@@ -292,7 +292,7 @@ const NotificationContainer = ({ props, folders }) => {
                                                                 content: JSON.stringify(notification),
                                                             }));
                                                             firebaseNotif.delete(notification.key);
-                                                            dispatch(showMessage("Actividad aprobada"));
+                                                            dispatch(showMessage("Notificación archivada"));
                                                             setTimeout(() => {
                                                                 dispatch(hideMessage());
                                                                 dispatch(getMyFolders());

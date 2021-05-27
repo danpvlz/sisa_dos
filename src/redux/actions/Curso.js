@@ -58,7 +58,7 @@ import {
       dispatch({ type: FETCH_START });
       dispatch({ type: CURSOS_STATUS_ACTIONS, payload: 0 });
   
-      axios.put('course/'+idCurso,
+      axios.post('courseUpdate/'+idCurso,
       courseData
       ).then(({ data, status }) => {
         if (data) {
@@ -126,7 +126,7 @@ import {
       dispatch({ type: FETCH_START });
       dispatch({ type: CURSOS_STATUS_ACTIONS, payload: 0 });
   
-      axios.delete('course/'+idCurso
+      axios.post('courseDelete/'+idCurso
       ).then(({ data, status }) => {
         if (data) {
           dispatch({ type: SHOW_MESSAGE, payload: data.message });

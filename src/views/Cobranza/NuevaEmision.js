@@ -41,6 +41,7 @@ const NuevaEmision = () => {
   const [bancopago, setbancopago] = useState(null)
   const [meses, setmeses] = useState([]);
   const [descuento, setdescuento] = useState(0);
+  const [montoPaid, setMontoPaid] = useState(null);
   const [numPayFilled, setnumPayFilled] = useState({
     operation: false,
     sofdoc: false,
@@ -74,6 +75,9 @@ const NuevaEmision = () => {
             pagado == 2 && (!numPayFilled.operation && !numPayFilled.sofdoc) ?
               dispatch(fetchError("Debe especificar un número de operación o de sofydoc."))
               :
+              pagado == 2 && (montoPaid==null) ?
+                dispatch(fetchError("Debe especificar el monto del pago total."))
+                :
               meses.length == 0 ?
                 dispatch(fetchError("Debe elegir al menos un mes."))
                 :
@@ -435,6 +439,29 @@ const NuevaEmision = () => {
                                       setnumPayFilled({ ...numPayFilled, sofdoc: e.target.value != '' ? true : false });
                                     }}
                                     innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col lg="2">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Monto del pago
+                                  </label>
+                                  <Input
+                                    className="form-control-alternative text-center"
+                                    name="montoPaid"
+                                    type="number"
+                                    min="0"
+                                    step="any"
+                                    placeholder="S/."
+                                    onChange={(e) => {
+                                      setMontoPaid(e.target.value);
+                                    }}
+                                    value={montoPaid}
+                                    innerRef={register({ required: pagado == 2 })}
                                   />
                                 </FormGroup>
                               </Col>

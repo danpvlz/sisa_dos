@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import classnames from "classnames";
 import Chart from "chart.js";
-import { Line, Bar, Pie } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 // reactstrap components
 import {
   Button,
@@ -29,6 +28,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { loadDashboard } from "../../redux/actions/Caja";
 import Loading from "../../components/Loaders/LoadingSmall";
+import LineTrend from "components/Graphs/LineTrend";
 
 const Index = (props) => {
   const dispatch = useDispatch();
@@ -42,8 +42,24 @@ const Index = (props) => {
 
   useEffect(() => {
     dispatch(loadDashboard());
-  }, [])
+  }, []);
 
+  const handleClickLine =(evt, element) => {
+    if (element.length > 0) {
+      var ind = element[0]._index;
+      /*setcurrentmonth(months[ind])
+      setsince(
+        `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-01`
+      );
+      setuntil(
+        `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-${new Date(new Date().getFullYear(), ind+1, 0).getDate()}`
+      );
+      dispatch(loadDashboard({
+        mes: ind
+      }));*/
+    }
+  }
+  
   return (
     <>
       <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
@@ -60,32 +76,13 @@ const Index = (props) => {
                     <h6 className="text-uppercase text-light ls-1 mb-1">
                       Información general serie 108
                     </h6>
-                    <h2 className="text-white mb-0">Ingresos {new Date().getFullYear()}</h2>
+                    <h2 className="text-white mb-0">Emitido vs. Cobrado {new Date().getFullYear()}</h2>
                   </div>
                 </Row>
               </CardHeader>
               <CardBody>
                 {/* Chart */}
-                <div className="chart">
-                  {
-                    cajaDashboard?.line ? 
-                    <Line
-                      data={{
-                        labels: cajaDashboard?.line?.map(a => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", 'Sep', 'Oct', 'Nov', 'Dic'][a.mes - 1]),
-                        datasets: [
-                          {
-                            label: "Performance",
-                            data: cajaDashboard?.line?.map(a => a.monto),
-                          },
-                        ],
-                      }}
-                      options={chartExample1.options}
-                      getDatasetAtEvent={(e) => console.log(e)}
-                    />
-                    :
-                    ""
-                  }
-                </div>
+                <LineTrend lineCobrado={cajaDashboard?.lineCobrado} lineEmitido={cajaDashboard?.lineEmitido} handleClick={handleClickLine} />
               </CardBody>
             </Card>
           </Col>
@@ -156,7 +153,7 @@ const Index = (props) => {
                 </Row>
               </CardHeader>
               {
-                !loading && cajaDashboard.tableCurrent ?
+                !loading || cajaDashboard?.tableCurrent ?
                   <>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">

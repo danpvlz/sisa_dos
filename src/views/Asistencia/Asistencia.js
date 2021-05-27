@@ -10,9 +10,6 @@ import {
   CardFooter,
   Col,
   Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
   Table,
   Container,
   Row,
@@ -24,7 +21,6 @@ import {
   Nav,
   TabContent,
   TabPane,
-  Modal,
   UncontrolledTooltip
 } from "reactstrap";
 // core components
@@ -34,7 +30,7 @@ import PaginationComponent from "react-reactstrap-pagination";
 import AsistenciaHeader from "components/Headers/AsistenciaHeader.js";
 import SearchColaborador from "components/Selects/SearchColaborador.js";
 import { useDispatch, useSelector } from "react-redux";
-import { indicatorsAll, listAssistanceByWorker, listAssistance, listDetail } from "../../redux/actions/Asistencia";
+import { calcTime,indicatorsAll, listAssistanceByWorker, listAssistance, listDetail } from "../../redux/actions/Asistencia";
 import Loading from "../../components/Loaders/LoadingSmall";
 
 const Asistencia = () => {
@@ -102,13 +98,17 @@ const Asistencia = () => {
       [state]: index
     });
   };
+
+
+
+
   return (
     <>
       <AsistenciaHeader
-        tardanzas={assistanceIndicatorsAll?.tardanzas}
+        tardanzas={calcTime(assistanceIndicatorsAll?.tardanzas)}
         faltas={assistanceIndicatorsAll?.faltas}
-        hRealizadas={assistanceIndicatorsAll?.hRealizadas}
-        hCompensar={assistanceIndicatorsAll?.hCompensar}
+        hRealizadas={calcTime(assistanceIndicatorsAll?.hRealizadas)}
+        hCompensar={calcTime(assistanceIndicatorsAll?.hCompensar)}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -199,7 +199,7 @@ const Asistencia = () => {
                 </div>
               </CardHeader>
               {
-                !loading && assistanceListByWorker.data ?
+                !loading || assistanceListByWorker?.data ?
                   <>
                     <TabContent activeTab={"tabs" + state.tabs} >
                       <TabPane tabId="tabs1">
@@ -235,28 +235,18 @@ const Asistencia = () => {
                                         </span>
                                       </Media>
                                     </Media>
-
                                   </th>
                                   <td className="text-center">
                                     {asistencia.faltas}
                                   </td>
                                   <td className="text-center">
-                                    {
-                                      asistencia.debe == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.debe) > 60 ? Math.trunc(Math.abs(asistencia.debe) / 60) + "h " + Math.trunc(Math.abs(asistencia.debe) % 60) + "min" : Math.trunc(Math.abs(asistencia.debe)) + "min"}
+                                    {calcTime(asistencia.debe)}
                                   </td>
                                   <td className="text-center">
-                                    {
-                                      asistencia.compensar == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.compensar) > 60 ? Math.trunc(Math.abs(asistencia.compensar) / 60) + "h " + Math.trunc(Math.abs(asistencia.compensar) % 60) + "min" : Math.trunc(Math.abs(asistencia.compensar)) + "min"}
+                                    {calcTime(asistencia.compensar)}
                                   </td>
                                   <td className="text-center">
-                                    {
-                                      asistencia.vacaciones == 0 ?
-                                        "-" :
-                                        asistencia.vacaciones / 60 + "h"}
+                                    {calcTime(asistencia.vacaciones)}
                                   </td>
                                   <td className="d-none">
                                     <Button
@@ -425,27 +415,23 @@ const Asistencia = () => {
                                   </td>
                                   <td className="text-center">
                                     {
-                                      asistencia.tardanza == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.tardanza) > 60 ? Math.trunc(Math.abs(asistencia.tardanza) / 60) + "h " + Math.trunc(Math.abs(asistencia.tardanza) % 60) + "min" : Math.trunc(Math.abs(asistencia.tardanza)) + "min"}
+                                      calcTime(asistencia.tardanza)}
                                   </td>
                                   <td className="text-center">
                                     {
-                                      asistencia.compensado == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.compensado) > 60 ? Math.trunc(Math.abs(asistencia.compensado) / 60) + "h " + Math.trunc(Math.abs(asistencia.compensado) % 60) + "min" : Math.trunc(Math.abs(asistencia.compensado)) + "min"}
+                                    "-" //h. extra 
+                                    }
+                                  </td>
+                                  <td className="text-center">
+                                    {calcTime(asistencia.compensado)}
                                   </td>
                                   <td className="text-center">
                                     {
-                                      asistencia.falta == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.falta) > 60 ? Math.trunc(Math.abs(asistencia.falta) / 60) + "h " + Math.trunc(Math.abs(asistencia.falta) % 60) + "min" : Math.trunc(Math.abs(asistencia.falta)) + "min"}
+                                      calcTime(asistencia.falta)}
                                   </td>
                                   <td className="text-center">
                                     {
-                                      asistencia.temp == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.temp) > 60 ? Math.trunc(Math.abs(asistencia.temp) / 60) + "h " + Math.trunc(Math.abs(asistencia.temp) % 60) + "min" : Math.trunc(Math.abs(asistencia.temp)) + "min"}
+                                      calcTime(asistencia.temp)}
                                   </td>
                                 </tr>
                               )
@@ -499,12 +485,9 @@ const Asistencia = () => {
                               <th scope="col">Día</th>
                               <th scope="col">Tipo</th>
                               <th scope="col">Hora</th>
-                              <th scope="col">Tardanza</th>
-                              <th scope="col">H. extra</th>
-                              <th scope="col">Compensado</th>
-                              <th scope="col">Salió temprano</th>
-                              <th scope="col">Observación</th>
-                              <th scope="col">Justificación</th>
+                              <th scope="col">Minutos</th>
+                              <th scope="col" className="text-center">Observación</th>
+                              <th scope="col" className="text-center">Justificación</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -557,36 +540,12 @@ const Asistencia = () => {
                                     </UncontrolledTooltip>
                                   </td>
                                   <td className="text-center">
-                                    {parseInt(asistencia.estado) == 2 ?
-                                      asistencia.calc == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
-                                      :
-                                      "-"
-                                    }
+                                    {calcTime(asistencia.calc)}
                                   </td>
-                                  <td className="text-center">
-                                    {parseInt(asistencia.estado) == 5 ?
-                                      asistencia.calc == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
-                                      :
-                                      "-"
-                                    }
-                                  </td>
-                                  <td className="text-center">
-                                    {parseInt(asistencia.estado) == 4 ?
-                                      asistencia.calc == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
-                                      :
-                                      "-"
-                                    }
-                                  </td>
-                                  <td className="text-center">
+                                  <td className="text-center table-w-line-break">
                                     {asistencia.observacion == null ? "-" : asistencia.observacion}
                                   </td>
-                                  <td className="text-center">
+                                  <td className="text-center table-w-line-break">
                                     {asistencia.justificacion == null ? "-" : asistencia.justificacion}
                                   </td>
                                 </tr>

@@ -233,7 +233,7 @@ const New = ({ show, toggleModal, setSearched }) => {
                           setformdata({ ...formdata, correo: e.target.value });
                         }}
                         value={formdata?.correo}
-                        innerRef={register({ required: true })}
+                        innerRef={register({ required: false })}
                       />
                     </InputGroup>
                   </FormGroup>
@@ -258,7 +258,7 @@ const New = ({ show, toggleModal, setSearched }) => {
                           setformdata({ ...formdata, celular: e.target.value });
                         }}
                         value={formdata?.celular}
-                        innerRef={register({ required: true })}
+                        innerRef={register({ required: false })}
                       />
                     </InputGroup>
                   </FormGroup>
@@ -290,7 +290,7 @@ const New = ({ show, toggleModal, setSearched }) => {
                           setformdata({ ...formdata, ruc: e.target.value });
                         }}
                         value={formdata?.ruc}
-                        innerRef={register({ required: true })}
+                        innerRef={register({ required: false })}
                       />
                     </InputGroup>
                   </FormGroup>
@@ -315,7 +315,7 @@ const New = ({ show, toggleModal, setSearched }) => {
                           setformdata({ ...formdata, empresa: e.target.value });
                         }}
                         value={formdata?.empresa}
-                        innerRef={register({ required: true })}
+                        innerRef={register({ required: false })}
                       />
                     </InputGroup>
                   </FormGroup>
@@ -340,7 +340,7 @@ const New = ({ show, toggleModal, setSearched }) => {
                           setformdata({ ...formdata, cargo: e.target.value });
                         }}
                         value={formdata?.cargo}
-                        innerRef={register({ required: true })}
+                        innerRef={register({ required: false })}
                       />
                     </InputGroup>
                   </FormGroup>

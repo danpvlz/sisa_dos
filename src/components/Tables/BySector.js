@@ -35,7 +35,7 @@ export default function BySector({ since, until }) {
       <div className="col">
         <Card className="shadow">
           {
-            !loading && billListBySector.cuentas ?
+            !loading || billListBySector?.cuentas ?
               <>
                 <Table
                   className="align-items-center table-flush"
@@ -46,9 +46,10 @@ export default function BySector({ since, until }) {
                       <th scope="col" className="text-left font-weight-bold">Cobrador</th>
                       <th scope="col" className="text-right font-weight-bold" >Emitido</th>
                       <th scope="col" className="text-right font-weight-bold">Cobrado</th>
-                      <th scope="col" className="text-right font-weight-bold">Asociados</th>
                       <th scope="col" className="text-right font-weight-bold">Meta</th>
-                      <th scope="col">Completion</th>
+                      <th scope="col">Cobranza</th>
+                      <th scope="col" className="text-right font-weight-bold">Asociados</th>
+                      <th scope="col">Cobertura</th>
                     </tr>
                   </thead>
                   <tbody className="text-right">
@@ -56,10 +57,9 @@ export default function BySector({ since, until }) {
                       billListBySector?.cuentas?.map((bill, key) =>
                         <tr key={key}>
                           <td scope="row" className="text-left font-weight-bold">{bill.descripcion}</td>
-                          <td>{bill.emitidos}</td>
-                          <td>{bill.cobrado}</td>
-                          <td>{bill.asociados}</td>
-                          <td>{bill.meta}</td>
+                          <td>S/.{bill.emitidos}</td>
+                          <td>S/.{bill.cobrado}</td>
+                          <td>S/.{bill.meta}</td>
                           <td>
                             {
                               bill.meta == 0 ?
@@ -82,14 +82,38 @@ export default function BySector({ since, until }) {
 
                             }
                           </td>
+                          <td>{bill.asociados} <i className="ni ni-single-02 ml-1"></i></td>
+                          <td>
+                            {
+                              billListBySector.cobertura[key]?.cobertura ?
+                                <div className="d-flex align-items-center">
+                                  <div>
+                                    <Progress
+                                      max="100"
+                                      value={billListBySector.cobertura[key]?.cobertura / bill.asociados * 100}
+                                      barClassName={
+                                        Math.round(billListBySector.cobertura[key]?.cobertura/ bill.asociados * 100) < 50 ?
+                                          'bg-danger'
+                                          :
+                                          'bg-success'
+                                      }
+                                    />
+                                  </div>
+                                  <span className="ml-2">{Math.round(billListBySector.cobertura[key]?.cobertura / bill.asociados * 100)}% ({billListBySector.cobertura[key]?.cobertura} <i className="ni ni-single-02"></i>)</span>
+                                </div>
+                                :
+                                ""
+                            }
+                          </td>
                         </tr>
                       )
                     }
                     <tr>
                       <td scope="row" className="text-left font-weight-bold">Afiliaciones</td>
-                      <td>{billListBySector?.afiliaciones?.emitidos}</td>
-                      <td>{billListBySector?.afiliaciones?.cobrado}</td>
-                      <td>{billListBySector?.afiliaciones?.meta}</td>
+                      <td>S/.{billListBySector?.afiliaciones?.emitidos}</td>
+                      <td>S/.{billListBySector?.afiliaciones?.cobrado}</td>
+                      <td></td>
+                      <td></td>
                       <td></td>
                       <td></td>
                       <td></td>

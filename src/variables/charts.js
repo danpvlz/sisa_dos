@@ -316,7 +316,7 @@ let chartExample1 = {
           if (data.datasets.length > 1) {
             content += label;
           }
-          content += 'S/. ' + yLabel.toLocaleString('en-US', {
+          content += ' S/. ' + yLabel.toLocaleString('en-US', {
             minimumFractionDigits: 0
           });
           return content;

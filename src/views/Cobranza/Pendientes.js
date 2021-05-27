@@ -164,7 +164,7 @@ const EstadoCuenta = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && pendingsList.data ?
+                !loading || pendingsList?.data ?
                   <>
                     <Table className="align-items-center table-flush" responsive>
                       <thead className="thead-light">

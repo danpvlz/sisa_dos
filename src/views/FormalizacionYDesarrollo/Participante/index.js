@@ -154,7 +154,7 @@ const Index = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && participanteList.data ?
+                !loading || participanteList?.data ?
                   <>
                     <Table className="align-items-center table-flush" responsive>
                       <thead className="thead-light">

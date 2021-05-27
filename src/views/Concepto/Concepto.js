@@ -156,7 +156,7 @@ const Conceptos = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && conceptoList.data ?
+                !loading || conceptoList?.data ?
                   <>
                     <Table className="align-items-center table-flush" responsive>
                       <thead className="thead-light">

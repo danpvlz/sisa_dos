@@ -7,7 +7,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-import {components,routesAdmin,routesCobranza,routesContabilidad,routesCuentasVer,routesDirectivos,routesImagenInstitucional,routesServicioAsociado,routesSimple} from "../routes.js";
+import {components} from "../routes.js";
 import {listRoutes} from "../redux/actions/Common";
 import { useDispatch, useSelector } from "react-redux";
 import Notifications from "components/Notification.js";

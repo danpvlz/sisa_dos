@@ -27,9 +27,9 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
         <Container fluid>
           <div className="header-body">
             {/* Card stats */}
-            <Row>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
+            <Row className="mx-1">
+              <Col lg="6" xl="3" className="mb-4 mb-xl-0 px-0 pr-2">
+                <Card className="card-stats h-100">
                   <CardBody>
                     <Row>
                       <div className="col">
@@ -58,9 +58,8 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                   </CardBody>
                 </Card>
               </Col>
-              
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
+              <Col lg="6" xl="3" className="mb-4 mb-xl-0 px-0 pr-2">
+                <Card className="card-stats h-100">
                   <CardBody>
                     <Row>
                       <div className="col">
@@ -68,7 +67,7 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Tardanzas
+                          Debe
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
                           {tardanzas}
@@ -89,9 +88,8 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                   </CardBody>
                 </Card>
               </Col>
-              
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
+              <Col lg="6" xl="3" className="mb-4 mb-xl-0 px-0 pr-2">
+                <Card className="card-stats h-100">
                   <CardBody>
                     <Row>
                       <div className="col">
@@ -122,8 +120,8 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
+              <Col lg="6" xl="3" className="px-0">
+                <Card className="card-stats h-100">
                   <CardBody>
                     <Row>
                       <div className="col">
@@ -155,7 +153,6 @@ const AsistenciaHeader = ({ tardanzas, faltas, hRealizadas, hCompensar }) => {
                   </CardBody>
                 </Card>
               </Col>
-              
             </Row>
           </div>
         </Container>

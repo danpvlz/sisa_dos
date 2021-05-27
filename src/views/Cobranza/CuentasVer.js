@@ -371,7 +371,7 @@ const Cuenta = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && billList.data ?
+                !loading || billList?.data ?
                   <>
                     <Table className={`align-items-center table-flush ${showBillsTable ? '' : 'd-none'}`} responsive>
                       <thead className="thead-light">

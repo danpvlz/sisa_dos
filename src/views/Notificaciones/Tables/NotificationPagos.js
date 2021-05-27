@@ -25,6 +25,7 @@ export default function NotificationPagos({ details,numoperacion, numsofdoc }) {
                                     <th scope="col">Banco</th>
                                     <th scope="col">Operación</th>
                                     <th scope="col">SofDoc</th>
+                                    <th scope="col">Monto op.</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -34,18 +35,21 @@ export default function NotificationPagos({ details,numoperacion, numsofdoc }) {
                                             {pago.fecha}
                                         </td>
                                         <td>
-                                            {pago.monto}
+                                            {'S/.'+pago.monto}
                                         </td>
                                         <td>
                                             {pago.banco ?
                                                 pago.banco == 1 ? 'BCP' : pago.banco == 2 ? 'BBVA' : pago.banco == 3 ? 'BANCOS' : pago.banco == 4 ? 'CONTADO' : 'CRÉDITO'
                                                 : '-'}
                                         </td>
-                                        <td className={`${numoperacion ? 'text-danger font-weight-bold' : 'd-block'}`}>
+                                        <td>
                                             {pago.numoperacion}
                                         </td>
-                                        <td className={`${numsofdoc ? 'text-danger font-weight-bold' : 'd-block'}`}>
+                                        <td>
                                             {pago.numsofdoc ? pago.numsofdoc : '-'}
+                                        </td>
+                                        <td>
+                                            {pago.montoPaid ? ('S/.'+pago.montoPaid) : '-'}
                                         </td>
                                     </tr>)}
                             </tbody>

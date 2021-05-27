@@ -99,7 +99,7 @@ const Colaborador = () => {
                 </Button>
               </CardHeader>
               {
-                !loading && workerList.data ?
+                !loading || workerList?.data ?
                   <>
                     <Table className="align-items-center table-flush" responsive>
                       <thead className="thead-light">

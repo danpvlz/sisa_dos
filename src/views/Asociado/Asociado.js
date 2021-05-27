@@ -307,7 +307,7 @@ const Asociado = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && associatedList.data ?
+                !loading || associatedList?.data ?
                   <>
                     <Table className="align-items-center table-flush table-sm" responsive>
                       <thead className="thead-light">

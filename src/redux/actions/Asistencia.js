@@ -204,3 +204,29 @@ export const saveJustification = (justificationData) => {
       });
   }
 };
+
+export const calcTime = (time)=>{
+  let TimeFinal=Math.abs(time);
+  let timeString="";
+  if(TimeFinal > 43200){
+    timeString +=  Math.trunc(TimeFinal / 43200) + "M ";
+    TimeFinal-=(43200* Math.trunc(TimeFinal / 43200) );
+  }
+  if(TimeFinal > 1440){
+    timeString +=  Math.trunc(TimeFinal / 1440) + "d ";
+    TimeFinal-=(1440* Math.trunc(TimeFinal / 1440) );
+  }
+  if(TimeFinal > 1440){
+    timeString +=  Math.trunc(TimeFinal / 1440) + "d ";
+    TimeFinal-=(1440* Math.trunc(TimeFinal / 1440) );
+  }
+  if(TimeFinal > 60){
+    timeString +=  Math.trunc(TimeFinal / 60) + "h ";
+    TimeFinal-=(60* Math.trunc(TimeFinal / 60) );
+  }
+  if(TimeFinal > 0){
+    timeString +=  Math.round(TimeFinal) + "min ";
+  }
+  timeString=timeString=="" ? "-" : timeString;
+  return timeString;
+}

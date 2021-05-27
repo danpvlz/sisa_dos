@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import classnames from "classnames";
 import Chart from "chart.js";
-import { Line, Bar, HorizontalBar,Pie } from "react-chartjs-2";
+import { Bar, HorizontalBar,Pie } from "react-chartjs-2";
 // reactstrap components
 import {
   Button,
@@ -13,6 +13,7 @@ import {
   Col,
 } from "reactstrap";
 import BySector from "components/Tables/BySector";
+import LineTrend from "components/Graphs/LineTrend";
 
 // core components
 import {
@@ -43,6 +44,22 @@ const Index = (props) => {
     dispatch(loadDashboard());
   }, [])
 
+  const handleClickLine=(evt, element) => {
+    if (element.length > 0) {
+      var ind = element[0]._index;
+      setcurrentmonth(months[ind])
+      setsince(
+        `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-01`
+      );
+      setuntil(
+        `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-${new Date(new Date().getFullYear(), ind+1, 0).getDate()}`
+      );
+      dispatch(loadDashboard({
+        mes: ind
+      }));
+    }
+  }
+
   return (
     <>
       <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
@@ -59,53 +76,13 @@ const Index = (props) => {
                     <h6 className="text-uppercase text-light ls-1 mb-1">
                       Información general serie 109
                     </h6>
-                    <h2 className="text-white mb-0">Ingresos {new Date().getFullYear()}</h2>
+                    <h2 className="text-white mb-0">Emitido vs. Cobrado {new Date().getFullYear()}</h2>
                   </div>
                 </Row>
               </CardHeader>
               <CardBody>
                 {/* Chart */}
-                <div className="chart">
-                  {
-                    billDashboard?.line ? 
-                    <Line
-                      data={{
-                        labels: billDashboard?.line?.map(a => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", 'Sep', 'Oct', 'Nov', 'Dic'][a.mes - 1]),
-                        datasets: [
-                          {
-                            label: "Performance",
-                            data: billDashboard?.line?.map(a => a.monto),
-                            lineTension: 0.1,
-                            pointBorderColor: "#fff",
-                            pointBorderWidth: 1,
-                            pointHoverRadius: 5,
-                            pointHoverBorderWidth: 2,
-                            pointRadius: 1,
-                            pointHitRadius: 10,
-                          },
-                        ],
-                      }}
-                      options={{...chartExample1.options,
-                        onClick: (evt, element) => {
-                          if (element.length > 0) {
-                            var ind = element[0]._index;
-                            setcurrentmonth(months[ind])
-                            setsince(
-                              `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-01`
-                            );
-                            setuntil(
-                              `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-${new Date(new Date().getFullYear(), ind+1, 0).getDate()}`
-                            );
-                            dispatch(loadDashboard({
-                              mes: ind
-                            }));
-                          }
-                        },}}
-                    />
-                    :
-                    ""
-                  }
-                </div>
+                <LineTrend lineCobrado={billDashboard?.lineCobrado} lineEmitido={billDashboard?.lineEmitido} handleClick={handleClickLine} />
               </CardBody>
             </Card>
           </Col>
@@ -128,17 +105,17 @@ const Index = (props) => {
                     billListBySector?.cuentas ? 
                     <HorizontalBar
                       data={{
-                        labels:  billListBySector?.cuentas?.map(a => a.descripcion),
+                        labels:  billListBySector?.cuentasActualMes?.map(a => a.descripcion),
                         datasets: [
                           {
                             label: 'Pendiente',
-                            data:  billListBySector?.cuentas?.map(a => a.emitidos - a.cobradoMesActual),
+                            data:  billListBySector?.cuentasActualMes?.map((a,i) => a.emitidoMesActual - a.cobradoMesActual),
                             backgroundColor: '#ffcc29',
                         },
                         {
                           label: 'Cobrado',
-                        data:  billListBySector?.cuentas?.map(a => a.cobradoMesActual),
-                        backgroundColor: '#2dce89',
+                          data:  billListBySector?.cuentasActualMes?.map(a => a.cobradoMesActual),
+                          backgroundColor: '#2dce89',
                         }
                       ]
                       }}

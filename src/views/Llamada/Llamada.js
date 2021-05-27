@@ -192,7 +192,7 @@ const Llamadas = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && phoneCallList.data ?
+                !loading || phoneCallList?.data ?
                   <>
                     <Table className="align-items-center table-flush" responsive>
                       <thead className="thead-light">

@@ -55,6 +55,7 @@ const Cuenta = () => {
   const [bancopago, setbancopago] = useState(1);
   const [numoperacion, setNumOperacion] = useState("");
   const [numsofdoc, setNumSofdoc] = useState("");
+  const [montoPaid, setMontoPaid] = useState("");
   const [sendPay, setsendPay] = useState(0);
 
   const [show, setshow] = useState({
@@ -196,6 +197,7 @@ const Cuenta = () => {
         "banco": bancopago,
         "numoperacion": numoperacion,
         "numsofdoc": numsofdoc,
+        "montoPaid": montoPaid,
       }
       dispatch(pagarCuenta(fData))
       //REGISTRAR
@@ -240,6 +242,8 @@ const Cuenta = () => {
         numsofdoc={numsofdoc}
         setNumOperacion={setNumOperacion}
         setNumSofdoc={setNumSofdoc}
+        setMontoPaid={setMontoPaid}
+        montoPaid={montoPaid}
       />
       <ChangePayModal
         showPay={show.changePay}
@@ -251,6 +255,8 @@ const Cuenta = () => {
         setsendPay={setsendPay}
         setbancopago={setbancopago}
         fechasince={fechasince}
+        setMontoPaid={setMontoPaid}
+        montoPaid={montoPaid}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -439,7 +445,7 @@ const Cuenta = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && billList.data ?
+                !loading || billList?.data ?
                   <>
                     <Table className="align-items-center table-flush table-sm" responsive>
                       <thead className="thead-light">

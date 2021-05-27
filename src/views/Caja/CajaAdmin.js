@@ -28,8 +28,8 @@ import PaymentsModal from "components/Modals/Payments.js";
 import CuentasHeader from "components/Headers/CuentasHeader.js";
 import SearchCliente from "components/Selects/SearchCliente.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listbysector, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
-import { listBills, anularCuenta, payCaja, getDetail, indicatorsBills } from "../../redux/actions/Caja";
+import { listbysector} from "../../redux/actions/Cuenta";
+import { listBills, anularCuenta, payCaja, getDetail, indicatorsBills, exportBills, exportBillsDetail } from "../../redux/actions/Caja";
 import Loading from "../../components/Loaders/LoadingSmall";
 
 var timeOutFunc;
@@ -71,7 +71,8 @@ const Cuenta = () => {
   const [paydate, setpaydate] = useState("");
   const [sincePay, setsincepay] = useState(null);
   const [untilPay, setuntilpay] = useState(null);
-
+  const [montoPaid, setMontoPaid] = useState("");
+  
   const [fechasince, setfechasince] = useState(new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]);
 
   useEffect(() => {
@@ -188,6 +189,7 @@ const Cuenta = () => {
         "opcion": bancopago,
         "numoperacion": numoperacion,
         "numsofdoc": numsofdoc,
+        "montoPaid": montoPaid,
       }
       dispatch(payCaja(fData))
       //REGISTRAR
@@ -234,6 +236,8 @@ const Cuenta = () => {
         numsofdoc={numsofdoc}
         setNumOperacion={setNumOperacion}
         setNumSofdoc={setNumSofdoc}
+        setMontoPaid={setMontoPaid}
+        montoPaid={montoPaid}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -389,7 +393,7 @@ const Cuenta = () => {
                 </Row>
               </CardHeader>
               {
-                !loading ?
+                !loading || billListCaja?.data ?
                   <>
               <Table className="align-items-center table-flush table-sm" responsive>
                 <thead className="thead-light">

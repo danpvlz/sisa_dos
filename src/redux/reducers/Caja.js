@@ -1,11 +1,13 @@
 import {
     LIST_BILLS_CAJA,
     INDICATORS_BILLS_CAJA,
-    DASHBOARD_DATA
+    DASHBOARD_DATA,
+    DASHBOARD_DATA_BY_AREA
   } from "../ActionTypes";
   
   const INIT_STATE = {
     cajaDashboard:[],
+    cajaDashboardByArea:[],
     billListCaja:[],
     billIndicatorsCaja:[],
   };
@@ -16,6 +18,12 @@ import {
           return {
               ...state,
               cajaDashboard : action.payload
+          }
+      }
+      case DASHBOARD_DATA_BY_AREA: {
+          return {
+              ...state,
+              cajaDashboardByArea : action.payload
           }
       }
         case LIST_BILLS_CAJA: {

@@ -163,7 +163,7 @@ const EstadoCuenta = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && membershipList.data ?
+                !loading || membershipList?.data ?
                   <>
                     <Table className="align-items-center table-flush table-sm" responsive>
                       <thead className="thead-light">

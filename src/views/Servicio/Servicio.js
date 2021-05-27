@@ -187,7 +187,7 @@ const Servicios = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && servicesList.data ?
+                !loading || servicesList?.data ?
                   <>
                     <Table className="align-items-center table-flush" responsive>
                       <thead className="thead-light">

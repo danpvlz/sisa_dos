@@ -75,6 +75,7 @@ const Cuenta = () => {
   const [paydate, setpaydate] = useState("");
   const [sincePay, setsincepay] = useState(null);
   const [untilPay, setuntilpay] = useState(null);
+  const [montoPaid, setMontoPaid] = useState("");
 
   const [fechasince, setfechasince] = useState(new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]);
 
@@ -180,6 +181,7 @@ const Cuenta = () => {
         "banco": bancopago,
         "numoperacion": numoperacion,
         "numsofdoc": numsofdoc,
+        "montoPaid": montoPaid,
       }
       dispatch(pagarCuenta(fData))
       //REGISTRAR
@@ -224,6 +226,8 @@ const Cuenta = () => {
         numsofdoc={numsofdoc}
         setNumOperacion={setNumOperacion}
         setNumSofdoc={setNumSofdoc}
+        setMontoPaid={setMontoPaid}
+        montoPaid={montoPaid}
       />
       <ChangePayModal
         showPay={show.changePay}
@@ -235,6 +239,8 @@ const Cuenta = () => {
         setsendPay={setsendPay}
         setbancopago={setbancopago}
         fechasince={fechasince}
+        setMontoPaid={setMontoPaid}
+        montoPaid={montoPaid}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -423,7 +429,7 @@ const Cuenta = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && billList.data ?
+                !loading || billList?.data ?
                   <>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">

@@ -159,7 +159,7 @@ const Index = () => {
                 </Row>
               </CardHeader>
               {
-                !loading && cursoList.data ?
+                !loading || cursoList?.data ?
                   <>
                     <Table className="align-items-center table-flush table-sm" responsive>
                       <thead className="thead-light">

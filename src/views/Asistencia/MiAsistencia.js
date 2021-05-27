@@ -9,10 +9,6 @@ import {
   CardHeader,
   CardFooter,
   Col,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
   Table,
   Container,
   Row,
@@ -24,14 +20,13 @@ import {
   Nav,
   TabContent,
   TabPane,
-  Modal,
   UncontrolledTooltip
 } from "reactstrap";
 // core components
 
 import AsistenciaHeader from "components/Headers/AsistenciaHeader.js";
 import { useDispatch, useSelector } from "react-redux";
-import { myAssistance, myAssistanceDetail, indicators, saveJustification } from "../../redux/actions/Asistencia";
+import { calcTime, myAssistance, myAssistanceDetail, indicators, saveJustification } from "../../redux/actions/Asistencia";
 import Justify from '../../components/Modals/JustifyModal';
 import Loading from "../../components/Loaders/LoadingSmall";
 
@@ -114,10 +109,10 @@ const Asistencia = () => {
   return (
     <>
       <AsistenciaHeader
-        tardanzas={assistanceIndicators?.tardanzas}
+        tardanzas={calcTime(assistanceIndicators?.tardanzas)}
         faltas={assistanceIndicators?.faltas}
-        hRealizadas={assistanceIndicators?.hRealizadas}
-        hCompensar={assistanceIndicators?.hCompensar} />
+        hRealizadas={calcTime(assistanceIndicators?.hRealizadas)}
+        hCompensar={calcTime(assistanceIndicators?.hCompensar)} />
       {/* Page content */}
       <Container className="mt--7" fluid>
         {/* Table */}
@@ -183,7 +178,7 @@ const Asistencia = () => {
                 </div>
               </CardHeader>
               {
-                !loading && myAssistanceList.data ?
+                !loading || myAssistanceList?.data ?
                   <>
                     <TabContent activeTab={"tabs" + state.tabs} >
                       <TabPane tabId="tabs1">
@@ -191,19 +186,19 @@ const Asistencia = () => {
                           <Col>
                             <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
                               Normal
-                      </Badge>
+                            </Badge>
                             <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="warning">
                               Tardanza
-                      </Badge>
+                            </Badge>
                             <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="danger">
                               Falta
-                      </Badge>
+                            </Badge>
                             <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} className="bg-yellow text-default">
                               Salió temprano
-                      </Badge>
+                            </Badge>
                             <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="default">
                               Compensó
-                      </Badge>
+                            </Badge>
                           </Col>
                         </div>
                         <Table className="align-items-center table-flush" responsive>
@@ -216,7 +211,8 @@ const Asistencia = () => {
                               <th scope="col">Entrada</th>
                               <th scope="col">Salida</th>
                               <th scope="col">Tardanza</th>
-                              <th scope="col">Compensado</th>
+                              <th scope="col">H. extra</th>
+                              <th scope="col">Compensó</th>
                               <th scope="col">Falta</th>
                               <th scope="col">Salió temprano</th>
                             </tr>
@@ -296,31 +292,21 @@ const Asistencia = () => {
                                     </UncontrolledTooltip>
                                   </td>
                                   <td className="text-center">
-                                    {
-                                      asistencia.tardanza == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.tardanza) > 60 ? Math.trunc(Math.abs(asistencia.tardanza) / 60) + "h " + Math.trunc(Math.abs(asistencia.tardanza) % 60) + "min" : Math.trunc(Math.abs(asistencia.tardanza)) + "min"}
+                                    {calcTime(asistencia.tardanza)}
 
                                   </td>
-                                  <td className="text-center">
-                                    {
-                                      asistencia.compensado == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.compensado) > 60 ? Math.trunc(Math.abs(asistencia.compensado) / 60) + "h " + Math.trunc(Math.abs(asistencia.compensado) % 60) + "min" : Math.trunc(Math.abs(asistencia.compensado)) + "min"}
-
+                                  <td>
+                                    {"-" //h. extra 
+                                    }
                                   </td>
                                   <td className="text-center">
-                                    {
-                                      asistencia.falta == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.falta) > 60 ? Math.trunc(Math.abs(asistencia.falta) / 60) + "h " + Math.trunc(Math.abs(asistencia.falta) % 60) + "min" : Math.trunc(Math.abs(asistencia.falta)) + "min"}
+                                    {calcTime(asistencia.compensado)}
                                   </td>
                                   <td className="text-center">
-                                    {
-                                      asistencia.temp == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.temp) > 60 ? Math.trunc(Math.abs(asistencia.temp) / 60) + "h " + Math.trunc(Math.abs(asistencia.temp) % 60) + "min" : Math.trunc(Math.abs(asistencia.temp)) + "min"}
-
+                                    {calcTime(asistencia.falta)}
+                                  </td>
+                                  <td className="text-center">
+                                    {calcTime(asistencia.temp)}
                                   </td>
                                 </tr>
                               )
@@ -372,12 +358,9 @@ const Asistencia = () => {
                               <th scope="col">Día</th>
                               <th scope="col">Tipo</th>
                               <th scope="col">Hora</th>
-                              <th scope="col">Tardanza</th>
-                              <th scope="col">Compensado</th>
-                              <th scope="col">Falta</th>
-                              <th scope="col">Salió temprano</th>
-                              <th scope="col">Observación</th>
-                              <th scope="col">Justificación</th>
+                              <th scope="col">Minutos</th>
+                              <th scope="col" className="text-center">Observación</th>
+                              <th scope="col" className="text-center">Justificación</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -410,45 +393,12 @@ const Asistencia = () => {
                                     </UncontrolledTooltip>
                                   </td>
                                   <td className="text-center">
-                                    {parseInt(asistencia.estado) == 2 ?
-                                      asistencia.calc == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
-                                      :
-                                      "-"
-                                    }
+                                    {calcTime(asistencia.calc)}
                                   </td>
-                                  <td className="text-center">
-                                    {parseInt(asistencia.estado) == 5 ?
-                                      asistencia.calc == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
-                                      :
-                                      "-"
-                                    }
-                                  </td>
-                                  <td className="text-center">
-                                    {parseInt(asistencia.estado) == 3 ?
-                                      asistencia.calc == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
-                                      :
-                                      "-"
-                                    }
-                                  </td>
-                                  <td className="text-center">
-                                    {parseInt(asistencia.estado) == 4 ?
-                                      asistencia.calc == 0 ?
-                                        "-" :
-                                        Math.abs(asistencia.calc) > 60 ? Math.trunc(Math.abs(asistencia.calc) / 60) + "h " + Math.trunc(Math.abs(asistencia.calc) % 60) + "min" : Math.trunc(Math.abs(asistencia.calc)) + "min"
-                                      :
-                                      "-"
-                                    }
-                                  </td>
-                                  <td className="text-center">
+                                  <td className="text-center table-w-line-break">
                                     {asistencia.observacion == null ? "-" : asistencia.observacion}
                                   </td>
-                                  <td className="text-center">
+                                  <td className="text-center table-w-line-break">
                                     {asistencia.justificacion == null ?
                                       asistencia.fecha >= maxdatejustification &&
                                         (

@@ -11,6 +11,7 @@ import {
   SHOW_COMPROBANTE,
   INDICATORS_BILLS_CAJA,
   DASHBOARD_DATA,
+  DASHBOARD_DATA_BY_AREA
 } from "../ActionTypes";
 import axios from '../../util/Api';
 
@@ -144,6 +145,70 @@ export const loadDashboard = (params={}) => {
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: DASHBOARD_DATA, payload: data });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+
+export const exportBills = (params = {}) => {
+  let config = {
+    responseType: 'blob', // important
+  }
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('/billsexport108',
+      params,
+      config
+    ).then(({ data }) => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Cuentas.xlsx'); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+      dispatch({ type: FETCH_SUCCESS });
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+
+export const exportBillsDetail = (params = {}) => {
+  let config = {
+    responseType: 'blob', // important
+  }
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('/billsdetailexport108',
+      params,
+      config
+    ).then(({ data }) => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'CuentasDetalle.xlsx'); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+      dispatch({ type: FETCH_SUCCESS });
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+
+export const loadDashboardByArea = (params={}) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('byAreaDashboard',
+    params
+    ).then(({ data }) => {  
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: DASHBOARD_DATA_BY_AREA, payload: data });
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.error });
       }

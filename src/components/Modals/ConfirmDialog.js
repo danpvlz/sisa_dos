@@ -29,7 +29,7 @@ const ConfirmDialog = ({ showConfirm, toggleModal, setConfirm, question }) => {
                 >
                     Cerrar
                       </Button>
-                <Button className="btn-primary" color="primary" type="button" onClick={doAction}>
+                <Button className="btn-primary" color="primary" type="button" onClick={(e) => {e.preventDefault(); doAction();}}>
                     Confirmar
                       </Button>
             </div>

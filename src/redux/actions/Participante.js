@@ -58,7 +58,7 @@ import {
       dispatch({ type: FETCH_START });
       dispatch({ type: PARTICIPANTES_STATUS_ACTIONS, payload: 0 });
   
-      axios.put('participant/'+idParticipant,
+      axios.post('participantUpdate/'+idParticipant,
       participantData
       ).then(({ data, status }) => {
         if (data) {
@@ -104,7 +104,7 @@ import {
       dispatch({ type: FETCH_START });
       dispatch({ type: PARTICIPANTES_STATUS_ACTIONS, payload: 0 });
   
-      axios.delete('participant/'+idParticipant
+      axios.post('participantDelete/'+idParticipant
       ).then(({ data, status }) => {
         if (data) {
           dispatch({ type: SHOW_MESSAGE, payload: data.message });

@@ -206,6 +206,7 @@
     margin: .5rem;
     line-break: anywhere;
     background-color: white;
+    cursor: pointer;
   }
 
   .calendar-item-name{
@@ -332,39 +333,11 @@
     border-radius: .5rem;
     box-shadow:rgb(117 117 117 / 10%) -4px 9px 25px -6px;
   }
-
-  .styled-scroll::-webkit-scrollbar {
-    width: 8px;     /* Tamaño del scroll en vertical */
-    height: 8px;    /* Tamaño del scroll en horizontal */
-}
-
-.styled-scroll::-webkit-scrollbar-thumb {
-  background: rgb(175, 175, 175);
-  border-radius: 4px;
-}
-
-/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
-.styled-scroll::-webkit-scrollbar-thumb:hover {
-  background: #969595;
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
-}
-
-/* Cambiamos el fondo cuando esté en active */
-.styled-scroll::-webkit-scrollbar-thumb:active {
-  background-color: #999999;
-}
-
-/* Ponemos un color de fondo y redondeamos las esquinas del track */
-.styled-scroll::-webkit-scrollbar-track {
-  background: #e1e1e1;
-  border-radius: 4px;
-}
-
-/* Cambiamos el fondo cuando esté en active o hover */
-.styled-scroll::-webkit-scrollbar-track:hover,
-.styled-scroll::-webkit-scrollbar-track:active {
-background: #c2c2c2;
-}
+  
+  .table-w-line-break{
+   white-space: break-spaces !important;
+   word-break: break-word !important;
+  }
 
 .folder-icon{
   margin: 0 0.5rem 0 1.5rem;
@@ -380,3 +353,4 @@ background: #c2c2c2;
   }
   
  }
+

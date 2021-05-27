@@ -50,7 +50,8 @@ const NuevaEmision = () => {
   const [opcion, setOpcion] = useState(null);
   const [typeChange, settypeChange] = useState(1);
   const [searchDoc, setSearchDoc] = useState(null);
-
+  const [montoPaid, setMontoPaid] = useState(null);
+  
   const setPriceConcepto = (price) => {
     setitemValues({ ...itemValues, "price": price, "subtotal": price * itemValues.ammount })
   }
@@ -72,10 +73,10 @@ const NuevaEmision = () => {
   const [items, setitems] = useState([]);
 
   const addItem = () => {
-    if (items.some(item =>
+    /*if (items.some(item =>
       item.idConcepto == idConcepto)) {
       dispatch(fetchError("Item repetido"));
-    } else {
+    } else {*/
       if (idConcepto == null) {
         dispatch(fetchError("Debe seleccionar un concepto."));
       } else {
@@ -102,7 +103,7 @@ const NuevaEmision = () => {
           }
         }
       }
-    }
+    //}
 
     setTimeout(() => {
       dispatch(hideMessage());
@@ -157,6 +158,7 @@ const NuevaEmision = () => {
       formdata.typeChange = typeChange;
       formdata.items = items;
       formdata.docModificar = docModificar;
+      console.log(formdata);
       dispatch(saveCuenta(formdata));
       history.push('/admin/cuentas-caja');
     }
@@ -442,7 +444,7 @@ const NuevaEmision = () => {
                       <Col lg="12">
                         <h6 className="heading-small text-muted mb-4">
                           <i className="ni ni-money-coins mr-2 my-auto" /> Pago
-                      </h6>
+                        </h6>
                         <div className="pl-lg-4">
                           <Row>
                             <>
@@ -463,7 +465,7 @@ const NuevaEmision = () => {
                                       setOpcion(inputValue.value);
                                     }}
                                     options={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }]}
-                                    innerRef={register({ required: true })}
+                                    innerRef={register({ required: pagado == 2 })}
                                   />
                                 </FormGroup>
                               </Col>
@@ -502,6 +504,29 @@ const NuevaEmision = () => {
                                       setnumPayFilled({ ...numPayFilled, sofdoc: e.target.value != '' ? true : false });
                                     }}
                                     innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col lg="2">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Monto del pago
+                                  </label>
+                                  <Input
+                                    className="form-control-alternative text-center"
+                                    name="montoPaid"
+                                    type="number"
+                                    min="0"
+                                    step="any"
+                                    placeholder="S/."
+                                    onChange={(e) => {
+                                      setMontoPaid(e.target.value);
+                                    }}
+                                    value={montoPaid}
+                                    innerRef={register({ required: pagado == 2 })}
                                   />
                                 </FormGroup>
                               </Col>
