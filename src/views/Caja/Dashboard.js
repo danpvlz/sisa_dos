@@ -30,11 +30,13 @@ import { loadDashboard } from "../../redux/actions/Caja";
 import Loading from "../../components/Loaders/LoadingSmall";
 import LineTrend from "components/Graphs/LineTrend";
 
+var mesesNames=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
 const Index = (props) => {
   const dispatch = useDispatch();
   const { cajaDashboard } = useSelector(({ caja }) => caja);
   const { loading } = useSelector(({ commonData }) => commonData);
-  const [currentmonth, setcurrentmonth] = useState(['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][new Date().getMonth()])
+  const [currentmonth, setcurrentmonth] = useState(mesesNames[new Date().getMonth()])
 
   if (window.Chart) {
     parseOptions(Chart, chartOptions());
@@ -47,16 +49,10 @@ const Index = (props) => {
   const handleClickLine =(evt, element) => {
     if (element.length > 0) {
       var ind = element[0]._index;
-      /*setcurrentmonth(months[ind])
-      setsince(
-        `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-01`
-      );
-      setuntil(
-        `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-${new Date(new Date().getFullYear(), ind+1, 0).getDate()}`
-      );
       dispatch(loadDashboard({
-        mes: ind
-      }));*/
+        mes: ind+1
+      }));
+      setcurrentmonth(mesesNames[ind])
     }
   }
   

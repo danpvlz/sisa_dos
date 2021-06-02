@@ -94,6 +94,7 @@ const Cuenta = () => {
       delete tsearch.paydate;
     } else {
       tsearch.paydate = paydate;
+      wait=true;
     }
 
     if (cobrador == null) {
@@ -130,24 +131,28 @@ const Cuenta = () => {
       delete tsearch.sincePay;
     } else {
       tsearch.sincePay = sincePay;
+      wait=true;
     }
 
     if (untilPay == null) {
       delete tsearch.untilPay;
     } else {
       tsearch.untilPay = untilPay;
+      wait=true;
     }
 
     if (since == null) {
       delete tsearch.since;
     } else {
       tsearch.since = since;
+      wait=true;
     }
 
     if (until == null) {
       delete tsearch.until;
     } else {
       tsearch.until = until;
+      wait=true;
     }
 
     if (loaded) {

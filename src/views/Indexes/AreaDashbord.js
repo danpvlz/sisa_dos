@@ -35,39 +35,34 @@ import { loadDashboardByArea } from "../../redux/actions/Caja";
 import Header from "components/Headers/Indexes/Index.js";
 import LineTrend from "components/Graphs/LineTrend";
 
-const Index = (props) => {
+const AreaDashbord = ({idArea=null,children}) => {
   const dispatch = useDispatch();
   const { cajaDashboardByArea } = useSelector(({ caja }) => caja);
   const [order, setorder] = useState({
     orderClientes:'monto',
     orderConceptos:'monto',
   });
-
-  useEffect(() => {
-    dispatch(loadDashboardByArea({...order,area: 5 }));
-  },[order])
+  const [currentmonth, setcurrentmonth] = useState(new Date().getMonth());
 
   if (window.Chart) {
     parseOptions(Chart, chartOptions());
   }
 
   useEffect(() => {
-    dispatch(loadDashboardByArea({...order,area: 5 }));
-  }, []);
+    dispatch(loadDashboardByArea({...order,area: idArea,
+      mes: currentmonth+1 }));
+  }, [order,idArea]);
 
   const handleClickLine = (evt, element) => {
     if (element.length > 0) {
       var ind = element[0]._index;
-      /*setcurrentmonth(months[ind])
-      setsince(
-        `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-01`
-      );
-      setuntil(
-        `${new Date().getFullYear()}-${ind+1<10 ? '0'+(ind+1) : ind+1}-${new Date(new Date().getFullYear(), ind+1, 0).getDate()}`
-      );
+      console.log(ind)
       dispatch(loadDashboardByArea({
-        mes: ind
-      }));*/
+        ...order,
+        area: idArea,
+        mes: ind+1
+      }));
+      setcurrentmonth(ind)
     }
   }
   const toMoneyFormat=(input)=>{
@@ -79,13 +74,14 @@ const Index = (props) => {
   return (
     <>
       <Header
-        emitido={cajaDashboardByArea?.lineEmitido ? cajaDashboardByArea.lineEmitido[cajaDashboardByArea.lineEmitido.length - 1].monto : "-"}
-        cobrado={cajaDashboardByArea?.lineCobrado ? cajaDashboardByArea.lineCobrado[cajaDashboardByArea.lineCobrado.length - 1].monto : "-"}
-        emitidoPrev={cajaDashboardByArea?.lineEmitido ? cajaDashboardByArea.lineEmitido[cajaDashboardByArea.lineEmitido.length - 2].monto : "-"}
-        cobradoPrev={cajaDashboardByArea?.lineCobrado ? cajaDashboardByArea.lineCobrado[cajaDashboardByArea.lineCobrado.length - 2].monto : "-"}
+        emitido={cajaDashboardByArea?.lineEmitido?.find(e=>e.mes==currentmonth+1)?.monto}
+        cobrado={cajaDashboardByArea?.lineCobrado?.find(e=>e.mes==currentmonth+1)?.monto}
+        emitidoPrev={cajaDashboardByArea?.lineEmitido?.find(e=>e.mes==currentmonth)?.monto}
+        cobradoPrev={cajaDashboardByArea?.lineCobrado?.find(e=>e.mes==currentmonth)?.monto}
         clientes={cajaDashboardByArea?.clientes ? cajaDashboardByArea.clientes : []}
         clientesPrev={cajaDashboardByArea?.clientesPrev ? cajaDashboardByArea.clientesPrev.length : "-"}
         top={cajaDashboardByArea?.clientes ? cajaDashboardByArea.clientes[0] : "-"}
+        children={children}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -211,4 +207,4 @@ const Index = (props) => {
   );
 };
 
-export default Index;
+export default AreaDashbord;

@@ -85,21 +85,21 @@ export default function BySector({ since, until }) {
                           <td>{bill.asociados} <i className="ni ni-single-02 ml-1"></i></td>
                           <td>
                             {
-                              billListBySector.cobertura[key]?.cobertura ?
+                              billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura ?
                                 <div className="d-flex align-items-center">
                                   <div>
                                     <Progress
                                       max="100"
-                                      value={billListBySector.cobertura[key]?.cobertura / bill.asociados * 100}
+                                      value={billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura / bill.asociados * 100}
                                       barClassName={
-                                        Math.round(billListBySector.cobertura[key]?.cobertura/ bill.asociados * 100) < 50 ?
+                                        Math.round(billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura/ bill.asociados * 100) < 50 ?
                                           'bg-danger'
                                           :
                                           'bg-success'
                                       }
                                     />
                                   </div>
-                                  <span className="ml-2">{Math.round(billListBySector.cobertura[key]?.cobertura / bill.asociados * 100)}% ({billListBySector.cobertura[key]?.cobertura} <i className="ni ni-single-02"></i>)</span>
+                                  <span className="ml-2">{Math.round(billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura / bill.asociados * 100)}% ({billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura} <i className="ni ni-single-02"></i>)</span>
                                 </div>
                                 :
                                 ""

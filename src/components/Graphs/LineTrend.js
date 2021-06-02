@@ -6,7 +6,7 @@ import {
   chartExample1,
 } from "variables/charts.js";
 
-export default function LineTrend({lineCobrado,lineEmitido,handleClickLine}) {
+export default function LineTrend({lineCobrado,lineEmitido,handleClick}) {
     return (
         <div className="chart">
           {
@@ -44,7 +44,7 @@ export default function LineTrend({lineCobrado,lineEmitido,handleClickLine}) {
                 ],
               }}
               options={{...chartExample1.options,
-                onClick: handleClickLine
+                onClick: handleClick
             ,}}
             />
             :

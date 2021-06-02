@@ -12,6 +12,7 @@ import Login from "views/Auth/Login.js";
 import Dashboard2016 from "views/Dashboards/Dashboard2016.js";
 import Dashboard2020 from "views/Dashboards/Dashboard2020.js";
 import Dashboard2021 from "views/Dashboards/Dashboard2021.js";
+import AreaDashboardAdmin from "views/Dashboards/AreaDashboard.js";
 
 //Asociado 6
 import Asociado from "views/Asociado/Asociado.js";
@@ -70,7 +71,7 @@ import Participante from "views/FormalizacionYDesarrollo/Participante/index";
 import Notificaciones from "views/Notificaciones/index";
 
 //Indexes
-import IndexComercioExterior from "views/Indexes/ComercioExterior";
+import AreaDashbord from "views/Indexes/AreaDashbord";
 
 export const components=[
   Login,
@@ -117,7 +118,8 @@ export const components=[
   Notificaciones,//41
   CobranzaDashboard,//42
   NuevaInscripcion, //43
-  IndexComercioExterior,//44
+  AreaDashbord,//44
+  AreaDashboardAdmin,//45
 ]
 //1
 export const routesSimple = [
