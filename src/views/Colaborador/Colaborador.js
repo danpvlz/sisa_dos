@@ -39,18 +39,18 @@ const Colaborador = () => {
   const history = useHistory();
   const handleNew = useCallback(() => history.push('/admin/nuevo-colaborador'), [history]);
   useEffect(() => {
-    if (workerStatusActions == 200) {
+    if (workerStatusActions === 200) {
       dispatch(listWorker(page));
     }
-  }, [workerStatusActions])
+  }, [workerStatusActions,page,dispatch])
 
   useEffect(() => {
     dispatch(listWorker(page))
-  }, [page])
+  }, [page,dispatch])
 
   useEffect(() => {
     if (confirm) {
-      if (action == 1) {
+      if (action === 1) {
         dispatch(status(colabSelected));
       } else {
         dispatch(vacations(colabSelected));
@@ -58,7 +58,7 @@ const Colaborador = () => {
       setComfirm(false);
       setColabSelected(-1);
     }
-  }, [confirm, action])
+  }, [confirm, action,colabSelected,dispatch])
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -116,13 +116,13 @@ const Colaborador = () => {
                         {
                           workerList?.data?.map((colaborador, key) =>
                             <tr key={key}>
-                              <th scope="row">
+                              <th>
                                 <Media className="align-items-center">
                                   <img
                                     className="avatar rounded-circle mr-3"
                                     alt="..."
                                     src={
-                                      colaborador.foto == null || colaborador.foto == "" ?
+                                      colaborador.foto == null || colaborador.foto === "" ?
                                         require("../../assets/img/theme/default.png")
                                           .default
                                         :
@@ -146,12 +146,12 @@ const Colaborador = () => {
                                 {colaborador.usuario}
                               </td>
                               <td>
-                                {parseInt(colaborador.estado) == 1 ?
+                                {parseInt(colaborador.estado) === 1 ?
                                   <Badge color="" className="badge-dot mr-4">
                                     <i className="bg-success" />Activo
                             </Badge>
                                   :
-                                  parseInt(colaborador.estado) == 2 ?
+                                  parseInt(colaborador.estado) === 2 ?
                                     <Badge color="" className="badge-dot mr-4">
                                       <i className="bg-info" />De vacaciones
                           </Badge>
@@ -186,31 +186,31 @@ const Colaborador = () => {
                               </DropdownItem>
 
                                     {
-                                      parseInt(colaborador.estado) == 0 || parseInt(colaborador.estado) == 1 ?
+                                      parseInt(colaborador.estado) === 0 || parseInt(colaborador.estado) === 1 ?
                                         <DropdownItem
                                           onClick={() => {
-                                            setquestion(parseInt(colaborador.estado) == 1 ? `¿Seguro de dar de baja al trabajador?` : `¿Seguro de reincorporar al trabajador?`)
+                                            setquestion(parseInt(colaborador.estado) === 1 ? `¿Seguro de dar de baja al trabajador?` : `¿Seguro de reincorporar al trabajador?`)
 
                                             setAction(1)
                                             setColabSelected(colaborador.idColaborador);
                                             toggleModal()
                                           }}
                                         >
-                                          {parseInt(colaborador.estado) == 1 ? 'Dar de baja' : 'Activar'}
+                                          {parseInt(colaborador.estado) === 1 ? 'Dar de baja' : 'Activar'}
                                         </DropdownItem>
                                         : ""
                                     }
                                     {
-                                      parseInt(colaborador.estado) == 1 || parseInt(colaborador.estado) == 2 ?
+                                      parseInt(colaborador.estado) === 1 || parseInt(colaborador.estado) === 2 ?
                                         <DropdownItem
                                           onClick={() => {
-                                            setquestion(parseInt(colaborador.estado) == 2 ? `¿Seguro de terminar vacaciones del trabajador?` : `¿Seguro de empezar vacaciones del trabajador?`)
+                                            setquestion(parseInt(colaborador.estado) === 2 ? `¿Seguro de terminar vacaciones del trabajador?` : `¿Seguro de empezar vacaciones del trabajador?`)
                                             setAction(2)
                                             setColabSelected(colaborador.idColaborador);
                                             toggleModal()
                                           }}
                                         >
-                                          {parseInt(colaborador.estado) == 2 ? 'Terminar vacaciones' : 'Empezar vacaciones'}
+                                          {parseInt(colaborador.estado) === 2 ? 'Terminar vacaciones' : 'Empezar vacaciones'}
                                         </DropdownItem>
                                         : ""
                                     }

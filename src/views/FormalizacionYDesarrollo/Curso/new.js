@@ -14,7 +14,7 @@ import { fetchError, hideMessage } from '../../../redux/actions/Common';
 import { store, update } from "../../../redux/actions/Curso";
 
 const New = ({ show, toggleModal }) => {
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const { cursobject } = useSelector(({ curso }) => curso);
   const dispatch = useDispatch();
   const [formdata, setformdata] = useState({
@@ -22,7 +22,7 @@ const New = ({ show, toggleModal }) => {
   });
 
   const onSubmit = (data) => {
-    if (formdata.descripcion == "") {
+    if (formdata.descripcion === "") {
       dispatch(fetchError("Debe ingresar una descripción."))
     } else {
       if (cursobject?.idCurso) {

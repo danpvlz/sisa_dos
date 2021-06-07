@@ -1,17 +1,11 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
+import React, {  useState, useEffect } from "react";
 import PaginationComponent from "react-reactstrap-pagination";
 
 // reactstrap components
 import {
-  Badge,
   Card,
   CardHeader,
   CardFooter,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Table,
   Container,
   Row,
@@ -27,12 +21,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { list, show, destroy, resetObject } from "../../../redux/actions/Participante";
 import Loading from "../../../components/Loaders/LoadingSmall";
 
+var timeOutFunc;
 const Index = () => {
   const dispatch = useDispatch();
   const { participanteList, participanteStatusActions } = useSelector(({ participante }) => participante);
   const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
-  const [searchParticipante, setSearch] = useState("");
+  const [searchParticipante, setSearchParticipante] = useState("");
   const [page, setPage] = useState(1);
   const [showModal, setshow] = useState({
     confirm: false,
@@ -41,7 +36,6 @@ const Index = () => {
   const [selected, setSelected] = useState(null);
   const [confirm, setconfirm] = useState(false);
   const [action, setAction] = useState(1);
-  const history = useHistory();
 
   const handleNew = () => {
     dispatch(resetObject());
@@ -50,21 +44,25 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (participanteStatusActions == 200) {
+    if (participanteStatusActions === 200) {
       dispatch(list(page, search));
     }
-  }, [participanteStatusActions]);
+  }, [participanteStatusActions,dispatch,page,search]);
 
   useEffect(() => {
     let tsearch = search;
-    if (searchParticipante == "") {
+    if (searchParticipante === "") {
       delete tsearch.searchParticipante;
     } else {
       tsearch.searchParticipante = searchParticipante;
     }
+    
     setsearch(tsearch);
-    dispatch(list(page, tsearch));
-  }, [page, searchParticipante]);
+    clearTimeout(timeOutFunc);
+    timeOutFunc = setTimeout(() => {
+      dispatch(list(page, tsearch));
+    }, 800);
+  }, [page, searchParticipante,dispatch,search]);
 
   useEffect(() => {
     if (selected) {
@@ -73,7 +71,7 @@ const Index = () => {
     return () => {
       setSelected(null);
     }
-  }, [selected])
+  }, [selected,dispatch])
 
   const toggleModal = (modal) => {
     setshow({ ...showModal, [modal]: !showModal[modal] });
@@ -81,10 +79,10 @@ const Index = () => {
 
   useEffect(() => {
     if (confirm) {
-      if (action == 2) { dispatch(destroy(selected)) }
+      if (action === 2) { dispatch(destroy(selected)) }
       setconfirm(false)
     }
-  }, [confirm]);
+  }, [confirm,action,dispatch,selected]);
 
   return (
     <>
@@ -92,7 +90,7 @@ const Index = () => {
         <span className="mask bg-gradient-info opacity-8" />
       </div>
       <ConfirmDialog
-        question={action == 1 ? "¿Seguro de desactivar el participante?" : action == 2 ? "¿Seguro de eliminar el participante?" : "¿Seguro de activar el participante?"}
+        question={action === 1 ? "¿Seguro de desactivar el participante?" : action === 2 ? "¿Seguro de eliminar el participante?" : "¿Seguro de activar el participante?"}
         showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} setConfirm={setconfirm} />
       <New
         show={showModal.new}
@@ -143,7 +141,7 @@ const Index = () => {
                             placeholder="Buscar participante"
                             type="text"
                             onChange={(e) => {
-                              setSearch(e.target.value == "" ? "" : e.target.value)
+                              setSearchParticipante(e.target.value === "" ? "" : e.target.value)
                             }}
                             value={searchParticipante}
                           />
@@ -173,7 +171,7 @@ const Index = () => {
                         {
                           participanteList?.data?.map((participante, key) =>
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {participante.nombres + ' ' + participante.apellidoPaterno + ' ' + participante.apellidoMaterno}
                               </td>
                               <td>
@@ -207,7 +205,7 @@ const Index = () => {
                                   style={{cursor: 'pointer' }}
                                   onClick={(e) => { setAction(participante.estado); setSelected(participante.idParticipante); toggleModal('confirm'); }}
                                 >
-                                  <i className={`fa-lg text-${participante.estado == 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}`} aria-hidden="true"></i>
+                                  <i className={`fa-lg text-${participante.estado === 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}`} aria-hidden="true"></i>
                                 </span>
                                 <span
                                   className="mx-2"

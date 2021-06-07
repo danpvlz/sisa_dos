@@ -17,7 +17,7 @@ import { fetchError, hideMessage } from '../../../redux/actions/Common';
 import { store, update } from "../../../redux/actions/Participante";
 
 const New = ({ show, toggleModal, setSearched }) => {
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const { participanteObject } = useSelector(({ participante }) => participante);
   const dispatch = useDispatch();
   const [formdata, setformdata] = useState({
@@ -33,16 +33,16 @@ const New = ({ show, toggleModal, setSearched }) => {
   });
 
   const onSubmit = (data) => {
-    if (formdata.dni == "") {
+    if (formdata.dni === "") {
       dispatch(fetchError("Debe especificar el DNI."))
     } else {
-      if (formdata.nombres == "") {
+      if (formdata.nombres === "") {
         dispatch(fetchError("Debe especificar el nombre."))
       } else {
-        if (formdata.paterno == "") {
+        if (formdata.paterno === "") {
           dispatch(fetchError("Debe especificar el apellido paterno."))
         } else {
-          if (formdata.materno == "") {
+          if (formdata.materno === "") {
             dispatch(fetchError("Debe especificar el apellido materno."))
           } else {
             if (participanteObject?.idParticipante) {

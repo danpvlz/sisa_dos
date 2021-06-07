@@ -25,7 +25,7 @@ const RegistroServicio = () => {
   const { associatedObject } = useSelector(({ asociado }) => asociado);
   const history = useHistory();
   const [idAsociado, setIdAsociado] = useState(null);
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const [formdata, setformdata] = useState(null);
   const [confirm, setComfirm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -42,7 +42,7 @@ const RegistroServicio = () => {
     if(idAsociado!=null){
       dispatch(showAssociated(idAsociado));
     }
-  }, [idAsociado]);
+  }, [dispatch,idAsociado]);
 
   useEffect(() => {
     if (confirm) {
@@ -51,7 +51,7 @@ const RegistroServicio = () => {
       history.push('/admin/servicios');
     }
     setComfirm(false);
-  }, [confirm]);
+  }, [confirm,dispatch,formdata,idAsociado,history]);
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);

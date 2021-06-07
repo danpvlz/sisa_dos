@@ -1,24 +1,25 @@
-import {INIT_URL, SIGNOUT_USER_SUCCESS, USER_DATA, USER_TOKEN_SET, USER_UPDATE_PASSWORD,
+import {
+  INIT_URL, SIGNOUT_USER_SUCCESS, USER_DATA, USER_TOKEN_SET, USER_UPDATE_PASSWORD,
   AUTH_STATUS_ACTIONS,
-    AUTH_MESSAGE, POWERBI_CHECK
+  AUTH_MESSAGE, POWERBI_CHECK
 } from "../ActionTypes";
 
 const INIT_STATE = {
   token: JSON.parse(localStorage.getItem('token')),
   initURL: '',
   authUser: JSON.parse(localStorage.getItem('user')),
-  authStatusActions:0,
-  auth_message:'',
+  authStatusActions: 0,
+  auth_message: '',
   powerBiAuthorization: 0,
   forgotPassword: null
 };
 
-export default (state = INIT_STATE, action) => {
+const states = (state = INIT_STATE, action) => {
   switch (action.type) {
 
 
     case INIT_URL: {
-      return {...state, initURL: action.payload};
+      return { ...state, initURL: action.payload };
     }
 
     case SIGNOUT_USER_SUCCESS: {
@@ -37,7 +38,7 @@ export default (state = INIT_STATE, action) => {
       };
     }
 
-    case POWERBI_CHECK:{
+    case POWERBI_CHECK: {
       return {
         ...state,
         powerBiAuthorization: action.payload,
@@ -66,10 +67,11 @@ export default (state = INIT_STATE, action) => {
     }
     case USER_UPDATE_PASSWORD: {
       return {
-          ...state
+        ...state
       }
     }
     default:
       return state;
   }
 }
+export default states;

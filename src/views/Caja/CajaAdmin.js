@@ -68,7 +68,6 @@ const Cuenta = () => {
   const [idCliente, setidCliente] = useState(null);
   const [cobrador, setcobrador] = useState(null);
   const [number, setnumber] = useState(null);
-  const [paydate, setpaydate] = useState("");
   const [sincePay, setsincepay] = useState(null);
   const [untilPay, setuntilpay] = useState(null);
   const [montoPaid, setMontoPaid] = useState("");
@@ -76,22 +75,16 @@ const Cuenta = () => {
   const [fechasince, setfechasince] = useState(new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]);
 
   useEffect(() => {
-    if (billsStatusActions == 200) {
+    if (billsStatusActions === 200) {
       dispatch(listBills(page, search));
       dispatch(indicatorsBills(search));
     dispatch(listbysector(search));
     }
-  }, [billsStatusActions]);
+  }, [billsStatusActions,page,search,dispatch]);
   
   useEffect(() => {
     let tsearch = search;
     let wait = false;
-    if (paydate == "") {
-      delete tsearch.paydate;
-    } else {
-      tsearch.paydate = paydate;
-      wait=true;
-    }
     
     if (cobrador == null) {
       delete tsearch.debCollector;
@@ -105,13 +98,13 @@ const Cuenta = () => {
       tsearch.idCliente = idCliente;
     }
 
-    if (status == null || status == 0) {
+    if (status == null || status === 0) {
       delete tsearch.status;
     } else {
       tsearch.status = status;
     }
 
-    if (number == null || number == 0) {
+    if (number == null || number === 0) {
       delete tsearch.number;
     } else {
       tsearch.number = number;
@@ -153,14 +146,22 @@ const Cuenta = () => {
         dispatch(listBills(page, tsearch));
         dispatch(indicatorsBills(search));
         dispatch(listbysector(search));
-      }, 1500);
+      }, 800);
       }else{
         setsearch(tsearch);
         dispatch(listBills(page, tsearch));
         dispatch(indicatorsBills(search));
       }
+    }else{
+      dispatch(listBills(page, search));
+      dispatch(indicatorsBills(search));
+      dispatch(listbysector(search));
+      setloaded(true);
     }
-  }, [page,paydate,cobrador,idCliente,status ,number,sincePay,untilPay,since,until]);
+    return () => {
+    setloaded(false);
+    }
+  }, [page,cobrador,idCliente,status ,number,sincePay,untilPay,since,until,search,loaded,dispatch]);
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -175,14 +176,14 @@ const Cuenta = () => {
   };
 
   useEffect(() => {
-    if (action == 1 && sendConfirm) {
+    if (action === 1 && sendConfirm) {
       //REGISTRAR
       dispatch(anularCuenta(idCuenta))
       //REGISTRAR
       setsendConfirm(false);
       setidCuenta(null);
     }
-  }, [sendConfirm]);
+  }, [sendConfirm,action,idCuenta,dispatch]);
 
   useEffect(() => {
     if (sendPay) {
@@ -206,17 +207,7 @@ const Cuenta = () => {
       setNumOperacion("");
       setNumSofdoc("");
     }
-  }, [sendPay]);
-
-  useEffect(() => {
-    dispatch(listBills(page, search));
-    dispatch(indicatorsBills(search));
-    dispatch(listbysector(search));
-    setloaded(true);
-    return () => {
-    setloaded(false);
-    }
-  }, [])
+  }, [sendPay,bancopago, fecha, idCuenta, monto, montoPaid, numoperacion, numsofdoc, dispatch]);
 
   return (
     <>
@@ -247,7 +238,7 @@ const Cuenta = () => {
       {/* Page content */}
       <Container className="mt--7" fluid>
         <ConfirmDialog
-          question={action == 1 ? "¿Seguro de anular cuenta y pagos asociados?" : "¿Seguro de pagar cuenta?"}
+          question={action === 1 ? "¿Seguro de anular cuenta y pagos asociados?" : "¿Seguro de pagar cuenta?"}
           showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendConfirm} />
         <PaymentsModal
           showDetail={showBillDetail} toggleModal={toggleModalDetail}
@@ -333,7 +324,7 @@ const Cuenta = () => {
                             className="form-control-alternative"
                             name="number"
                             onChange={(e) => {
-                              setnumber(e.target.value == "" ? null : e.target.value)
+                              setnumber(e.target.value === "" ? null : e.target.value)
                             }}
                             value={number ? number : ""}
                         />
@@ -390,7 +381,7 @@ const Cuenta = () => {
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto">
                         <Button color="success" type="button" onClick={() => { dispatch(exportBills(search)); dispatch(exportBillsDetail(search)); }}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
+                          <img alt="Exportar" src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -419,11 +410,11 @@ const Cuenta = () => {
                     billListCaja?.data?.map((cuenta, key) =>
 
                       <tr key={key}>
-                        <td scope="row">
+                        <td>
                           {cuenta.fechaEmision}
                         </td>
                         <td>
-                          {`${cuenta.serieNumero} ${cuenta.tipo == "NC" ? " - "+cuenta.tipo : ""}`}
+                          {`${cuenta.serieNumero} ${cuenta.tipo === "NC" ? " - "+cuenta.tipo : ""}`}
                         </td>
                         <td>
                           {cuenta.denominacion}
@@ -433,8 +424,8 @@ const Cuenta = () => {
                         </td>
                         <td>
                           <Badge color="" className="badge-dot mr-4">
-                            <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger"} />
-                            {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : cuenta.estado == 0 ? "Emitido" : "Anulada"}
+                            <i className={cuenta.estado === 1 ? "bg-info" : cuenta.estado === 2 ? "bg-success" : "bg-danger"} />
+                            {cuenta.estado === 1 ? "Por cancelar" : cuenta.estado === 2 ? "Cancelada" : cuenta.estado === 0 ? "Emitido" : "Anulada"}
                           </Badge>
                         </td>
                         <td>
@@ -468,7 +459,7 @@ const Cuenta = () => {
                                 <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
                               </DropdownItem>
                               {
-                                cuenta.estado == 1 ?
+                                cuenta.estado === 1 ?
                                   <>
                                     <DropdownItem
                                       className="d-flex"
@@ -484,7 +475,7 @@ const Cuenta = () => {
                                     </DropdownItem>
                                   </>
                                   :
-                                  cuenta.estado == 2 ?
+                                  cuenta.estado === 2 ?
                                     <>
                                       <DropdownItem
                                         className="d-flex"

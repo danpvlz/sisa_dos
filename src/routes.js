@@ -90,19 +90,19 @@ export const components=[
   NuevaEmision,
   Pendientes,
   Membresia,
-  EditarAsociado,
+  EditarAsociado, //16
   Servicio,
   NuevoServicio,
   Dashboard2016,
   Dashboard2020,
   Dashboard2021,
   Afiliacion,//22
-  EditarAsociadoCobranza,
-  EditarAsociadoSA,
+  EditarAsociadoCobranza, //23
+  EditarAsociadoSA, //24
   AsociadoCobranza, //25
   CuentasVer, //26
   AsociadoImagenIns,
-  VerMas,
+  VerMas,//28
   CajaAdmin,//29
   NuevaEmisionCaja,//30
   CajaDashboard,//31

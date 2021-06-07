@@ -1,5 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
+import React, {  useState, useEffect } from "react";
 import PaginationComponent from "react-reactstrap-pagination";
 
 // reactstrap components
@@ -8,10 +7,6 @@ import {
   Card,
   CardHeader,
   CardFooter,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Table,
   Container,
   Row,
@@ -45,7 +40,6 @@ const Index = () => {
   const [idCurso, setIdCurso] = useState(null);
   const [confirm, setconfirm] = useState(false);
   const [action, setAction] = useState(1);
-  const history = useHistory();
 
   const handleNew = () => {
     dispatch(resetCursoObject());
@@ -54,21 +48,21 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (cursoStatusActions == 200) {
+    if (cursoStatusActions === 200) {
       dispatch(list(page, search));
     }
-  }, [cursoStatusActions]);
+  }, [cursoStatusActions,dispatch,page,search]);
 
   useEffect(() => {
     let tsearch = search;
-    if (searchCurso == "") {
+    if (searchCurso === "") {
       delete tsearch.searchCurso;
     } else {
       tsearch.searchCurso = searchCurso;
     }
     setsearch(tsearch);
     dispatch(list(page, tsearch));
-  }, [page, searchCurso]);
+  }, [page, searchCurso,search,dispatch]);
 
   useEffect(() => {
     if (selected) {
@@ -77,7 +71,7 @@ const Index = () => {
     return () => {
       setSelected(null);
     }
-  }, [selected])
+  }, [selected,dispatch])
 
   const toggleModal = (modal) => {
     setshow({ ...showModal, [modal]: !showModal[modal] });
@@ -85,11 +79,11 @@ const Index = () => {
 
   useEffect(() => {
     if (confirm) {
-      if (action == 1 || action == 0) { dispatch(changeStatus(idCurso)) }
-      if (action == 2) { dispatch(destroy(idCurso)) }
+      if (action === 1 || action === 0) { dispatch(changeStatus(idCurso)) }
+      if (action === 2) { dispatch(destroy(idCurso)) }
       setconfirm(false)
     }
-  }, [confirm]);
+  }, [confirm,action,idCurso,dispatch]);
 
   return (
     <>
@@ -97,7 +91,7 @@ const Index = () => {
         <span className="mask bg-gradient-info opacity-8" />
       </div>
       <ConfirmDialog
-        question={action == 1 ? "¿Seguro de desactivar el curso?" : action == 2 ? "¿Seguro de eliminar el curso?" : "¿Seguro de activar el curso?"}
+        question={action === 1 ? "¿Seguro de desactivar el curso?" : action === 2 ? "¿Seguro de eliminar el curso?" : "¿Seguro de activar el curso?"}
         showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} setConfirm={setconfirm} />
       <New
         show={showModal.new}
@@ -148,7 +142,7 @@ const Index = () => {
                             placeholder="Buscar curso"
                             type="text"
                             onChange={(e) => {
-                              setsearchCurso(e.target.value == "" ? "" : e.target.value)
+                              setsearchCurso(e.target.value === "" ? "" : e.target.value)
                             }}
                             value={searchCurso}
                           />
@@ -174,13 +168,13 @@ const Index = () => {
                         {
                           cursoList?.data?.map((curso, key) =>
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {curso.descripcion}
                               </td>
                               <td>
                                 <Badge color="" className="badge-dot mr-4">
-                                  <i className={curso.estado == 0 ? "bg-danger" : "bg-success"} />
-                                  {curso.estado == 1 ? "Activo" : "Inactivo"}
+                                  <i className={curso.estado === 0 ? "bg-danger" : "bg-success"} />
+                                  {curso.estado === 1 ? "Activo" : "Inactivo"}
                                 </Badge>
                               </td>
                               <td>
@@ -197,7 +191,7 @@ const Index = () => {
                                   className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
                                   onClick={(e) => { setAction(curso.estado); setIdCurso(curso.idCurso); toggleModal('confirm'); }}
                                 >
-                                  <i className={`text-${curso.estado == 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}  fa-2x`} aria-hidden="true"></i>
+                                  <i className={`text-${curso.estado === 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}  fa-2x`} aria-hidden="true"></i>
                                 </Button>
                                 <Button
                                   className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"

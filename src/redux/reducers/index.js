@@ -20,7 +20,7 @@ import Curso from './Curso';
 import Participante from './Participante';
 import Firebase from './Firebase';
 
-export default (history) =>
+const reducers = (history) =>
 combineReducers({
   router: connectRouter(history),
   commonData: Common,
@@ -42,3 +42,5 @@ combineReducers({
   participante: Participante,
   firebase: Firebase,
 })
+
+export default reducers;

@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 // reactstrap components
 import {
   Button,
-  Card,
   CardBody,
   FormGroup,
   Form,
   Input,
-  Container,
   Row,
   Col,
 } from "reactstrap";
@@ -18,7 +16,7 @@ import { updatePassword } from "../../redux/actions/Auth";
 import { useDispatch } from "react-redux";
 export default function ChangePassword({authUser}) {
     const dispatch = useDispatch();
-    const { register, handleSubmit, watch, reset } = useForm();
+    const { register, handleSubmit } = useForm();
 
     const [showConfirm, setShowConfirm] = useState(false);
     const [confirm, setComfirm] = useState(false);
@@ -35,11 +33,12 @@ export default function ChangePassword({authUser}) {
             dispatch(updatePassword(formdata));
         }
         setComfirm(false);
-    }, [confirm])
+    }, [confirm,formdata,dispatch])
   
     const toggleModal = () => {
       setShowConfirm(!showConfirm);
     };
+    
     return (
     <>
     <ConfirmDialog

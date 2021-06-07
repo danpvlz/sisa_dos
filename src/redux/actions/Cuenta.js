@@ -14,7 +14,6 @@ import {
     SAVE_BILL,
     ANUL_BILL,
     PAY_BILL,
-    LIST_REPEATED,
     BILL_DASHBOARD_DATA
 } from "../ActionTypes";
 import axios from '../../util/Api';

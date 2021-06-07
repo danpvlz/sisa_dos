@@ -5,17 +5,11 @@ import { PropTypes } from "prop-types";
 
 // reactstrap components
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
   Collapse,
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  FormGroup,
   Form,
   Input,
   InputGroupAddon,
@@ -27,8 +21,6 @@ import {
   NavItem,
   NavLink,
   Nav,
-  Progress,
-  Table,
   Container,
   Row,
   Col,
@@ -47,9 +39,11 @@ const Sidebar = (props) => {
   const dispatch = useDispatch();
   const [collapseOpen, setCollapseOpen] = useState();
   // verifies if routeName is the one active (in browser input)
+  /*
   const activeRoute = (routeName) => {
     return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
   };
+  */
   // toggles collapse between opened and closed (true/false)
   const toggleCollapse = () => {
     setCollapseOpen((data) => !data);
@@ -62,7 +56,7 @@ const Sidebar = (props) => {
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
       return (
-        prop.routes=="" ?
+        prop.routes==="" ?
         <CreateLink key={key} prop={prop} />
           :
           <div key={key} >
@@ -90,7 +84,7 @@ const Sidebar = (props) => {
   const CreateLink = ({prop}) => {
     return (<>
       {
-        prop.show==1 &&
+        prop.show===1 &&
           <NavItem>
             <NavLink
               to={prop.layout + prop.path}
@@ -106,7 +100,7 @@ const Sidebar = (props) => {
     </>);
   }
 
-  const { bgColor, routes, logo } = props;
+  const { routes, logo } = props;
   let navbarBrandProps;
   if (logo && logo.innerLink) {
     navbarBrandProps = {
@@ -155,7 +149,7 @@ const Sidebar = (props) => {
                   <img
                     alt={authUser.nombres + " " + authUser.paterno + " " + authUser.materno}
                     src={
-                      authUser.foto == null || authUser.foto == "" ?
+                      authUser.foto == null || authUser.foto === "" ?
                       require("../../assets/img/theme/default.png")
                         .default
                       :

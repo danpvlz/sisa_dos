@@ -1,5 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
 
 // reactstrap components
 import {
@@ -11,9 +10,6 @@ import {
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
   Progress,
   Table,
   Container,
@@ -21,7 +17,6 @@ import {
   Button,
   Col,
   FormGroup,
-  Input,
 } from "reactstrap";
 // core components
 import Select from 'react-select';
@@ -35,11 +30,8 @@ import Loading from "../../components/Loaders/LoadingSmall";
 
 const EstadoCuenta = () => {
   const dispatch = useDispatch();
-  const cuentas = require('../../data/cuenta.json');
   const { membershipList } = useSelector(({ cuenta }) => cuenta);
   const { loading } = useSelector(({ commonData }) => commonData);
-  const history = useHistory();
-  const handleNew = useCallback(() => history.push('/admin/registro-emision'), [history]);
   const [showBillDetail, setshowBillDetail] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -53,22 +45,12 @@ const EstadoCuenta = () => {
   };
 
   useEffect(() => {
-    dispatch(listMemberships(page, search));
-  }, [page]);
-
-  useEffect(() => {
     let tsearch = search;
     if (status == null) {
       delete tsearch.status;
     } else {
       tsearch.status = status;
     }
-    setsearch(tsearch);
-    dispatch(listMemberships(page, search));
-  }, [status]);
-
-  useEffect(() => {
-    let tsearch = search;
     if (idAsociado == null) {
       delete tsearch.idAsociado;
     } else {
@@ -76,18 +58,7 @@ const EstadoCuenta = () => {
     }
     setsearch(tsearch);
     dispatch(listMemberships(page, search));
-  }, [idAsociado]);
-
-  useEffect(() => {
-    let tsearch = search;
-    if (cobrador == null) {
-      delete tsearch.debCollector;
-    } else {
-      tsearch.debCollector = cobrador;
-    }
-    setsearch(tsearch);
-    dispatch(listMemberships(page, search));
-  }, [cobrador]);
+  }, [status,idAsociado,cobrador,page,search,dispatch]);
 
   return (
     <>
@@ -153,7 +124,7 @@ const EstadoCuenta = () => {
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto">
                         <Button color="success" type="button" onClick={() => dispatch(exportMembership(search))}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
+                          <img alt="Botón exportar" src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -183,12 +154,12 @@ const EstadoCuenta = () => {
                         {
                           membershipList?.data?.map((cuenta, key) =>
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {cuenta.asociado}
                               </td>
                               <td>
                                 {
-                                  cuenta.mes == 0 ?
+                                  cuenta.mes === 0 ?
                                     cuenta.masdeuno
                                     :
                                     ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'][cuenta.mes - 1]
@@ -200,8 +171,8 @@ const EstadoCuenta = () => {
                               </td>
                               <td>
                                 <Badge color="" className="badge-dot mr-4">
-                                  <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger"} />
-                                  {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : "Anulada"}
+                                  <i className={cuenta.estado === 1 ? "bg-info" : cuenta.estado === 2 ? "bg-success" : "bg-danger"} />
+                                  {cuenta.estado === 1 ? "Por cancelar" : cuenta.estado === 2 ? "Cancelada" : "Anulada"}
                                 </Badge>
                               </td>
                               <td className="text-center">

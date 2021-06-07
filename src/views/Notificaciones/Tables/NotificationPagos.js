@@ -13,7 +13,7 @@ export default function NotificationPagos({ details,numoperacion, numsofdoc }) {
                         <p className="mb-0">{detail.asociado}</p>
                         <p>
                             <Badge style={{ marginRight: '.5rem', fontSize: '.8rem' }} color="success">
-                                {detail.estado == 1 ? 'Por cancelar' : detail.estado == 2 ? 'Cancelada' : 'Anulada'}
+                                {detail.estado === 1 ? 'Por cancelar' : detail.estado === 2 ? 'Cancelada' : 'Anulada'}
                             </Badge>
                             <span className="font-weight-bold">S/.{detail.total}</span>
                         </p>
@@ -39,7 +39,7 @@ export default function NotificationPagos({ details,numoperacion, numsofdoc }) {
                                         </td>
                                         <td>
                                             {pago.banco ?
-                                                pago.banco == 1 ? 'BCP' : pago.banco == 2 ? 'BBVA' : pago.banco == 3 ? 'BANCOS' : pago.banco == 4 ? 'CONTADO' : 'CRÉDITO'
+                                                pago.banco === 1 ? 'BCP' : pago.banco === 2 ? 'BBVA' : pago.banco === 3 ? 'BANCOS' : pago.banco === 4 ? 'CONTADO' : 'CRÉDITO'
                                                 : '-'}
                                         </td>
                                         <td>

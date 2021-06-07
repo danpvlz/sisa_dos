@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import {
   Button,
   Card,
-  CardHeader,
   CardBody,
   FormGroup,
   Form,
@@ -21,7 +20,7 @@ import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 const NuevoColaborador = (props) => {
   const dispatch = useDispatch();
   const { workerObject } = useSelector(({ colaborador }) => colaborador);
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const [file, setFile] = useState(null);
   const [fileSend, setfileSend] = useState(null);
   const [formdata, setformdata] = useState(null);
@@ -54,13 +53,13 @@ const NuevoColaborador = (props) => {
 
   useEffect(() => {
     if (props.location.state?.workerSelected) {
-      workerObject.length == 0 &&
+      workerObject?.length === 0 &&
         dispatch(showWorker(props.location.state.workerSelected));
     }
     return () => {
       dispatch(resetShowWorker());
     }
-  }, [])
+  }, [dispatch,props,workerObject])
 
   useEffect(() => {
     if (confirm) {
@@ -72,7 +71,7 @@ const NuevoColaborador = (props) => {
       }
     }
     setComfirm(false);
-  }, [confirm])
+  }, [confirm,actionresetpassword,formdata,history,props,dispatch])
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -114,7 +113,7 @@ const NuevoColaborador = (props) => {
                         className="rounded-circle"
                         src={
                           file == null ?
-                            workerObject?.foto == "" || workerObject?.foto == null ? require("../../assets/img/theme/default.png")
+                            workerObject?.foto === "" || workerObject?.foto == null ? require("../../assets/img/theme/default.png")
                               .default : process.env.REACT_APP_BASE + 'storage/colaborador/' + workerObject?.foto
 
                             :
@@ -232,7 +231,7 @@ const NuevoColaborador = (props) => {
                         </FormGroup>
                       </Col>
                       {
-                        workerObject.length != 0 ?
+                        workerObject.length !== 0 ?
                           <Col lg="6" >
                             <FormGroup>
                               <label

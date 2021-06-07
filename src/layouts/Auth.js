@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
 
@@ -9,11 +9,9 @@ import AuthFooter from "components/Footers/AuthFooter.js";
 
 import {routesSimple} from "../routes.js";
 
-import { useSelector } from "react-redux";
 import Loading from "components/Loaders/LoadingModal";
 
 const Auth = (props) => {
-  const auth = useSelector(({ auth }) => auth.authUser);
   const mainContent = React.useRef(null);
   const location = useLocation();
 
@@ -56,7 +54,7 @@ const Auth = (props) => {
               <Row className="justify-content-center">
                 <Col lg="5" md="6">
                   {
-                    location?.pathname == '/auth/afiliacion' ?
+                    location?.pathname === '/auth/afiliacion' ?
                     <h1 className="text-white">Afiliación de nuevo asociado</h1>
                     :
                     <h1 className="text-white">Inicio de sesión</h1>

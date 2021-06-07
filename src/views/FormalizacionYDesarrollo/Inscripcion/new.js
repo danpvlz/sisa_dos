@@ -16,7 +16,7 @@ import {
 } from "reactstrap";
 // core components
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import SearchParticipants from "../../../components/Selects/SearchParticipants";
 import SearchCurso from "../../../components/Selects/SearchCurso";
 import New from "../Participante/new";
@@ -25,7 +25,7 @@ import { store } from '../../../redux/actions/Inscripcion';
 import ConfirmDialog from '../../../components/Modals/ConfirmDialog';
 
 const NewInscripcion = () => {
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { handleSubmit } = useForm();
   const dispatch = useDispatch();
   const [participant, setParticipant] = useState(null);
   const [cursoSearched, setCursoSearched] = useState(null);
@@ -40,7 +40,7 @@ const NewInscripcion = () => {
   const [show, setShow] = useState({ confirm: false, new: false });
 
   const onSubmit = (data) => {
-    items.length == 0 ?
+    items.length === 0 ?
       dispatch(fetchError("Debe elegir al menos un registro."))
       :
       toggleModal('confirm');
@@ -60,7 +60,7 @@ const NewInscripcion = () => {
       history.push('/admin/formalizacion-y-desarrollo/inscripcion');
     }
     setComfirm(false);
-  }, [confirm]);
+  }, [confirm,formdata,dispatch,history,items]);
 
   return (
     <>
@@ -112,7 +112,7 @@ const NewInscripcion = () => {
                           </Col>
                           <Col className="col-1 mx-0 px-0">
                             <Button color="primary" type="button" onClick={() => toggleModal('new')}>
-                              <i className="fa fa-plus" />
+                              <i className="ni ni-single-02" />
                             </Button>
                           </Col>
                         </Row>
@@ -136,7 +136,7 @@ const NewInscripcion = () => {
                                 dispatch(hideMessage());
                               }, 1500);
                             } else {
-                              if (items.some(item => item.curso.value == cursoSearched.value) && items.some(item => item.participant.value == participant.value)) {
+                              if (items.some(item => item.curso.value === cursoSearched.value) && items.some(item => item.participant.value === participant.value)) {
                                 dispatch(fetchError("Ya registro a este participante en este curso."));
                                 setTimeout(() => {
                                   dispatch(hideMessage());
@@ -168,7 +168,7 @@ const NewInscripcion = () => {
                                 <td>{item.curso.label}</td>
                                 <td>{item.participant.label}</td>
                                 <td>
-                                  <Button className="btn btn-sm" color="danger" type="button" onClick={() => { setitems(items.filter((a, i) => i != key)) }}>
+                                  <Button className="btn btn-sm" color="danger" type="button" onClick={() => { setitems(items.filter((a, i) => i !== key)) }}>
                                     <i className="fa fa-trash" />
                                   </Button>
                                 </td>
@@ -180,7 +180,7 @@ const NewInscripcion = () => {
                     </Col>
                   </Row>
                   <div className="text-center mt-5">
-                    <Button className="my-4 btn-block" color="success" type="submit" disabled={items.length == 0}>
+                    <Button className="my-4 btn-block" color="success" type="submit" disabled={items.length === 0}>
                       Registrar
                     </Button>
                   </div>

@@ -4,21 +4,15 @@ import PaginationComponent from "react-reactstrap-pagination";
 
 // reactstrap components
 import {
-  Badge,
   Card,
   CardHeader,
   CardFooter,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Table,
   Container,
   Row,
   Button,
   Col,
   FormGroup,
-  Input,
 } from "reactstrap";
 // core components
 import ConfirmDialog from '../../../components/Modals/ConfirmDialog';
@@ -61,10 +55,10 @@ const Index = () => {
   const handleNew = useCallback(() => history.push('/admin/formalizacion-y-desarrollo/nueva-inscripcion'), [history]);
 
   useEffect(() => {
-    if (inscripcionStatusActions == 200) {
+    if (inscripcionStatusActions === 200) {
       dispatch(list(page, search));
     }
-  }, [inscripcionStatusActions]);
+  }, [inscripcionStatusActions,dispatch,page,search]);
 
   useEffect(() => {
     let tsearch = search;
@@ -80,7 +74,7 @@ const Index = () => {
     }
     setsearch(tsearch);
     dispatch(list(page, tsearch));
-  }, [page, participantSearched,cursoSearched]);
+  }, [page, participantSearched,cursoSearched,search,dispatch]);
 
   const toggleModal = (modal) => {
     setshow({ ...showModal, [modal]: !showModal[modal] });
@@ -88,14 +82,14 @@ const Index = () => {
 
   useEffect(() => {
     if (confirm) {
-      if (action == 2) { dispatch(destroy(selected)) }
+      if (action === 2) { dispatch(destroy(selected)) }
       setconfirm(false)
     }
-  }, [confirm]);
+  }, [confirm,dispatch,action,selected]);
 
   useEffect(() => {
-    if (action == 1 && selected!=null) { dispatch(show(selected)); }
-  },[selected])
+    if (action === 1 && selected!=null) { dispatch(show(selected)); }
+  },[selected,action,dispatch])
 
   return (
     <>
@@ -103,7 +97,7 @@ const Index = () => {
         <span className="mask bg-gradient-info opacity-8" />
       </div>
       <ConfirmDialog
-        question={action == 1 ? "¿Seguro de desactivar el participante?" : action == 2 ? "¿Seguro de eliminar inscripción?" : "¿Seguro de activar el participante?"}
+        question={action === 1 ? "¿Seguro de desactivar el participante?" : action === 2 ? "¿Seguro de eliminar inscripción?" : "¿Seguro de activar el participante?"}
         showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} setConfirm={setconfirm} />
       <Edit
         show={showModal.edit}
@@ -159,7 +153,7 @@ const Index = () => {
                       </Col>
                       <Col lg="1" className="text-right m-auto">
                         <Button color="success" type="button" onClick={() => dispatch(exportInscripciones(search))}>
-                          <img src={require("../../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
+                          <img alt="Botón exportar" src={require("../../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -183,7 +177,7 @@ const Index = () => {
                         {
                           inscripcionList?.data?.map((inscription, key) =>
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {inscription.participante}
                               </td>
                               <td>

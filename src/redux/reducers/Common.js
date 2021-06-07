@@ -8,7 +8,7 @@ const INIT_STATE = {
   routesList:[]
 };
 
-export default (state = INIT_STATE, action) => {
+const states = (state = INIT_STATE, action) => {
   switch (action.type) {
     case ROUTES_LIST: {
       return {
@@ -35,3 +35,4 @@ export default (state = INIT_STATE, action) => {
       return state;
   }
 }
+export default states;

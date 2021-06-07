@@ -3,14 +3,9 @@ import Chart from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
 // reactstrap components
 import {
-  Button,
   Card,
   CardHeader,
   CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
   Table,
   Container,
   Row,
@@ -22,7 +17,6 @@ import {
   chartOptions,
   parseOptions,
   chartExample1,
-  chartExample2,
 } from "variables/charts.js";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -44,7 +38,7 @@ const Index = (props) => {
 
   useEffect(() => {
     dispatch(loadDashboard());
-  }, []);
+  }, [dispatch]);
 
   const handleClickLine =(evt, element) => {
     if (element.length > 0) {
@@ -163,13 +157,21 @@ const Index = (props) => {
                   {
                     cajaDashboard?.tableCurrent?.map((current, key) =>
                       <tr key={key}>
-                        <th scope="row">{current.area}</th>
-                        <th className="text-right">{'S/. ' + current.monto.toLocaleString('en-US', {
+                        <td>{current.area}</td>
+                        <td className="text-right">{'S/. ' + current.monto.toLocaleString('en-US', {
                           minimumFractionDigits: 0
-                        })}</th>
-                        <th className="text-right">{'S/. ' + cajaDashboard?.currentPaidMonthBars[key]?.monto.toLocaleString('en-US', {
+                        })}</td>
+                        <td className="text-right">
+                          S/. 
+                          {
+                            cajaDashboard?.currentPaidMonthBars?.find(p=>p.idArea===current.idArea)?.monto ? 
+                          cajaDashboard?.currentPaidMonthBars?.find(p=>p.idArea===current.idArea)?.monto?.toLocaleString('en-US', {
                           minimumFractionDigits: 0
-                        })}</th>
+                          })
+                          :
+                          0
+                          }
+                        </td>
                       </tr>)
                   }
                 </tbody>

@@ -18,7 +18,7 @@ const Dashboard2016 = () => {
   const { powerBiAuthorization } = useSelector(({ auth }) => auth);
   useEffect(() => {
     dispatch(powerBiPass());
-  }, [])
+  }, [dispatch])
   return (
     <>
       <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
@@ -31,7 +31,7 @@ const Dashboard2016 = () => {
           <div className="col">
             <Card className="shadow">
                 {
-                  powerBiAuthorization == 1 ?
+                  powerBiAuthorization === 1 ?
                     <>
                       <CardHeader className="bg-transparent text-center">
                         <h3 className="mb-0 text-center">KPI de los años 2016 al 2019</h3>

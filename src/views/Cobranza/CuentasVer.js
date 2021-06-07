@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import PaginationComponent from "react-reactstrap-pagination";
-import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 
 // reactstrap components
 import {
@@ -28,7 +27,7 @@ import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import BySector from "components/Tables/BySector";
 import { useDispatch, useSelector } from "react-redux";
-import { listBills, indicatorsBills, anularCuenta, pagarCuenta, getBillDetail, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
+import { listBills, indicatorsBills, getBillDetail, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
 import Loading from "../../components/Loaders/LoadingSmall";
 
 const Cuenta = () => {
@@ -41,16 +40,6 @@ const Cuenta = () => {
 
   const [page, setPage] = useState(1);
   const [search, setsearch] = useState({});
-  const [idCuenta, setidCuenta] = useState(null);
-  const [action, setaction] = useState(1);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [sendConfirm, setsendConfirm] = useState(false);
-
-  const [showPay, setshowPay] = useState(false);
-  const [fecha, setfecha] = useState({ "fecha": new Date().toISOString().substring(0, 10) });
-  const [monto, setmonto] = useState(0);
-  const [bancopago, setbancopago] = useState(1);
-  const [sendPay, setsendPay] = useState(0);
 
   const [showBillDetail, setshowBillDetail] = useState(false);
 
@@ -68,11 +57,11 @@ const Cuenta = () => {
   const [number, setnumber] = useState(null);
 
   useEffect(() => {
-    if (billsStatusActions == 200) {
+    if (billsStatusActions === 200) {
       dispatch(listBills(page, search));
       dispatch(indicatorsBills(search));
     }
-  }, [billsStatusActions]);
+  }, [billsStatusActions,page,search,dispatch]);
 
 
   useEffect(() => {
@@ -90,19 +79,19 @@ const Cuenta = () => {
       tsearch.idAsociado = idAsociado;
     }
 
-    if (status == null || status == 0) {
+    if (status == null || status === 0) {
       delete tsearch.status;
     } else {
       tsearch.status = status;
     }
 
-    if (typeDetail == null || typeDetail == 0) {
+    if (typeDetail == null || typeDetail === 0) {
       delete tsearch.typeDetail;
     } else {
       tsearch.typeDetail = typeDetail;
     }
 
-    if (number == null || number == 0) {
+    if (number == null || number === 0) {
       delete tsearch.number;
     } else {
       tsearch.number = number;
@@ -135,59 +124,19 @@ const Cuenta = () => {
       setsearch(tsearch);
       dispatch(listBills(page, tsearch));
       dispatch(indicatorsBills(search));
+    }else{
+      dispatch(listBills(page, search));
+      dispatch(indicatorsBills(search));
+      setloaded(true);
     }
-  }, [page, cobrador, idAsociado, status, typeDetail, number, sincePay, untilPay, since, until]);
-
-  const toggleModal = () => {
-    setShowConfirm(!showConfirm);
-  };
-
-  const toggleModalPay = () => {
-    setshowPay(!showPay);
-  };
-
-  const toggleModalDetail = () => {
-    setshowBillDetail(!showBillDetail);
-  };
-
-  useEffect(() => {
-    if (action == 1 && sendConfirm) {
-      //REGISTRAR
-      var fData = {
-        "idCuenta": idCuenta,
-      }
-      dispatch(anularCuenta(fData))
-      //REGISTRAR
-      setsendConfirm(false);
-      setidCuenta(null);
-    }
-  }, [sendConfirm]);
-
-  useEffect(() => {
-    if (sendPay) {
-      //REGISTRAR
-      var fData = {
-        "idCuenta": idCuenta,
-        "monto": monto,
-        "fechaPago": fecha,
-        "banco": bancopago,
-      }
-      dispatch(pagarCuenta(fData))
-      //REGISTRAR
-      setsendPay(false);
-      setidCuenta(null);
-      setbancopago(1);
-    }
-  }, [sendPay]);
-
-  useEffect(() => {
-    dispatch(listBills(page, search));
-    dispatch(indicatorsBills(search));
-    setloaded(true);
     return () => {
       setloaded(false);
     }
-  }, []);
+  }, [page, cobrador, idAsociado, status, typeDetail, number, sincePay, untilPay, since, until,loaded,search,dispatch]);
+  
+  const toggleModalDetail = () => {
+    setshowBillDetail(!showBillDetail);
+  };
 
   return (
     <>
@@ -199,9 +148,6 @@ const Cuenta = () => {
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
-        <ConfirmDialog
-          question={action == 1 ? "¿Seguro de anular cuenta y pagos asociados?" : "¿Seguro de pagar cuenta?"}
-          showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendConfirm} />
         <PaymentsModal
           showDetail={showBillDetail} toggleModal={toggleModalDetail}
         />
@@ -276,7 +222,7 @@ const Cuenta = () => {
                             className="form-control-alternative"
                             name="number"
                             onChange={(e) => {
-                              setnumber(e.target.value == "" ? null : e.target.value)
+                              setnumber(e.target.value === "" ? null : e.target.value)
                             }}
                             value={number ? number : ""}
                           />
@@ -363,7 +309,7 @@ const Cuenta = () => {
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto">
                         <Button color="success" type="button" onClick={() => { dispatch(exportBills(search)); dispatch(exportBillsDetail(search)); }}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
+                          <img alt="Exportar" src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -393,14 +339,14 @@ const Cuenta = () => {
                           billList?.data?.map((cuenta, key) =>
 
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {cuenta.fechaEmision}
                               </td>
                               <td>
                                 {`${cuenta.tipo}`}
                               </td>
                               <td>
-                                {`${cuenta.serieNumero} ${cuenta.tipo == " - NC" ? cuenta.tipo : ""}`}
+                                {`${cuenta.serieNumero} ${cuenta.tipo === " - NC" ? cuenta.tipo : ""}`}
                               </td>
                               <td>
                                 {cuenta.asociado}
@@ -410,8 +356,8 @@ const Cuenta = () => {
                               </td>
                               <td>
                                 <Badge color="" className="badge-dot mr-4">
-                                  <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger"} />
-                                  {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : cuenta.estado == 0 ? "Emitido" : "Anulada"}
+                                  <i className={cuenta.estado === 1 ? "bg-info" : cuenta.estado === 2 ? "bg-success" : "bg-danger"} />
+                                  {cuenta.estado === 1 ? "Por cancelar" : cuenta.estado === 2 ? "Cancelada" : cuenta.estado === 0 ? "Emitido" : "Anulada"}
                                 </Badge>
                               </td>
                               <td>

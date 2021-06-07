@@ -1,5 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
 
 // reactstrap components
 import {
@@ -15,7 +14,6 @@ import {
 // core components
 import { useDispatch, useSelector } from "react-redux";
 import { listMonth, listWeek } from "../../redux/actions/Asociado";
-import Loading from "../../components/Loaders/LoadingSmall";
 
 var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 var daysNames = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
@@ -35,7 +33,7 @@ const Asociado = () => {
         <Row>
           <div className="col">
             {
-              typeCalendar == 1 ?
+              typeCalendar === 1 ?
                 <>
                   <WeekCalendar typeCalendar={typeCalendar} settypeCalendar={settypeCalendar} />
                   <DayCalendar typeCalendar={typeCalendar} settypeCalendar={settypeCalendar} />
@@ -59,7 +57,7 @@ const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
 
   const currentDay = () => {
     setfirstDay(new Date());
-    if (new Date.getMonth() != prevMonth) {
+    if (new Date.getMonth() !== prevMonth) {
       setprevMonth(new Date.getMonth());
     }
   }
@@ -68,7 +66,7 @@ const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
     let ini = new Date(firstDay);
     let newDate = new Date(ini.setDate(ini.getDate() + parseInt(1)));
     setfirstDay(newDate);
-    if (newDate.getMonth() != prevMonth) {
+    if (newDate.getMonth() !== prevMonth) {
       setprevMonth(newDate.getMonth());
     }
   }
@@ -77,14 +75,14 @@ const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
     let ini = new Date(firstDay);
     let newDate = new Date(ini.setDate(ini.getDate() - parseInt(1)));
     setfirstDay(newDate);
-    if (newDate.getMonth() != prevMonth) {
+    if (newDate.getMonth() !== prevMonth) {
       setprevMonth(newDate.getMonth());
     }
   }
 
   useEffect(() => {
     dispatch(listMonth({ month: prevMonth + 1 }));
-  }, [prevMonth]);
+  }, [prevMonth,dispatch]);
 
   return (
 
@@ -93,8 +91,8 @@ const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
         <Row className="m-auto">
           <Col lg={2}>
             <div className="d-block text-center">
-              <Button color={typeCalendar == 1 ? "primary" : "white"} size="sm" type="button" onClick={() => settypeCalendar(1)}>Día</Button>
-              <Button color={typeCalendar == 1 ? "white" : "primary"} size="sm" type="button" onClick={() => settypeCalendar(2)}>Mes</Button>
+              <Button color={typeCalendar === 1 ? "primary" : "white"} size="sm" type="button" onClick={() => settypeCalendar(1)}>Día</Button>
+              <Button color={typeCalendar === 1 ? "white" : "primary"} size="sm" type="button" onClick={() => settypeCalendar(2)}>Mes</Button>
             </div>
           </Col>
         </Row>
@@ -110,7 +108,7 @@ const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
             </Button>
             <div className={`flex-column text-center mx-3`}>
               <h3 className="text-primary p-0 m-0">
-                {daysNames[firstDay.getDay() == 0 ? 6 : firstDay.getDay() - 1]}
+                {daysNames[firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1]}
               </h3>
               <h3 className="text-primary p-0 m-0">
                 {firstDay.getDate() + ' ' + monthNames[firstDay.getMonth()] +
@@ -129,14 +127,14 @@ const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
         <Row className="border rounded bg-secondary p-2">
           <Col className="text-center">
             {
-              associatedMonthCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == firstDay.getDate())?.length == 0 &&
+              associatedMonthCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() === firstDay.getDate())?.length === 0 &&
               <p className="mx-auto mt-3 text-muted">No hay eventos</p>
             }
             {
-              associatedMonthCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == firstDay.getDate())?.map((item, key) =>
+              associatedMonthCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() === firstDay.getDate())?.map((item, key) =>
                 <div
                   onClick={() => setisOpen({ ...isOpen, [item.fecha + key]: isOpen.hasOwnProperty(item.fecha + key) ? !isOpen[item.fecha + key] : true })}
-                  key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico'}`}>
+                  key={key} className={`calendar-item ${item.codTipo === 1 ? 'item-aniversario' : item.codTipo === 2 ? 'item-fundacion' : 'item-onomastico'}`}>
                   <span className="type-calendar-item d-block">{item.tipo.toUpperCase()}</span>
                   <strong className="calendar-item-name my-2 d-block">
                     {item.nombres.toUpperCase()}
@@ -146,7 +144,7 @@ const DayCalendar = ({ typeCalendar, settypeCalendar }) => {
                     <hr className="my-2" />
                     <div className="text-center">
                       {
-                        item.empresa != "-" &&
+                        item.empresa !== "-" &&
                         <>
                           <i className="ni ni-building d-block"></i>
                           <small>{item.empresa}</small>
@@ -195,15 +193,11 @@ const WeekCalendar = ({ typeCalendar, settypeCalendar }) => {
     return date.getFullYear() + '-' + (month < 10 ? '0' + month : month) + '-' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
   }
 
-  const getContentCalendar = () => {
+  useEffect(() => {
     let ini = new Date(firstDay);
     let end = new Date(ini.setDate(ini.getDate() + parseInt(6)));
     dispatch(listWeek({ start: constructDate(firstDay), end: constructDate(end) }));
-  }
-
-  useEffect(() => {
-    getContentCalendar()
-  }, [firstDay]);
+  }, [firstDay,dispatch]);
 
   return (
     <Card className="shadow d-none d-md-flex">
@@ -234,8 +228,8 @@ const WeekCalendar = ({ typeCalendar, settypeCalendar }) => {
           </Col>
           <Col lg={2}>
             <div className="d-block text-center">
-              <Button color={typeCalendar == 1 ? "primary" : "white"} size="sm" type="button" onClick={() => settypeCalendar(1)}>Semana</Button>
-              <Button color={typeCalendar == 1 ? "white" : "primary"} size="sm" type="button" onClick={() => settypeCalendar(2)}>Mes</Button>
+              <Button color={typeCalendar === 1 ? "primary" : "white"} size="sm" type="button" onClick={() => settypeCalendar(1)}>Semana</Button>
+              <Button color={typeCalendar === 1 ? "white" : "primary"} size="sm" type="button" onClick={() => settypeCalendar(2)}>Mes</Button>
             </div>
           </Col>
         </Row>
@@ -245,7 +239,7 @@ const WeekCalendar = ({ typeCalendar, settypeCalendar }) => {
           {
             [...Array(7).keys()].map((day, i) =>
               <Col key={i}>
-                <Row className={firstDay.getDate() + i == new Date().getDate() ? 'text-primary' : 'day'}>
+                <Row className={getCalendarDate(i).getDate() === new Date().getDate() ? 'text-primary' : 'day'}>
                   <Col className="col-12 mb-2 day-name">
                     {daysNames[i]}
                   </Col>
@@ -261,10 +255,10 @@ const WeekCalendar = ({ typeCalendar, settypeCalendar }) => {
           [...Array(7).keys()].map((day, i) =>
             <div key={i} className="m-0 p-0 day-container">
               {
-                associatedWeekCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == getCalendarDate(i).getDate())?.map((item, key) =>
+                associatedWeekCalendar?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() === getCalendarDate(i).getDate())?.map((item, key) =>
                   <div
                     onClick={() => setisOpen({ ...isOpen, [item.fecha + key]: isOpen.hasOwnProperty(item.fecha + key) ? !isOpen[item.fecha + key] : true })}
-                    key={key} className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico'}`}>
+                    key={key} className={`calendar-item ${item.codTipo === 1 ? 'item-aniversario' : item.codTipo === 2 ? 'item-fundacion' : 'item-onomastico'}`}>
                     <span className="type-calendar-item d-block">{item.tipo.toUpperCase()}</span>
                     <strong className="calendar-item-name my-2 d-block">
                       {item.nombres.toUpperCase()}
@@ -274,7 +268,7 @@ const WeekCalendar = ({ typeCalendar, settypeCalendar }) => {
                       <hr className="my-2" />
                       <div className="text-center">
                         {
-                          item.empresa != "-" &&
+                          item.empresa !== "-" &&
                           <>
                             <i className="ni ni-building d-block"></i>
                             <small>{item.empresa}</small>
@@ -331,14 +325,14 @@ const MonthCalendar = ({ typeCalendar, settypeCalendar }) => {
   const checkCurrent = (d) => {
     let ini = new Date();
 
-    return ini.getMonth() + '-' + ini.getDate() == startMonth.getMonth() + '-' + d;
+    return ini.getMonth() + '-' + ini.getDate() === startMonth.getMonth() + '-' + d;
   }
 
   useEffect(() => {
     dispatch(listMonth({ month: startMonth.getMonth() + 1 }));
     setselectedDate(null);
     setselectedDay(null);
-  }, [startMonth]);
+  }, [startMonth,dispatch]);
 
   const getSelected = (key, i) => {
     let day = startMonth.getDate() + i + (7 * (key - 1) + (7 - (startMonth.getDay() - 1)));
@@ -377,8 +371,8 @@ const MonthCalendar = ({ typeCalendar, settypeCalendar }) => {
             </Col>
             <Col lg={2}>
               <div className="d-block text-center">
-                <Button color={typeCalendar == 1 ? "primary" : "white"} size="sm" type="button" onClick={() => settypeCalendar(1)}><span className="d-none d-md-flex">Semana</span><span className="d-sm-none">Día</span></Button>
-                <Button color={typeCalendar == 1 ? "white" : "primary"} size="sm" type="button" onClick={() => settypeCalendar(2)}>Mes</Button>
+                <Button color={typeCalendar === 1 ? "primary" : "white"} size="sm" type="button" onClick={() => settypeCalendar(1)}><span className="d-none d-md-flex">Semana</span><span className="d-sm-none">Día</span></Button>
+                <Button color={typeCalendar === 1 ? "white" : "primary"} size="sm" type="button" onClick={() => settypeCalendar(2)}>Mes</Button>
               </div>
             </Col>
           </Row>
@@ -405,28 +399,33 @@ const MonthCalendar = ({ typeCalendar, settypeCalendar }) => {
           {[...Array(Math.ceil((startMonth.getDay() - 1 + endMonth.getDate()) / 7))].map((week, key) =>
             <Row key={key}>
               {
-                key == 0 &&
-                [...Array(startMonth.getDay() == 0 ? 6 : startMonth.getDay() - 1).keys()].map((empty, i) =>
+                key === 0 &&
+                [...Array(startMonth.getDay() === 0 ? 6 : startMonth.getDay() - 1).keys()].map((empty, i) =>
                   <Col className="text-center m-0 p-0 my-2" key={i}></Col>
                 )
               }
               {
-                key == 0 ?
-                  [...Array(7 - (startMonth.getDay() == 0 ? 6 : startMonth.getDay() - 1)).keys()].map((day, i) =>
-                    <Col className={`${checkCurrent(startMonth.getDate() + i) ? "text-primary font-weight-bold" : ""} text-center m-0 p-0`} key={i}>
+                key === 0 ?
+                  [...Array(7 - (startMonth.getDay() === 0 ? 6 : startMonth.getDay() - 1)).keys()].map((day, i) =>
+                    <Col className={`text-center m-0 p-0`} key={i}>
                       <div className="d-flex flex-column my-2">
-                        <p className="calendar-number-month " onClick={() => { setselectedDay(startMonth.getDate() + i); setselectedDate(getSelectedByDate(i)); }}>{startMonth.getDate() + i}</p>
+                        {
+                          checkCurrent(startMonth.getDate() + i) ? 
+                          <strong className="calendar-number-month text-primary" onClick={() => { setselectedDay(startMonth.getDate() + i); setselectedDate(getSelectedByDate(i)); }}>{startMonth.getDate() + i}</strong>
+                          :
+                          <p className="calendar-number-month " onClick={() => { setselectedDay(startMonth.getDate() + i); setselectedDate(getSelectedByDate(i)); }}>{startMonth.getDate() + i}</p>
+                        }
                         <div className="d-flex justify-content-center">
                           {
-                            associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == (startMonth.getDate() + i) && item.codTipo == 1).length > 0 &&
+                            associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() === (startMonth.getDate() + i) && item.codTipo === 1).length > 0 &&
                             <span className="calendar-indicator calendar-indicator-aniversario"></span>
                           }
                           {
-                            associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == (startMonth.getDate() + i) && item.codTipo == 2).length > 0 &&
+                            associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() === (startMonth.getDate() + i) && item.codTipo === 2).length > 0 &&
                             <span className="calendar-indicator calendar-indicator-fundacion"></span>
                           }
                           {
-                            associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == (startMonth.getDate() + i) && item.codTipo == 3).length > 0 &&
+                            associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() === (startMonth.getDate() + i) && item.codTipo === 3).length > 0 &&
                             <span className="calendar-indicator calendar-indicator-onomastico"></span>
                           }
                         </div>
@@ -437,22 +436,22 @@ const MonthCalendar = ({ typeCalendar, settypeCalendar }) => {
                   [...Array(7).keys()].map((day, i) =>
                     <Col className={`${checkCurrent(getDayMonth(key, i)) ? "text-primary font-weight-bold" : ""} text-center m-0 p-0`} key={i}>
                       <div className="d-flex flex-column my-2">
-                        {getDayMonth(key, i) == "" ?
+                        {getDayMonth(key, i) === "" ?
                           ""
                           :
                           <>
                             <p className="calendar-number-month " onClick={() => { setselectedDay(getDayMonth(key, i)); setselectedDate(getSelected(key, i)); }}>{getDayMonth(key, i)}</p>
                             <div className="d-flex justify-content-center">
                               {
-                                associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == getDayMonth(key, i) && item.codTipo == 1).length > 0 &&
+                                associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() === getDayMonth(key, i) && item.codTipo === 1).length > 0 &&
                                 <span className="calendar-indicator calendar-indicator-aniversario"></span>
                               }
                               {
-                                associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == getDayMonth(key, i) && item.codTipo == 2).length > 0 &&
+                                associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() === getDayMonth(key, i) && item.codTipo === 2).length > 0 &&
                                 <span className="calendar-indicator calendar-indicator-fundacion"></span>
                               }
                               {
-                                associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() == getDayMonth(key, i) && item.codTipo == 3).length > 0 &&
+                                associatedMonthCalendar.filter(item => new Date(item.fecha + ' ').getDate() === getDayMonth(key, i) && item.codTipo === 3).length > 0 &&
                                 <span className="calendar-indicator calendar-indicator-onomastico"></span>
                               }
                             </div>
@@ -482,15 +481,15 @@ const DetailMonth = ({ items, selected, date }) => {
             <small className="d-flex"><i className="fa fa-calendar text-muted my-auto mr-2" /> {date}</small>
           </Col>
           {
-            items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == selected)?.length == 0 &&
+            items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() === selected)?.length === 0 &&
             <p className="mx-auto mt-3 text-muted">No hay eventos</p>
           }
           {
-            items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() == selected)?.map((item, key) =>
+            items?.filter((calItem) => new Date(calItem.fecha + ' ').getDate() === selected)?.map((item, key) =>
               <Col
                 onClick={() => setisOpen({ ...isOpen, [item.fecha + key]: isOpen.hasOwnProperty(item.fecha + key) ? !isOpen[item.fecha + key] : true })}
                 lg={3} key={key} className="px-0">
-                <div className={`calendar-item ${item.codTipo == 1 ? 'item-aniversario' : item.codTipo == 2 ? 'item-fundacion' : 'item-onomastico item-month-detail'}`}>
+                <div className={`calendar-item ${item.codTipo === 1 ? 'item-aniversario' : item.codTipo === 2 ? 'item-fundacion' : 'item-onomastico item-month-detail'}`}>
 
                   <span className="type-calendar-item d-block">{item.tipo.toUpperCase()}</span>
                   <strong className="calendar-item-name my-2 d-block">
@@ -501,7 +500,7 @@ const DetailMonth = ({ items, selected, date }) => {
                     <hr className="my-2" />
                     <div className="text-center">
                       {
-                        item.empresa != "-" &&
+                        item.empresa !== "-" &&
                         <>
                           <i className="ni ni-building d-block"></i>
                           <small>{item.empresa}</small>

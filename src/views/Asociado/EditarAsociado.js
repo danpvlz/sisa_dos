@@ -19,7 +19,7 @@ import SearchCobrador from "components/Selects/SearchCobrador.js";
 import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { showEditAssociated,resetEditAssociated,update } from "../../redux/actions/Asociado";
+import { showEditAssociated,update } from "../../redux/actions/Asociado";
 
 const EditarAsociado = (props) => {
   const dispatch = useDispatch();
@@ -35,17 +35,12 @@ const EditarAsociado = (props) => {
   const history = useHistory();
 
   useEffect(() => {
-    if(props.location.state?.asociadoSelected){
-      if(associatedEditObject.length == 0){
-        dispatch(showEditAssociated(props.location.state?.asociadoSelected));
-      }
-    }else{
+    if (props?.match?.params?.id) {
+      dispatch(showEditAssociated(props.match.params.id));
+    } else {
       history.push('/');
     }
-    return () => {
-      dispatch(resetEditAssociated());
-    }
-  }, []);
+  }, [props.match.params.id, history, dispatch]);
 
   useEffect(() => {
     associatedEditObject.asociado && setTypeAssociated(associatedEditObject.asociado.tipoAsociado);
@@ -76,22 +71,21 @@ const EditarAsociado = (props) => {
       formData.comitegremial = associatedEditObject.comite.idComite;
       formData.tipoasociado = associatedEditObject.asociado.tipoAsociado;
       formData.idPromotor = associatedEditObject.promotor.idPromotor;
-      formData.idSector = associatedEditObject.sector.idSector;
+      formData.idSector = cobrador ? cobrador : associatedEditObject.sector.idSector;
       formData.promotornombre = associatedEditObject.promotor.nombresCompletos;
       formData.tipodocumento_representante = associatedEditObject.representante?.tipoDoc ? associatedEditObject.representante.tipoDoc : null;
       formData.tipodocumento_adicional = associatedEditObject.adicional?.tipoDoc ? associatedEditObject.adicional.tipoDoc : null;
       formData.tipodocumento_persona = associatedEditObject.persona?.tipoDocumento ? associatedEditObject.persona.tipoDocumento : null;
       formData.sexo = associatedEditObject.persona?.sexo ? associatedEditObject.persona.sexo : null;
       formData.importemensual=associatedEditObject.asociado?.importeMensual;
-      dispatch(update(props.location.state?.asociadoSelected,formData));
+      dispatch(update(associatedEditObject.asociado.idAsociado,formData));
       history.push('/admin/asociado');
       //REGISTRAR
       setsendassociated(false);
       document.getElementById("form-save-associated").reset();
-    } else {
       setFormData(null);
     }
-  }, [sendassociated]);
+  }, [sendassociated,associatedEditObject,cobrador,formData,history,dispatch]);
 
   return (
     <>
@@ -160,7 +154,7 @@ const EditarAsociado = (props) => {
                               </label>
                               <Input 
                               value={
-                                associatedEditObject.asociado?.tipoAsociado == 1 ? "Empresa":associatedEditObject.asociado?.tipoAsociado == 2 ? "Persona":null
+                                associatedEditObject.asociado?.tipoAsociado  ===  1 ? "Empresa":associatedEditObject.asociado?.tipoAsociado  ===  2 ? "Persona":null
                               }
                               readOnly
                               />
@@ -216,7 +210,7 @@ const EditarAsociado = (props) => {
                       </div>
                     </Col>
                     {
-                      typeAssociated == 1 ?
+                      typeAssociated  ===  1 ?
                       <>
                         <Col lg="12">
                           <hr className="my-4 " />
@@ -402,7 +396,7 @@ const EditarAsociado = (props) => {
                                     Tipo de documento*
                                   </label>
                                   <Input readOnly
-                                  defaultValue={associatedEditObject?.representante?.tipoDoc==1?"DNI":associatedEditObject?.representante?.tipoDoc==6?"RUC":associatedEditObject?.representante?.tipoDoc==6?"Carnet de extranjería":associatedEditObject?.representante?.tipoDoc==4?"Pasaporte":""}
+                                  defaultValue={associatedEditObject?.representante?.tipoDoc === 1?"DNI":associatedEditObject?.representante?.tipoDoc === 6?"RUC":associatedEditObject?.representante?.tipoDoc === 6?"Carnet de extranjería":associatedEditObject?.representante?.tipoDoc === 4?"Pasaporte":""}
                                   />
                                 </FormGroup>
                               </Col>
@@ -591,7 +585,7 @@ const EditarAsociado = (props) => {
                                   <Input 
                                   readOnly
                                   value={
-                                    associatedEditObject?.adicional?.tipoDoc==1?"DNI":associatedEditObject?.adicional?.tipoDoc==6?"RUC":associatedEditObject?.adicional?.tipoDoc==6?"Carnet de extranjería":associatedEditObject?.adicional?.tipoDoc==4?"Pasaporte":""
+                                    associatedEditObject?.adicional?.tipoDoc === 1?"DNI":associatedEditObject?.adicional?.tipoDoc === 6?"RUC":associatedEditObject?.adicional?.tipoDoc === 6?"Carnet de extranjería":associatedEditObject?.adicional?.tipoDoc === 4?"Pasaporte":""
                                   }
                                   />
                                </FormGroup>
@@ -764,7 +758,7 @@ const EditarAsociado = (props) => {
                         </Col>
                       </>
                         :
-                        typeAssociated == 2 ?
+                        typeAssociated  ===  2 ?
                         <Col lg="12">
                           <hr className="my-4 " />
                           <h6 className="heading-small text-muted mb-4">
@@ -781,7 +775,7 @@ const EditarAsociado = (props) => {
                                     Tipo de documento*
                                   </label>
                                   <Input readOnly
-                                  defaultValue={associatedEditObject?.persona?.tipoDocumento==1?"DNI":associatedEditObject?.persona?.tipoDocumento==6?"RUC":associatedEditObject?.persona?.tipoDocumento==6?"Carnet de extranjería":associatedEditObject?.persona?.tipoDocumento==4?"Pasaporte":""}
+                                  defaultValue={associatedEditObject?.persona?.tipoDocumento === 1?"DNI":associatedEditObject?.persona?.tipoDocumento === 6?"RUC":associatedEditObject?.persona?.tipoDocumento === 6?"Carnet de extranjería":associatedEditObject?.persona?.tipoDocumento === 4?"Pasaporte":""}
                                   />
                                 </FormGroup>
                               </Col>
@@ -872,7 +866,7 @@ const EditarAsociado = (props) => {
                                     Sexo*
                                   </label>
                                   <Input readOnly 
-                                  defaultValue={associatedEditObject?.persona?.sexo==1 ? "Mujer" : "Hombre" }
+                                  defaultValue={associatedEditObject?.persona?.sexo === 1 ? "Mujer" : "Hombre" }
                                   />
                                 </FormGroup>
                               </Col>
@@ -1005,7 +999,7 @@ const EditarAsociado = (props) => {
                   </Row>
 
                   {
-                    typeAssociated == null ?
+                    typeAssociated  ==  null ?
                     ""
                     :
                     <div className="text-center mt-5">

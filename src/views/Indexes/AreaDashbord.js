@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from "react";
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
-// javascipt plugin for creating charts
 import Chart from "chart.js";
 // react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 // reactstrap components
 import {
-  Button,
   Card,
   CardHeader,
   CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
   Table,
   Container,
   Row,
@@ -25,7 +17,6 @@ import {
 import {
   chartOptions,
   parseOptions,
-  chartExample1,
   chartExample2,
 } from "variables/charts.js";
 
@@ -51,9 +42,9 @@ const AreaDashbord = ({idArea=null,children}) => {
   useEffect(() => {
     dispatch(loadDashboardByArea({...order,area: idArea,
       mes: currentmonth+1 }));
-  }, [order,idArea]);
+  }, [order,idArea,currentmonth,dispatch]);
 
-  const handleClickLine = (evt, element) => {
+  const handleClickLine = (element) => {
     if (element.length > 0) {
       var ind = element[0]._index;
       console.log(ind)
@@ -74,10 +65,10 @@ const AreaDashbord = ({idArea=null,children}) => {
   return (
     <>
       <Header
-        emitido={cajaDashboardByArea?.lineEmitido?.find(e=>e.mes==currentmonth+1)?.monto}
-        cobrado={cajaDashboardByArea?.lineCobrado?.find(e=>e.mes==currentmonth+1)?.monto}
-        emitidoPrev={cajaDashboardByArea?.lineEmitido?.find(e=>e.mes==currentmonth)?.monto}
-        cobradoPrev={cajaDashboardByArea?.lineCobrado?.find(e=>e.mes==currentmonth)?.monto}
+        emitido={cajaDashboardByArea?.lineEmitido?.find(e=>e.mes===currentmonth+1)?.monto}
+        cobrado={cajaDashboardByArea?.lineCobrado?.find(e=>e.mes===currentmonth+1)?.monto}
+        emitidoPrev={cajaDashboardByArea?.lineEmitido?.find(e=>e.mes===currentmonth)?.monto}
+        cobradoPrev={cajaDashboardByArea?.lineCobrado?.find(e=>e.mes===currentmonth)?.monto}
         clientes={cajaDashboardByArea?.clientes ? cajaDashboardByArea.clientes : []}
         clientesPrev={cajaDashboardByArea?.clientesPrev ? cajaDashboardByArea.clientesPrev.length : "-"}
         top={cajaDashboardByArea?.clientes ? cajaDashboardByArea.clientes[0] : "-"}
@@ -151,9 +142,9 @@ const AreaDashbord = ({idArea=null,children}) => {
                   <tr>
                     <th scope="col">Cliente</th>
                     <th scope="col" onClick={()=>{setorder({...order,orderClientes:'cantidad'})}} style={{cursor: 'pointer'}}>
-                      Cantidad { order.orderClientes=='cantidad' ? <i className={`fa fa-arrow-down`}></i> : ""}</th>
+                      Cantidad { order.orderClientes==='cantidad' ? <i className={`fa fa-arrow-down`}></i> : ""}</th>
                     <th scope="col" onClick={()=>{setorder({...order,orderClientes:'monto'})}} style={{cursor: 'pointer'}}>
-                      Monto { order.orderClientes=='monto' ? <i className={`fa fa-arrow-down`}></i> : ""}</th>
+                      Monto { order.orderClientes==='monto' ? <i className={`fa fa-arrow-down`}></i> : ""}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -183,8 +174,8 @@ const AreaDashbord = ({idArea=null,children}) => {
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">Concepto</th>
-                    <th scope="col" onClick={()=>{setorder({...order,orderConceptos:'cantidad'})}} style={{cursor: 'pointer'}}>Cantidad { order.orderConceptos=='cantidad' ? <i className={`fa fa-arrow-down`}></i> : ""}</th>
-                    <th scope="col" onClick={()=>{setorder({...order,orderConceptos:'monto'})}} style={{cursor: 'pointer'}}>Monto { order.orderConceptos=='monto' ? <i className={`fa fa-arrow-down`}></i> : ""}</th>
+                    <th scope="col" onClick={()=>{setorder({...order,orderConceptos:'cantidad'})}} style={{cursor: 'pointer'}}>Cantidad { order.orderConceptos==='cantidad' ? <i className={`fa fa-arrow-down`}></i> : ""}</th>
+                    <th scope="col" onClick={()=>{setorder({...order,orderConceptos:'monto'})}} style={{cursor: 'pointer'}}>Monto { order.orderConceptos==='monto' ? <i className={`fa fa-arrow-down`}></i> : ""}</th>
                   </tr>
                 </thead>
                 <tbody>

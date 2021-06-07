@@ -1,10 +1,8 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
 import PaginationComponent from "react-reactstrap-pagination";
 
 // reactstrap components
 import {
-  Badge,
   Card,
   CardHeader,
   CardFooter,
@@ -33,16 +31,16 @@ const Cliente = () => {
   const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [idCliente, setidCliente] = useState(null);
-  const [debCollector, setdebCollector] = useState(null);
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(null);
   const [showModal, setshow] = useState(false);
-  const history = useHistory();
+
   useEffect(() => {
-    if (clientStatusActions == 200) {
+    if (clientStatusActions === 200) {
       dispatch(list(page,search));
     }
-  }, [clientStatusActions]);
+  }, [clientStatusActions,page,search,dispatch]);
+
   const handleNew = () => {
     dispatch(resetClienteObject());
     setSelected(null);
@@ -58,11 +56,7 @@ const Cliente = () => {
     }
     setsearch(tsearch);
     dispatch(list(page,tsearch));
-  }, [idCliente]);
-
-  useEffect(() => {
-    dispatch(list(page,search))
-  }, [page]);
+  }, [idCliente,page,search,dispatch]);
 
   useEffect(() => {
     if(selected){
@@ -71,7 +65,7 @@ const Cliente = () => {
     return () => {
       setSelected(null);
     }
-  }, [selected])
+  }, [selected,dispatch])
 
   const toggleModal = () => {
     setshow(!showModal);
@@ -152,11 +146,11 @@ const Cliente = () => {
                     clientList?.data?.map((cliente, key) =>
 
                       <tr key={key}>
-                        <td scope="row">
+                        <td>
                           {cliente.denominacion}
                         </td>
                         <td>
-                          {cliente.tipoDocumento == 1 ? "DNI" : cliente.tipoDocumento == 6 ? "RUC" : "CARNET DE EXT."}
+                          {cliente.tipoDocumento === 1 ? "DNI" : cliente.tipoDocumento === 6 ? "RUC" : "CARNET DE EXT."}
                         </td>
                         <td>
                           {cliente.documento}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 // reactstrap components
 import {
@@ -24,7 +24,7 @@ import { getUser } from "../../redux/actions/Auth";
 const EditProfile = () => {
   const dispatch = useDispatch();
   const { authUser } = useSelector(({ auth }) => auth);
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const [file, setFile] = useState(process.env.REACT_APP_BASE + 'storage/colaborador/'+authUser.foto);
   const [fileSend, setfileSend] = useState(null);
   const [confirm, setComfirm] = useState(false);
@@ -59,7 +59,7 @@ const EditProfile = () => {
           dispatch(getUser())
       }
       setComfirm(false);
-  }, [confirm])
+  }, [confirm,authUser,formdata,dispatch])
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -96,7 +96,7 @@ const EditProfile = () => {
                         alt="..."
                         className="rounded-circle"
                         src={
-                          file == null || file == "" ?
+                          file == null || file === "" ?
                             require("../../assets/img/theme/default.png")
                               .default
                             :

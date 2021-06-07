@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
 import PaginationComponent from "react-reactstrap-pagination";
 
@@ -45,7 +45,7 @@ const Asociado = () => {
   const [page, setPage] = useState(1)
   //const asociados = require('../../data/asociado.json');
   const history = useHistory();
-  const handleNewAsociado = useCallback(() => history.push('/admin/nuevo-asociado'), [history]);
+  //const handleNewAsociado = useCallback(() => history.push('/admin/nuevo-asociado'), [history]);
   const [selectedAsociado, setSelectedAsociado] = useState(null);
   const [showSetCodigo, setshowSetCodigo] = useState(false);
   const [codigo, setcodigo] = useState(null);
@@ -76,10 +76,10 @@ const Asociado = () => {
   });
 
   useEffect(() => {
-    if (associatedStatusActions == 200) {
+    if (associatedStatusActions === 200) {
       dispatch(listAssociated(page, search));
     }
-  }, [associatedStatusActions]);
+  }, [associatedStatusActions,page,search,dispatch]);
 
   useEffect(() => {
     let tsearch = search;
@@ -119,7 +119,7 @@ const Asociado = () => {
       setsearch(tsearch);
       dispatch(listAssociated(page, tsearch))
     }
-  }, [idAsociado, debCollector, comiteGremial, since, promotorSearched, state, page]);
+  }, [idAsociado, debCollector, comiteGremial, since, promotorSearched, state, page,loaded,search,dispatch]);
 
   useEffect(() => {
     setsearch(search);
@@ -128,7 +128,7 @@ const Asociado = () => {
     return () => {
       setloaded(false);
     }
-  }, []);
+  }, [page,search,dispatch]);
 
   const toggleModalCodigo = () => {
     setshowSetCodigo(!showSetCodigo);
@@ -147,7 +147,7 @@ const Asociado = () => {
       setsendcodigo(false);
       setSelectedAsociado(null);
     }
-  }, [sendcodigo]);
+  }, [sendcodigo,codigo,selectedAsociado,dispatch]);
 
   const toggleModalConfirm = () => {
     setShowConfirm(!showConfirm);
@@ -155,10 +155,10 @@ const Asociado = () => {
 
   useEffect(() => {
     if (confirm) {
-      if (action == 1) {
+      if (action === 1) {
         dispatch(status(selectedAsociado)); //CAMBIAR DE ESTADO
       } else {
-        if (action == 2) {
+        if (action === 2) {
           dispatch(removeInProcess(selectedAsociado)); //ELIMINAR
         } else {
           dispatch(preactive(selectedAsociado)); //ELIMINAR
@@ -168,7 +168,7 @@ const Asociado = () => {
       setComfirm(false);
       setSelectedAsociado(null);
     }
-  }, [confirm, action]);
+  }, [confirm, action,selectedAsociado,dispatch]);
 
   return (
     <>
@@ -193,23 +193,27 @@ const Asociado = () => {
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">
                     <h3 className="mb-0">Asociados</h3>
-                    <Button
-                      className="btn-new-xl btn-icon d-none d-md-block"
-                      color="primary"
-                      onClick={handleNewAsociado}
-                    >
-                      <span className="btn-inner--icon">
+                    {
+                      /*
+                        <Button
+                          className="btn-new-xl btn-icon d-none d-md-block"
+                          color="primary"
+                          onClick={handleNewAsociado}
+                        >
+                          <span className="btn-inner--icon">
 
-                        <i className="fa fa-plus" />
-                      </span>
-                      <span className="btn-inner--text">Nuevo asociado</span>
-                    </Button>
-                    <Button
-                      className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
-                      onClick={handleNewAsociado}
-                    >
-                      <i className="fas fa-plus" />
-                    </Button>
+                            <i className="fa fa-plus" />
+                          </span>
+                          <span className="btn-inner--text">Nuevo asociado</span>
+                        </Button>
+                        <Button
+                          className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
+                          onClick={handleNewAsociado}
+                        >
+                          <i className="fas fa-plus" />
+                        </Button>
+                      */
+                    }
                   </Col>
                   <Col lg="12 ">
                     <hr className="my-4 " />
@@ -299,7 +303,7 @@ const Asociado = () => {
                       </Col>
                       <Col lg="1" className="text-right m-auto">
                         <Button color="success" type="button" onClick={() => dispatch(exportAssociateds(search))}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
+                          <img alt="Exportar" src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -331,19 +335,19 @@ const Asociado = () => {
                         {
                           associatedList?.data?.map((asociado, key) =>
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {asociado.asociado}
                               </td>
                               <td className={!showHeaders.Tipo ? 'd-none' : ''}>
-                                {asociado.tipoAsociado == 1 ? "Empresa" : "Persona"}
+                                {asociado.tipoAsociado === 1 ? "Empresa" : "Persona"}
                               </td>
                               <td className={!showHeaders.Documento ? 'd-none' : ''}>
                                 {asociado.documento}
                               </td>
                               <td className={!showHeaders.Estado ? 'd-none' : ''}>
                                 <Badge color="" className="badge-dot mr-4">
-                                  <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : asociado.estado == 3 ? "bg-yellow" : "bg-warning"} />
-                                  {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : asociado.estado == 3 ? "Preactivo" : "Retiro"}
+                                  <i className={asociado.estado === 1 ? "bg-success" : asociado.estado === 2 ? "bg-info" : asociado.estado === 3 ? "bg-yellow" : "bg-warning"} />
+                                  {asociado.estado === 1 ? "Activo" : asociado.estado === 2 ? "En proceso" : asociado.estado === 3 ? "Preactivo" : "Retiro"}
                                 </Badge>
                               </td>
                               <td className={!showHeaders.Importe ? 'd-none' : ''}>
@@ -387,22 +391,21 @@ const Asociado = () => {
                                       className="d-flex"
                                       onClick={() => {
                                         history.push({
-                                          pathname: '/admin/editar-asociado-sa',
-                                          state: { asociadoSelected: asociado.idAsociado }
+                                          pathname: '/admin/editar-asociado-sa/'+asociado.idAsociado
                                         });
                                       }}
                                     >
                                       <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más
-                        </DropdownItem>
+                                    </DropdownItem>
                                     <DropdownItem
                                       className="d-flex"
                                       onClick={(e) => { setSelectedAsociado(asociado.idAsociado); toggleModalCodigo(); }}
                                     >
                                       <i className="text-blue fa fa-edit" aria-hidden="true"></i> Modificar código
                         </DropdownItem>
-                                    {asociado.estado == 1 || asociado.estado == 3 ?
+                                    {asociado.estado === 1 || asociado.estado === 3 ?
                                       <>
-                                        {asociado.estado == 3 ?
+                                        {asociado.estado === 3 ?
                                           <DropdownItem
                                             className="d-flex"
                                             onClick={() => {
@@ -439,7 +442,7 @@ const Asociado = () => {
                                           <i className="text-danger fa fa-ban" aria-hidden="true"></i> Retirar
                           </DropdownItem>
                                       </>
-                                      : asociado.estado == 2 || asociado.estado == 0 ?
+                                      : asociado.estado === 2 || asociado.estado === 0 ?
                                         <DropdownItem
                                           className="d-flex"
                                           onClick={() => {
@@ -466,7 +469,7 @@ const Asociado = () => {
                                     >
                                       <i className="text-blue fa fa-credit-card" aria-hidden="true"></i> Cuentas
                         </DropdownItem>
-                                    {asociado.estado == 2 &&
+                                    {asociado.estado === 2 &&
                                       <DropdownItem
                                         className="d-flex"
                                         onClick={() => {

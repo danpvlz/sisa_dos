@@ -3,7 +3,6 @@ import React from "react";
 import {
   Button,
   Card,
-  CardHeader,
   CardBody,
   FormGroup,
   Form,
@@ -11,14 +10,13 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Row,
   Col,
 } from "reactstrap";
 
 import { useForm } from "react-hook-form";
 
 import { useDispatch } from "react-redux";
-import { userSignIn, getUser } from "../../redux/actions/Auth";
+import { userSignIn } from "../../redux/actions/Auth";
 
 const Login = (props) => {
   const dispatch = useDispatch();

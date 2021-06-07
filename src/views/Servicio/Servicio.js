@@ -4,13 +4,9 @@ import PaginationComponent from "react-reactstrap-pagination";
 
 // reactstrap components
 import {
-  Badge,
   Card,
   CardHeader,
   CardFooter,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
   Table,
   Container,
   Row,
@@ -28,7 +24,7 @@ import Loading from "../../components/Loaders/LoadingSmall";
 
 const Servicios = () => {
   const dispatch = useDispatch();
-  const { servicesList, meta } = useSelector(({ servicio }) => servicio);
+  const { servicesList } = useSelector(({ servicio }) => servicio);
   const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [since, setsince] = useState(null);
@@ -46,46 +42,25 @@ const Servicios = () => {
     } else {
       tsearch.idAsociado = idAsociado;
     }
-    setsearch(tsearch);
-    dispatch(listServices(page, tsearch))
-  }, [idAsociado]);
-
-  useEffect(() => {
-    let tsearch = search;
     if (debCollector == null) {
       delete tsearch.debCollector;
     } else {
       tsearch.debCollector = debCollector;
     }
-    setsearch(tsearch);
-    dispatch(listServices(page, tsearch))
-  }, [debCollector]);
-
-  useEffect(() => {
-    let tsearch = search;
     if (since == null) {
       delete tsearch.since;
     } else {
       tsearch.since = since;
     }
-    setsearch(tsearch);
-    dispatch(listServices(page, tsearch))
-  }, [since]);
-
-  useEffect(() => {
-    let tsearch = search;
     if (until == null) {
       delete tsearch.until;
     } else {
       tsearch.until = until;
     }
     setsearch(tsearch);
-    dispatch(listServices(page, tsearch))
-  }, [until]);
-
-  useEffect(() => {
-    dispatch(listServices(page, search))
-  }, [page])
+    dispatch(listServices(page, tsearch));
+  }, [dispatch,idAsociado,debCollector,since,until,search,page]);
+  
   return (
     <>
       <div className="header pb-8 pt-9 d-flex align-items-center">
@@ -136,7 +111,7 @@ const Servicios = () => {
                             placeholder="filterMonth"
                             type="date"
                             onChange={(e) => {
-                              setsince(e.target.value == "" ? null : e.target.value)
+                              setsince(e.target.value === "" ? null : e.target.value)
                             }}
                           />
                         </FormGroup >
@@ -155,7 +130,7 @@ const Servicios = () => {
                             placeholder="filterMonth"
                             type="date"
                             onChange={(e) => {
-                              setuntil(e.target.value == "" ? null : e.target.value)
+                              setuntil(e.target.value === "" ? null : e.target.value)
                             }}
                           />
                         </FormGroup >
@@ -202,9 +177,8 @@ const Servicios = () => {
                       <tbody>
                         {
                           servicesList?.data?.map((servicio, key) =>
-
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {servicio.asociado}
                               </td>
                               <td>

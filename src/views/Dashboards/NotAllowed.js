@@ -18,7 +18,7 @@ export default function NotAllowed() {
                     require("../../assets/img/theme/unauthorized.jpg").default
                 } />
             {
-                powerBiAuthorization == 0 ?
+                powerBiAuthorization === 0 ?
                 <>
 
                 <h1 className="text-center mt-5 mb-0">Solicitud enviada!</h1>

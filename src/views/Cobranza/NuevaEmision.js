@@ -32,7 +32,7 @@ const NuevaEmision = () => {
 
   const history = useHistory();
 
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const [formdata, setformdata] = useState(null);
   const [confirm, setComfirm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -57,7 +57,7 @@ const NuevaEmision = () => {
     if (idAsociado != null) {
       dispatch(showAssociated(idAsociado));
     }
-  }, [idAsociado]);
+  }, [idAsociado,dispatch]);
 
   const onSubmit = (data) => {
     idAsociado == null ?
@@ -66,28 +66,28 @@ const NuevaEmision = () => {
       tipoDocumentoEmision == null ?
         dispatch(fetchError("Debe elegir si es boleta o factura."))
         :
-        tipoDocumentoEmision != 3 && pagado == null ?
+        tipoDocumentoEmision !== 3 && pagado == null ?
           dispatch(fetchError("Debe elegir si el comprobante fue pagado."))
           :
-          pagado == 2 && bancopago == null ?
+          pagado === 2 && bancopago == null ?
             dispatch(fetchError("Debe elegir un banco."))
             :
-            pagado == 2 && (!numPayFilled.operation && !numPayFilled.sofdoc) ?
+            pagado === 2 && (!numPayFilled.operation && !numPayFilled.sofdoc) ?
               dispatch(fetchError("Debe especificar un número de operación o de sofydoc."))
               :
-              pagado == 2 && (montoPaid==null) ?
+              pagado === 2 && (montoPaid==null) ?
                 dispatch(fetchError("Debe especificar el monto del pago total."))
                 :
-              meses.length == 0 ?
+              meses.length === 0 ?
                 dispatch(fetchError("Debe elegir al menos un mes."))
                 :
-                tipoDocumentoEmision == 3 && docModificar.tipo == "" ?
+                tipoDocumentoEmision === 3 && docModificar.tipo === "" ?
                   dispatch(fetchError("Debe especificar el tipo de documento a modificar."))
                   :
-                  tipoDocumentoEmision == 3 && docModificar.serie == "" ?
+                  tipoDocumentoEmision === 3 && docModificar.serie === "" ?
                     dispatch(fetchError("Debe especificar la serie del documento a modificar."))
                     :
-                    tipoDocumentoEmision == 3 && docModificar.numero == "" ?
+                    tipoDocumentoEmision === 3 && docModificar.numero === "" ?
                       dispatch(fetchError("Debe especificar el número del documento a modificar."))
                       :
                       toggleModal();
@@ -109,13 +109,13 @@ const NuevaEmision = () => {
       formdata.meses = meses;
       formdata.cantidad = meses.length
       formdata.conafiliacion = showAfiliacion;
-      formdata.descuento == 0 && delete formdata.descuento;
+      formdata.descuento === 0 && delete formdata.descuento;
       formdata.docModificar = docModificar;
       dispatch(saveCuenta(formdata));
       history.push('/admin/cuentas');
     }
     setComfirm(false);
-  }, [confirm]);
+  }, [confirm,bancopago,docModificar,idAsociado,meses,pagado,tipoDocumentoEmision,showAfiliacion,formdata,history,dispatch]);
 
   return (
     <>
@@ -170,7 +170,7 @@ const NuevaEmision = () => {
                               <Input
                                 className="form-control-alternative"
                                 type="text"
-                                value={idAsociado ? associatedObject[0]?.tipoAsociado == 2 ? "Persona" : "Empresa" : ""}
+                                value={idAsociado ? associatedObject[0]?.tipoAsociado === 2 ? "Persona" : "Empresa" : ""}
                                 disabled
                               />
                             </FormGroup>
@@ -222,7 +222,7 @@ const NuevaEmision = () => {
                                 className="select-style"
                                 onChange={(inputValue, actionMeta) => {
                                   settipoDocumentoEmision(inputValue.value);
-                                  if (inputValue.value == 3) {
+                                  if (inputValue.value === 3) {
                                     setpagado(null);
                                   } else {
                                     setdocModificar({
@@ -232,12 +232,12 @@ const NuevaEmision = () => {
                                     });
                                   }
                                 }}
-                                defaultValue={idAsociado ? associatedObject[0]?.tipoDocumento == 6 ? { value: 1, label: "Factura" } : null : null}
+                                defaultValue={idAsociado ? associatedObject[0]?.tipoDocumento === 6 ? { value: 1, label: "Factura" } : null : null}
                                 options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }, { value: 3, label: "Nota de crédito" }]} />
                             </FormGroup>
                           </Col>
                           {
-                            tipoDocumentoEmision == 3 ?
+                            tipoDocumentoEmision === 3 ?
                               <>
                                 <Col lg="2">
                                   <FormGroup>
@@ -253,7 +253,7 @@ const NuevaEmision = () => {
                                       name="typeDocUpdate"
                                       id="typeDocUpdate"
                                       onChange={(inputValue, actionMeta) => {
-                                        setdocModificar({ ...docModificar, tipo: inputValue.value, serie: inputValue.value == 1 ? "F109" : inputValue.value == 2 ? "B109" : "" });
+                                        setdocModificar({ ...docModificar, tipo: inputValue.value, serie: inputValue.value === 1 ? "F109" : inputValue.value === 2 ? "B109" : "" });
                                       }}
                                       options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
                                   </FormGroup>
@@ -273,9 +273,9 @@ const NuevaEmision = () => {
                                       onChange={(e) => {
                                         setdocModificar({ ...docModificar, serie: e.target.value })
                                       }}
-                                      value={docModificar.tipo == 1 ? "F109" : docModificar.tipo == 2 ? "B109" : ""}
+                                      value={docModificar.tipo === 1 ? "F109" : docModificar.tipo === 2 ? "B109" : ""}
                                       readOnly
-                                      innerRef={register({ required: tipoDocumentoEmision == 3 })}
+                                      innerRef={register({ required: tipoDocumentoEmision === 3 })}
                                     />
                                   </FormGroup>
                                 </Col>
@@ -295,7 +295,7 @@ const NuevaEmision = () => {
                                         setdocModificar({ ...docModificar, numero: e.target.value })
                                       }}
                                       value={docModificar.numero}
-                                      innerRef={register({ required: tipoDocumentoEmision == 3 })}
+                                      innerRef={register({ required: tipoDocumentoEmision === 3 })}
                                     />
                                   </FormGroup>
                                 </Col>
@@ -359,7 +359,7 @@ const NuevaEmision = () => {
                       <hr className="my-4 " />
                     </Col>
                     {
-                      pagado == 2 &&
+                      pagado === 2 &&
                       <Col lg="12">
                         <h6 className="heading-small text-muted mb-4">
                           <i className="ni ni-money-coins mr-2 my-auto" /> Pago
@@ -417,7 +417,7 @@ const NuevaEmision = () => {
                                     name="numoperacion"
                                     type="text"
                                     onChange={(e) => {
-                                      setnumPayFilled({ ...numPayFilled, operation: e.target.value != '' ? true : false });
+                                      setnumPayFilled({ ...numPayFilled, operation: e.target.value !== '' ? true : false });
                                     }}
                                     innerRef={register({ required: false })}
                                   />
@@ -436,7 +436,7 @@ const NuevaEmision = () => {
                                     name="numsofdoc"
                                     type="text"
                                     onChange={(e) => {
-                                      setnumPayFilled({ ...numPayFilled, sofdoc: e.target.value != '' ? true : false });
+                                      setnumPayFilled({ ...numPayFilled, sofdoc: e.target.value !== '' ? true : false });
                                     }}
                                     innerRef={register({ required: false })}
                                   />
@@ -461,7 +461,7 @@ const NuevaEmision = () => {
                                       setMontoPaid(e.target.value);
                                     }}
                                     value={montoPaid}
-                                    innerRef={register({ required: pagado == 2 })}
+                                    innerRef={register({ required: pagado === 2 })}
                                   />
                                 </FormGroup>
                               </Col>

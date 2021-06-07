@@ -12,9 +12,10 @@ import {
   Modal,
 } from "reactstrap";
 
-const Justify = ({ showJustify, toggleModal, setSendJustification, justificacion, setjustificacion }) => {
+const Justify = ({ showJustify, toggleModal, handleJustify, justificacion, setjustificacion }) => {
     const saveJustification = () => {
-      setSendJustification(true); toggleModal();
+      handleJustify();
+      toggleModal();
     }
     return (
       <Modal

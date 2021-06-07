@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import {
   Button,
   FormGroup,
-  Input,
   Row,
   Col,
   Modal,
@@ -11,7 +10,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchError, hideMessage } from '../../../redux/actions/Common';
-import { reset, update } from "../../../redux/actions/Inscripcion";
+import { update } from "../../../redux/actions/Inscripcion";
 import SearchParticipants from "../../../components/Selects/SearchParticipantsForEdit";
 import SearchCursoFilter from "../../../components/Selects/SearchCursoFilter";
 

@@ -41,7 +41,7 @@ const NuevaEmision = () => {
 
   const history = useHistory();
 
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const [formdata, setformdata] = useState(null);
   const [confirm, setComfirm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -74,19 +74,19 @@ const NuevaEmision = () => {
 
   const addItem = () => {
     /*if (items.some(item =>
-      item.idConcepto == idConcepto)) {
+      item.idConcepto === idConcepto)) {
       dispatch(fetchError("Item repetido"));
     } else {*/
       if (idConcepto == null) {
         dispatch(fetchError("Debe seleccionar un concepto."));
       } else {
-        if (itemValues.price == 0) {
+        if (itemValues.price === 0) {
           dispatch(fetchError("El precio no puede ser cero."));
         } else {
-          if (itemValues.price == 0) {
+          if (itemValues.price === 0) {
             dispatch(fetchError("El precio no puede ser cero."));
           } else {
-            if (itemValues.ammount == 0) {
+            if (itemValues.ammount === 0) {
               dispatch(fetchError("La cantidad no puede ser cero."));
             } else {
               itemValues.idConcepto = idConcepto;
@@ -114,7 +114,7 @@ const NuevaEmision = () => {
     if (idCliente != null) {
       dispatch(showCliente(idCliente));
     }
-  }, [idCliente]);
+  }, [idCliente,dispatch]);
 
   const onSubmit = (data) => {
     idCliente == null ?
@@ -123,25 +123,25 @@ const NuevaEmision = () => {
       tipoDocumentoEmision == null ?
         dispatch(fetchError("Debe elegir el tipo de documento."))
         :
-        tipoDocumentoEmision != 3 && pagado == null ?
+        tipoDocumentoEmision !== 3 && pagado == null ?
           dispatch(fetchError("Debe elegir si el comprobante fue pagado."))
           :
-          pagado == 2 && opcion == null ?
+          pagado === 2 && opcion == null ?
             dispatch(fetchError("Debe elegir una opción."))
             :
-            pagado == 2 && (!numPayFilled.operation && !numPayFilled.sofdoc) ?
+            pagado === 2 && (!numPayFilled.operation && !numPayFilled.sofdoc) ?
               dispatch(fetchError("Debe especificar un número de operación o de sofydoc."))
               :
-              items.length == 0 ?
+              items.length === 0 ?
                 dispatch(fetchError("Debe agregar al menos un item."))
                 :
-                tipoDocumentoEmision == 3 && docModificar.tipo == "" ?
+                tipoDocumentoEmision === 3 && docModificar.tipo === "" ?
                   dispatch(fetchError("Debe especificar el tipo de documento a modificar."))
                   :
-                  tipoDocumentoEmision == 3 && docModificar.serie == "" ?
+                  tipoDocumentoEmision === 3 && docModificar.serie === "" ?
                     dispatch(fetchError("Debe especificar la serie del documento a modificar."))
                     :
-                    tipoDocumentoEmision == 3 && docModificar.numero == "" ?
+                    tipoDocumentoEmision === 3 && docModificar.numero === "" ?
                       dispatch(fetchError("Debe especificar el número del documento a modificar."))
                       :
                       toggleModal();
@@ -158,12 +158,11 @@ const NuevaEmision = () => {
       formdata.typeChange = typeChange;
       formdata.items = items;
       formdata.docModificar = docModificar;
-      console.log(formdata);
       dispatch(saveCuenta(formdata));
       history.push('/admin/cuentas-caja');
     }
     setComfirm(false);
-  }, [confirm]);
+  }, [confirm,formdata,docModificar, history, idCliente, items, opcion, pagado, tipoDocumentoEmision,typeChange,dispatch]);
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -256,7 +255,7 @@ const NuevaEmision = () => {
                               >
                                 Fecha emisión {
 
-                                  pagado == 2 ? "/ Fecha de pago" : ""}
+                                  pagado === 2 ? "/ Fecha de pago" : ""}
                               </label>
                               <Input
                                 className="form-control-alternative"
@@ -281,7 +280,7 @@ const NuevaEmision = () => {
                                 className="select-style"
                                 onChange={(inputValue, actionMeta) => {
                                   settipoDocumentoEmision(inputValue.value);
-                                  if (inputValue.value == 3) {
+                                  if (inputValue.value === 3) {
                                     setpagado(null);
                                   } else {
                                     setdocModificar({
@@ -295,7 +294,7 @@ const NuevaEmision = () => {
                             </FormGroup>
                           </Col>
                           {
-                            tipoDocumentoEmision == 3 ?
+                            tipoDocumentoEmision === 3 ?
                               <>
                                 <Col lg="2">
                                   <FormGroup>
@@ -311,7 +310,7 @@ const NuevaEmision = () => {
                                       name="typeDocUpdate"
                                       id="typeDocUpdate"
                                       onChange={(inputValue, actionMeta) => {
-                                        setdocModificar({ ...docModificar, tipo: inputValue.value, serie: inputValue.value == 1 ? "F108" : inputValue.value == 2 ? "B108" : "" });
+                                        setdocModificar({ ...docModificar, tipo: inputValue.value, serie: inputValue.value === 1 ? "F108" : inputValue.value === 2 ? "B108" : "" });
                                       }}
                                       options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
                                   </FormGroup>
@@ -331,9 +330,9 @@ const NuevaEmision = () => {
                                       onChange={(e) => {
                                         setdocModificar({ ...docModificar, serie: e.target.value })
                                       }}
-                                      value={docModificar.tipo == 1 ? "F108" : docModificar.tipo == 2 ? "B108" : ""}
+                                      value={docModificar.tipo === 1 ? "F108" : docModificar.tipo === 2 ? "B108" : ""}
                                       readOnly
-                                      innerRef={register({ required: tipoDocumentoEmision == 3 })}
+                                      innerRef={register({ required: tipoDocumentoEmision === 3 })}
                                     />
                                   </FormGroup>
                                 </Col>
@@ -353,7 +352,7 @@ const NuevaEmision = () => {
                                         setdocModificar({ ...docModificar, numero: e.target.value })
                                       }}
                                       value={docModificar.numero}
-                                      innerRef={register({ required: tipoDocumentoEmision == 3 })}
+                                      innerRef={register({ required: tipoDocumentoEmision === 3 })}
                                     />
                                   </FormGroup>
                                 </Col>
@@ -440,7 +439,7 @@ const NuevaEmision = () => {
                       <hr className="my-4 " />
                     </Col>
                     {
-                      pagado == 2 &&
+                      pagado === 2 &&
                       <Col lg="12">
                         <h6 className="heading-small text-muted mb-4">
                           <i className="ni ni-money-coins mr-2 my-auto" /> Pago
@@ -465,7 +464,7 @@ const NuevaEmision = () => {
                                       setOpcion(inputValue.value);
                                     }}
                                     options={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }]}
-                                    innerRef={register({ required: pagado == 2 })}
+                                    innerRef={register({ required: pagado === 2 })}
                                   />
                                 </FormGroup>
                               </Col>
@@ -482,7 +481,7 @@ const NuevaEmision = () => {
                                     name="numoperacion"
                                     type="text"
                                     onChange={(e) => {
-                                      setnumPayFilled({ ...numPayFilled, operation: e.target.value != '' ? true : false });
+                                      setnumPayFilled({ ...numPayFilled, operation: e.target.value !== '' ? true : false });
                                     }}
                                     innerRef={register({ required: false })}
                                   />
@@ -501,7 +500,7 @@ const NuevaEmision = () => {
                                     name="numsofdoc"
                                     type="text"
                                     onChange={(e) => {
-                                      setnumPayFilled({ ...numPayFilled, sofdoc: e.target.value != '' ? true : false });
+                                      setnumPayFilled({ ...numPayFilled, sofdoc: e.target.value !== '' ? true : false });
                                     }}
                                     innerRef={register({ required: false })}
                                   />
@@ -526,7 +525,7 @@ const NuevaEmision = () => {
                                       setMontoPaid(e.target.value);
                                     }}
                                     value={montoPaid}
-                                    innerRef={register({ required: pagado == 2 })}
+                                    innerRef={register({ required: pagado === 2 })}
                                   />
                                 </FormGroup>
                               </Col>
@@ -605,7 +604,7 @@ const NuevaEmision = () => {
                                 name="price"
                                 type="number"
                                 min="0"
-                                readOnly={inmutable == 1}
+                                readOnly={inmutable === 1}
                                 onChange={(e) => {
                                   setitemValues({ ...itemValues, "price": e.target.value, "subtotal": e.target.value * itemValues.ammount })
                                 }}
@@ -674,7 +673,7 @@ const NuevaEmision = () => {
                                 {
                                   items.map((item, key) =>
                                     <tr key={key}>
-                                      <td scope="row" className="text-left">
+                                      <td className="text-left">
                                         {item.labelConcepto}
                                       </td>
                                       <td>
@@ -684,18 +683,18 @@ const NuevaEmision = () => {
                                         {item.ammount}
                                       </td>
                                       <td>
-                                        {item.igv == 1 ? "Gravada" : "Gratuita"}
+                                        {item.igv === 1 ? "Gravada" : "Gratuita"}
                                       </td>
                                       <td>
                                         {
-                                          item.igv == 2 ?
+                                          item.igv === 2 ?
                                             item.subtotal
                                             :
                                             (item.subtotal * 100 / 118).toFixed(2)}
                                       </td>
                                       <td>
                                         {
-                                          item.igv == 2 ?
+                                          item.igv === 2 ?
                                             "-"
                                             :
                                             (item.subtotal - (item.subtotal * 100 / 118)).toFixed(2)}
@@ -704,7 +703,7 @@ const NuevaEmision = () => {
                                         {item.subtotal}
                                       </td>
                                       <td>
-                                        <Button className="btn btn-sm" color="danger" type="button" onClick={() => { setitems(items.filter((a, i) => i != key)) }}>
+                                        <Button className="btn btn-sm" color="danger" type="button" onClick={() => { setitems(items.filter((a, i) => i !== key)) }}>
                                           <i className="fa fa-trash" />
                                         </Button>
                                       </td>
@@ -717,24 +716,24 @@ const NuevaEmision = () => {
                         <hr />
                         <div style={{ float: 'right', fontSize: '1.5rem', display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
                           {
-                            items.some(item => item.igv == 2) &&
+                            items.some(item => item.igv === 2) &&
                             <div><small>Gratuita: s/.</small><strong >{items.reduce((r, a) => { return r + a.subtotal }, 0)}</strong></div>
                           }
                           {
-                            items.some(item => item.igv == 1) &&
+                            items.some(item => item.igv === 1) &&
                             <>
                               <div><small>Gravada: s/.</small><strong >{
-                                (items.filter(item => item.igv == 1).reduce((r, a) => { return r + a.subtotal }, 0) * 100 / 118).toFixed(2)
+                                (items.filter(item => item.igv === 1).reduce((r, a) => { return r + a.subtotal }, 0) * 100 / 118).toFixed(2)
                               }</strong></div>
                               <div><small>IGV: s/.</small><strong >{
 
-                                (items.filter(item => item.igv == 1).reduce((r, a) => { return r + a.subtotal }, 0) - (items.filter(item => item.igv == 1).reduce((r, a) => { return r + a.subtotal }, 0) * 100 / 118)).toFixed(2)
+                                (items.filter(item => item.igv === 1).reduce((r, a) => { return r + a.subtotal }, 0) - (items.filter(item => item.igv === 1).reduce((r, a) => { return r + a.subtotal }, 0) * 100 / 118)).toFixed(2)
 
 
                               }</strong></div>
                             </>
                           }
-                          <div><small>Total: s/.</small><strong >{items.filter(item => item.igv == 1).reduce((r, a) => { return r + a.subtotal }, 0).toFixed(2)}</strong></div>
+                          <div><small>Total: s/.</small><strong >{items.filter(item => item.igv === 1).reduce((r, a) => { return r + a.subtotal }, 0).toFixed(2)}</strong></div>
                         </div>
                       </div>
                     </Col>

@@ -11,7 +11,6 @@ import {
   Container,
   Row,
   Col,
-  Modal,
 } from "reactstrap";
 import Select from 'react-select';
 import ConfirmDialog from '../../components/Modals/ConfirmDialog';
@@ -34,7 +33,6 @@ const MarcarAsistencia = () => {
   const [showJustify, setShowJustify] = useState(false);
   const [idAssistance, setidAssistance] = useState(0)
   const [justificacion, setjustificacion] = useState("")
-  const [sendJustification, setSendJustification] = useState(false);
 
   const [formData, setFormData] = useState(null);
 
@@ -75,37 +73,31 @@ const MarcarAsistencia = () => {
       //REGISTRAR
       setSendAssistance(false);
       document.getElementById("form-check-assistance").reset();
-    } else {
       setFormData(null);
     }
-  }, [sendAssistance])
+  }, [sendAssistance,formData,dispatch]);
 
-  useEffect(() => {
-    if (sendJustification) {
-      //REGISTRAR
-      var fData = {
-        "idAsistencia": idAssistance,
-        "justification": justificacion
-      }
-      dispatch(saveJustification(fData))
-      //REGISTRAR
-      setSendJustification(false);
-      setidAssistance(0);
-      setjustificacion("");
-    } else {
-      setFormData(null);
+  const handleJustify = () => {
+    //REGISTRAR
+    var fData = {
+      "idAsistencia": idAssistance,
+      "justification": justificacion
     }
-  }, [sendJustification])
+    dispatch(saveJustification(fData))
+    //REGISTRAR
+    setidAssistance(0);
+    setjustificacion("");
+  }
 
   useEffect(() => {
       dispatch(myTodayAssistanceList());
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
-    if (assistanceStatusActions == 200) {
+    if (assistanceStatusActions === 200) {
       dispatch(myTodayAssistanceList());
     }
-  }, [assistanceStatusActions])
+  }, [assistanceStatusActions,dispatch])
 
   return (
     <>
@@ -185,7 +177,7 @@ const MarcarAsistencia = () => {
                         Entrada
                           <small className="d-flex justify-content-center font-weight-bold">
                           {myTodayAssistance.asistencia ?
-                            parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 5 ? "Compensó" :  parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 6 ? "Vacaciones" : "-"
+                            parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) === 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) === 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) === 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) === 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) === 5 ? "Compensó" :  parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) === 6 ? "Vacaciones" : "-"
                             : "-"}
                         </small>
                       </span>
@@ -193,8 +185,8 @@ const MarcarAsistencia = () => {
                         {myTodayAssistance.asistencia ? JSON.parse(myTodayAssistance.asistencia)[0]?.hora : "-"}
                       </div>
                     {myTodayAssistance.asistencia ?
-                      parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 2 || parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 3 || parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) == 4 ?
-                        JSON.parse(myTodayAssistance.asistencia)[0]?.justificacion == "" ?
+                      parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) === 2 || parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) === 3 || parseInt(JSON.parse(myTodayAssistance.asistencia)[0]?.estado) === 4 ?
+                        JSON.parse(myTodayAssistance.asistencia)[0]?.justificacion === "" ?
                           <Button onClick={() => { setidAssistance(JSON.parse(myTodayAssistance.asistencia)[0]?.idAsistencia); toggleModalJustify(); }} className="mt-2" block color="warning" size="sm" type="button">
                             Justificar
                           </Button>
@@ -212,7 +204,7 @@ const MarcarAsistencia = () => {
                         Salida
                         <small className="d-flex justify-content-center font-weight-bold">
                           {myTodayAssistance.asistencia ?
-                            parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 6 ? "Vacaciones" : "-"
+                            parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) === 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) === 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) === 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) === 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) === 5 ? "Compensó" : parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) === 6 ? "Vacaciones" : "-"
                             : "-"}</small>
                       </span>
                       <div className="form-control-alternative text-center assistance-input text-center">
@@ -220,8 +212,8 @@ const MarcarAsistencia = () => {
                       </div>
                     </div>
                     {myTodayAssistance.asistencia ?
-                      parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) == 4  ?
-                        JSON.parse(myTodayAssistance.asistencia)[1]?.justificacion == "" ?
+                      parseInt(JSON.parse(myTodayAssistance.asistencia)[1]?.estado) === 4  ?
+                        JSON.parse(myTodayAssistance.asistencia)[1]?.justificacion === "" ?
                           <Button onClick={() => { setidAssistance(JSON.parse(myTodayAssistance.asistencia)[1]?.idAsistencia); toggleModalJustify(); }} className="mt-2" block color="warning" size="sm" type="button">
                             Justificar
                           </Button>
@@ -238,7 +230,7 @@ const MarcarAsistencia = () => {
                         Entrada
                           <small className="d-flex justify-content-center font-weight-bold ">
                           {myTodayAssistance.asistencia ?
-                            parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 6 ? "Vacaciones" :  "-"
+                            parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) === 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) === 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) === 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) === 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) === 5 ? "Compensó" : parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) === 6 ? "Vacaciones" :  "-"
                             : "-"}</small>
                       </span>
                       <div className="form-control-alternative text-center assistance-input text-center">
@@ -246,8 +238,8 @@ const MarcarAsistencia = () => {
                       </div>
                     </div>
                     {myTodayAssistance.asistencia ?
-                      parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 2 || parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 3 || parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) == 4 ?
-                        JSON.parse(myTodayAssistance.asistencia)[2]?.justificacion == "" ?
+                      parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) === 2 || parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) === 3 || parseInt(JSON.parse(myTodayAssistance.asistencia)[2]?.estado) === 4 ?
+                        JSON.parse(myTodayAssistance.asistencia)[2]?.justificacion === "" ?
                           <Button onClick={() => { setidAssistance(JSON.parse(myTodayAssistance.asistencia)[2]?.idAsistencia); toggleModalJustify(); }} className="mt-2" block color="warning" size="sm" type="button">
                             Justificar
                           </Button>
@@ -264,7 +256,7 @@ const MarcarAsistencia = () => {
                         Salida
                           <small className="d-flex justify-content-center font-weight-bold">
                           {myTodayAssistance.asistencia ?
-                            parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 5 ? "Compensó" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 6 ? "Vacaciones" : "-"
+                            parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) === 1 ? "Normal" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) === 2 ? "Tardanza" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) === 3 ? "Falta" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) === 4 ? "Salió temprano" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) === 5 ? "Compensó" : parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) === 6 ? "Vacaciones" : "-"
                             : "-"}</small>
                       </span>
                       <div className="form-control-alternative text-center assistance-input text-center">
@@ -272,8 +264,8 @@ const MarcarAsistencia = () => {
                       </div>
                     </div>
                     {myTodayAssistance.asistencia ?
-                      parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) == 4  ?
-                        JSON.parse(myTodayAssistance.asistencia)[3]?.justificacion == "" ?
+                      parseInt(JSON.parse(myTodayAssistance.asistencia)[3]?.estado) === 4  ?
+                        JSON.parse(myTodayAssistance.asistencia)[3]?.justificacion === "" ?
                           <Button onClick={() => { setidAssistance(JSON.parse(myTodayAssistance.asistencia)[3]?.idAsistencia); toggleModalJustify(); }} className="mt-2" block color="warning" size="sm" type="button">
                             Justificar
                           </Button>
@@ -293,7 +285,7 @@ const MarcarAsistencia = () => {
       <ConfirmDialog
         question="¿Seguro de registrar asistencia?"
         showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setSendAssistance} />
-      <Justify setjustificacion={setjustificacion} justificacion={justificacion} showJustify={showJustify} toggleModal={toggleModalJustify} setSendJustification={setSendJustification} />
+      <Justify setjustificacion={setjustificacion} justificacion={justificacion} showJustify={showJustify} toggleModal={toggleModalJustify} handleJustify={handleJustify} />
     </>
   );
 };

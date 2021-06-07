@@ -19,13 +19,13 @@ import SearchAsociado from "components/Selects/SearchAsociado.js";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import {savePhoneCall} from '../../redux/actions/Llamada';
-import {showAssociated,clearShowAssociated} from '../../redux/actions/Asociado';
+import {showAssociated} from '../../redux/actions/Asociado';
 const RegistroLlamada = () => {
   const dispatch = useDispatch();
   const { associatedObject } = useSelector(({ asociado }) => asociado);
   const history = useHistory();
   const [idAsociado, setIdAsociado] = useState(null);
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const [formdata, setformdata] = useState(null);
   const [confirm, setComfirm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -42,7 +42,7 @@ const RegistroLlamada = () => {
     if(idAsociado!=null){
       dispatch(showAssociated(idAsociado));
     }
-  }, [idAsociado]);
+  }, [dispatch,idAsociado]);
 
   useEffect(() => {
     if (confirm) {
@@ -51,7 +51,7 @@ const RegistroLlamada = () => {
       history.push('/admin/llamadas');
     }
     setComfirm(false);
-  }, [confirm]);
+  }, [confirm,formdata,dispatch,history,idAsociado]);
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);

@@ -13,7 +13,7 @@ const INIT_STATE = {
   clientStatusActions:0,
 };
 
-export default (state = INIT_STATE, action) => {
+const states = (state = INIT_STATE, action) => {
   switch (action.type) {
     case LIST_CLIENTS: {
       return {
@@ -47,3 +47,4 @@ export default (state = INIT_STATE, action) => {
       return state;
   }
 }
+export default states;

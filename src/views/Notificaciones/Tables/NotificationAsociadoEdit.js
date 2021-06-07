@@ -32,7 +32,7 @@ export default function NotificationAsociadoEdit({ detail }) {
                                 <tr>
                                     {
                                         Object.values(Object.values(detail?.changes)[key])?.map((value, k) =>
-                                            <td key={k} scope="col">{value}</td>
+                                            <td key={k}>{value}</td>
                                         )
                                     }
                                 </tr>

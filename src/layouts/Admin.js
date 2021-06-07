@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
@@ -18,7 +18,6 @@ const Admin = (props) => {
   const dispatch = useDispatch();
   const mainContent = React.useRef(null);
   const location = useLocation();
-  const auth = useSelector(({ auth }) => auth.authUser);
   const token = useSelector(({ auth }) => auth.token);
   const [allowed, setallowed] = useState(false);
   const routesList = useSelector(({ commonData }) => commonData.routesList);
@@ -29,7 +28,7 @@ const Admin = (props) => {
         setallowed(true);
       }
       
-    if(routesList.length==0){
+    if(routesList.length===0){
       dispatch(listRoutes());
     }
       
@@ -39,13 +38,13 @@ const Admin = (props) => {
       mainContent.current.scrollTop = 0;
       
     }
-  }, [location]);
+  }, [location,token,routesList,dispatch]);
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {        
         return (
-          prop.routes=="" ? 
+          prop.routes==="" ? 
           <Route
             path={prop.layout + prop.path}
             component={components[prop.component]}
@@ -66,13 +65,13 @@ const Admin = (props) => {
   };
 
   const getBrandText = (path) => {
-    let rName = routesList.find(r=>r.layout+r.path==path);
+    let rName = routesList.find(r=>r.layout+r.path===path);
     if(rName){
       return rName.name;
     }
     let subroutes = [];
-    routesList.filter(r=>r.routes.length>0).map(sr=> {subroutes=subroutes.concat(JSON.parse(sr.routes))});
-    let srName = subroutes.find(r=>r.layout+r.path==path);
+    routesList.filter(r=>r.routes.length>0).map(sr=> subroutes=subroutes.concat(JSON.parse(sr.routes)));
+    let srName = subroutes.find(r=>r.layout+r.path===path);
     if(srName){
       return srName.name;
     }

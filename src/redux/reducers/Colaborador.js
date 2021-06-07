@@ -13,7 +13,7 @@ const INIT_STATE = {
   workerList: [],
   meta: {
     total: 0,
-    last_page:1,
+    last_page: 1,
   },
   workerStatusActions: 0,
   workerObject: [],
@@ -21,7 +21,7 @@ const INIT_STATE = {
   myFolders: [],
 };
 
-export default (state = INIT_STATE, action) => {
+const states = (state = INIT_STATE, action) => {
   switch (action.type) {
     case LIST_WORKER_FOLDERS: {
       return {
@@ -33,44 +33,45 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         workerList: action.payload,
-        meta:action.payload.meta
+        meta: action.payload.meta
       }
     }
     case WORKER_STATUS_ACTIONS: {
-        return {
-            ...state,
-            workerStatusActions:action.payload
-        }
+      return {
+        ...state,
+        workerStatusActions: action.payload
+      }
     }
     case ACTIVE_WORKER: {
       return {
-          ...state
-      }
-  }
-  case RESET_PASSWORD_WORKER: {
-    return {
         ...state
-    }
-}
-  case UPDATE_WORKER: {
-      return {
-          ...state
       }
-  }
-      
-  case GET_WORKER: {
-      return {
-          ...state,
-          workerObject : action.payload
-      }
-  }
-  case FILTER_WORKER: {
-    return {
-      ...state,
-      workersFilter: action.payload,
     }
-  }
+    case RESET_PASSWORD_WORKER: {
+      return {
+        ...state
+      }
+    }
+    case UPDATE_WORKER: {
+      return {
+        ...state
+      }
+    }
+
+    case GET_WORKER: {
+      return {
+        ...state,
+        workerObject: action.payload
+      }
+    }
+    case FILTER_WORKER: {
+      return {
+        ...state,
+        workersFilter: action.payload,
+      }
+    }
     default:
       return state;
   }
 }
+export default states;

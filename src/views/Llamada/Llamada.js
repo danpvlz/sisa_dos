@@ -8,9 +8,6 @@ import {
   Card,
   CardHeader,
   CardFooter,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
   Table,
   Container,
   Row,
@@ -28,7 +25,7 @@ import Loading from "../../components/Loaders/LoadingSmall";
 
 const Llamadas = () => {
   const dispatch = useDispatch();
-  const { phoneCallList, meta } = useSelector(({ llamada }) => llamada);
+  const { phoneCallList } = useSelector(({ llamada }) => llamada);
   const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [since, setsince] = useState(null);
@@ -46,46 +43,15 @@ const Llamadas = () => {
     } else {
       tsearch.idAsociado = idAsociado;
     }
-    setsearch(tsearch);
-    dispatch(listCalls(page, tsearch))
-  }, [idAsociado]);
-
-  useEffect(() => {
-    let tsearch = search;
     if (debCollector == null) {
       delete tsearch.debCollector;
     } else {
       tsearch.debCollector = debCollector;
     }
     setsearch(tsearch);
-    dispatch(listCalls(page, tsearch))
-  }, [debCollector]);
-
-  useEffect(() => {
-    let tsearch = search;
-    if (since == null) {
-      delete tsearch.since;
-    } else {
-      tsearch.since = since;
-    }
-    setsearch(tsearch);
-    dispatch(listCalls(page, tsearch))
-  }, [since]);
-
-  useEffect(() => {
-    let tsearch = search;
-    if (until == null) {
-      delete tsearch.until;
-    } else {
-      tsearch.until = until;
-    }
-    setsearch(tsearch);
-    dispatch(listCalls(page, tsearch))
-  }, [until]);
-
-  useEffect(() => {
     dispatch(listCalls(page, search))
-  }, [page])
+  }, [idAsociado,debCollector,since,until,page,search,dispatch]);
+
   return (
     <>
       <div className="header pb-8 pt-9 d-flex align-items-center">
@@ -136,7 +102,7 @@ const Llamadas = () => {
                             placeholder="filterMonth"
                             type="date"
                             onChange={(e) => {
-                              setsince(e.target.value == "" ? null : e.target.value)
+                              setsince(e.target.value === "" ? null : e.target.value)
                             }}
                           />
                         </FormGroup >
@@ -155,7 +121,7 @@ const Llamadas = () => {
                             placeholder="filterMonth"
                             type="date"
                             onChange={(e) => {
-                              setuntil(e.target.value == "" ? null : e.target.value)
+                              setuntil(e.target.value === "" ? null : e.target.value)
                             }}
                           />
                         </FormGroup >
@@ -184,7 +150,7 @@ const Llamadas = () => {
                       </Col>
                       <Col lg="2" className="text-right ml-auto">
                         <Button color="success" type="button" onClick={() => dispatch(exportPhoneCalls(search))}>
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
+                          <img alt="Botón exportar" src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -212,16 +178,16 @@ const Llamadas = () => {
                         {
                           phoneCallList?.data?.map((llamada, key) =>
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {llamada.asociado}
                               </td>
                               <td>
-                                {llamada.tipo == 1 ? "Empresa" : "Persona"}
+                                {llamada.tipo === 1 ? "Empresa" : "Persona"}
                               </td>
                               <td>
                                 <Badge color="" className="badge-dot mr-4">
-                                  <i className={llamada.estado == 1 ? "bg-success" : "bg-warning"} />
-                                  {llamada.estado == 1 ? "Activo" : "Retiro"}
+                                  <i className={llamada.estado === 1 ? "bg-success" : "bg-warning"} />
+                                  {llamada.estado === 1 ? "Activo" : "Retiro"}
                                 </Badge>
                               </td>
                               <td>

@@ -4,18 +4,24 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from "react-redux";
 import { filter } from "../../redux/actions/Participante";
 
+var timeOutFunc;
 export default function SearchParticipants({ setVal, val, searchVal }) {
   const dispatch = useDispatch();
   const filterParticipants = useSelector(({ participante }) => participante.filterParticipants);
   const handleInputChange = (inputValue, actionMeta) => {
-    inputValue.length >= 2 && dispatch(filter(inputValue));
+    if(inputValue.length >= 2){
+      clearTimeout(timeOutFunc);
+      timeOutFunc = setTimeout(() => {
+        dispatch(filter(inputValue));
+      }, 800);
+    }
   }
 
   useEffect(() => {
     if(searchVal!=null){
       dispatch(filter(searchVal,true));
     }
-  }, [searchVal]);
+  }, [searchVal,dispatch]);
 
   return (
     <Select
@@ -30,7 +36,7 @@ export default function SearchParticipants({ setVal, val, searchVal }) {
         setVal('idParticipante',newVal);
       }}
       options={filterParticipants} 
-      value={filterParticipants.find(c=>c.value==val)}
+      value={filterParticipants.find(c=>c.value===val)}
       />
   )
 }

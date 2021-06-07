@@ -24,7 +24,7 @@ import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
 import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { showEditAssociated,resetEditAssociated,update } from "../../redux/actions/Asociado";
+import { showEditAssociated, update } from "../../redux/actions/Asociado";
 
 const EditarAsociadoSA = (props) => {
   const dispatch = useDispatch();
@@ -32,7 +32,6 @@ const EditarAsociadoSA = (props) => {
   const [promotorSearched, setPromotorSearched] = useState(null);
   const [newPromotorName, setnewPromotorName] = useState(null);
   const [comiteGremial, setcomiteGremial] = useState(null);
-  const [cobrador, setcobrador] = useState(null);
   const [typeAssociated, setTypeAssociated] = useState(null);
   const [tipodocumentorepresentante, settipodocumentorepresentante] = useState(null);
   const [tipodocumentoadicional, settipodocumentoadicional] = useState(null);
@@ -47,17 +46,12 @@ const EditarAsociadoSA = (props) => {
   const history = useHistory();
 
   useEffect(() => {
-    if(props.location.state?.asociadoSelected){
-      if(associatedEditObject.length == 0){
-        dispatch(showEditAssociated(props.location.state?.asociadoSelected));
-      }
-    }else{
-      history.push('/admin/asociado-sa');
+    if (props?.match?.params?.id) {
+      dispatch(showEditAssociated(props.match.params.id));
+    } else {
+      history.push('/');
     }
-    return () => {
-      dispatch(resetEditAssociated());
-    }
-  }, []);
+  }, [props.match.params.id, history, dispatch]);
 
   useEffect(() => {
     associatedEditObject.asociado && setTypeAssociated(associatedEditObject.asociado.tipoAsociado);
@@ -81,30 +75,23 @@ const EditarAsociadoSA = (props) => {
   }, [associatedEditObject.comite]);
 
   useEffect(() => {
-    associatedEditObject.sector && setcobrador(associatedEditObject.sector.idSector);
-    return () => {
-      setcobrador(null);
-    }
-  }, [associatedEditObject.sector]);
-  
-  useEffect(() => {
     associatedEditObject.adicional && settipodocumentoadicional(associatedEditObject.adicional.tipoDoc);
     return () => {
       settipodocumentoadicional(null);
     }
   }, [associatedEditObject.adicional]);
-  
+
   useEffect(() => {
     associatedEditObject.representante && settipodocumentorepresentante(associatedEditObject.representante.tipoDoc);
     return () => {
       settipodocumentorepresentante(null);
     }
   }, [associatedEditObject.representante]);
-  
+
   useEffect(() => {
     associatedEditObject.persona && settipodocumentopersona(associatedEditObject.persona.tipoDocumento);
     associatedEditObject.persona && setsexo(associatedEditObject.persona.sexo);
-    
+
     return () => {
       settipodocumentopersona(null);
       setsexo(null);
@@ -132,15 +119,14 @@ const EditarAsociadoSA = (props) => {
       formData.tipodocumento_adicional = tipodocumentoadicional;
       formData.tipodocumento_persona = tipodocumentopersona;
       formData.sexo = sexo;
-      dispatch(update(props.location.state?.asociadoSelected,formData));
+      dispatch(update(associatedEditObject.asociado.idAsociado, formData));
       history.push('/admin/asociado-sa');
       //REGISTRAR
       setsendassociated(false);
       document.getElementById("form-save-associated").reset();
-    } else {
       setFormData(null);
     }
-  }, [sendassociated]);
+  }, [sendassociated, associatedEditObject, comiteGremial, formData, history, newPromotorName, promotorSearched, sexo, tipodocumentoadicional, tipodocumentopersona, tipodocumentorepresentante, typeAssociated, dispatch]);
 
   return (
     <>
@@ -149,9 +135,9 @@ const EditarAsociadoSA = (props) => {
       </div>
       {/* Page content */}
       <Container className="mt--7" fluid>
-      <ConfirmDialog
-        question="¿Seguro de actualizar datos del asociado?"
-        showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendassociated} />
+        <ConfirmDialog
+          question="¿Seguro de actualizar datos del asociado?"
+          showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendassociated} />
         <Row>
           <Col className="order-xl-1" xl="12">
             <Card className="bg-secondary shadow">
@@ -181,9 +167,9 @@ const EditarAsociadoSA = (props) => {
                               </label>
                               {
                                 associatedEditObject.promotor ?
-                                <SearchPromotor setVal={setPromotorSearched} setNew={setnewPromotorName} defaultVal={{value: associatedEditObject.promotor.idPromotor, label: associatedEditObject.promotor.nombresCompletos}} />
-                              :
-                              ""
+                                  <SearchPromotor setVal={setPromotorSearched} setNew={setnewPromotorName} defaultVal={{ value: associatedEditObject.promotor.idPromotor, label: associatedEditObject.promotor.nombresCompletos }} />
+                                  :
+                                  ""
                               }
                             </FormGroup>
                           </Col>
@@ -197,9 +183,9 @@ const EditarAsociadoSA = (props) => {
                               </label>
                               {
                                 associatedEditObject.comite ?
-                                <SearchComiteGremial setVal={setcomiteGremial} defaultVal={{value: associatedEditObject.comite.idComite,label:associatedEditObject.comite.nombre}} />
-                              :
-                              ""
+                                  <SearchComiteGremial setVal={setcomiteGremial} defaultVal={{ value: associatedEditObject.comite.idComite, label: associatedEditObject.comite.nombre }} />
+                                  :
+                                  ""
                               }
                             </FormGroup>
                           </Col>
@@ -213,15 +199,15 @@ const EditarAsociadoSA = (props) => {
                               </label>
                               {
                                 associatedEditObject.asociado ?
-                                <Select
-                                  placeholder="Seleccione..."
-                                  className="select-style"
-                                  name="typeAsociado"
-                                  onChange={(inputValue, actionMeta) => {
-                                    setTypeAssociated(inputValue.value);
-                                  }}
-                                  options={[{ value: 1, label: "Empresa" }, { value: 2, label: "Persona" }]} 
-                                  defaultValue={{value:associatedEditObject.asociado.tipoAsociado,label: associatedEditObject.asociado.tipoAsociado == 1 ? "Empresa":associatedEditObject.asociado.tipoAsociado == 2 ? "Persona":null}}
+                                  <Select
+                                    placeholder="Seleccione..."
+                                    className="select-style"
+                                    name="typeAsociado"
+                                    onChange={(inputValue, actionMeta) => {
+                                      setTypeAssociated(inputValue.value);
+                                    }}
+                                    options={[{ value: 1, label: "Empresa" }, { value: 2, label: "Persona" }]}
+                                    defaultValue={{ value: associatedEditObject.asociado.tipoAsociado, label: associatedEditObject.asociado.tipoAsociado === 1 ? "Empresa" : associatedEditObject.asociado.tipoAsociado === 2 ? "Persona" : null }}
                                   />
                                   :
                                   ""
@@ -278,808 +264,808 @@ const EditarAsociadoSA = (props) => {
                                 Cobrador
                               </label>
                               <br />
-                              <Input 
-                              value={
-                                associatedEditObject?.sector?.descripcion
-                              }
-                              disabled
+                              <Input
+                                value={
+                                  associatedEditObject?.sector?.descripcion
+                                }
+                                disabled
                               />
-                              
+
                             </FormGroup>
                           </Col>
                         </Row>
                       </div>
                     </Col>
                     {
-                      typeAssociated == 1 ?
-                      <>
-                        <Col lg="12">
-                          <hr className="my-4 " />
-                          <h6 className="heading-small text-muted mb-4">
-                            Empresa
+                      typeAssociated === 1 ?
+                        <>
+                          <Col lg="12">
+                            <hr className="my-4 " />
+                            <h6 className="heading-small text-muted mb-4">
+                              Empresa
                           </h6>
-                          <div className="pl-lg-4">
-                            <Row>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-ruc"
-                                  >
-                                    RUC*
+                            <div className="pl-lg-4">
+                              <Row>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-ruc"
+                                    >
+                                      RUC*
                                   </label>
-                                  <div className="d-flex">
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        type="text"
+                                        name="ruc"
+                                        innerRef={register({ required: typeAssociated === 1 })}
+                                        defaultValue={associatedEditObject?.empresa?.ruc}
+                                      />
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="4">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-city"
+                                    >
+                                      Razón social*
+                                  </label>
                                     <Input
                                       className="form-control-alternative"
                                       type="text"
-                                      name="ruc"
-                                      innerRef={register({ required: typeAssociated == 1 })}
-                                      defaultValue={associatedEditObject?.empresa?.ruc}
+                                      name="razonsocial"
+                                      innerRef={register({ required: typeAssociated === 1 })}
+                                      defaultValue={associatedEditObject?.empresa?.razonSocial}
                                     />
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                              <Col lg="4">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-city"
-                                  >
-                                    Razón social*
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="5">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Dirección fiscal*
                                   </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="text"
-                                    name="razonsocial"
-                                    innerRef={register({ required: typeAssociated == 1 })}
-                                    defaultValue={associatedEditObject?.empresa?.razonSocial}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="5">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Dirección fiscal*
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="text"
-                                    name="direccionfiscal"
-                                    innerRef={register({ required: typeAssociated == 1 })}
-                                    defaultValue={associatedEditObject?.empresa?.direccion}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Fundación
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="date"
-                                    name="fundacion"
-                                    innerRef={register({ required: false })}
-                                    defaultValue={associatedEditObject?.empresa?.fundacion}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="4">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Actividad*
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="text"
-                                    name="actividad"
-                                    innerRef={register({ required: typeAssociated == 1 })}
-                                    defaultValue={associatedEditObject?.empresa?.actividad}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="4">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Actividad secundaria
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="text"
-                                    name="actividad_secundaria"
-                                    innerRef={register({ required: false })}
-                                    defaultValue={associatedEditObject?.empresa?.actividadSecundaria}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Teléfono
-                                  </label>
-                                  <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
                                       type="text"
-                                      name="telefono_asociado"
-                                      innerRef={register({ required: false })}
-                                      defaultValue={associatedEditObject?.empresa?.telefonos}
+                                      name="direccionfiscal"
+                                      innerRef={register({ required: typeAssociated === 1 })}
+                                      defaultValue={associatedEditObject?.empresa?.direccion}
                                     />
-                                    <Button className="btn-icon d-none" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-plus" />
-                                      </span>
-                                    </Button>
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Correo
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Fundación
                                   </label>
-                                  <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      name="correo_asociado"
+                                      type="date"
+                                      name="fundacion"
                                       innerRef={register({ required: false })}
-                                      defaultValue={associatedEditObject?.empresa?.correos}
+                                      defaultValue={associatedEditObject?.empresa?.fundacion}
                                     />
-                                    <Button className="btn-icon d-none" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-plus" />
-                                      </span>
-                                    </Button>
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                            </Row>
-                          </div>
-                        </Col>
-                        <Col lg="12">
-                          <hr className="my-4 " />
-                          <h6 className="heading-small text-muted mb-4">
-                            Representante
-                          </h6>
-                          <div className="pl-lg-4">
-                            <Row>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-address"
-                                  >
-                                    Tipo de documento*
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="4">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Actividad*
                                   </label>
-                                  {
-                                    associatedEditObject.representante ?
+                                    <Input
+                                      className="form-control-alternative"
+                                      type="text"
+                                      name="actividad"
+                                      innerRef={register({ required: typeAssociated === 1 })}
+                                      defaultValue={associatedEditObject?.empresa?.actividad}
+                                    />
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="4">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Actividad secundaria
+                                  </label>
+                                    <Input
+                                      className="form-control-alternative"
+                                      type="text"
+                                      name="actividad_secundaria"
+                                      innerRef={register({ required: false })}
+                                      defaultValue={associatedEditObject?.empresa?.actividadSecundaria}
+                                    />
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Teléfono
+                                  </label>
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        type="text"
+                                        name="telefono_asociado"
+                                        innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.empresa?.telefonos}
+                                      />
+                                      <Button className="btn-icon d-none" size="sm" color="primary" type="button">
+                                        <span>
+                                          <i className="fa fa-plus" />
+                                        </span>
+                                      </Button>
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Correo
+                                  </label>
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        name="correo_asociado"
+                                        innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.empresa?.correos}
+                                      />
+                                      <Button className="btn-icon d-none" size="sm" color="primary" type="button">
+                                        <span>
+                                          <i className="fa fa-plus" />
+                                        </span>
+                                      </Button>
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                              </Row>
+                            </div>
+                          </Col>
+                          <Col lg="12">
+                            <hr className="my-4 " />
+                            <h6 className="heading-small text-muted mb-4">
+                              Representante
+                          </h6>
+                            <div className="pl-lg-4">
+                              <Row>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-address"
+                                    >
+                                      Tipo de documento*
+                                  </label>
+                                    {
+                                      associatedEditObject.representante ?
+                                        <Select
+                                          placeholder="Seleccione..."
+                                          className="select-style"
+                                          name="typeAsociado"
+                                          onChange={(inputValue, actionMeta) => {
+                                            settipodocumentorepresentante(inputValue.value);
+                                          }}
+                                          options={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }]}
+                                          defaultValue={{ value: associatedEditObject.representante.tipoDoc, label: associatedEditObject.representante.tipoDoc === 1 ? "DNI" : associatedEditObject.representante.tipoDoc === 6 ? "RUC" : associatedEditObject.representante.tipoDoc === 6 ? "Carnet de extranjería" : associatedEditObject.representante.tipoDoc === 4 ? "Pasaporte" : "" }}
+                                        />
+                                        :
+                                        ""
+                                    }
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Documento*
+                                  </label>
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        type="tel"
+                                        name="documento_representante"
+                                        innerRef={register({ required: typeAssociated === 1 })}
+                                        defaultValue={associatedEditObject?.representante?.documento}
+                                      />
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="12">
+                                  <Row >
+                                    <Col lg="4">
+                                      <FormGroup>
+                                        <label
+                                          className="form-control-label"
+                                          htmlFor="input-country"
+                                        >
+                                          Nombres*
+                                      </label>
+                                        <Input
+                                          className="form-control-alternative"
+                                          type="text"
+                                          name="nombres_representante"
+                                          innerRef={register({ required: typeAssociated === 1 })}
+                                          defaultValue={associatedEditObject?.representante?.nombres}
+                                        />
+                                      </FormGroup>
+                                    </Col>
+                                    <Col lg="4">
+                                      <FormGroup>
+                                        <label
+                                          className="form-control-label"
+                                          htmlFor="input-country"
+                                        >
+                                          Apellido paterno*
+                                      </label>
+                                        <Input
+                                          className="form-control-alternative"
+                                          type="text"
+                                          name="paterno_representante"
+                                          innerRef={register({ required: typeAssociated === 1 })}
+                                          defaultValue={associatedEditObject?.representante?.apellidoPaterno}
+                                        />
+                                      </FormGroup>
+                                    </Col>
+                                    <Col lg="4">
+                                      <FormGroup>
+                                        <label
+                                          className="form-control-label"
+                                          htmlFor="input-country"
+                                        >
+                                          Apellido materno*
+                                        </label>
+                                        <Input
+                                          className="form-control-alternative"
+                                          type="text"
+                                          name="materno_representante"
+                                          innerRef={register({ required: typeAssociated === 1 })}
+                                          defaultValue={associatedEditObject?.representante?.apellidoMaterno}
+                                        />
+                                      </FormGroup>
+                                    </Col>
+                                  </Row>
+
+                                </Col>
+
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Fecha de nacimiento
+                                  </label>
+                                    <Input
+                                      className="form-control-alternative"
+                                      type="date"
+                                      name="fechanacimiento_representante"
+                                      innerRef={register({ required: false })}
+                                      defaultValue={associatedEditObject?.representante?.fechaNacimiento}
+                                    />
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Cargo*
+                                  </label>
+                                    <Input
+                                      className="form-control-alternative"
+                                      type="text"
+                                      name="cargo_representante"
+                                      innerRef={register({ required: typeAssociated === 1 })}
+                                      defaultValue={associatedEditObject?.representante?.cargo}
+                                    />
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Teléfono
+                                  </label>
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        type="text"
+                                        name="telefono_representante"
+                                        innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.representante?.telefonos}
+                                      />
+                                      <Button className="btn-icon d-none" size="sm" color="primary" type="button">
+                                        <span>
+                                          <i className="fa fa-plus" />
+                                        </span>
+                                      </Button>
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Correo
+                                  </label>
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        name="correo_representante"
+                                        innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.representante?.email}
+                                      />
+                                      <Button className="btn-icon d-none" size="sm" color="primary" type="button">
+                                        <span>
+                                          <i className="fa fa-plus" />
+                                        </span>
+                                      </Button>
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                              </Row>
+                            </div>
+                          </Col>
+                          <Col lg="12">
+                            <hr className="my-4 " />
+                            <h6 className="heading-small text-muted mb-4">
+                              Contacto adicional <strong className="text-danger">(opcional)</strong>
+                            </h6>
+                            <div className="pl-lg-4">
+                              <Row>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-address"
+                                    >
+                                      Tipo de documento*
+                                  </label>
                                     <Select
                                       placeholder="Seleccione..."
                                       className="select-style"
                                       name="typeAsociado"
                                       onChange={(inputValue, actionMeta) => {
-                                        settipodocumentorepresentante(inputValue.value);
+                                        settipodocumentoadicional(inputValue.value);
                                       }}
-                                      options={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }]} 
-                                      defaultValue={{value:associatedEditObject.representante.tipoDoc,label:associatedEditObject.representante.tipoDoc==1?"DNI":associatedEditObject.representante.tipoDoc==6?"RUC":associatedEditObject.representante.tipoDoc==6?"Carnet de extranjería":associatedEditObject.representante.tipoDoc==4?"Pasaporte":""}}
-                                      />
-                                      :
-                                      ""
-                                  }
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Documento*
+                                      options={[{ value: 1, label: "DNI" }, { value: 2, label: "RUC" }, { value: 3, label: "Carnet de extranjería" }]}
+                                      defaultValue={{ value: associatedEditObject?.adicional?.tipoDoc, label: associatedEditObject?.adicional?.tipoDoc === 1 ? "DNI" : associatedEditObject?.adicional?.tipoDoc === 6 ? "RUC" : associatedEditObject?.adicional?.tipoDoc === 6 ? "Carnet de extranjería" : associatedEditObject?.adicional?.tipoDoc === 4 ? "Pasaporte" : "" }}
+                                    />
+
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Documento*
                                   </label>
-                                  <div className="d-flex">
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        type="tel"
+                                        name="documento_adicional"
+                                        innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.adicional?.documento}
+                                      />
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="12">
+                                  <Row >
+                                    <Col lg="4">
+                                      <FormGroup>
+                                        <label
+                                          className="form-control-label"
+                                          htmlFor="input-country"
+                                        >
+                                          Nombres*
+                                      </label>
+                                        <Input
+                                          className="form-control-alternative"
+                                          type="text"
+                                          name="nombres_adicional"
+                                          innerRef={register({ required: false })}
+                                          defaultValue={associatedEditObject?.adicional?.nombres}
+                                        />
+                                      </FormGroup>
+                                    </Col>
+                                    <Col lg="4">
+                                      <FormGroup>
+                                        <label
+                                          className="form-control-label"
+                                          htmlFor="input-country"
+                                        >
+                                          Apellido paterno*
+                                      </label>
+                                        <Input
+                                          className="form-control-alternative"
+                                          type="text"
+                                          name="paterno_adicional"
+                                          innerRef={register({ required: false })}
+                                          defaultValue={associatedEditObject?.adicional?.apellidoPaterno}
+                                        />
+                                      </FormGroup>
+                                    </Col>
+                                    <Col lg="4">
+                                      <FormGroup>
+                                        <label
+                                          className="form-control-label"
+                                          htmlFor="input-country"
+                                        >
+                                          Apellido materno*
+                                        </label>
+                                        <Input
+                                          className="form-control-alternative"
+                                          type="text"
+                                          name="materno_adicional"
+                                          innerRef={register({ required: false })}
+                                          defaultValue={associatedEditObject?.adicional?.apellidoMaterno}
+                                        />
+                                      </FormGroup>
+                                    </Col>
+                                  </Row>
+
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Fecha de nacimiento*
+                                  </label>
                                     <Input
                                       className="form-control-alternative"
-                                      type="tel"
-                                      name="documento_representante"
-                                      innerRef={register({ required: typeAssociated == 1 })}
-                                      defaultValue={associatedEditObject?.representante?.documento}
+                                      type="date"
+                                      name="fechanacimiento_adicional"
+                                      innerRef={register({ required: false })}
+                                      defaultValue={associatedEditObject?.adicional?.fechaNacimiento}
                                     />
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                              <Col lg="12">
-                                <Row >
-                                  <Col lg="4">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-country"
-                                      >
-                                        Nombres*
-                                      </label>
-                                      <Input
-                                        className="form-control-alternative"
-                                        type="text"
-                                        name="nombres_representante"
-                                        innerRef={register({ required: typeAssociated == 1 })}
-                                        defaultValue={associatedEditObject?.representante?.nombres}
-                                      />
-                                    </FormGroup>
-                                  </Col>
-                                  <Col lg="4">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-country"
-                                      >
-                                        Apellido paterno*
-                                      </label>
-                                      <Input
-                                        className="form-control-alternative"
-                                        type="text"
-                                        name="paterno_representante"
-                                        innerRef={register({ required: typeAssociated == 1 })}
-                                        defaultValue={associatedEditObject?.representante?.apellidoPaterno}
-                                      />
-                                    </FormGroup>
-                                  </Col>
-                                  <Col lg="4">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-country"
-                                      >
-                                        Apellido materno*
-                                        </label>
-                                      <Input
-                                        className="form-control-alternative"
-                                        type="text"
-                                        name="materno_representante"
-                                        innerRef={register({ required: typeAssociated == 1 })}
-                                        defaultValue={associatedEditObject?.representante?.apellidoMaterno}
-                                      />
-                                    </FormGroup>
-                                  </Col>
-                                </Row>
-                    
-                              </Col>
-                    
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Fecha de nacimiento
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Cargo*
                                   </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="date"
-                                    name="fechanacimiento_representante"
-                                    innerRef={register({ required: false })}
-                                    defaultValue={associatedEditObject?.representante?.fechaNacimiento}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Cargo*
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="text"
-                                    name="cargo_representante"
-                                    innerRef={register({ required: typeAssociated == 1 })}
-                                    defaultValue={associatedEditObject?.representante?.cargo}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Teléfono
-                                  </label>
-                                  <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
                                       type="text"
-                                      name="telefono_representante"
+                                      name="cargo_adicional"
                                       innerRef={register({ required: false })}
-                                      defaultValue={associatedEditObject?.representante?.telefonos}
+                                      defaultValue={associatedEditObject?.adicional?.cargo}
                                     />
-                                    <Button className="btn-icon d-none" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-plus" />
-                                      </span>
-                                    </Button>
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Correo
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Teléfono
                                   </label>
-                                  <div className="d-flex">
-                                    <Input
-                                      className="form-control-alternative"
-                                      name="correo_representante"
-                                      innerRef={register({ required: false })}
-                                      defaultValue={associatedEditObject?.representante?.email}
-                                    />
-                                    <Button className="btn-icon d-none" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-plus" />
-                                      </span>
-                                    </Button>
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                            </Row>
-                          </div>
-                        </Col>
-                        <Col lg="12">
-                          <hr className="my-4 " />
-                          <h6 className="heading-small text-muted mb-4">
-                            Contacto adicional <strong className="text-danger">(opcional)</strong>
-                          </h6>
-                          <div className="pl-lg-4">
-                            <Row>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-address"
-                                  >
-                                    Tipo de documento*
-                                  </label>
-                                  <Select
-                                    placeholder="Seleccione..."
-                                    className="select-style"
-                                    name="typeAsociado"
-                                    onChange={(inputValue, actionMeta) => {
-                                      settipodocumentoadicional(inputValue.value);
-                                    }}
-                                    options={[{ value: 1, label: "DNI" }, { value: 2, label: "RUC" }, { value: 3, label: "Carnet de extranjería" }]} 
-                                    defaultValue={{value:associatedEditObject?.adicional?.tipoDoc,label:associatedEditObject?.adicional?.tipoDoc==1?"DNI":associatedEditObject?.adicional?.tipoDoc==6?"RUC":associatedEditObject?.adicional?.tipoDoc==6?"Carnet de extranjería":associatedEditObject?.adicional?.tipoDoc==4?"Pasaporte":""}}
-                                    />
-                               
-                               </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Documento*
-                                  </label>
-                                  <div className="d-flex">
-                                    <Input
-                                      className="form-control-alternative"
-                                      type="tel"
-                                      name="documento_adicional"
-                                      innerRef={register({ required: false })}
-                                      defaultValue={associatedEditObject?.adicional?.documento}
-                                    />
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                              <Col lg="12">
-                                <Row >
-                                  <Col lg="4">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-country"
-                                      >
-                                        Nombres*
-                                      </label>
+                                    <div className="d-flex">
                                       <Input
                                         className="form-control-alternative"
                                         type="text"
-                                        name="nombres_adicional"
+                                        name="telefono_adicional"
                                         innerRef={register({ required: false })}
-                                        defaultValue={associatedEditObject?.adicional?.nombres}
+                                        defaultValue={associatedEditObject?.adicional?.telefonos}
                                       />
-                                    </FormGroup>
-                                  </Col>
-                                  <Col lg="4">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-country"
-                                      >
-                                        Apellido paterno*
-                                      </label>
+                                      <Button className="btn-icon d-none" size="sm" color="primary" type="button">
+                                        <span>
+                                          <i className="fa fa-plus" />
+                                        </span>
+                                      </Button>
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Correo
+                                  </label>
+                                    <div className="d-flex">
                                       <Input
                                         className="form-control-alternative"
-                                        type="text"
-                                        name="paterno_adicional"
+                                        name="correo_adicional"
                                         innerRef={register({ required: false })}
-                                        defaultValue={associatedEditObject?.adicional?.apellidoPaterno}
+                                        defaultValue={associatedEditObject?.adicional?.email}
                                       />
-                                    </FormGroup>
-                                  </Col>
-                                  <Col lg="4">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-country"
-                                      >
-                                        Apellido materno*
-                                        </label>
-                                      <Input
-                                        className="form-control-alternative"
-                                        type="text"
-                                        name="materno_adicional"
-                                        innerRef={register({ required: false })}
-                                        defaultValue={associatedEditObject?.adicional?.apellidoMaterno}
-                                      />
-                                    </FormGroup>
-                                  </Col>
-                                </Row>
-                    
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Fecha de nacimiento*
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="date"
-                                    name="fechanacimiento_adicional"
-                                    innerRef={register({ required: false })}
-                                    defaultValue={associatedEditObject?.adicional?.fechaNacimiento}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Cargo*
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="text"
-                                    name="cargo_adicional"
-                                    innerRef={register({ required: false })}
-                                    defaultValue={associatedEditObject?.adicional?.cargo}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Teléfono
-                                  </label>
-                                  <div className="d-flex">
-                                    <Input
-                                      className="form-control-alternative"
-                                      type="text"
-                                      name="telefono_adicional"
-                                      innerRef={register({ required: false })}
-                                      defaultValue={associatedEditObject?.adicional?.telefonos}
-                                    />
-                                    <Button className="btn-icon d-none" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-plus" />
-                                      </span>
-                                    </Button>
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Correo
-                                  </label>
-                                  <div className="d-flex">
-                                    <Input
-                                      className="form-control-alternative"
-                                      name="correo_adicional"
-                                      innerRef={register({ required: false })}
-                                      defaultValue={associatedEditObject?.adicional?.email}
-                                    />
-                                    <Button className="btn-icon d-none" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-plus" />
-                                      </span>
-                                    </Button>
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                            </Row>
-                          </div>
-                        </Col>
-                      </>
+                                      <Button className="btn-icon d-none" size="sm" color="primary" type="button">
+                                        <span>
+                                          <i className="fa fa-plus" />
+                                        </span>
+                                      </Button>
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                              </Row>
+                            </div>
+                          </Col>
+                        </>
                         :
-                        typeAssociated == 2 ?
-                        <Col lg="12">
-                          <hr className="my-4 " />
-                          <h6 className="heading-small text-muted mb-4">
-                            Persona
+                        typeAssociated === 2 ?
+                          <Col lg="12">
+                            <hr className="my-4 " />
+                            <h6 className="heading-small text-muted mb-4">
+                              Persona
                           </h6>
-                          <div className="pl-lg-4">
-                            <Row>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-address"
-                                  >
-                                    Tipo de documento*
+                            <div className="pl-lg-4">
+                              <Row>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-address"
+                                    >
+                                      Tipo de documento*
                                   </label>
-                                  <Select
-                                    placeholder="Seleccione..."
-                                    className="select-style"
-                                    name="typeAsociado"
-                                    onChange={(inputValue, actionMeta) => {
-                                      settipodocumentopersona(inputValue.value);
-                                    }}
-                                    options={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }]} 
-                                    defaultValue={{value:associatedEditObject?.persona?.tipoDocumento,label:associatedEditObject?.persona?.tipoDocumento==1?"DNI":associatedEditObject?.persona?.tipoDocumento==6?"RUC":associatedEditObject?.persona?.tipoDocumento==6?"Carnet de extranjería":associatedEditObject?.persona?.tipoDocumento==4?"Pasaporte":""}}
+                                    <Select
+                                      placeholder="Seleccione..."
+                                      className="select-style"
+                                      name="typeAsociado"
+                                      onChange={(inputValue, actionMeta) => {
+                                        settipodocumentopersona(inputValue.value);
+                                      }}
+                                      options={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }]}
+                                      defaultValue={{ value: associatedEditObject?.persona?.tipoDocumento, label: associatedEditObject?.persona?.tipoDocumento === 1 ? "DNI" : associatedEditObject?.persona?.tipoDocumento === 6 ? "RUC" : associatedEditObject?.persona?.tipoDocumento === 6 ? "Carnet de extranjería" : associatedEditObject?.persona?.tipoDocumento === 4 ? "Pasaporte" : "" }}
                                     />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Documento*
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Documento*
                                   </label>
-                                  <div className="d-flex">
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        type="tel"
+                                        name="documento_persona"
+                                        innerRef={register({ required: typeAssociated === 2 })}
+                                        defaultValue={associatedEditObject?.persona?.documento}
+                                      />
+                                      <Button className="btn-icon" size="sm" color="primary" type="button">
+                                        <span>
+                                          <i className="fa fa-search" />
+                                        </span>
+                                      </Button>
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="12">
+                                  <Row >
+                                    <Col lg="4">
+                                      <FormGroup>
+                                        <label
+                                          className="form-control-label"
+                                          htmlFor="input-country"
+                                        >
+                                          Nombres*
+                                      </label>
+                                        <Input
+                                          className="form-control-alternative"
+                                          type="text"
+                                          name="nombres_persona"
+                                          innerRef={register({ required: typeAssociated === 2 })}
+                                          defaultValue={associatedEditObject?.persona?.nombres ? associatedEditObject?.persona?.nombres : associatedEditObject?.persona?.nombresCompletos}
+                                        />
+                                      </FormGroup>
+                                    </Col>
+                                    <Col lg="4">
+                                      <FormGroup>
+                                        <label
+                                          className="form-control-label"
+                                          htmlFor="input-country"
+                                        >
+                                          Apellido paterno*
+                                      </label>
+                                        <Input
+                                          className="form-control-alternative"
+                                          type="text"
+                                          name="paterno_persona"
+                                          innerRef={register({ required: typeAssociated === 2 })}
+                                          defaultValue={associatedEditObject?.persona?.apellidoPaterno}
+                                        />
+                                      </FormGroup>
+                                    </Col>
+                                    <Col lg="4">
+                                      <FormGroup>
+                                        <label
+                                          className="form-control-label"
+                                          htmlFor="input-country"
+                                        >
+                                          Apellido materno*
+                                      </label>
+                                        <Input
+                                          className="form-control-alternative"
+                                          type="text"
+                                          name="materno_persona"
+                                          innerRef={register({ required: typeAssociated === 2 })}
+                                          defaultValue={associatedEditObject?.persona?.apellidoMaterno}
+                                        />
+                                      </FormGroup>
+                                    </Col>
+                                  </Row>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-address"
+                                    >
+                                      Sexo*
+                                  </label>
+                                    <Select
+                                      placeholder="Seleccione..."
+                                      className="select-style"
+                                      name="sexo"
+                                      onChange={(inputValue, actionMeta) => {
+                                        setsexo(inputValue.value);
+                                      }}
+                                      options={[{ value: 0, label: "Hombre" }, { value: 1, label: "Mujer" }]}
+                                      defaultValue={{ value: associatedEditObject?.persona?.sexo, label: associatedEditObject?.persona?.sexo === 1 ? "Mujer" : "Hombre" }}
+                                    />
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Fecha de nacimiento*
+                                  </label>
                                     <Input
                                       className="form-control-alternative"
-                                      type="tel"
-                                      name="documento_persona"
-                                      innerRef={register({ required: typeAssociated == 2 })}
-                                      defaultValue={associatedEditObject?.persona?.documento}
+                                      type="date"
+                                      name="fechanacimiento_persona"
+                                      innerRef={register({ required: typeAssociated === 2 })}
+                                      defaultValue={associatedEditObject?.persona?.fechaNacimiento}
                                     />
-                                    <Button className="btn-icon" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-search" />
-                                      </span>
-                                    </Button>
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                              <Col lg="12">
-                                <Row >
-                                  <Col lg="4">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-country"
-                                      >
-                                        Nombres*
-                                      </label>
-                                      <Input
-                                        className="form-control-alternative"
-                                        type="text"
-                                        name="nombres_persona"
-                                        innerRef={register({ required: typeAssociated == 2 })}
-                                        defaultValue={associatedEditObject?.persona?.nombres ? associatedEditObject?.persona?.nombres : associatedEditObject?.persona?.nombresCompletos}
-                                      />
-                                    </FormGroup>
-                                  </Col>
-                                  <Col lg="4">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-country"
-                                      >
-                                        Apellido paterno*
-                                      </label>
-                                      <Input
-                                        className="form-control-alternative"
-                                        type="text"
-                                        name="paterno_persona"
-                                        innerRef={register({ required: typeAssociated == 2 })}
-                                        defaultValue={associatedEditObject?.persona?.apellidoPaterno}
-                                      />
-                                    </FormGroup>
-                                  </Col>
-                                  <Col lg="4">
-                                    <FormGroup>
-                                      <label
-                                        className="form-control-label"
-                                        htmlFor="input-country"
-                                      >
-                                        Apellido materno*
-                                      </label>
-                                      <Input
-                                        className="form-control-alternative"
-                                        type="text"
-                                        name="materno_persona"
-                                        innerRef={register({ required: typeAssociated == 2 })}
-                                        defaultValue={associatedEditObject?.persona?.apellidoMaterno}
-                                      />
-                                    </FormGroup>
-                                  </Col>
-                                </Row>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-address"
-                                  >
-                                    Sexo*
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="6">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Dirección fiscal*
                                   </label>
-                                  <Select
-                                    placeholder="Seleccione..."
-                                    className="select-style"
-                                    name="sexo"
-                                    onChange={(inputValue, actionMeta) => {
-                                      setsexo(inputValue.value);
-                                    }}
-                                    options={[{ value: 0, label: "Hombre" }, { value: 1, label: "Mujer" }]} 
-                                    defaultValue={{ value: associatedEditObject?.persona?.sexo, label: associatedEditObject?.persona?.sexo==1 ? "Mujer" : "Hombre" }}
-                                    />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Fecha de nacimiento*
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="date"
-                                    name="fechanacimiento_persona"
-                                    innerRef={register({ required: typeAssociated == 2 })}
-                                    defaultValue={associatedEditObject?.persona?.fechaNacimiento}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="6">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Dirección fiscal*
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="text"
-                                    name="direccionfiscal_persona"
-                                    innerRef={register({ required: typeAssociated == 2 })}
-                                    defaultValue={associatedEditObject?.persona?.direccion}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="6">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Actividad/Profesión*
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="text"
-                                    name="actividad_persona"
-                                    innerRef={register({ required: typeAssociated == 2 })}
-                                    defaultValue={associatedEditObject?.persona?.actividad}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="6">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Actividad secundaria
-                                  </label>
-                                  <Input
-                                    className="form-control-alternative"
-                                    type="text"
-                                    name="actividad_secundaria_persona"
-                                    innerRef={register({ required: false })}
-                                    defaultValue={associatedEditObject?.persona?.actividadSecundaria}
-                                  />
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Teléfono
-                                    </label>
-                                  <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
                                       type="text"
-                                      name="telefono_persona"
-                                      innerRef={register({ required: false })}
-                                      defaultValue={associatedEditObject?.persona?.telefonos}
+                                      name="direccionfiscal_persona"
+                                      innerRef={register({ required: typeAssociated === 2 })}
+                                      defaultValue={associatedEditObject?.persona?.direccion}
                                     />
-                                    <Button className="btn-icon d-none d-none" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-plus" />
-                                      </span>
-                                    </Button>
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                              <Col lg="3">
-                                <FormGroup>
-                                  <label
-                                    className="form-control-label"
-                                    htmlFor="input-country"
-                                  >
-                                    Correo
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="6">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Actividad/Profesión*
                                   </label>
-                                  <div className="d-flex">
                                     <Input
                                       className="form-control-alternative"
-                                      name="correo_persona"
-                                      innerRef={register({ required: false })}
-                                      defaultValue={associatedEditObject?.persona?.correos}
+                                      type="text"
+                                      name="actividad_persona"
+                                      innerRef={register({ required: typeAssociated === 2 })}
+                                      defaultValue={associatedEditObject?.persona?.actividad}
                                     />
-                                    <Button className="btn-icon d-none d-none" size="sm" color="primary" type="button">
-                                      <span>
-                                        <i className="fa fa-plus" />
-                                      </span>
-                                    </Button>
-                                  </div>
-                                </FormGroup>
-                              </Col>
-                            </Row>
-                          </div>
-                        </Col>
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="6">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Actividad secundaria
+                                  </label>
+                                    <Input
+                                      className="form-control-alternative"
+                                      type="text"
+                                      name="actividad_secundaria_persona"
+                                      innerRef={register({ required: false })}
+                                      defaultValue={associatedEditObject?.persona?.actividadSecundaria}
+                                    />
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Teléfono
+                                    </label>
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        type="text"
+                                        name="telefono_persona"
+                                        innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.persona?.telefonos}
+                                      />
+                                      <Button className="btn-icon d-none d-none" size="sm" color="primary" type="button">
+                                        <span>
+                                          <i className="fa fa-plus" />
+                                        </span>
+                                      </Button>
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                                <Col lg="3">
+                                  <FormGroup>
+                                    <label
+                                      className="form-control-label"
+                                      htmlFor="input-country"
+                                    >
+                                      Correo
+                                  </label>
+                                    <div className="d-flex">
+                                      <Input
+                                        className="form-control-alternative"
+                                        name="correo_persona"
+                                        innerRef={register({ required: false })}
+                                        defaultValue={associatedEditObject?.persona?.correos}
+                                      />
+                                      <Button className="btn-icon d-none d-none" size="sm" color="primary" type="button">
+                                        <span>
+                                          <i className="fa fa-plus" />
+                                        </span>
+                                      </Button>
+                                    </div>
+                                  </FormGroup>
+                                </Col>
+                              </Row>
+                            </div>
+                          </Col>
                           :
                           ""
                     }
@@ -1087,13 +1073,13 @@ const EditarAsociadoSA = (props) => {
 
                   {
                     typeAssociated == null ?
-                    ""
-                    :
-                    <div className="text-center mt-5">
-                      <Button className="my-4 btn-block" color="primary" type="submit">
-                        Actualizar
+                      ""
+                      :
+                      <div className="text-center mt-5">
+                        <Button className="my-4 btn-block" color="primary" type="submit">
+                          Actualizar
                       </Button>
-                    </div>
+                      </div>
                   }
                 </Form>
               </CardBody>

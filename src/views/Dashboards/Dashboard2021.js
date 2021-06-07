@@ -7,7 +7,6 @@ import {
   Container,
   Row,
   Col,
-  UncontrolledTooltip,
 } from "reactstrap";
 // core components
 import NotAllowed from "./NotAllowed";
@@ -17,9 +16,11 @@ import { powerBiPass } from "../../redux/actions/Auth";
 const Dashboard2021 = () => {
   const dispatch = useDispatch();
   const { powerBiAuthorization } = useSelector(({ auth }) => auth);
+
   useEffect(() => {
     dispatch(powerBiPass());
-  }, [])
+  }, [dispatch]);
+
   return (
     <>
       <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
@@ -32,7 +33,7 @@ const Dashboard2021 = () => {
           <div className="col">
             <Card className="shadow">
                 {
-                  powerBiAuthorization == 1 ?
+                  powerBiAuthorization === 1 ?
                     <>
                       <CardHeader className="bg-transparent text-center">
                         <h3 className="mb-0">KPI 2021</h3>

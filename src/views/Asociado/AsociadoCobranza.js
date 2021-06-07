@@ -1,4 +1,4 @@
-import React, { useCallback,useState,useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { useHistory } from 'react-router-dom';
 import PaginationComponent from "react-reactstrap-pagination";
 
@@ -15,7 +15,6 @@ import {
   Table,
   Container,
   Row,
-  Button,
   Col,
   FormGroup,
   Input
@@ -30,11 +29,11 @@ import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
 import SearchPromotor from "components/Selects/SearchPromotorFilter";
 import SetCodigoModal from "components/Modals/SetCodigoModal.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listAssociated, exportAssociateds, status, assignCode, removeInProcess } from "../../redux/actions/Asociado";
+import { listAssociated, status, assignCode } from "../../redux/actions/Asociado";
 
 const Asociado = () => {
   const dispatch = useDispatch();
-  const { associatedList, meta, associatedStatusActions } = useSelector(({ asociado }) => asociado);
+  const { associatedList, associatedStatusActions } = useSelector(({ asociado }) => asociado);
   const [search, setsearch] = useState({});
   const [idAsociado, setIdAsociado] = useState(null);
   const [state, setState] = useState(null);
@@ -43,7 +42,6 @@ const Asociado = () => {
   const [page, setPage] = useState(1)
   //const asociados = require('../../data/asociado.json');
   const history = useHistory();
-  const handleNewAsociado = useCallback(() => history.push('/admin/nuevo-asociado'), [history]);
   const [selectedAsociado, setSelectedAsociado] = useState(null);
   const [showSetCodigo, setshowSetCodigo] = useState(false);
   const [codigo, setcodigo] = useState(null);
@@ -51,8 +49,6 @@ const Asociado = () => {
   const [confirm, setComfirm] = useState(false);
   
   const [loaded, setloaded] = useState(false);
-  const [question, setquestion] = useState('');
-  const [action, setAction] = useState(1);
   const [showConfirm, setShowConfirm] = useState(false);
 
   //Filters
@@ -73,10 +69,10 @@ const Asociado = () => {
   });
 
   useEffect(() => {
-    if (associatedStatusActions == 200) {
+    if (associatedStatusActions === 200) {
       dispatch(listAssociated(page,search));
     }
-  }, [associatedStatusActions]);
+  }, [associatedStatusActions,page,search,dispatch]);
 
   useEffect(() => {
     let tsearch=search;
@@ -114,7 +110,7 @@ const Asociado = () => {
       setsearch(tsearch);
       dispatch(listAssociated(page,tsearch))
     }
-  }, [idAsociado,debCollector,comiteGremial,since,promotorSearched,state,page]);
+  }, [idAsociado,debCollector,comiteGremial,since,promotorSearched,state,page,search,loaded,dispatch]);
 
   useEffect(() => {
     setloaded(true);
@@ -139,7 +135,7 @@ const Asociado = () => {
       setsendcodigo(false);
       setSelectedAsociado(null);
     }
-  }, [sendcodigo]);
+  }, [sendcodigo,codigo,selectedAsociado,dispatch]);
 
   const toggleModalConfirm = () => {
     setShowConfirm(!showConfirm);
@@ -147,15 +143,11 @@ const Asociado = () => {
 
   useEffect(() => {
     if (confirm) {
-      if (action == 1) {
-        dispatch(status(selectedAsociado)); //CAMBIAR DE ESTADO
-      } else {
-        dispatch(removeInProcess(selectedAsociado)); //ELIMINAR
-      }
+      dispatch(status(selectedAsociado)); //CAMBIAR DE ESTADO
       setComfirm(false);
       setSelectedAsociado(null);
     }
-  }, [confirm, action]);
+  }, [confirm,selectedAsociado,dispatch]);
 
   return (
     <>
@@ -174,29 +166,32 @@ const Asociado = () => {
           <div className="col">
             <Card className="shadow">
             <ConfirmDialog
-              question={question}
               showConfirm={showConfirm} toggleModal={toggleModalConfirm} setConfirm={setComfirm} />
               <CardHeader className="border-0 bg-secondary">
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">
                     <h3 className="mb-0">Asociados</h3>
-                    <Button
-                      className="btn-new-xl btn-icon d-none d-md-block"
-                      color="primary"
-                      onClick={handleNewAsociado}
-                    >
-                      <span className="btn-inner--icon">
+                    {
+                      /*
+                      <Button
+                        className="btn-new-xl btn-icon d-none d-md-block"
+                        color="primary"
+                        onClick={handleNewAsociado}
+                      >
+                        <span className="btn-inner--icon">
 
-                        <i className="fa fa-plus" />
-                      </span>
-                      <span className="btn-inner--text">Nuevo asociado</span>
-                    </Button>
-                    <Button
-                      className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
-                      onClick={handleNewAsociado}
-                    >
-                      <i className="fas fa-plus" />
-                    </Button>
+                          <i className="fa fa-plus" />
+                        </span>
+                        <span className="btn-inner--text">Nuevo asociado</span>
+                      </Button>
+                      <Button
+                        className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
+                        onClick={handleNewAsociado}
+                      >
+                        <i className="fas fa-plus" />
+                      </Button>
+                      */
+                    }
                   </Col>
                   <Col lg="12 ">
                     <hr className="my-4 " />
@@ -311,19 +306,19 @@ const Asociado = () => {
                   {
                   associatedList?.data?.map((asociado,key)=>
                   <tr key={key}>
-                  <td scope="row">
+                  <td>
                     {asociado.asociado}
                   </td>
                   <td className={!showHeaders.Documento ? 'd-none' : ''}>
                     {asociado.documento}
                   </td>
                   <td className={!showHeaders.Tipo ? 'd-none' : ''}>
-                    {asociado.tipoAsociado == 1 ? "Empresa" : "Persona"}
+                    {asociado.tipoAsociado === 1 ? "Empresa" : "Persona"}
                   </td>
                   <td className={!showHeaders.Estado ? 'd-none' : ''}>
                     <Badge color="" className="badge-dot mr-4">
-                      <i className={asociado.estado == 1 ? "bg-success" : asociado.estado == 2 ? "bg-info" : asociado.estado == 3 ? "bg-yellow" : "bg-warning"} />
-                      {asociado.estado == 1 ? "Activo" : asociado.estado == 2 ? "En proceso" : asociado.estado == 3 ? "Preactivo" : "Retiro"}
+                      <i className={asociado.estado === 1 ? "bg-success" : asociado.estado === 2 ? "bg-info" : asociado.estado === 3 ? "bg-yellow" : "bg-warning"} />
+                      {asociado.estado === 1 ? "Activo" : asociado.estado === 2 ? "En proceso" : asociado.estado === 3 ? "Preactivo" : "Retiro"}
                     </Badge>
                   </td>
                   <td className={!showHeaders.Importe ? 'd-none' : ''}>
@@ -360,8 +355,8 @@ const Asociado = () => {
                         className="d-flex"
                           onClick={()=>{
                             history.push({
-                              pathname: '/admin/editar-asociado',
-                              state: { asociadoSelected: asociado.idAsociado }});
+                              pathname: '/admin/ver-asociado/'+asociado.idAsociado
+                            });
                           }}
                         >
                            <i className="text-blue fa fa-eye" aria-hidden="true"></i> Ver más

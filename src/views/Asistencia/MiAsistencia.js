@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import classnames from "classnames";
 import PaginationComponent from "react-reactstrap-pagination";
 
@@ -38,13 +38,11 @@ const Asistencia = () => {
   const [pageDetail, setPageDetail] = useState(1);
   const [search, setsearch] = useState({});
   const [month, setmonth] = useState(null);
-  const [showDetail, setShowDetail] = useState(false);
 
   const [maxdatejustification, setmaxdatejustification] = useState(new Date().toISOString().slice(0, 10));
   const [idAssistance, setidAssistance] = useState(0);
   const [showJustify, setShowJustify] = useState(false);
   const [justificacion, setjustificacion] = useState("")
-  const [sendJustification, setSendJustification] = useState(false);
 
   useEffect(() => {
     let dd = new Date();
@@ -63,41 +61,26 @@ const Asistencia = () => {
     dispatch(myAssistance(page, search));
     dispatch(myAssistanceDetail(page, search));
     dispatch(indicators(search));
-  }, [month]);
-
-  useEffect(() => {
-    dispatch(myAssistance(page, search));
-  }, [page]);
-
-  useEffect(() => {
-    dispatch(myAssistanceDetail(pageDetail, search));
-  }, [pageDetail]);
-
-  const toggleModal = () => {
-    setShowDetail(!showDetail);
-  };
+  }, [month,page,pageDetail,search,dispatch]);
 
   const toggleModalJustify = () => {
     setShowJustify(!showJustify);
   };
 
-  useEffect(() => {
-    if (sendJustification) {
-      //REGISTRAR
-      var fData = {
-        "idAsistencia": idAssistance,
-        "justification": justificacion
-      }
-      dispatch(saveJustification(fData))
-      //REGISTRAR
-      setSendJustification(false);
-      setidAssistance(0);
-      setjustificacion("");
-      dispatch(myAssistance(page, search));
-      dispatch(myAssistanceDetail(page, search));
-      dispatch(indicators(search));
+  const handleJustify = () => {
+    //REGISTRAR
+    var fData = {
+      "idAsistencia": idAssistance,
+      "justification": justificacion
     }
-  }, [sendJustification])
+    dispatch(saveJustification(fData))
+    //REGISTRAR
+    setidAssistance(0);
+    setjustificacion("");
+    dispatch(myAssistance(page, search));
+    dispatch(myAssistanceDetail(page, search));
+    dispatch(indicators(search));
+  }
 
   const [state, setState] = useState({ tabs: 1 });
   const toggleNavs = (e, state, index) => {
@@ -135,7 +118,7 @@ const Asistencia = () => {
                         placeholder="filterMonth"
                         type="month"
                         onChange={(e) => {
-                          setmonth(e.target.value == "" ? null : e.target.value)
+                          setmonth(e.target.value === "" ? null : e.target.value)
                         }}
                       />
                     </FormGroup >
@@ -231,8 +214,8 @@ const Asistencia = () => {
                                     <Badge
                                       id={`tooltip_in_fe_${key}`}
                                       data-placement="top"
-                                      className={parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 4 ? "bg-yellow text-default" : ""}
-                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 4 ? "yellow" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 5 ? "default" : "info"}>
+                                      className={parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 4 ? "yellow" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 5 ? "default" : "info"}>
                                       {JSON.parse(asistencia.asistencia)[0].hora}
                                     </Badge>
                                     <UncontrolledTooltip
@@ -240,15 +223,15 @@ const Asistencia = () => {
                                       placement="top"
                                       target={`tooltip_in_fe_${key}`}
                                     >
-                                      {parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) == 5 ? "Compensó" : "Vacaciones"}
+                                      {parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[0].estado) === 5 ? "Compensó" : "Vacaciones"}
                                     </UncontrolledTooltip>
                                   </td>
                                   <td>
                                     <Badge
                                       id={`tooltip_in_fs_${key}`}
                                       data-placement="top"
-                                      className={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "bg-yellow text-default" : ""}
-                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "default" : "info"}>
+                                      className={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 5 ? "default" : "info"}>
                                       {JSON.parse(asistencia.asistencia)[1]?.hora}
                                     </Badge>
                                     <UncontrolledTooltip
@@ -256,15 +239,15 @@ const Asistencia = () => {
                                       placement="top"
                                       target={`tooltip_in_fs_${key}`}
                                     >
-                                      {parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) == 5 ? "Compensó" : "Vacaciones"}
+                                      {parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[1]?.estado) === 5 ? "Compensó" : "Vacaciones"}
                                     </UncontrolledTooltip>
                                   </td>
                                   <td>
                                     <Badge
                                       id={`tooltip_in_se_${key}`}
                                       data-placement="top"
-                                      className={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "bg-yellow text-default" : ""}
-                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "default" : "info"}>
+                                      className={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 5 ? "default" : "info"}>
                                       {JSON.parse(asistencia.asistencia)[2]?.hora}
                                     </Badge>
                                     <UncontrolledTooltip
@@ -272,15 +255,15 @@ const Asistencia = () => {
                                       placement="top"
                                       target={`tooltip_in_se_${key}`}
                                     >
-                                      {parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) == 5 ? "Compensó" : "Vacaciones"}
+                                      {parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[2]?.estado) === 5 ? "Compensó" : "Vacaciones"}
                                     </UncontrolledTooltip>
                                   </td>
                                   <td>
                                     <Badge
                                       id={`tooltip_in_se_${key}`}
                                       data-placement="top"
-                                      className={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "bg-yellow text-default" : ""}
-                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "default" : "info"}>
+                                      className={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 1 ? "success" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 2 ? "warning" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 3 ? "danger" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 4 ? "default" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 5 ? "default" : "info"}>
                                       {JSON.parse(asistencia.asistencia)[3]?.hora}
                                     </Badge>
                                     <UncontrolledTooltip
@@ -288,7 +271,7 @@ const Asistencia = () => {
                                       placement="top"
                                       target={`tooltip_in_se_${key}`}
                                     >
-                                      {parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) == 5 ? "Compensó" : "Vacaciones"}
+                                      {parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 1 ? "Normal" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 2 ? "Tardanza" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 3 ? "Falta" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 4 ? "Salió temprano" : parseInt(JSON.parse(asistencia.asistencia)[3]?.estado) === 5 ? "Compensó" : "Vacaciones"}
                                     </UncontrolledTooltip>
                                   </td>
                                   <td className="text-center">
@@ -374,14 +357,14 @@ const Asistencia = () => {
                                     {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][new Date(asistencia.fecha).getDay()]}
                                   </td>
                                   <td>
-                                    {asistencia.tipo == 1 ? "Entrada" : "Salida"}
+                                    {asistencia.tipo === 1 ? "Entrada" : "Salida"}
                                   </td>
                                   <td>
                                     <Badge
                                       id={`tooltip_in_se_${key}`}
                                       data-placement="top"
-                                      className={parseInt(asistencia.estado) == 4 ? "bg-yellow text-default" : ""}
-                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) == 1 ? "success" : parseInt(asistencia.estado) == 2 ? "warning" : parseInt(asistencia.estado) == 3 ? "danger" : parseInt(asistencia.estado) == 4 ? "default" : parseInt(asistencia.estado) == 5 ? "default" : "info"}>
+                                      className={parseInt(asistencia.estado) === 4 ? "bg-yellow text-default" : ""}
+                                      type="button" style={{ marginRight: '.5rem', fontSize: '.8rem' }} color={parseInt(asistencia.estado) === 1 ? "success" : parseInt(asistencia.estado) === 2 ? "warning" : parseInt(asistencia.estado) === 3 ? "danger" : parseInt(asistencia.estado) === 4 ? "default" : parseInt(asistencia.estado) === 5 ? "default" : "info"}>
                                       {asistencia.hora}
                                     </Badge>
                                     <UncontrolledTooltip
@@ -389,7 +372,7 @@ const Asistencia = () => {
                                       placement="top"
                                       target={`tooltip_in_se_${key}`}
                                     >
-                                      {parseInt(asistencia.estado) == 1 ? "Normal" : parseInt(asistencia.estado) == 2 ? "Tardanza" : parseInt(asistencia.estado) == 3 ? "Falta" : parseInt(asistencia.estado) == 4 ? "Salió temprano" : parseInt(asistencia.estado) == 5 ? "Compensó" : "Vacaciones"}
+                                      {parseInt(asistencia.estado) === 1 ? "Normal" : parseInt(asistencia.estado) === 2 ? "Tardanza" : parseInt(asistencia.estado) === 3 ? "Falta" : parseInt(asistencia.estado) === 4 ? "Salió temprano" : parseInt(asistencia.estado) === 5 ? "Compensó" : "Vacaciones"}
                                     </UncontrolledTooltip>
                                   </td>
                                   <td className="text-center">
@@ -402,9 +385,9 @@ const Asistencia = () => {
                                     {asistencia.justificacion == null ?
                                       asistencia.fecha >= maxdatejustification &&
                                         (
-                                          (parseInt(asistencia.tipo) == 1 && (parseInt(asistencia.estado) == 2 || parseInt(asistencia.estado) == 3))
+                                          (parseInt(asistencia.tipo) === 1 && (parseInt(asistencia.estado) === 2 || parseInt(asistencia.estado) === 3))
                                           ||
-                                          (parseInt(asistencia.tipo) == 2 && parseInt(asistencia.estado) == 4)
+                                          (parseInt(asistencia.tipo) === 2 && parseInt(asistencia.estado) === 4)
                                         )
                                         ?
                                         <Button onClick={() => { setidAssistance(asistencia.idAsistencia); toggleModalJustify(); }} className="mt-2" block color="warning" size="sm" type="button">
@@ -443,7 +426,7 @@ const Asistencia = () => {
           </div>
         </Row>
       </Container>
-      <Justify setjustificacion={setjustificacion} justificacion={justificacion} showJustify={showJustify} toggleModal={toggleModalJustify} setSendJustification={setSendJustification} />
+      <Justify setjustificacion={setjustificacion} justificacion={justificacion} showJustify={showJustify} toggleModal={toggleModalJustify} handleJustify={handleJustify} />
     </>
   );
 };

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import classnames from "classnames";
 import Chart from "chart.js";
-import { Bar, HorizontalBar,Pie } from "react-chartjs-2";
+import { Bar, HorizontalBar } from "react-chartjs-2";
 // reactstrap components
 import {
-  Button,
   Card,
   CardHeader,
   CardBody,
@@ -20,13 +18,11 @@ import {
   chartOptions,
   parseOptions,
   chartExample1,
-  chartExample2,
-  chartExample3,
   chartExample4
 } from "variables/charts.js";
 
 import { useDispatch, useSelector } from "react-redux";
-import { loadDashboard, listbysector } from "../../redux/actions/Cuenta";
+import { loadDashboard } from "../../redux/actions/Cuenta";
 const months=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const Index = (props) => {
   const dispatch = useDispatch();
@@ -42,7 +38,7 @@ const Index = (props) => {
 
   useEffect(() => {
     dispatch(loadDashboard());
-  }, [])
+  }, [dispatch])
 
   const handleClickLine=(evt, element) => {
     if (element.length > 0) {

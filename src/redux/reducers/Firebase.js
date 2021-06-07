@@ -1,6 +1,6 @@
 import {
-    NOTIFICATIONS_LIST,
-    LOADED_OLD_NOTIFICATIONS,
+  NOTIFICATIONS_LIST,
+  LOADED_OLD_NOTIFICATIONS,
 } from "../ActionTypes";
 
 const INIT_STATE = {
@@ -8,16 +8,16 @@ const INIT_STATE = {
   loadedOldNotifications: false,
 };
 
-export default (state = INIT_STATE, action) => {
+const states = (state = INIT_STATE, action) => {
   switch (action.type) {
-    case NOTIFICATIONS_LIST:{
+    case NOTIFICATIONS_LIST: {
       return {
         ...state,
         notifications: action.payload,
         loadedOldNotifications: true,
       };
     }
-    case LOADED_OLD_NOTIFICATIONS:{
+    case LOADED_OLD_NOTIFICATIONS: {
       return {
         ...state,
         loadedOldNotifications: action.payload,
@@ -27,3 +27,4 @@ export default (state = INIT_STATE, action) => {
       return state;
   }
 }
+export default states;

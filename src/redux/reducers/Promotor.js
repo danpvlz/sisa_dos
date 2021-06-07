@@ -6,7 +6,7 @@ import {
     promotorFilter:[],
   };
   
-  export default (state = INIT_STATE, action) => {
+  const states = (state = INIT_STATE, action) => {
     switch (action.type) {
       case FILTER_PROMOTOR: {
         return {
@@ -19,3 +19,4 @@ import {
     }
   }
   
+  export default states;

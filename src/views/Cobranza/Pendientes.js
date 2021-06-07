@@ -1,6 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
-
+import React, { useState, useEffect } from "react";
 // reactstrap components
 import {
   Badge,
@@ -30,9 +28,6 @@ const EstadoCuenta = () => {
   const dispatch = useDispatch();
   const { pendingsList, pendingsIndicators } = useSelector(({ cuenta }) => cuenta);
   const { loading } = useSelector(({ commonData }) => commonData);
-  const history = useHistory();
-  const handleNew = useCallback(() => history.push('/admin/registro-emision'), [history]);
-  const [page, setPage] = useState(1);
   const [search, setsearch] = useState({ "fecha": new Date().toISOString().substring(0, 10) });
   const [month, setmonth] = useState(null);
   const [idAsociado, setidAsociado] = useState(null);
@@ -42,52 +37,35 @@ const EstadoCuenta = () => {
 
   useEffect(() => {
     let tsearch = search;
+
     if (idAsociado == null) {
       delete tsearch.idAsociado;
     } else {
       tsearch.idAsociado = idAsociado;
     }
-    if (load) {
-      setsearch(tsearch);
-      dispatch(listPendings(page, search));
-      dispatch(indicatorsPendings(search));
-    }
-  }, [idAsociado]);
 
-  useEffect(() => {
-    let tsearch = search;
     if (debCollector == null) {
       delete tsearch.debCollector;
     } else {
       tsearch.debCollector = debCollector;
     }
-    if (load) {
-      setsearch(tsearch);
-      dispatch(listPendings(page, search));
-      dispatch(indicatorsPendings(search));
-    }
-  }, [debCollector]);
-
-  useEffect(() => {
-    let tsearch = search;
     if (month == null) {
       tsearch.fecha = new Date().toISOString().substring(0, 10);
     } else {
       tsearch.fecha = month;
     }
+
     if (load) {
       setsearch(tsearch);
-      dispatch(listPendings(page, search));
+      dispatch(listPendings(1, search));
       dispatch(indicatorsPendings(search));
+    }else{
+      dispatch(indicatorsPendings(search));
+      dispatch(listPendings(1, search));
+      setload(true);
     }
-  }, [month]);
-
-  useEffect(() => {
-    dispatch(indicatorsPendings(search));
-    dispatch(listPendings(page, search));
-    setload(true);
-  }, [page])
-
+  }, [idAsociado,debCollector,month,load,search,dispatch]);
+  
   return (
     <>
       <PendingsHeader
@@ -125,7 +103,7 @@ const EstadoCuenta = () => {
                             type="date"
                             defaultValue={new Date().toISOString().substring(0, 10)}
                             onChange={(e) => {
-                              setmonth(e.target.value == "" ? null : e.target.value);
+                              setmonth(e.target.value === "" ? null : e.target.value);
                             }}
                           />
                         </FormGroup >
@@ -154,7 +132,7 @@ const EstadoCuenta = () => {
                       </Col>
                       <Col lg="1" className="text-right my-auto ml-auto d-none">
                         <Button color="success" type="button">
-                          <img src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
+                          <img alt="Botón exportar" src={require("../../assets/img/theme/excel_export.png").default} style={{ height: "20px" }} />
                         </Button>
                       </Col>
                     </Row>
@@ -183,7 +161,7 @@ const EstadoCuenta = () => {
                           pendingsList?.data?.map((cuenta, key) =>
 
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {cuenta.fechaEmision}
                               </td>
                               <td>
@@ -197,8 +175,8 @@ const EstadoCuenta = () => {
                               </td>
                               <td>
                                 <Badge color="" className="badge-dot mr-4">
-                                  <i className={cuenta.estado == 1 ? "bg-info" : cuenta.estado == 2 ? "bg-success" : "bg-danger"} />
-                                  {cuenta.estado == 1 ? "Por cancelar" : cuenta.estado == 2 ? "Cancelada" : "Anulada"}
+                                  <i className={cuenta.estado === 1 ? "bg-info" : cuenta.estado === 2 ? "bg-success" : "bg-danger"} />
+                                  {cuenta.estado === 1 ? "Por cancelar" : cuenta.estado === 2 ? "Cancelada" : "Anulada"}
                                 </Badge>
                               </td>
                               <td>

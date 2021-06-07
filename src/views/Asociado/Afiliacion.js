@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
 
 // reactstrap components
 import {
   Button,
   Card,
-  CardHeader,
   CardBody,
   FormGroup,
   Form,
   Input,
-  Container,
   Row,
   Col,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
 } from "reactstrap";
 import Select from 'react-select';
 // core components
@@ -47,8 +41,6 @@ const Afiliacion = () => {
   const [formData, setFormData] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [sendassociated, setsendassociated] = useState(false);
-
-  const history = useHistory();
 
   const { rucSearched, dniSearched } = useSelector(({ asociado }) => asociado);
   const [searchedDoc, setsearchedDoc] = useState(1); //1 Persona dni 2 Persona ruc
@@ -96,7 +88,7 @@ const Afiliacion = () => {
       default:
         break;
     }
-  }, [rucSearched,dniSearched]);
+  }, [rucSearched,dniSearched]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -112,7 +104,7 @@ const Afiliacion = () => {
       dispatch(resetSearchRuc());
       dispatch(resetSearchDni());
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (sendassociated) {
@@ -126,14 +118,12 @@ const Afiliacion = () => {
       formData.tipodocumento_persona = tipodocumentopersona;
       formData.sexo = sexo;
       dispatch(newAfiliation(formData))
-      //history.push('/admin/asociado');
       //REGISTRAR
       setsendassociated(false);
       document.getElementById("form-save-associated").reset();
-    } else {
       setFormData(null);
     }
-  }, [sendassociated]);
+  }, [sendassociated,comiteGremial,newPromotorName,promotorSearched,sexo,tipodocumentoadicional,tipodocumentopersona,tipodocumentorepresentante,typeAssociated,formData,dispatch]);
   return (
     <>
     <ConfirmDialog
@@ -210,7 +200,7 @@ const Afiliacion = () => {
                       </div>
                     </Col>
                     {
-                      typeAssociated == 1 ?
+                      typeAssociated  ===  1 ?
                       <>
                         <Col lg="12">
                           <hr className="my-4 " />
@@ -233,7 +223,7 @@ const Afiliacion = () => {
                                       type="text"
                                       name="ruc"
                                       id="ruc"
-                                      innerRef={register({ required: typeAssociated == 1 })}
+                                      innerRef={register({ required: typeAssociated  ===  1 })}
                                     />
                                     <Button className="btn-icon" size="sm" color="primary" type="button" 
                                     onClick={()=>{
@@ -265,7 +255,7 @@ const Afiliacion = () => {
                                     className="form-control-alternative"
                                     type="text"
                                     name="razonsocial"
-                                    innerRef={register({ required: typeAssociated == 1 })}
+                                    innerRef={register({ required: typeAssociated  ===  1 })}
                                     defaultValue={searchCompany ? searchCompany?.nombre_o_razon_social : ''}
                                   />
                                 </FormGroup>
@@ -282,7 +272,7 @@ const Afiliacion = () => {
                                     className="form-control-alternative"
                                     type="text"
                                     name="direccionfiscal"
-                                    innerRef={register({ required: typeAssociated == 1 })}
+                                    innerRef={register({ required: typeAssociated  ===  1 })}
                                     defaultValue={searchCompany ? searchCompany?.direccion : ''}
                                   />
                                 </FormGroup>
@@ -299,7 +289,7 @@ const Afiliacion = () => {
                                     className="form-control-alternative"
                                     type="date"
                                     name="fundacion"
-                                    innerRef={register({ required: typeAssociated == 1 })}
+                                    innerRef={register({ required: typeAssociated  ===  1 })}
                                   />
                                 </FormGroup>
                               </Col>
@@ -315,7 +305,7 @@ const Afiliacion = () => {
                                     className="form-control-alternative"
                                     type="text"
                                     name="actividad"
-                                    innerRef={register({ required: typeAssociated == 1 })}
+                                    innerRef={register({ required: typeAssociated  ===  1 })}
                                   />
                                 </FormGroup>
                               </Col>
@@ -407,14 +397,14 @@ const Afiliacion = () => {
                                       type="text"
                                       name="documento_representante"
                                       id="documento_representante"
-                                      innerRef={register({ required: typeAssociated == 1 })}
+                                      innerRef={register({ required: typeAssociated  ===  1 })}
                                     />
                                     {
-                                      (tipodocumentorepresentante==1) &&
+                                      (tipodocumentorepresentante === 1) &&
                                       <Button className="btn-icon" size="sm" color="primary" type="button" 
                                       onClick={()=>{
                                         setloading({...loading,rep: true}); 
-                                        if(tipodocumentorepresentante==1){
+                                        if(tipodocumentorepresentante === 1){
                                           setsearchedDoc(2);
                                           dispatch(searchDni(document.getElementById('documento_representante').value));
                                         }else{
@@ -450,7 +440,7 @@ const Afiliacion = () => {
                                         className="form-control-alternative"
                                         type="text"
                                         name="nombres_representante"
-                                        innerRef={register({ required: typeAssociated == 1 })}
+                                        innerRef={register({ required: typeAssociated  ===  1 })}
                                         defaultValue={searchRepresentante && searchRepresentante.nombres}
                                       />
                                     </FormGroup>
@@ -467,7 +457,7 @@ const Afiliacion = () => {
                                         className="form-control-alternative"
                                         type="text"
                                         name="paterno_representante"
-                                        innerRef={register({ required: typeAssociated == 1 })}
+                                        innerRef={register({ required: typeAssociated  ===  1 })}
                                         defaultValue={searchRepresentante && searchRepresentante.apellido_paterno}
                                       />
                                     </FormGroup>
@@ -484,7 +474,7 @@ const Afiliacion = () => {
                                         className="form-control-alternative"
                                         type="text"
                                         name="materno_representante"
-                                        innerRef={register({ required: typeAssociated == 1 })}
+                                        innerRef={register({ required: typeAssociated  ===  1 })}
                                         defaultValue={searchRepresentante && searchRepresentante.apellido_materno}
                                       />
                                     </FormGroup>
@@ -522,7 +512,7 @@ const Afiliacion = () => {
                                     className="form-control-alternative"
                                     type="text"
                                     name="cargo_representante"
-                                    innerRef={register({ required: typeAssociated == 1 })}
+                                    innerRef={register({ required: typeAssociated  ===  1 })}
                                   />
                                 </FormGroup>
                               </Col>
@@ -617,11 +607,11 @@ const Afiliacion = () => {
                                       innerRef={register({ required: false })}
                                     />
                                     {
-                                      (tipodocumentoadicional==1) &&
+                                      (tipodocumentoadicional === 1) &&
                                       <Button className="btn-icon" size="sm" color="primary" type="button" 
                                       onClick={()=>{
                                         setloading({...loading,adi: true});  
-                                        if(tipodocumentoadicional==1){
+                                        if(tipodocumentoadicional === 1){
                                           setsearchedDoc(4);
                                           dispatch(searchDni(document.getElementById('documento_adicional').value));
                                         }else{
@@ -783,7 +773,7 @@ const Afiliacion = () => {
                         </Col>
                       </>
                         :
-                        typeAssociated == 2 ?
+                        typeAssociated  ===  2 ?
                         <Col lg="12">
                           <hr className="my-4 " />
                           <h6 className="heading-small text-muted mb-4">
@@ -823,14 +813,14 @@ const Afiliacion = () => {
                                       type="text"
                                       name="documento_persona"
                                       id="documento_persona"
-                                      innerRef={register({ required: typeAssociated == 2 })}
+                                      innerRef={register({ required: typeAssociated  ===  2 })}
                                     />
                                     {
-                                      (tipodocumentopersona==1) &&
+                                      (tipodocumentopersona === 1) &&
                                       <Button className="btn-icon" size="sm" color="primary" type="button" 
                                       onClick={()=>{
                                         setloading({...loading,persona: true});  
-                                        if(tipodocumentopersona==1){
+                                        if(tipodocumentopersona === 1){
                                           setsearchedDoc(6);
                                           dispatch(searchDni(document.getElementById('documento_persona').value));
                                         }else{
@@ -866,7 +856,7 @@ const Afiliacion = () => {
                                         className="form-control-alternative"
                                         type="text"
                                         name="nombres_persona"
-                                        innerRef={register({ required: typeAssociated == 2 })}
+                                        innerRef={register({ required: typeAssociated  ===  2 })}
                                         defaultValue={searchPersona && searchPersona.nombres}
                                       />
                                     </FormGroup>
@@ -883,7 +873,7 @@ const Afiliacion = () => {
                                         className="form-control-alternative"
                                         type="text"
                                         name="paterno_persona"
-                                        innerRef={register({ required: typeAssociated == 2 })}
+                                        innerRef={register({ required: typeAssociated  ===  2 })}
                                         defaultValue={searchPersona && searchPersona.apellido_paterno}
                                       />
                                     </FormGroup>
@@ -900,7 +890,7 @@ const Afiliacion = () => {
                                         className="form-control-alternative"
                                         type="text"
                                         name="materno_persona"
-                                        innerRef={register({ required: typeAssociated == 2 })}
+                                        innerRef={register({ required: typeAssociated  ===  2 })}
                                         defaultValue={searchPersona && searchPersona.apellido_materno}
                                       />
                                     </FormGroup>
@@ -937,7 +927,7 @@ const Afiliacion = () => {
                                     className="form-control-alternative"
                                     type="date"
                                     name="fechanacimiento_persona"
-                                    innerRef={register({ required: typeAssociated == 2 })}
+                                    innerRef={register({ required: typeAssociated  ===  2 })}
                                   />
                                 </FormGroup>
                               </Col>
@@ -953,7 +943,7 @@ const Afiliacion = () => {
                                     className="form-control-alternative"
                                     type="text"
                                     name="direccionfiscal_persona"
-                                    innerRef={register({ required: typeAssociated == 2 })}
+                                    innerRef={register({ required: typeAssociated  ===  2 })}
                                   />
                                 </FormGroup>
                               </Col>
@@ -969,7 +959,7 @@ const Afiliacion = () => {
                                     className="form-control-alternative"
                                     type="text"
                                     name="actividad_persona"
-                                    innerRef={register({ required: typeAssociated == 2 })}
+                                    innerRef={register({ required: typeAssociated  ===  2 })}
                                   />
                                 </FormGroup>
                               </Col>
@@ -1028,7 +1018,7 @@ const Afiliacion = () => {
                   </Row>
 
                   {
-                    typeAssociated == null ?
+                    typeAssociated  ==  null ?
                     ""
                     :
                     <div className="text-center mt-5">

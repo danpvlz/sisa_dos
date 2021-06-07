@@ -1,6 +1,5 @@
 import {
     FETCH_ERROR,
-    FETCH_START,
     FETCH_SUCCESS,
     FILTER_COMITE,
   } from "../ActionTypes";

@@ -12,7 +12,7 @@ const INIT_STATE = {
     inscripcionObject: [],
 };
 
-export default (state = INIT_STATE, action) => {
+const states = (state = INIT_STATE, action) => {
     switch (action.type) {
         case LIST_INSCRIPTIONS: {
             return {
@@ -44,3 +44,4 @@ export default (state = INIT_STATE, action) => {
             return state;
     }
 }
+export default states;

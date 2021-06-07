@@ -7,7 +7,6 @@ export default function SearchPromotor({ setVal, setNew, defaultVal }) {
     const dispatch = useDispatch();
     const promotorFilter = useSelector(({ promotor }) => promotor.promotorFilter);
     const [newOption, setnewOption] = useState(null);
-    const [filterOption, setfilterOption] = useState(null);
     const handleInputChange = (inputValue, actionMeta) => {
         inputValue.length >= 2 && dispatch(filter(inputValue));
     }
@@ -31,7 +30,6 @@ export default function SearchPromotor({ setVal, setNew, defaultVal }) {
             onChange={(inputValue, actionMeta) => {
               if(inputValue){
                 setVal(inputValue != null ? inputValue.value : null);
-                setfilterOption(inputValue != null ? inputValue : null);
               }else{
                 setNew(null);
                 setnewOption(null);

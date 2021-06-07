@@ -1,5 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
 import PaginationComponent from "react-reactstrap-pagination";
 
 // reactstrap components
@@ -34,19 +33,16 @@ const Conceptos = () => {
   const { loading } = useSelector(({ commonData }) => commonData);
   const [search, setsearch] = useState({});
   const [idConcepto, setidConcepto] = useState(null);
-  const [labelConcepto, setLabelConcepto] = useState(null);
-  const [debCollector, setdebCollector] = useState(null);
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(null);
   const [showModal, setshow] = useState(false);
   const [idArea, setidArea] = useState(null);
-  const history = useHistory();
 
   useEffect(() => {
-    if (conceptStatusActions == 200) {
+    if (conceptStatusActions === 200) {
       dispatch(list(page, search));
     }
-  }, [conceptStatusActions]);
+  }, [conceptStatusActions,dispatch,page,search]);
 
   const handleNew = () => {
     dispatch(resetConceptObject());
@@ -68,11 +64,7 @@ const Conceptos = () => {
     }
     setsearch(tsearch);
     dispatch(list(page, tsearch))
-  }, [idConcepto, idArea]);
-
-  useEffect(() => {
-    dispatch(list(page, search))
-  }, [page]);
+  }, [idConcepto, idArea,page,search,dispatch]);
 
   useEffect(() => {
     if (selected) {
@@ -81,7 +73,7 @@ const Conceptos = () => {
     return () => {
       setSelected(null);
     }
-  }, [selected])
+  }, [selected,dispatch]);
 
   const toggleModal = () => {
     setshow(!showModal);
@@ -146,7 +138,7 @@ const Conceptos = () => {
                           >
                             Concepto
                       </label>
-                          <SearchConcepto setVal={setidConcepto} setLabel={setLabelConcepto} />
+                          <SearchConcepto setVal={setidConcepto} />
                         </FormGroup>
                       </Col>
                     </Row>
@@ -178,7 +170,7 @@ const Conceptos = () => {
                           conceptoList?.data?.map((concepto, key) =>
 
                             <tr key={key}>
-                              <td scope="row">
+                              <td>
                                 {concepto.idConcepto}
                               </td>
                               <td>
@@ -192,18 +184,18 @@ const Conceptos = () => {
                                 {concepto.descripcion}
                               </td>
                               <td>
-                                {concepto.tipoConcepto == 1 ? "Servicio" : "Producto"}
+                                {concepto.tipoConcepto === 1 ? "Servicio" : "Producto"}
                               </td>
                               <td>
-                                {concepto.tipoIGV == 1 ? "Gravada" : concepto.tipoIGV == 8 ? "Exonerado" : "Gratuita"}
+                                {concepto.tipoIGV === 1 ? "Gravada" : concepto.tipoIGV === 8 ? "Exonerado" : "Gratuita"}
                               </td>
                               <td>
                                 {concepto.valorConIGV ? 'S/.' + concepto.valorConIGV : '-'}
                               </td>
                               <td>
                                 <Badge color="" className="badge-dot mr-4">
-                                  <i className={concepto.priceInmutable == 1 ? "bg-success" : "bg-info"} />
-                                  {concepto.priceInmutable == 1 ? "Sí" : "No"}
+                                  <i className={concepto.priceInmutable === 1 ? "bg-success" : "bg-info"} />
+                                  {concepto.priceInmutable === 1 ? "Sí" : "No"}
                                 </Badge>
                               </td>
                               <td>

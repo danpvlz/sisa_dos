@@ -227,6 +227,6 @@ export const calcTime = (time)=>{
   if(TimeFinal > 0){
     timeString +=  Math.round(TimeFinal) + "min ";
   }
-  timeString=timeString=="" ? "-" : timeString;
+  timeString=timeString==="" ? "-" : timeString;
   return timeString;
 }

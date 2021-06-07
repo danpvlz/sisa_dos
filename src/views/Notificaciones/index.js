@@ -33,7 +33,6 @@ import 'moment/locale/es';
 moment.locale('es');
 
 const Notification = (props) => {
-    const [width, setWidth] = useState(0);
     const dispatch = useDispatch();
     const { notifications } = useSelector(({ firebase }) => firebase);
     const { myFolders } = useSelector(({ colaborador }) => colaborador);
@@ -47,10 +46,8 @@ const Notification = (props) => {
     }
 
     useEffect(() => {
-
         dispatch(getMyFolders());
-
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         const updateWidth = () => {
@@ -62,7 +59,6 @@ const Notification = (props) => {
                 document.getElementById('sidenav-main')?.classList?.remove('d-none');
                 document.getElementById('admin-main-content')?.classList?.remove('ml-0');
             }
-            setWidth(width)
         }
         // Actualizaremos el width al montar el componente
         updateWidth()
@@ -79,8 +75,8 @@ const Notification = (props) => {
 
     useEffect(() => {
         let a_folders = [];
-        myFolders?.map(y => y.idFolder).filter((x, i, a) => a.indexOf(x) == i).map((idFolder, key) =>
-            a_folders.push(myFolders.find(f => f.idFolder == idFolder))
+        myFolders?.map(y => y.idFolder).filter((x, i, a) => a.indexOf(x) === i).map((idFolder) =>
+            a_folders.push(myFolders.find(f => f.idFolder === idFolder))
         );
         setfolders(a_folders);
     }, [myFolders])
@@ -100,7 +96,7 @@ const Notification = (props) => {
                                 <Row>
                                     <div className="col-12 p-0">
                                         <button
-                                            className={`notif-bar-item ${selectItem == 'notif' ? ' notif-bar-item-selected' : 'notif-bar-item-not-selected'}`}
+                                            className={`notif-bar-item ${selectItem === 'notif' ? ' notif-bar-item-selected' : 'notif-bar-item-not-selected'}`}
                                             type="button"
                                             onClick={() => setselectItem('notif')}
                                         >
@@ -134,7 +130,7 @@ const Notification = (props) => {
                                                 }).map((folder, key) =>
                                                     <div className="col-12 p-0" key={key}>
                                                         <button
-                                                            className={`notif-bar-item ${selectItem == folder.idFolder ? ' notif-bar-item-selected' : 'notif-bar-item-not-selected'}`}
+                                                            className={`notif-bar-item ${selectItem === folder.idFolder ? ' notif-bar-item-selected' : 'notif-bar-item-not-selected'}`}
                                                             type="button"
                                                             onClick={() => setselectItem(folder.idFolder)}
                                                         >
@@ -142,9 +138,9 @@ const Notification = (props) => {
                                                                 <i className="fa fa-folder folder-icon" style={{ color: folder.color ? folder.color : '#fed86f' }} />
                                                                 <span className="mx-1">{folder.folder} </span>
                                                                 {
-                                                                    myFolders?.filter(n => n.idFolder == folder.idFolder && n.contenido != null)?.length > 0 &&
+                                                                    myFolders?.filter(n => n.idFolder === folder.idFolder && n.contenido != null)?.length > 0 &&
                                                                     <Badge className="d-none d-md-block" color="primary" pill style={{ fontSize: '10px', marginLeft: 'auto', marginRight: '1rem' }}>
-                                                                        {myFolders?.filter(n => n.idFolder == folder.idFolder && n.contenido != null)?.length}
+                                                                        {myFolders?.filter(n => n.idFolder === folder.idFolder && n.contenido != null)?.length}
                                                                     </Badge>
                                                                 }
                                                             </Row>
@@ -159,7 +155,7 @@ const Notification = (props) => {
                             <Col className="col-9">
                                 <Row className="p-3  styled-scroll" style={{ overflow: 'auto', maxHeight: '550px', margin: '.3rem 0' }}>
                                     {
-                                        selectItem == 'notif' ?
+                                        selectItem === 'notif' ?
                                             <NotificationContainer props={props} folders={folders} />
                                             :
                                             <FolderContainer folders={myFolders} selected={selectItem} />
@@ -187,8 +183,8 @@ const FolderContainer = ({ folders, selected }) => {
     return (
         <>
             {
-                folders?.filter(n => n.idFolder == selected && n.contenido != null)?.length > 0 ?
-                    folders?.filter(n => n.idFolder == selected)?.map(n => JSON.parse(n.contenido))?.sort((a, b) => moment(b.timestamp).diff(a.timestamp))?.map((notification, key) =>
+                folders?.filter(n => n.idFolder === selected && n.contenido != null)?.length > 0 ?
+                    folders?.filter(n => n.idFolder === selected)?.map(n => JSON.parse(n.contenido))?.sort((a, b) => moment(b.timestamp).diff(a.timestamp))?.map((notification, key) =>
                         <Col className={`col-12 my-2 p-2 notif-normal`} key={key}>
                             <div className="d-flex justify-content-between"
                             >
@@ -208,10 +204,10 @@ const FolderContainer = ({ folders, selected }) => {
                                 <Card>
                                     <CardBody>
                                         {
-                                            notification?.tipo == 2 ?
+                                            notification?.tipo === 2 ?
                                                 <NotificationAsociado detail={notification?.detail} timestamp={notification?.timestamp} />
                                                 :
-                                                notification?.tipo == 3 ?
+                                                notification?.tipo === 3 ?
                                                     <NotificationAsociadoEdit detail={notification?.detail} />
                                                     :
                                                     <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
@@ -251,7 +247,7 @@ const NotificationContainer = ({ props, folders }) => {
             {
                 notifications.length > 0 ?
                     notifications?.sort((a, b) => moment(b.timestamp).diff(a.timestamp))?.map((notification, key) =>
-                        <Col className={`col-12 my-2 p-2 ${props?.location?.state?.notifSelected == notification.key ? 'notif-selected' : notification.clicked ? 'notif-normal' : 'not-clicked'}`} key={key}>
+                        <Col className={`col-12 my-2 p-2 ${props?.location?.state?.notifSelected === notification.key ? 'notif-selected' : notification.clicked ? 'notif-normal' : 'not-clicked'}`} key={key}>
                             <div className="d-flex justify-content-between" >
                                 <div className="d-flex py-2 px-3" onClick={() => toggle(notification.key)} style={{ cursor: 'pointer' }}>
                                     <div style={{ padding: '0 .8rem 0 0', fontSize: '1.2rem' }}>
@@ -280,9 +276,8 @@ const NotificationContainer = ({ props, folders }) => {
                                                     <DropdownItem
                                                         key={k}
                                                         className="d-flex"
-                                                        onClick={(e) => e.preventDefault()}
-
-                                                        onClick={() => {
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
                                                             if(notification.detail.hasOwnProperty('id')){
                                                                 let not=notification.detail;
                                                                 delete not.id;
@@ -311,10 +306,10 @@ const NotificationContainer = ({ props, folders }) => {
                                 <Card>
                                     <CardBody>
                                         {
-                                            notification?.tipo == 2 ?
+                                            notification?.tipo === 2 ?
                                                 <NotificationAsociado detail={notification?.detail} timestamp={notification?.timestamp} />
                                                 :
-                                                notification?.tipo == 3 ?
+                                                notification?.tipo === 3 ?
                                                     <NotificationAsociadoEdit detail={notification?.detail} />
                                                     :
                                                     <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
@@ -346,7 +341,7 @@ const AddNewFolder = ({ isOpen, toggleModal }) => {
     const [error, seterror] = useState(false);
 
     const handleSubmit = () => {
-        formdata.nombre.length == 0 ?
+        formdata.nombre.length === 0 ?
             seterror(true) :
             dispatch(storeFolder(formdata));
         toggleModal();
@@ -420,6 +415,7 @@ const EmptyMessages = () =>
         <img
             style={{ opacity: '.2' }}
             src={require("../../assets/img/brand/empty-messages.png").default}
+            alt="Bandeja vacía"
         />
     </div>
 

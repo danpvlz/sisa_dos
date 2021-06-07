@@ -1,8 +1,5 @@
-import React from 'react'
+import React from 'react';
 
-import {
-    Badge,
-} from "reactstrap";
 export default function NotificationAsociado({ detail, timestamp }) {
     return (
         <div>

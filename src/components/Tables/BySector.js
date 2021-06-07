@@ -28,7 +28,7 @@ export default function BySector({ since, until }) {
       tsearch.until = until;
     }
     dispatch(listbysector(tsearch));
-  }, [since, until]);
+  }, [since, until,dispatch]);
 
   return (
     <Row className="mb-3">
@@ -56,13 +56,13 @@ export default function BySector({ since, until }) {
                     {
                       billListBySector?.cuentas?.map((bill, key) =>
                         <tr key={key}>
-                          <td scope="row" className="text-left font-weight-bold">{bill.descripcion}</td>
+                          <td className="text-left font-weight-bold">{bill.descripcion}</td>
                           <td>S/.{bill.emitidos}</td>
                           <td>S/.{bill.cobrado}</td>
                           <td>S/.{bill.meta}</td>
                           <td>
                             {
-                              bill.meta == 0 ?
+                              bill.meta === 0 ?
                                 "" :
                                 <div className="d-flex align-items-center">
                                   <div>
@@ -85,21 +85,21 @@ export default function BySector({ since, until }) {
                           <td>{bill.asociados} <i className="ni ni-single-02 ml-1"></i></td>
                           <td>
                             {
-                              billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura ?
+                              billListBySector.cobertura?.find(c=>c.descripcion===bill.descripcion)?.cobertura ?
                                 <div className="d-flex align-items-center">
                                   <div>
                                     <Progress
                                       max="100"
-                                      value={billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura / bill.asociados * 100}
+                                      value={billListBySector.cobertura?.find(c=>c.descripcion===bill.descripcion)?.cobertura / bill.asociados * 100}
                                       barClassName={
-                                        Math.round(billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura/ bill.asociados * 100) < 50 ?
+                                        Math.round(billListBySector.cobertura?.find(c=>c.descripcion===bill.descripcion)?.cobertura/ bill.asociados * 100) < 50 ?
                                           'bg-danger'
                                           :
                                           'bg-success'
                                       }
                                     />
                                   </div>
-                                  <span className="ml-2">{Math.round(billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura / bill.asociados * 100)}% ({billListBySector.cobertura?.find(c=>c.descripcion==bill.descripcion)?.cobertura} <i className="ni ni-single-02"></i>)</span>
+                                  <span className="ml-2">{Math.round(billListBySector.cobertura?.find(c=>c.descripcion===bill.descripcion)?.cobertura / bill.asociados * 100)}% ({billListBySector.cobertura?.find(c=>c.descripcion===bill.descripcion)?.cobertura} <i className="ni ni-single-02"></i>)</span>
                                 </div>
                                 :
                                 ""
@@ -109,7 +109,7 @@ export default function BySector({ since, until }) {
                       )
                     }
                     <tr>
-                      <td scope="row" className="text-left font-weight-bold">Afiliaciones</td>
+                      <td className="text-left font-weight-bold">Afiliaciones</td>
                       <td>S/.{billListBySector?.afiliaciones?.emitidos}</td>
                       <td>S/.{billListBySector?.afiliaciones?.cobrado}</td>
                       <td></td>
