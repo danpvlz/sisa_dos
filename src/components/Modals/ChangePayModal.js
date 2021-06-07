@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/actions/Cuenta";
 
 const ChangePayModal = ({ showPay, toggleModal, setsendPay, setbancopago, opciones }) => {
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const { pagos } = useSelector(({ cuenta }) => cuenta.comprobanteObject);
   const [error, seterror] = useState({
@@ -55,16 +55,16 @@ const ChangePayModal = ({ showPay, toggleModal, setsendPay, setbancopago, opcion
   }, [pagos]);
 
   const onSubmit = (data) => {
-    if (formData.fecha == "") {
+    if (formData.fecha === "") {
       seterror({ ...error, fecha: true });
     } else {
-      if (formData.monto == "") {
+      if (formData.monto === "") {
         seterror({ ...error, monto: true });
       } else {
-        if (formData.montoPaid == "" || formData.montoPaid == null) {
+        if (formData.montoPaid === "" || formData.montoPaid == null) {
           seterror({ ...error, montoPaid: true });
         } else {
-          if (formData.numoperacion == "" && formData.numsofdoc == "") {
+          if (formData.numoperacion === "" && formData.numsofdoc === "") {
             seterror({ ...error, numOperacion: true });
           } else {
             if (formData.numoperacion == null && formData.numsofdoc == null) {
@@ -192,7 +192,7 @@ const ChangePayModal = ({ showPay, toggleModal, setsendPay, setbancopago, opcion
                           placeholder="Seleccione..."
                           className="select-style"
                           name="opciones"
-                          value={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }].find(b => b.value == formData?.banco)}
+                          value={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }].find(b => b.value === formData?.banco)}
                           onChange={(e) => {
                             setformData({ ...formData, banco: e.value })
                           }}
@@ -214,7 +214,7 @@ const ChangePayModal = ({ showPay, toggleModal, setsendPay, setbancopago, opcion
                           placeholder="Seleccione..."
                           className="select-style"
                           name="banco"
-                          value={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }].find(b => b.value == formData?.banco)}
+                          value={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }].find(b => b.value === formData?.banco)}
                           onChange={(e) => {
                             setformData({ ...formData, banco: e.value })
                           }}

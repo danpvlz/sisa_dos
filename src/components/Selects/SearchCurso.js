@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import CreatableSelect from 'react-select/creatable';
 import { useDispatch, useSelector } from "react-redux";
 import { filter } from "../../redux/actions/Curso";
@@ -33,7 +33,7 @@ export default function SearchCurso({ setVal, val, setNews, news }) {
       onInputChange={handleInputChange}
       onCreateOption={handleCreate}
       options={filterCursos.concat(news)}
-      value={ val ? filterCursos.concat(news).find(c=>c.value==val.value) : null }
+      value={ val ? filterCursos.concat(news).find(c=>c.value===val.value) : null }
     />
   )
 }

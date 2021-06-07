@@ -9,7 +9,7 @@ export default function SearchAreas({setVal,idArea}) {
   const areasFilter = useSelector(({ concepto }) => concepto.areasFilter);
   useEffect(() => {
       dispatch(filterAreas());
-  }, [])
+  }, [dispatch])
   return (
     <Select
       placeholder="Seleccione..."
@@ -21,7 +21,7 @@ export default function SearchAreas({setVal,idArea}) {
         setVal(inputValue != null ? inputValue.value : null);
       }}
       options={areasFilter} 
-      value={areasFilter.find(a=>a.value==idArea)}
+      value={areasFilter.find(a=>a.value === idArea)}
       />
   )
 }

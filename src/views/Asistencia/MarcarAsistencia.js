@@ -132,6 +132,7 @@ const MarcarAsistencia = () => {
                               Tipo
                           </label>
                             <Select
+                            isSearchable={false}
                               placeholder="Seleccione..."
                               className="select-style"
                               id="input-tipoAsistencia"

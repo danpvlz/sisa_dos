@@ -7,12 +7,9 @@ import { filter } from "../../redux/actions/ComiteGremial";
 export default function SearchComiteGremial({setVal, defaultVal}) {
   const dispatch = useDispatch();
   const comiteGremialFilter = useSelector(({ comite }) => comite.comiteGremialFilter);
-  const handleInputChange = (inputValue, actionMeta) => {
-      inputValue.length >= 2 && dispatch(filter(inputValue));
-  }
   useEffect(() => {
     dispatch(filter());
-  }, [])
+  }, [dispatch])
   return (
     <Select
       placeholder="Seleccione..."

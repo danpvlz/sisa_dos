@@ -12,7 +12,7 @@ export default function SearchCategories({setVal,idCategoria,idArea}) {
     if(idArea){
       dispatch(filterCategories(idArea));
     }
-  }, [idArea]);
+  }, [idArea,dispatch]);
 
   return (
     <Select
@@ -25,7 +25,7 @@ export default function SearchCategories({setVal,idCategoria,idArea}) {
         setVal(inputValue != null ? inputValue.value : null);
       }}
       options={categoriasFilter}
-      value={categoriasFilter.find(c=>c.value==idCategoria)}
+      value={categoriasFilter.find(c=>c.value === idCategoria)}
       />
   )
 }

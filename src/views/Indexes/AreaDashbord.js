@@ -47,7 +47,6 @@ const AreaDashbord = ({idArea=null,children}) => {
   const handleClickLine = (element) => {
     if (element.length > 0) {
       var ind = element[0]._index;
-      console.log(ind)
       dispatch(loadDashboardByArea({
         ...order,
         area: idArea,

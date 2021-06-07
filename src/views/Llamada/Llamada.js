@@ -160,41 +160,31 @@ const Llamadas = () => {
               {
                 !loading || phoneCallList?.data ?
                   <>
-                    <Table className="align-items-center table-flush" responsive>
+                    <Table className="align-items-center table-flush table-sm" responsive>
                       <thead className="thead-light">
                         <tr>
-                          <th scope="col">Asociado</th>
-                          <th scope="col">Tipo</th>
+                          <th scope="col">Asociado denominación</th>
                           <th scope="col">Estado</th>
-                          <th scope="col">Sector</th>
-                          <th scope="col">Cobrador</th>
                           <th scope="col">Fecha</th>
                           <th scope="col">H. inicio</th>
                           <th scope="col">H. fin</th>
-                          <th scope="col">Detalle</th>
+                          <th scope="col">Detalle de la llamada</th>
+                          <th scope="col">Cobrador</th>
+                          <th scope="col">Usuario registro</th>
                         </tr>
                       </thead>
                       <tbody>
                         {
                           phoneCallList?.data?.map((llamada, key) =>
                             <tr key={key}>
-                              <td>
+                              <td className="table-w-line-break">
                                 {llamada.asociado}
-                              </td>
-                              <td>
-                                {llamada.tipo === 1 ? "Empresa" : "Persona"}
                               </td>
                               <td>
                                 <Badge color="" className="badge-dot mr-4">
                                   <i className={llamada.estado === 1 ? "bg-success" : "bg-warning"} />
                                   {llamada.estado === 1 ? "Activo" : "Retiro"}
                                 </Badge>
-                              </td>
-                              <td>
-                                {llamada.sector}
-                              </td>
-                              <td>
-                                {llamada.cobrador}
                               </td>
                               <td>
                                 {llamada.fecha}
@@ -205,8 +195,14 @@ const Llamadas = () => {
                               <td>
                                 {llamada.fin}
                               </td>
-                              <td>
+                              <td className="table-w-line-break">
                                 {llamada.detalle}
+                              </td>
+                              <td>
+                                {llamada.cobrador}
+                              </td>
+                              <td className="table-w-line-break">
+                                {llamada.colaborador}
                               </td>
                             </tr>
                           )

@@ -148,9 +148,9 @@ const Cuenta = () => {
     }
 
     if (loaded) {
-    setsearch(tsearch);
-    dispatch(listBills(page, tsearch));
-    dispatch(indicatorsBills(search));
+      setsearch(tsearch);
+      dispatch(listBills(page, tsearch));
+      dispatch(indicatorsBills(search));
     }
   }, [page,paydate,cobrador,idAsociado,status,typeDetail,number,sincePay,untilPay,since,until]);
 
@@ -293,8 +293,8 @@ const Cuenta = () => {
                             placeholder="fitlerSince"
                             type="date"
                             value={since ? since : ""}
-                            onChange={(inputValue, actionMeta) => {
-                              setsince(inputValue != null ? inputValue.target.value : null);
+                            onChange={(e, actionMeta) => {
+                              setsince(e.target.value !== "" ? e.target.value : null);
                             }}
                           />
                         </FormGroup >
@@ -313,8 +313,8 @@ const Cuenta = () => {
                             placeholder="filterUntil"
                             type="date"
                             value={until ? until : ""}
-                            onChange={(inputValue, actionMeta) => {
-                              setuntil(inputValue != null ? inputValue.target.value : null);
+                            onChange={(e, actionMeta) => {
+                              setuntil(e.target.value !== "" ? e.target.value : null);
                             }}
                           />
                         </FormGroup >

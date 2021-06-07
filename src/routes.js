@@ -46,6 +46,7 @@ import CuentasVer from "views/Cobranza/CuentasVer";
 import NuevaEmision from "views/Cobranza/NuevaEmision.js";
 import Pendientes from "views/Cobranza/Pendientes.js";
 import Membresia from "views/Cobranza/Membresia.js";
+import Ocurrencias from "views/Ocurrencias/index.js";
 
 //Caja 4
 import CajaAdmin from "views/Caja/CajaAdmin";
@@ -120,6 +121,7 @@ export const components=[
   NuevaInscripcion, //43
   AreaDashbord,//44
   AreaDashboardAdmin,//45
+  Ocurrencias, //46
 ]
 //1
 export const routesSimple = [

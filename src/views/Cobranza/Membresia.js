@@ -56,6 +56,11 @@ const EstadoCuenta = () => {
     } else {
       tsearch.idAsociado = idAsociado;
     }
+    if (cobrador == null) {
+      delete tsearch.debCollector;
+    } else {
+      tsearch.debCollector = cobrador;
+    }
     setsearch(tsearch);
     dispatch(listMemberships(page, search));
   }, [status,idAsociado,cobrador,page,search,dispatch]);

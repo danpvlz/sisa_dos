@@ -15,7 +15,7 @@ export default function SearchCursoFilter({setVal,val,searchVal}) {
     if(searchVal!=null){
       dispatch(filter(searchVal,true));
     }
-  }, [searchVal]);
+  }, [searchVal,dispatch]);
 
   return (
     <Select
@@ -30,7 +30,7 @@ export default function SearchCursoFilter({setVal,val,searchVal}) {
         setVal(newVal);
       }}
       options={filterCursos}
-      value={filterCursos.find(c=>c.value==val)}
+      value={filterCursos.find(c=>c.value===val)}
       />
   )
 }

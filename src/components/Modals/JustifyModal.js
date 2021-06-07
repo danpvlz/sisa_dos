@@ -1,14 +1,7 @@
 import React from 'react'
 import {
   Button,
-  Card,
-  CardBody,
-  FormGroup,
-  Form,
   Input,
-  Container,
-  Row,
-  Col,
   Modal,
 } from "reactstrap";
 
@@ -29,7 +22,7 @@ const Justify = ({ showJustify, toggleModal, handleJustify, justificacion, setju
             placeholder="Especifica el motivo por el que no pudiste marcar asistencia o tu falta."
             rows={3}
             onChange={(e) => {
-              setjustificacion(e.target.value == "" ? null : e.target.value)
+              setjustificacion(e.target.value === "" ? null : e.target.value)
             }}
           />
         </div>

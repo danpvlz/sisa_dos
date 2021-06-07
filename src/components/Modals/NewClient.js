@@ -21,7 +21,7 @@ import {
 import {store,update} from "../../redux/actions/Cliente";
 
 const NewClient = ({ show, toggleModal, setSearchDoc }) => {
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const [formdata, setformdata] = useState({
     tipoDocumento: "",
@@ -47,16 +47,16 @@ const NewClient = ({ show, toggleModal, setSearchDoc }) => {
         denominacion: rucSearched.nombre_o_razon_social,
         direccion: rucSearched.direccion_completa ? rucSearched.direccion_completa : ""});
     }
-  }, [rucSearched,dniSearched]);
+  }, [rucSearched,dniSearched]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = (data) => {
-    if(formdata.tipoDocumento==""){
+    if(formdata.tipoDocumento === ""){
       dispatch(fetchError("Debe elegir un tipo de documento."))
     }else{
-      if(formdata.documento==""){
+      if(formdata.documento === ""){
         dispatch(fetchError("Debe digitar el número de documento."))
       }else{
-        if(formdata.denominacion==""){
+        if(formdata.denominacion === ""){
           dispatch(fetchError("Debe especificar una denominación."))
         }else{
           if(clienteObject?.idCliente){
@@ -82,7 +82,7 @@ const NewClient = ({ show, toggleModal, setSearchDoc }) => {
       dispatch(resetSearchRuc());
       dispatch(resetSearchDni());
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (clienteObject) {
@@ -147,7 +147,7 @@ const NewClient = ({ show, toggleModal, setSearchDoc }) => {
                   onChange={(inputValue) => {
                     setformdata({ ...formdata, tipoDocumento: inputValue.value })
                   }}
-                  value={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }].find(a=>a.value==formdata?.tipoDocumento)}
+                  value={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }].find(a=>a.value === formdata?.tipoDocumento)}
                   options={[{ value: 1, label: "DNI" }, { value: 6, label: "RUC" }, { value: 4, label: "Carnet de extranjería" }, { value: 7, label: "Pasaporte" }]} />
               </FormGroup>
             </Col>
@@ -168,11 +168,11 @@ const NewClient = ({ show, toggleModal, setSearchDoc }) => {
                   innerRef={register({ required: true })}
                 />
                 {
-                  (formdata?.tipoDocumento==1 || formdata?.tipoDocumento==6) &&
+                  (formdata?.tipoDocumento === 1 || formdata?.tipoDocumento === 6) &&
                   <Button className="btn-icon" size="sm" color="primary" type="button"
                   onClick={()=>{
                     setloading(true);
-                    formdata?.tipoDocumento==1 ? dispatch(searchDni(document.getElementById('document').value)) : dispatch(searchRuc(document.getElementById('document').value));
+                    formdata?.tipoDocumento === 1 ? dispatch(searchDni(document.getElementById('document').value)) : dispatch(searchRuc(document.getElementById('document').value));
                   }}
                   >
                   <span>

@@ -17,16 +17,16 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, sets
     montoPaid: false,
   });
   const saveJustification = () => {
-    if (fecha == "") {
+    if (fecha === "") {
       seterror({ ...error, fecha: true });
     } else {
-      if (monto == "") {
+      if (monto === "") {
         seterror({ ...error, monto: true });
       } else {
-        if (montoPaid == "") {
+        if (montoPaid === "") {
           seterror({ ...error, montoPaid: true });
         } else {
-          if (numoperacion == "" && numsofdoc == "") {
+          if (numoperacion === "" && numsofdoc === "") {
             seterror({ ...error, numOperacion: true });
           } else {
             setsendPay(true);
@@ -80,7 +80,7 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, sets
                     min={fechasince}
                     max={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
                     onChange={(e) => {
-                      setfecha(e.target.value == "" ? null : e.target.value);
+                      setfecha(e.target.value === "" ? null : e.target.value);
                       seterror({ ...error, fecha: false });
                     }}
                   />

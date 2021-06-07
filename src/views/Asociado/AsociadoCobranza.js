@@ -92,12 +92,12 @@ const Asociado = () => {
       tsearch.comite=comiteGremial;
     }
     if (since == null) {
-      delete tsearch.since;
+      delete tsearch.month;
     } else {
       tsearch.month = since;
     }
     if (promotorSearched == null) {
-      delete tsearch.promotorSearched;
+      delete tsearch.promotor;
     } else {
       tsearch.promotor = promotorSearched;
     }
@@ -210,8 +210,8 @@ const Asociado = () => {
                             placeholder="fitlerSince"
                             type="month"
                             value={since}
-                            onChange={(inputValue, actionMeta) => {
-                              setsince(inputValue != null ? inputValue.target.value : null);
+                            onChange={(e, actionMeta) => {
+                              setsince(e.target.value.length >0  ? e.target.value : null);
                             }}
                           />
                         </FormGroup >

@@ -17,7 +17,7 @@ import SearchCategories from '../Selects/SearchCategories';
 import { store, update } from "../../redux/actions/Concepto";
 
 const NewConcept = ({ show, toggleModal }) => {
-  const { register, handleSubmit, watch, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const { conceptObject } = useSelector(({ concepto }) => concepto);
   const dispatch = useDispatch();
   const setCategoriaId = (id) => {
@@ -65,10 +65,10 @@ const NewConcept = ({ show, toggleModal }) => {
   }, [conceptObject])
 
   const onSubmit = (data) => {
-    if (formdata.descripcion == "") {
+    if (formdata.descripcion === "") {
       dispatch(fetchError("Debe especificar una descripción para el concepto."))
     } else {
-      if (formdata.idCategoria == "") {
+      if (formdata.idCategoria === "") {
         dispatch(fetchError("Debe elegir una categoria para el concepto."))
       } else {
         if (conceptObject?.idConcepto) {
@@ -199,7 +199,7 @@ const NewConcept = ({ show, toggleModal }) => {
                       placeholder="Seleccione..."
                       className="select-style"
                       name="typeDoc"
-                      value={[{ value: 8, label: "Exonerada" }, { value: 7, label: "Gratuita" }, { value: 1, label: "Gravada" }].find(i => i.value == formdata.igv)}
+                      value={[{ value: 8, label: "Exonerada" }, { value: 7, label: "Gratuita" }, { value: 1, label: "Gravada" }].find(i => i.value === formdata.igv)}
                       onChange={(inputValue, actionMeta) => {
                         setformdata({ ...formdata, igv: inputValue.value });
                       }}

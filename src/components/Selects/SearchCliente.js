@@ -15,13 +15,13 @@ export default function SearchCliente({setVal,idCliente,defaultVal,selectInputRe
     if(searchDoc!=null){
       dispatch(filter(searchDoc));
     }
-  }, [searchDoc]);
+  }, [searchDoc,dispatch]);
 
   useEffect(() => {
     if(clienteFilter.length>0 && searchDoc!=null){      
-      setVal(clienteFilter.find(c=>c.documento==searchDoc).value);
+      setVal(clienteFilter.find(c=>c.documento === searchDoc).value);
     }
-  }, [clienteFilter]);
+  }, [clienteFilter,searchDoc,setVal]);
 
   return (
     <Select
@@ -37,7 +37,7 @@ export default function SearchCliente({setVal,idCliente,defaultVal,selectInputRe
       }}
       options={clienteFilter} 
       defaultValue={defaultVal}
-      value={clienteFilter.find(c=>c.value==idCliente)}
+      value={clienteFilter.find(c=>c.value === idCliente)}
       />
   )
 }

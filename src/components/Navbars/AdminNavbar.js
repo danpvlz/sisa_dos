@@ -16,8 +16,6 @@ import {
   Nav,
   Container,
   Media,
-  Button,
-  Badge
 } from "reactstrap";
 
 import { userSignOut } from "../../redux/actions/Auth";
@@ -61,7 +59,7 @@ const AdminNavbar = (props) => {
                     <img
                       alt={authUser.nombres+" "+authUser.paterno+" "+authUser.materno}
                       src={
-                        authUser.foto == null || authUser.foto == "" ?
+                        authUser.foto == null || authUser.foto === "" ?
                         require("../../assets/img/theme/default.png")
                           .default
                         :

@@ -39,7 +39,7 @@ export default function Payments({ showDetail, toggleModal }) {
                 </button>
             </div>
             {
-                comprobanteObject?.cuenta?.userLastChanged!="-" ?
+                comprobanteObject?.cuenta?.userLastChanged !== "-" ?
                 <Col className="text-center my-2" >
                     <Badge color="" className="badge-dot mr-4">
                         <i className="bg-success" />
@@ -95,7 +95,7 @@ export default function Payments({ showDetail, toggleModal }) {
                                         {comprobanteObject?.cuenta?.denominacion}
                                     </td>
                                     <td>
-                                        {comprobanteObject?.cuenta?.estado == 1 ? "Por cancelar" : comprobanteObject?.cuenta?.estado == 2 ? "Cancelada" : "Anulada"}
+                                        {comprobanteObject?.cuenta?.estado === 1 ? "Por cancelar" : comprobanteObject?.cuenta?.estado === 2 ? "Cancelada" : "Anulada"}
                                     </td>
                                     <td>
                                         s/.{comprobanteObject?.cuenta?.total}
@@ -131,7 +131,7 @@ export default function Payments({ showDetail, toggleModal }) {
                                             {detalle?.cantidad}
                                         </td>
                                         <td>
-                                            {detalle?.tipoIGV==1 ? "Gravada" : detalle?.tipoIGV==7 ? "Gratuita" : "Exonerada"}
+                                            {detalle?.tipoIGV === 1 ? "Gravada" : detalle?.tipoIGV === 7 ? "Gratuita" : "Exonerada"}
                                         </td>
                                         <td>
                                             s/.
@@ -171,7 +171,7 @@ export default function Payments({ showDetail, toggleModal }) {
                                             <tr key={key}>
                                                 <td>
                                                     {
-                                                    membresia.mes== 0 ?
+                                                    membresia.mes === 0 ?
                                                     membresia.masdeuno
                                                     :
                                                     ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'][membresia.mes-1]
@@ -182,7 +182,7 @@ export default function Payments({ showDetail, toggleModal }) {
                                                     {membresia.year}
                                                 </td>
                                                 <td>
-                                                    {membresia.estado == 1 ? "Por cancelar" : membresia.estado == 2 ? "Cancelada" : "Anulada"}
+                                                    {membresia.estado === 1 ? "Por cancelar" : membresia.estado === 2 ? "Cancelada" : "Anulada"}
                                                 </td>
                                                 <td>
                                                     s/. {membresia.cobrado}
@@ -241,7 +241,7 @@ export default function Payments({ showDetail, toggleModal }) {
                                             </div>
                                         </td>
                                         <td>
-                                            {pago?.banco ? pago?.banco == 1 ? 'BCP' : pago?.banco == 2 ? 'BBVA' : pago?.banco == 3 ? 'BANCOS' : pago?.banco == 4 ? 'CONTADO' :  "-" : '-'}
+                                            {pago?.banco ? pago?.banco === 1 ? 'BCP' : pago?.banco === 2 ? 'BBVA' : pago?.banco === 3 ? 'BANCOS' : pago?.banco === 4 ? 'CONTADO' :  "-" : '-'}
                                         </td>
                                         <td>{pago?.numoperacion ? pago?.numoperacion : "-"}</td>
                                         <td>{pago?.numsofdoc ? pago?.numsofdoc : "-"}</td>

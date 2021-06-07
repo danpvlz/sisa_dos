@@ -156,15 +156,10 @@ const Cuenta = () => {
           dispatch(listBills(page, tsearch));
           dispatch(indicatorsBills(search));
         }, 800);
-      }else{
-        setsearch(tsearch);
-        dispatch(listBills(page, tsearch));
-        dispatch(indicatorsBills(search));
       }
     }else{
       dispatch(listBills(page, search));
       dispatch(indicatorsBills(search));
-      setloaded(true);
     }
     return () => {
       setloaded(false);
@@ -305,8 +300,8 @@ const Cuenta = () => {
                             placeholder="fitlerSince"
                             type="date"
                             value={since ? since : ""}
-                            onChange={(inputValue, actionMeta) => {
-                              setsince(inputValue != null ? inputValue.target.value : null);
+                            onChange={(e, actionMeta) => {
+                              setsince(e.target.value !== "" ? e.target.value : null);
                             }}
                           />
                         </FormGroup >
@@ -325,8 +320,8 @@ const Cuenta = () => {
                             placeholder="filterUntil"
                             type="date"
                             value={until ? until : ""}
-                            onChange={(inputValue, actionMeta) => {
-                              setuntil(inputValue != null ? inputValue.target.value : null);
+                            onChange={(e, actionMeta) => {
+                              setuntil(e.target.value !== "" ? e.target.value : null);
                             }}
                           />
                         </FormGroup >

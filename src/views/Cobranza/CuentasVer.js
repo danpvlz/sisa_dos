@@ -184,8 +184,8 @@ const Cuenta = () => {
                             placeholder="fitlerSince"
                             type="date"
                             value={since ? since : ""}
-                            onChange={(inputValue, actionMeta) => {
-                              setsince(inputValue != null ? inputValue.target.value : null);
+                            onChange={(e, actionMeta) => {
+                              setsince(e.target.value !== "" ? e.target.value : null);
                             }}
                           />
                         </FormGroup >
@@ -204,8 +204,8 @@ const Cuenta = () => {
                             placeholder="filterUntil"
                             type="date"
                             value={until ? until : ""}
-                            onChange={(inputValue, actionMeta) => {
-                              setuntil(inputValue != null ? inputValue.target.value : null);
+                            onChange={(e, actionMeta) => {
+                              setuntil(e.target.value !== "" ? e.target.value : null);
                             }}
                           />
                         </FormGroup >

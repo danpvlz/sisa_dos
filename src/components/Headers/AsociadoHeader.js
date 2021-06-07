@@ -11,13 +11,13 @@ const Header = () => {
 
   useEffect(() => {
       dispatch(indicators());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (associatedStatusActions == 200) {
+    if (associatedStatusActions === 200) {
       dispatch(indicators());
     }
-  }, [associatedStatusActions]);
+  }, [associatedStatusActions,dispatch]);
 
   return (
     <>

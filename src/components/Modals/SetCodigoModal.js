@@ -1,12 +1,8 @@
 import React from 'react'
 import {
   Button,
-  Card,
-  CardBody,
   FormGroup,
-  Form,
   Input,
-  Container,
   Row,
   Col,
   Modal,
@@ -51,7 +47,7 @@ const SetCodigoModal = ({ showSetCodigo, toggleModal, codigo,setcodigo, setSendC
                 name="codigo"
                 value={codigo}
                 onChange={(e) => {
-                  setcodigo(e.target.value == "" ? null : e.target.value)
+                  setcodigo(e.target.value === "" ? null : e.target.value)
                 }}
               />
             </FormGroup >

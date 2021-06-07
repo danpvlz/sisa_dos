@@ -78,7 +78,7 @@ const Cuenta = () => {
     if (billsStatusActions === 200) {
       dispatch(listBills(page, search));
       dispatch(indicatorsBills(search));
-    dispatch(listbysector(search));
+      dispatch(listbysector(search));
     }
   }, [billsStatusActions,page,search,dispatch]);
   
@@ -140,23 +140,18 @@ const Cuenta = () => {
 
     if (loaded) {
       if(wait){
-      clearTimeout(timeOutFunc);
-      timeOutFunc = setTimeout(()=>{ 
-        setsearch(tsearch);
-        dispatch(listBills(page, tsearch));
-        dispatch(indicatorsBills(search));
-        dispatch(listbysector(search));
-      }, 800);
-      }else{
-        setsearch(tsearch);
-        dispatch(listBills(page, tsearch));
-        dispatch(indicatorsBills(search));
+        clearTimeout(timeOutFunc);
+        timeOutFunc = setTimeout(()=>{ 
+          setsearch(tsearch);
+          dispatch(listBills(page, tsearch));
+          dispatch(indicatorsBills(search));
+          dispatch(listbysector(search));
+        }, 800);
       }
     }else{
-      dispatch(listBills(page, search));
+      setsearch(tsearch);
+      dispatch(listBills(page, tsearch));
       dispatch(indicatorsBills(search));
-      dispatch(listbysector(search));
-      setloaded(true);
     }
     return () => {
     setloaded(false);
@@ -286,8 +281,8 @@ const Cuenta = () => {
                             placeholder="fitlerSince"
                             type="date"
                             value={since ? since : ""}
-                            onChange={(inputValue, actionMeta) => {
-                              setsince(inputValue != null ? inputValue.target.value : null);
+                            onChange={(e, actionMeta) => {
+                              setsince(e.target.value !== "" ? e.target.value : null);
                             }}
                           />
                         </FormGroup >
@@ -306,8 +301,8 @@ const Cuenta = () => {
                             placeholder="filterUntil"
                             type="date"
                             value={until ? until : ""}
-                            onChange={(inputValue, actionMeta) => {
-                              setuntil(inputValue != null ? inputValue.target.value : null);
+                            onChange={(e, actionMeta) => {
+                              setuntil(e.target.value !== "" ? e.target.value : null);
                             }}
                           />
                         </FormGroup >

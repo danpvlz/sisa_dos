@@ -41,7 +41,8 @@ export default function NotificationContainer() {
             firebaseNotif.getAll().off("child_added", onNewAdded);
             setnewNotifications([]);
         }
-    }, []);
+        // eslint-disable-next-line
+    }, []); 
 
     const onDataChange = (items) => {
         let notifications = [];
@@ -59,7 +60,7 @@ export default function NotificationContainer() {
     const onNewAdded = (snapshot) => {
         let key = snapshot.key;
         let data = snapshot.val();
-        if(data.seen==0){
+        if(data.seen===0){
             setnewNotifications(newNotifications.concat({
                 key,...data
             }));
@@ -69,7 +70,7 @@ export default function NotificationContainer() {
                     ...data,
                     seen: 1
                 })
-                setnewNotifications(newNotifications.filter(n => n.key != key));
+                setnewNotifications(newNotifications.filter(n => n.key !== key));
             }, 7000);
         }
 
@@ -84,7 +85,7 @@ export default function NotificationContainer() {
                                 ...notification,
                                 seen: 1,
                             })
-                            setnewNotifications(newNotifications.filter(n=>n.key != notification.key))
+                            setnewNotifications(newNotifications.filter(n=>n.key !== notification.key))
                         }
                     } />
                 )
