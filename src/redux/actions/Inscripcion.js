@@ -52,6 +52,29 @@ import {
     }
   };
   
+  export const externalInscription = (data) => {
+    return (dispatch) => {
+      dispatch({ type: FETCH_START });
+      dispatch({ type: INSCRIPTION_STATUS_ACTIONS, payload: 0 });
+  
+      axios.post('externalInscription',
+      data
+      ).then(({ data, status }) => {
+        if (data) {
+          dispatch({ type: SHOW_MESSAGE, payload: data.message });
+          dispatch({ type: FETCH_SUCCESS });
+          dispatch({ type: SAVE_INSCRIPTION });
+          dispatch({ type: INSCRIPTION_STATUS_ACTIONS, payload: status });
+        } else {
+          dispatch({ type: FETCH_ERROR, payload: data.message });
+        }
+      })
+        .catch(function (error) {
+          dispatch({ type: FETCH_ERROR, payload: error.response.data.message });
+        });
+    }
+  };
+  
   export const update = (data,id) => {
     return (dispatch) => {
       dispatch({ type: FETCH_START });

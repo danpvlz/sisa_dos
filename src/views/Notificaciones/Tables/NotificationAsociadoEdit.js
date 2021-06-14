@@ -8,7 +8,7 @@ import {
 import { acceptUpdate } from "../../../redux/actions/Asociado";
 import { useDispatch } from "react-redux";
 
-export default function NotificationAsociadoEdit({ detail }) {
+export default function NotificationAsociadoEdit({ detail,handleDone }) {
     const dispatch = useDispatch();
     return (
         <div>
@@ -44,7 +44,7 @@ export default function NotificationAsociadoEdit({ detail }) {
             {
                 detail.id &&
                 <div className="text-center">
-                    <Button color="primary" type="button" className="text-uppercase mt-4" onClick={()=>dispatch(acceptUpdate(detail.id,detail.request))}>Aceptar cambios</Button>
+                    <Button color="primary" type="button" className="text-uppercase mt-4" onClick={()=>{dispatch(acceptUpdate(detail.id,detail.request));handleDone();}}>Aceptar cambios</Button>
                 </div>
             }
         </div>

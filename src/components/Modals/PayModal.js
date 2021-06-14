@@ -9,7 +9,7 @@ import {
 } from "reactstrap";
 import Select from 'react-select';
 
-const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, setsendPay, setbancopago, fechasince, numoperacion, setNumOperacion, numsofdoc, setNumSofdoc, setMontoPaid, montoPaid, opciones }) => {
+const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, handlePay, setbancopago, fechasince, numoperacion, setNumOperacion, numsofdoc, setNumSofdoc, setMontoPaid, montoPaid, opciones }) => {
   const [error, seterror] = useState({
     fecha: false,
     monto: false,
@@ -29,7 +29,7 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, sets
           if (numoperacion === "" && numsofdoc === "") {
             seterror({ ...error, numOperacion: true });
           } else {
-            setsendPay(true);
+            handlePay();
             toggleModal();
           }
         }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 // reactstrap components
@@ -19,7 +19,6 @@ export default function ChangePassword({authUser}) {
     const { register, handleSubmit } = useForm();
 
     const [showConfirm, setShowConfirm] = useState(false);
-    const [confirm, setComfirm] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [formdata, setformdata] = useState(null);
 
@@ -27,13 +26,10 @@ export default function ChangePassword({authUser}) {
         toggleModal()
         setformdata(data)
     }
-    
-    useEffect(() => {
-        if(confirm){
-            dispatch(updatePassword(formdata));
-        }
-        setComfirm(false);
-    }, [confirm,formdata,dispatch])
+
+    const handleConfirm = () => {
+      dispatch(updatePassword(formdata));
+    }
   
     const toggleModal = () => {
       setShowConfirm(!showConfirm);
@@ -45,7 +41,7 @@ export default function ChangePassword({authUser}) {
       question={`¿Seguro cambiar contraseña?`}
       showConfirm={showConfirm}
       toggleModal={toggleModal}
-      setConfirm={setComfirm} />
+      handleConfirm={handleConfirm} />
     <Form onSubmit={handleSubmit(onsubmitChangePassword)} autoComplete="off">
         <CardBody>
           <h6 className="heading-small text-muted mb-4">

@@ -41,7 +41,6 @@ const EditarAsociadoSA = (props) => {
   const { register, handleSubmit } = useForm();
   const [formData, setFormData] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [sendassociated, setsendassociated] = useState(false);
 
   const history = useHistory();
 
@@ -107,26 +106,23 @@ const EditarAsociadoSA = (props) => {
     setFormData(data);
   };
 
-  useEffect(() => {
-    if (sendassociated) {
-      //REGISTRAR
-      formData.comitegremial = comiteGremial;
-      formData.tipoasociado = typeAssociated;
-      formData.idPromotor = promotorSearched;
-      formData.idSector = associatedEditObject.sector.idSector;
-      formData.promotornombre = newPromotorName;
-      formData.tipodocumento_representante = tipodocumentorepresentante;
-      formData.tipodocumento_adicional = tipodocumentoadicional;
-      formData.tipodocumento_persona = tipodocumentopersona;
-      formData.sexo = sexo;
-      dispatch(update(associatedEditObject.asociado.idAsociado, formData));
-      history.push('/admin/asociado-sa');
-      //REGISTRAR
-      setsendassociated(false);
-      document.getElementById("form-save-associated").reset();
-      setFormData(null);
-    }
-  }, [sendassociated, associatedEditObject, comiteGremial, formData, history, newPromotorName, promotorSearched, sexo, tipodocumentoadicional, tipodocumentopersona, tipodocumentorepresentante, typeAssociated, dispatch]);
+  const handleConfirm = () => {
+    //REGISTRAR
+    formData.comitegremial = comiteGremial;
+    formData.tipoasociado = typeAssociated;
+    formData.idPromotor = promotorSearched;
+    formData.idSector = associatedEditObject.sector.idSector;
+    formData.promotornombre = newPromotorName;
+    formData.tipodocumento_representante = tipodocumentorepresentante;
+    formData.tipodocumento_adicional = tipodocumentoadicional;
+    formData.tipodocumento_persona = tipodocumentopersona;
+    formData.sexo = sexo;
+    dispatch(update(associatedEditObject.asociado.idAsociado, formData));
+    history.push('/admin/asociado-sa');
+    //REGISTRAR
+    document.getElementById("form-save-associated").reset();
+    setFormData(null);
+  }
 
   return (
     <>
@@ -137,7 +133,7 @@ const EditarAsociadoSA = (props) => {
       <Container className="mt--7" fluid>
         <ConfirmDialog
           question="¿Seguro de actualizar datos del asociado?"
-          showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendassociated} />
+          showConfirm={showConfirm} toggleModal={toggleModal} handleConfirm={handleConfirm} />
         <Row>
           <Col className="order-xl-1" xl="12">
             <Card className="bg-secondary shadow">

@@ -27,7 +27,6 @@ const MarcarAsistencia = () => {
   const { register, handleSubmit } = useForm();
   const [dateNow, setDateNow] = useState(new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }));
   const [type, setType] = useState(1);
-  const [sendAssistance, setSendAssistance] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const [showJustify, setShowJustify] = useState(false);
@@ -64,18 +63,15 @@ const MarcarAsistencia = () => {
     setFormData(data)
   };
 
-  useEffect(() => {
-    if (sendAssistance) {
-      //REGISTRAR
-      var now = new Date();
-      formData.hora = now.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-      dispatch(saveAssistance(formData))
-      //REGISTRAR
-      setSendAssistance(false);
-      document.getElementById("form-check-assistance").reset();
-      setFormData(null);
-    }
-  }, [sendAssistance,formData,dispatch]);
+  const handleConfirm=()=>{
+    //REGISTRAR
+    var now = new Date();
+    formData.hora = now.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    dispatch(saveAssistance(formData))
+    //REGISTRAR
+    document.getElementById("form-check-assistance").reset();
+    setFormData(null);
+  }
 
   const handleJustify = () => {
     //REGISTRAR
@@ -285,7 +281,7 @@ const MarcarAsistencia = () => {
       </Container>
       <ConfirmDialog
         question="¿Seguro de registrar asistencia?"
-        showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setSendAssistance} />
+        showConfirm={showConfirm} toggleModal={toggleModal} handleConfirm={handleConfirm} />
       <Justify setjustificacion={setjustificacion} justificacion={justificacion} showJustify={showJustify} toggleModal={toggleModalJustify} handleJustify={handleJustify} />
     </>
   );

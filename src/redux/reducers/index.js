@@ -19,6 +19,7 @@ import Inscripcion from './Inscripcion';
 import Curso from './Curso';
 import Participante from './Participante';
 import Firebase from './Firebase';
+import Pago from './Pago';
 
 const reducers = (history) =>
 combineReducers({
@@ -41,6 +42,7 @@ combineReducers({
   curso: Curso,
   participante: Participante,
   firebase: Firebase,
+  pago: Pago,
 })
 
 export default reducers;

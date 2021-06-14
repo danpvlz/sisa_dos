@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 // reactstrap components
 import {
@@ -27,7 +27,6 @@ const EditProfile = () => {
   const { register, handleSubmit } = useForm();
   const [file, setFile] = useState(process.env.REACT_APP_BASE + 'storage/colaborador/'+authUser.foto);
   const [fileSend, setfileSend] = useState(null);
-  const [confirm, setComfirm] = useState(false);
   const [formdata, setformdata] = useState(null);
 
   const [showConfirm, setShowConfirm] = useState(false);
@@ -48,18 +47,17 @@ const EditProfile = () => {
     data.photo =fileSend;
     setformdata(data)
     toggleModal()
-    /*hiddenFileInput.current.value = null;
+    /*
+    hiddenFileInput.current.value = null;
     setFile(null);
-    reset();*/
+    reset();
+    */
   };
-  
-  useEffect(() => {
-      if(confirm){
-          dispatch(update(authUser.idColaborador,formdata));
-          dispatch(getUser())
-      }
-      setComfirm(false);
-  }, [confirm,authUser,formdata,dispatch])
+
+  const handleConfirm = () => {
+    dispatch(update(authUser.idColaborador,formdata));
+    dispatch(getUser())
+  }
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -76,7 +74,7 @@ const EditProfile = () => {
         question={`¿Seguro de actualizar datos?`}
         showConfirm={showConfirm}
         toggleModal={toggleModal}
-        setConfirm={setComfirm} />
+        handleConfirm={handleConfirm} />
         <Row>
           <Col className="offset-xl-2" xl="8">
             <Card className="card-profile shadow bg-secondary">

@@ -31,7 +31,6 @@ const Colaborador = () => {
   const { loading } = useSelector(({ commonData }) => commonData);
   const [page, setPage] = useState(1)
   const [showConfirm, setShowConfirm] = useState(false);
-  const [confirm, setComfirm] = useState(false);
   const [action, setAction] = useState(1);
   const [colabSelected, setColabSelected] = useState(-1);
   const [question, setquestion] = useState('')
@@ -47,18 +46,15 @@ const Colaborador = () => {
   useEffect(() => {
     dispatch(listWorker(page))
   }, [page,dispatch])
-
-  useEffect(() => {
-    if (confirm) {
-      if (action === 1) {
-        dispatch(status(colabSelected));
-      } else {
-        dispatch(vacations(colabSelected));
-      }
-      setComfirm(false);
-      setColabSelected(-1);
+  
+  const handleConfirm = () => {
+    if (action === 1) {
+      dispatch(status(colabSelected));
+    } else {
+      dispatch(vacations(colabSelected));
     }
-  }, [confirm, action,colabSelected,dispatch])
+    setColabSelected(-1);
+  }
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -73,7 +69,7 @@ const Colaborador = () => {
       <Container className="mt--8" fluid>
         <ConfirmDialog
           question={question}
-          showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setComfirm} />
+          showConfirm={showConfirm} toggleModal={toggleModal} handleConfirm={handleConfirm} />
         {/* Table */}
         <Row>
           <div className="col">

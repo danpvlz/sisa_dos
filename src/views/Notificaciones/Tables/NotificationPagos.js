@@ -17,6 +17,7 @@ export default function NotificationPagos({ details,numoperacion, numsofdoc }) {
                             </Badge>
                             <span className="font-weight-bold">S/.{detail.total}</span>
                         </p>
+                        <strong>Pago:</strong>
                         <table className="table-sm align-items-center table-flush text-center">
                             <thead className="thead-light ">
                                 <tr>

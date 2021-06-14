@@ -34,7 +34,6 @@ const NuevaEmision = () => {
 
   const { register, handleSubmit } = useForm();
   const [formdata, setformdata] = useState(null);
-  const [confirm, setComfirm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [tipoDocumentoEmision, settipoDocumentoEmision] = useState(null);
   const [pagado, setpagado] = useState(null)
@@ -99,23 +98,20 @@ const NuevaEmision = () => {
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
   };
-
-  useEffect(() => {
-    if (confirm) {
-      formdata.idAsociado = idAsociado;
-      formdata.tipo_de_comprobante = tipoDocumentoEmision;
-      formdata.pagado = pagado;
-      formdata.banco = bancopago;
-      formdata.meses = meses;
-      formdata.cantidad = meses.length
-      formdata.conafiliacion = showAfiliacion;
-      formdata.descuento === 0 && delete formdata.descuento;
-      formdata.docModificar = docModificar;
-      dispatch(saveCuenta(formdata));
-      history.push('/admin/cuentas');
-    }
-    setComfirm(false);
-  }, [confirm,bancopago,docModificar,idAsociado,meses,pagado,tipoDocumentoEmision,showAfiliacion,formdata,history,dispatch]);
+  
+  const handleConfirm = () => {
+    formdata.idAsociado = idAsociado;
+    formdata.tipo_de_comprobante = tipoDocumentoEmision;
+    formdata.pagado = pagado;
+    formdata.banco = bancopago;
+    formdata.meses = meses;
+    formdata.cantidad = meses.length
+    formdata.conafiliacion = showAfiliacion;
+    formdata.descuento === 0 && delete formdata.descuento;
+    formdata.docModificar = docModificar;
+    dispatch(saveCuenta(formdata));
+    history.push('/admin/cuentas');
+  }
 
   return (
     <>
@@ -128,7 +124,7 @@ const NuevaEmision = () => {
           question={'¿Seguro de registrar emisión?'}
           showConfirm={showConfirm}
           toggleModal={toggleModal}
-          setConfirm={setComfirm} />
+          handleConfirm={handleConfirm} />
         <Row>
           <Col className="order-xl-1" xl="12">
             <Card className="bg-secondary shadow">

@@ -24,7 +24,6 @@ const NuevoColaborador = (props) => {
   const [file, setFile] = useState(null);
   const [fileSend, setfileSend] = useState(null);
   const [formdata, setformdata] = useState(null);
-  const [confirm, setComfirm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [actionresetpassword, setactionresetpassword] = useState(false);
 
@@ -61,17 +60,14 @@ const NuevoColaborador = (props) => {
     }
   }, [dispatch,props,workerObject])
 
-  useEffect(() => {
-    if (confirm) {
-      if(actionresetpassword){
-        dispatch(resetPassword(props.location.state.workerSelected));
-      }else{
-        dispatch(update(props.location.state.workerSelected, formdata));
-        history.push('/admin/colaborador');
-      }
+  const handleConfirm = () => {
+    if(actionresetpassword){
+      dispatch(resetPassword(props.location.state.workerSelected));
+    }else{
+      dispatch(update(props.location.state.workerSelected, formdata));
+      history.push('/admin/colaborador');
     }
-    setComfirm(false);
-  }, [confirm,actionresetpassword,formdata,history,props,dispatch])
+  }
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -81,6 +77,7 @@ const NuevoColaborador = (props) => {
     setactionresetpassword(true);
     toggleModal();
   }
+
   return (
     <>
       <div className="header pb-8 pt-5 pt-lg-8 pt-md-8  d-flex align-items-center">
@@ -92,7 +89,7 @@ const NuevoColaborador = (props) => {
           question={actionresetpassword ? '¿Seguro de resetear contraseña?' : `¿Seguro de actualizar datos?`}
           showConfirm={showConfirm}
           toggleModal={toggleModal}
-          setConfirm={setComfirm} />
+          handleConfirm={handleConfirm} />
         <Row>
           <Col className="offset-xl-2" xl="8">
             <Card className="card-profile shadow bg-secondary">

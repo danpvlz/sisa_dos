@@ -34,8 +34,6 @@ const Index = () => {
     new: false,
   });
   const [selected, setSelected] = useState(null);
-  const [confirm, setconfirm] = useState(false);
-  const [action, setAction] = useState(1);
 
   const handleNew = () => {
     dispatch(resetObject());
@@ -64,25 +62,13 @@ const Index = () => {
     }, 800);
   }, [page, searchParticipante,dispatch,search]);
 
-  useEffect(() => {
-    if (selected) {
-      dispatch(show(selected));
-    }
-    return () => {
-      setSelected(null);
-    }
-  }, [selected,dispatch])
-
   const toggleModal = (modal) => {
     setshow({ ...showModal, [modal]: !showModal[modal] });
   };
 
-  useEffect(() => {
-    if (confirm) {
-      if (action === 2) { dispatch(destroy(selected)) }
-      setconfirm(false)
-    }
-  }, [confirm,action,dispatch,selected]);
+  const handleConfirm=()=>{
+    dispatch(destroy(selected));
+  }
 
   return (
     <>
@@ -90,8 +76,8 @@ const Index = () => {
         <span className="mask bg-gradient-info opacity-8" />
       </div>
       <ConfirmDialog
-        question={action === 1 ? "¿Seguro de desactivar el participante?" : action === 2 ? "¿Seguro de eliminar el participante?" : "¿Seguro de activar el participante?"}
-        showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} setConfirm={setconfirm} />
+        question={"¿Seguro de eliminar el participante?"}
+        showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} handleConfirm={handleConfirm} />
       <New
         show={showModal.new}
         toggleModal={() => toggleModal('new')}
@@ -160,7 +146,7 @@ const Index = () => {
                           <th scope="col">Participante</th>
                           <th scope="col">DNI</th>
                           <th scope="col">Email</th>
-                          <th scope="col">Celular.</th>
+                          <th scope="col">Celular</th>
                           <th scope="col">Empresa</th>
                           <th scope="col">RUC</th>
                           <th scope="col">Cargo</th>
@@ -178,10 +164,14 @@ const Index = () => {
                                 {participante.dni}
                               </td>
                               <td>
-                                {participante.correo}
+                                <a href={`mailto:${participante.correo}`} target="_blank" rel="noreferrer">
+                                  {participante.correo}
+                                </a>
                               </td>
                               <td>
-                                {participante.celular}
+                                <a href={`https://wa.me/51${participante.celular}`} target="_blank" rel="noreferrer">
+                                  {participante.celular}
+                                </a>
                               </td>
                               <td>
                                 {participante.empresa}
@@ -196,21 +186,14 @@ const Index = () => {
                                 <span
                                   className="mx-2"
                                   style={{cursor: 'pointer' }}
-                                  onClick={(e) => { setSelected(participante.idParticipante); toggleModal('new'); }}
+                                  onClick={(e) => { dispatch(show(participante.idParticipante)); toggleModal('new'); }}
                                 >
                                   <i className="fa-lg text-blue fa fa-eye" aria-hidden="true"></i>
                                 </span>
                                 <span
                                   className="mx-2"
                                   style={{cursor: 'pointer' }}
-                                  onClick={(e) => { setAction(participante.estado); setSelected(participante.idParticipante); toggleModal('confirm'); }}
-                                >
-                                  <i className={`fa-lg text-${participante.estado === 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}`} aria-hidden="true"></i>
-                                </span>
-                                <span
-                                  className="mx-2"
-                                  style={{cursor: 'pointer' }}
-                                  onClick={(e) => { setAction(2); setSelected(participante.idParticipante); toggleModal('confirm'); }}
+                                  onClick={(e) => {  setSelected(participante.idParticipante); toggleModal('confirm'); }}
                                 >
                                   <i className="fa-lg text-danger fa fa-trash" aria-hidden="true"></i>
                                 </span>

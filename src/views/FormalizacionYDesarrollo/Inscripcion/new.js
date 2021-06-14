@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useHistory } from 'react-router-dom';
 
 // reactstrap components
@@ -36,7 +36,6 @@ const NewInscripcion = () => {
   const history = useHistory();
 
   const [formdata, setformdata] = useState(null);
-  const [confirm, setComfirm] = useState(false);
   const [show, setShow] = useState({ confirm: false, new: false });
 
   const onSubmit = (data) => {
@@ -53,14 +52,11 @@ const NewInscripcion = () => {
     setShow({...show,[modal]:!show[modal]});
   };
 
-  useEffect(() => {
-    if (confirm) {
-      formdata.items = items;
-      dispatch(store(formdata));
-      history.push('/admin/formalizacion-y-desarrollo/inscripcion');
-    }
-    setComfirm(false);
-  }, [confirm,formdata,dispatch,history,items]);
+  const handleConfirm = () => {
+    formdata.items = items;
+    dispatch(store(formdata));
+    history.push('/admin/formalizacion-y-desarrollo/inscripcion');
+  }
 
   return (
     <>
@@ -78,7 +74,7 @@ const NewInscripcion = () => {
           question={'¿Seguro de registrar inscripción?'}
           showConfirm={show.confirm}
           toggleModal={() => toggleModal('confirm')}
-          setConfirm={setComfirm} />
+          handleConfirm={handleConfirm} />
         <Row>
           <Col className="order-xl-1" xl="12">
             <Card className="bg-secondary shadow">

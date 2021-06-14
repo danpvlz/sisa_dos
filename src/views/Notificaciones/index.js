@@ -28,6 +28,7 @@ import DataService from "../../firebase/services/notifications";
 import NotificationPagos from "./Tables/NotificationPagos";
 import NotificationAsociado from "./Tables/NotificationAsociado";
 import NotificationAsociadoEdit from "./Tables/NotificationAsociadoEdit";
+import NotificacionInscripcion from "./Tables/NotificacionInscripcion";
 import moment from "moment";
 import 'moment/locale/es';
 moment.locale('es');
@@ -210,7 +211,10 @@ const FolderContainer = ({ folders, selected }) => {
                                                 notification?.tipo === 3 ?
                                                     <NotificationAsociadoEdit detail={notification?.detail} />
                                                     :
-                                                    <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
+                                                    notification?.tipo === 4 ?
+                                                        <NotificacionInscripcion detail={notification?.detail} />
+                                                        :
+                                                            <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
                                         }
                                     </CardBody>
                                 </Card>
@@ -257,7 +261,7 @@ const NotificationContainer = ({ props, folders }) => {
                                         <strong style={{ display: 'block' }}>{notification.title}
                                         </strong>
                                         <span>{notification.description}</span>
-                                        <small className="d-block mt-2">{moment(notification.timestamp, "YYYY-MM-DD h:m:s").fromNow()}</small>
+                                        <small className="d-block mt-2">{`${moment(notification.timestamp, "YYYY-MM-DD h:m:s").fromNow()} - ${moment(notification.timestamp).format('LLL')}`}</small>
                                     </div>
                                 </div>
                                 <UncontrolledDropdown>
@@ -310,9 +314,12 @@ const NotificationContainer = ({ props, folders }) => {
                                                 <NotificationAsociado detail={notification?.detail} timestamp={notification?.timestamp} />
                                                 :
                                                 notification?.tipo === 3 ?
-                                                    <NotificationAsociadoEdit detail={notification?.detail} />
+                                                    <NotificationAsociadoEdit detail={notification?.detail} handleDone={()=>firebaseNotif.delete(notification.key)}/>
                                                     :
-                                                    <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
+                                                    notification?.tipo === 4 ?
+                                                        <NotificacionInscripcion detail={notification?.detail} />
+                                                        :
+                                                            <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
                                         }
                                     </CardBody>
                                 </Card>

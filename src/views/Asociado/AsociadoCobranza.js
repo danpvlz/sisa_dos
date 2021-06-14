@@ -21,15 +21,13 @@ import {
 } from "reactstrap";
 // core components
 import Select from 'react-select';
-import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 import Header from "components/Headers/AsociadoHeader.js";
 import SearchAsociado from "components/Selects/SearchAsociado.js";
 import SearchCobrador from "components/Selects/SearchCobrador.js";
 import SearchComiteGremial from "components/Selects/SearchComiteGremial.js";
 import SearchPromotor from "components/Selects/SearchPromotorFilter";
-import SetCodigoModal from "components/Modals/SetCodigoModal.js";
 import { useDispatch, useSelector } from "react-redux";
-import { listAssociated, status, assignCode } from "../../redux/actions/Asociado";
+import { listAssociated } from "../../redux/actions/Asociado";
 
 const Asociado = () => {
   const dispatch = useDispatch();
@@ -42,14 +40,8 @@ const Asociado = () => {
   const [page, setPage] = useState(1)
   //const asociados = require('../../data/asociado.json');
   const history = useHistory();
-  const [selectedAsociado, setSelectedAsociado] = useState(null);
-  const [showSetCodigo, setshowSetCodigo] = useState(false);
-  const [codigo, setcodigo] = useState(null);
-  const [sendcodigo, setsendcodigo] = useState(false);
-  const [confirm, setComfirm] = useState(false);
   
   const [loaded, setloaded] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
 
   //Filters
   const [since, setsince] = useState(null);
@@ -118,80 +110,21 @@ const Asociado = () => {
     setloaded(false);
     }
   }, []);
-  const toggleModalCodigo = () => {
-    setshowSetCodigo(!showSetCodigo);
-  };
 
-  useEffect(() => {
-    if (sendcodigo) {
-      //REGISTRAR
-      var fData = {
-        "idAsociado": selectedAsociado,
-        "codigo": codigo
-      }
-      dispatch(assignCode(fData))
-      //REGISTRAR
-      setcodigo(null);
-      setsendcodigo(false);
-      setSelectedAsociado(null);
-    }
-  }, [sendcodigo,codigo,selectedAsociado,dispatch]);
-
-  const toggleModalConfirm = () => {
-    setShowConfirm(!showConfirm);
-  };
-
-  useEffect(() => {
-    if (confirm) {
-      dispatch(status(selectedAsociado)); //CAMBIAR DE ESTADO
-      setComfirm(false);
-      setSelectedAsociado(null);
-    }
-  }, [confirm,selectedAsociado,dispatch]);
 
   return (
     <>
       <Header />
       {/* Page content */}
       <Container className="mt--7" fluid>
-      <SetCodigoModal 
-        showSetCodigo={showSetCodigo} 
-        toggleModal={toggleModalCodigo}  
-        codigo={codigo}
-        setcodigo={setcodigo}
-        setSendCodigo={setsendcodigo}
-      />
         {/* Table */}
         <Row>
           <div className="col">
             <Card className="shadow">
-            <ConfirmDialog
-              showConfirm={showConfirm} toggleModal={toggleModalConfirm} setConfirm={setComfirm} />
               <CardHeader className="border-0 bg-secondary">
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">
                     <h3 className="mb-0">Asociados</h3>
-                    {
-                      /*
-                      <Button
-                        className="btn-new-xl btn-icon d-none d-md-block"
-                        color="primary"
-                        onClick={handleNewAsociado}
-                      >
-                        <span className="btn-inner--icon">
-
-                          <i className="fa fa-plus" />
-                        </span>
-                        <span className="btn-inner--text">Nuevo asociado</span>
-                      </Button>
-                      <Button
-                        className="btn-new-small icon icon-shape bg-primary text-white rounded-circle shadow d-sm-none"
-                        onClick={handleNewAsociado}
-                      >
-                        <i className="fas fa-plus" />
-                      </Button>
-                      */
-                    }
                   </Col>
                   <Col lg="12 ">
                     <hr className="my-4 " />

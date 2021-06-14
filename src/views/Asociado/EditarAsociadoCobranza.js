@@ -30,7 +30,6 @@ const EditarAsociado = (props) => {
   const { register, handleSubmit } = useForm();
   const [formData, setFormData] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [sendassociated, setsendassociated] = useState(false);
 
   const history = useHistory();
 
@@ -65,8 +64,7 @@ const EditarAsociado = (props) => {
     setFormData(data);
   };
 
-  useEffect(() => {
-    if (sendassociated) {
+  const handleConfirm = () => {
       //REGISTRAR
       formData.comitegremial = associatedEditObject.comite.idComite;
       formData.tipoasociado = associatedEditObject.asociado.tipoAsociado;
@@ -81,11 +79,9 @@ const EditarAsociado = (props) => {
       dispatch(update(associatedEditObject.asociado.idAsociado,formData));
       history.push('/admin/asociado-co');
       //REGISTRAR
-      setsendassociated(false);
       document.getElementById("form-save-associated").reset();
       setFormData(null);
-    }
-  }, [sendassociated,associatedEditObject, cobrador, dispatch, formData, history]);
+  }
 
   return (
     <>
@@ -96,7 +92,7 @@ const EditarAsociado = (props) => {
       <Container className="mt--7" fluid>
       <ConfirmDialog
         question="¿Seguro de actualizar datos del asociado?"
-        showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendassociated} />
+        showConfirm={showConfirm} toggleModal={toggleModal} handleConfirm={handleConfirm} />
         <Row>
           <Col className="order-xl-1" xl="12">
             <Card className="bg-secondary shadow">

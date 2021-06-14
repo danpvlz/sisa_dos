@@ -46,9 +46,7 @@ const Cuenta = () => {
   const [page, setPage] = useState(1);
   const [search, setsearch] = useState({});
   const [idCuenta, setidCuenta] = useState(null);
-  const [action, setaction] = useState(1);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [sendConfirm, setsendConfirm] = useState(false);
 
   const [showPay, setshowPay] = useState(false);
   const [fecha, setfecha] = useState("");
@@ -56,7 +54,6 @@ const Cuenta = () => {
   const [bancopago, setbancopago] = useState(1);
   const [numoperacion, setNumOperacion] = useState("");
   const [numsofdoc, setNumSofdoc] = useState("");
-  const [sendPay, setsendPay] = useState(0);
 
   const [showBillDetail, setshowBillDetail] = useState(false);
 
@@ -170,39 +167,33 @@ const Cuenta = () => {
     setshowBillDetail(!showBillDetail);
   };
 
-  useEffect(() => {
-    if (action === 1 && sendConfirm) {
-      //REGISTRAR
-      dispatch(anularCuenta(idCuenta))
-      //REGISTRAR
-      setsendConfirm(false);
-      setidCuenta(null);
+  const handleConfirm = () => {
+    //REGISTRAR
+    dispatch(anularCuenta(idCuenta))
+    //REGISTRAR
+    setidCuenta(null);
+  }
+  
+  const handlePay=()=>{
+    //REGISTRAR
+    var fData = {
+      "idCuenta": idCuenta,
+      "monto": monto,
+      "fechaPago": fecha,
+      "opcion": bancopago,
+      "numoperacion": numoperacion,
+      "numsofdoc": numsofdoc,
+      "montoPaid": montoPaid,
     }
-  }, [sendConfirm,action,idCuenta,dispatch]);
-
-  useEffect(() => {
-    if (sendPay) {
-      //REGISTRAR
-      var fData = {
-        "idCuenta": idCuenta,
-        "monto": monto,
-        "fechaPago": fecha,
-        "opcion": bancopago,
-        "numoperacion": numoperacion,
-        "numsofdoc": numsofdoc,
-        "montoPaid": montoPaid,
-      }
-      dispatch(payCaja(fData))
-      //REGISTRAR
-      setsendPay(false);
-      setidCuenta(null);
-      setbancopago(1);
-      setmonto("");
-      setfecha("");
-      setNumOperacion("");
-      setNumSofdoc("");
-    }
-  }, [sendPay,bancopago, fecha, idCuenta, monto, montoPaid, numoperacion, numsofdoc, dispatch]);
+    dispatch(payCaja(fData))
+    //REGISTRAR
+    setidCuenta(null);
+    setbancopago(1);
+    setmonto("");
+    setfecha("");
+    setNumOperacion("");
+    setNumSofdoc("");
+  }
 
   return (
     <>
@@ -220,7 +211,7 @@ const Cuenta = () => {
         setfecha={setfecha}
         monto={monto}
         setmonto={setmonto}
-        setsendPay={setsendPay}
+        handlePay={handlePay}
         setbancopago={setbancopago}
         fechasince={fechasince}
         numoperacion={numoperacion}
@@ -233,8 +224,8 @@ const Cuenta = () => {
       {/* Page content */}
       <Container className="mt--7" fluid>
         <ConfirmDialog
-          question={action === 1 ? "¿Seguro de anular cuenta y pagos asociados?" : "¿Seguro de pagar cuenta?"}
-          showConfirm={showConfirm} toggleModal={toggleModal} setConfirm={setsendConfirm} />
+          question={"¿Seguro de anular cuenta y pagos asociados?"}
+          showConfirm={showConfirm} toggleModal={toggleModal} handleConfirm={handleConfirm} />
         <PaymentsModal
           showDetail={showBillDetail} toggleModal={toggleModalDetail}
         />
@@ -464,7 +455,7 @@ const Cuenta = () => {
                                     </DropdownItem>
                                     <DropdownItem
                                       className="d-flex"
-                                      onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal(); }}
+                                      onClick={(e) => { setidCuenta(cuenta.idCuenta); toggleModal(); }}
                                     >
                                       <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
                                     </DropdownItem>
@@ -474,10 +465,10 @@ const Cuenta = () => {
                                     <>
                                       <DropdownItem
                                         className="d-flex"
-                                        onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal(); }}
+                                        onClick={(e) => { setidCuenta(cuenta.idCuenta); toggleModal(); }}
                                       >
                                         <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
-                          </DropdownItem>
+                                      </DropdownItem>
                                     </>
                                     :
                                     ""

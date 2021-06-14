@@ -48,7 +48,6 @@ const Cuenta = () => {
   const [search, setsearch] = useState({});
   const [idCuenta, setidCuenta] = useState(null);
   const [action, setaction] = useState(1);
-  const [sendConfirm, setsendConfirm] = useState(false);
 
   const [fecha, setfecha] = useState("");
   const [monto, setmonto] = useState(0);
@@ -56,7 +55,6 @@ const Cuenta = () => {
   const [numoperacion, setNumOperacion] = useState("");
   const [numsofdoc, setNumSofdoc] = useState("");
   const [montoPaid, setMontoPaid] = useState("");
-  const [sendPay, setsendPay] = useState(0);
 
   const [show, setshow] = useState({
     confirm: false,
@@ -170,46 +168,40 @@ const Cuenta = () => {
     setshow({ ...show, [modal]: !show[modal] });
   };
 
-  useEffect(() => {
-    if (sendConfirm) {
-      //REGISTRAR
-      var fData = {
-        "idCuenta": idCuenta,
-      }
-      if (action === 1) {
-        dispatch(anularCuenta(fData))
-      } else {
-        dispatch(toPending(idCuenta))
-      }
-      //REGISTRAR
-      setsendConfirm(false);
-      setidCuenta(null);
+  const handleConfirm = () => {
+    //REGISTRAR
+    var fData = {
+      "idCuenta": idCuenta,
     }
-  }, [sendConfirm,action,idCuenta,dispatch]);
+    if (action === 1) {
+      dispatch(anularCuenta(fData))
+    } else {
+      dispatch(toPending(idCuenta))
+    }
+    //REGISTRAR
+    setidCuenta(null);
+  }
 
-  useEffect(() => {
-    if (sendPay) {
-      //REGISTRAR
-      var fData = {
-        "idCuenta": idCuenta,
-        "monto": monto,
-        "fechaPago": fecha,
-        "banco": bancopago,
-        "numoperacion": numoperacion,
-        "numsofdoc": numsofdoc,
-        "montoPaid": montoPaid,
-      }
-      dispatch(pagarCuenta(fData))
-      //REGISTRAR
-      setsendPay(false);
-      setidCuenta(null);
-      setbancopago(1);
-      setmonto("");
-      setfecha("");
-      setNumOperacion("");
-      setNumSofdoc("");
+  const handlePay = () => {
+    //REGISTRAR
+    var fData = {
+      "idCuenta": idCuenta,
+      "monto": monto,
+      "fechaPago": fecha,
+      "banco": bancopago,
+      "numoperacion": numoperacion,
+      "numsofdoc": numsofdoc,
+      "montoPaid": montoPaid,
     }
-  }, [sendPay,bancopago,fecha,idCuenta,monto,montoPaid,numoperacion,numsofdoc,dispatch]);
+    dispatch(pagarCuenta(fData))
+    //REGISTRAR
+    setidCuenta(null);
+    setbancopago(1);
+    setmonto("");
+    setfecha("");
+    setNumOperacion("");
+    setNumSofdoc("");
+  }
 
   return (
     <>
@@ -226,7 +218,7 @@ const Cuenta = () => {
         setfecha={setfecha}
         monto={monto}
         setmonto={setmonto}
-        setsendPay={setsendPay}
+        handlePay={handlePay}
         setbancopago={setbancopago}
         fechasince={fechasince}
         numoperacion={numoperacion}
@@ -239,21 +231,12 @@ const Cuenta = () => {
       <ChangePayModal
         showPay={show.changePay}
         toggleModal={() => toggleModal('changePay')}
-        fecha={fecha}
-        setfecha={setfecha}
-        monto={monto}
-        setmonto={setmonto}
-        setsendPay={setsendPay}
-        setbancopago={setbancopago}
-        fechasince={fechasince}
-        setMontoPaid={setMontoPaid}
-        montoPaid={montoPaid}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
         <ConfirmDialog
           question={action === 1 ? "¿Seguro de anular cuenta y pagos asociados?" : action === 2 ? "¿Seguro de regresar cuenta a pendiente?" : "¿Seguro de pagar cuenta?"}
-          showConfirm={show.confirm} toggleModal={() => toggleModal('confirm')} setConfirm={setsendConfirm} />
+          showConfirm={show.confirm} toggleModal={() => toggleModal('confirm')} handleConfirm={handleConfirm} />
         <PaymentsModal
           showDetail={show.billDetail} toggleModal={() => toggleModal('billDetail')}
         />
@@ -533,7 +516,7 @@ const Cuenta = () => {
                                               className="d-flex"
                                               onClick={(e) => {
                                                 dispatch(getBillDetail({ "idCuenta": cuenta.idCuenta }));
-                                                toggleModal('changePay')
+                                                toggleModal('changePay');
                                               }}
                                             >
                                               <i className="text-green fa fa-edit" aria-hidden="true"></i> Cambiar pago

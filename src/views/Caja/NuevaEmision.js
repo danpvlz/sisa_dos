@@ -43,7 +43,6 @@ const NuevaEmision = () => {
 
   const { register, handleSubmit } = useForm();
   const [formdata, setformdata] = useState(null);
-  const [confirm, setComfirm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [tipoDocumentoEmision, settipoDocumentoEmision] = useState(null);
   const [pagado, setpagado] = useState(null);
@@ -51,7 +50,7 @@ const NuevaEmision = () => {
   const [typeChange, settypeChange] = useState(1);
   const [searchDoc, setSearchDoc] = useState(null);
   const [montoPaid, setMontoPaid] = useState(null);
-  
+
   const setPriceConcepto = (price) => {
     setitemValues({ ...itemValues, "price": price, "subtotal": price * itemValues.ammount })
   }
@@ -73,37 +72,32 @@ const NuevaEmision = () => {
   const [items, setitems] = useState([]);
 
   const addItem = () => {
-    /*if (items.some(item =>
-      item.idConcepto === idConcepto)) {
-      dispatch(fetchError("Item repetido"));
-    } else {*/
-      if (idConcepto == null) {
-        dispatch(fetchError("Debe seleccionar un concepto."));
+    if (idConcepto == null) {
+      dispatch(fetchError("Debe seleccionar un concepto."));
+    } else {
+      if (itemValues.price === 0) {
+        dispatch(fetchError("El precio no puede ser cero."));
       } else {
         if (itemValues.price === 0) {
           dispatch(fetchError("El precio no puede ser cero."));
         } else {
-          if (itemValues.price === 0) {
-            dispatch(fetchError("El precio no puede ser cero."));
+          if (itemValues.ammount === 0) {
+            dispatch(fetchError("La cantidad no puede ser cero."));
           } else {
-            if (itemValues.ammount === 0) {
-              dispatch(fetchError("La cantidad no puede ser cero."));
-            } else {
-              itemValues.idConcepto = idConcepto;
-              itemValues.labelConcepto = labelConcepto;
-              setitems(items.concat(itemValues));
-              setitemValues({
-                detail: '',
-                price: 0,
-                ammount: 0,
-                subtotal: 0,
-                igv: 1,
-              });
-            }
+            itemValues.idConcepto = idConcepto;
+            itemValues.labelConcepto = labelConcepto;
+            setitems(items.concat(itemValues));
+            setitemValues({
+              detail: '',
+              price: 0,
+              ammount: 0,
+              subtotal: 0,
+              igv: 1,
+            });
           }
         }
       }
-    //}
+    }
 
     setTimeout(() => {
       dispatch(hideMessage());
@@ -114,7 +108,7 @@ const NuevaEmision = () => {
     if (idCliente != null) {
       dispatch(showCliente(idCliente));
     }
-  }, [idCliente,dispatch]);
+  }, [idCliente, dispatch]);
 
   const onSubmit = (data) => {
     idCliente == null ?
@@ -149,20 +143,17 @@ const NuevaEmision = () => {
     dispatch(hideMessage());
   };
 
-  useEffect(() => {
-    if (confirm) {
-      formdata.idCliente = idCliente;
-      formdata.tipo_de_comprobante = tipoDocumentoEmision;
-      formdata.pagado = pagado;
-      formdata.opcion = opcion;
-      formdata.typeChange = typeChange;
-      formdata.items = items;
-      formdata.docModificar = docModificar;
-      dispatch(saveCuenta(formdata));
-      history.push('/admin/cuentas-caja');
-    }
-    setComfirm(false);
-  }, [confirm,formdata,docModificar, history, idCliente, items, opcion, pagado, tipoDocumentoEmision,typeChange,dispatch]);
+  const handleConfirm = () => {
+    formdata.idCliente = idCliente;
+    formdata.tipo_de_comprobante = tipoDocumentoEmision;
+    formdata.pagado = pagado;
+    formdata.opcion = opcion;
+    formdata.typeChange = typeChange;
+    formdata.items = items;
+    formdata.docModificar = docModificar;
+    dispatch(saveCuenta(formdata));
+    history.push('/admin/cuentas-caja');
+  }
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -185,7 +176,7 @@ const NuevaEmision = () => {
           question={'¿Seguro de registrar emisión?'}
           showConfirm={showConfirm}
           toggleModal={toggleModal}
-          setConfirm={setComfirm} />
+          handleConfirm={handleConfirm} />
         <NewClient
           show={showNewClient}
           toggleModal={toggleModalNewClient}

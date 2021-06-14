@@ -49,8 +49,6 @@ const Asociado = () => {
   const [selectedAsociado, setSelectedAsociado] = useState(null);
   const [showSetCodigo, setshowSetCodigo] = useState(false);
   const [codigo, setcodigo] = useState(null);
-  const [sendcodigo, setsendcodigo] = useState(false);
-  const [confirm, setComfirm] = useState(false);
 
   const [question, setquestion] = useState('');
   const [action, setAction] = useState(1);
@@ -134,41 +132,33 @@ const Asociado = () => {
     setshowSetCodigo(!showSetCodigo);
   };
 
-  useEffect(() => {
-    if (sendcodigo) {
-      //REGISTRAR
-      var fData = {
-        "idAsociado": selectedAsociado,
-        "codigo": codigo
-      }
-      dispatch(assignCode(fData))
-      //REGISTRAR
-      setcodigo(null);
-      setsendcodigo(false);
-      setSelectedAsociado(null);
+  const handleSendCodigo=()=>{
+    var fData = {
+      "idAsociado": selectedAsociado,
+      "codigo": codigo
     }
-  }, [sendcodigo,codigo,selectedAsociado,dispatch]);
+    dispatch(assignCode(fData))
+    //REGISTRAR
+    setcodigo(null);
+    setSelectedAsociado(null);
+  }
 
   const toggleModalConfirm = () => {
     setShowConfirm(!showConfirm);
   };
 
-  useEffect(() => {
-    if (confirm) {
-      if (action === 1) {
-        dispatch(status(selectedAsociado)); //CAMBIAR DE ESTADO
+  const handleConfirm=()=>{
+    if (action === 1) {
+      dispatch(status(selectedAsociado)); //CAMBIAR DE ESTADO
+    } else {
+      if (action === 2) {
+        dispatch(removeInProcess(selectedAsociado)); //ELIMINAR
       } else {
-        if (action === 2) {
-          dispatch(removeInProcess(selectedAsociado)); //ELIMINAR
-        } else {
-          dispatch(preactive(selectedAsociado)); //ELIMINAR
-        }
+        dispatch(preactive(selectedAsociado)); //ELIMINAR
       }
-
-      setComfirm(false);
-      setSelectedAsociado(null);
     }
-  }, [confirm, action,selectedAsociado,dispatch]);
+    setSelectedAsociado(null);
+  }
 
   return (
     <>
@@ -180,7 +170,7 @@ const Asociado = () => {
           toggleModal={toggleModalCodigo}
           codigo={codigo}
           setcodigo={setcodigo}
-          setSendCodigo={setsendcodigo}
+          handleSendCodigo={handleSendCodigo}
         />
         {/* Table */}
         <Row>
@@ -188,7 +178,7 @@ const Asociado = () => {
             <Card className="shadow">
               <ConfirmDialog
                 question={question}
-                showConfirm={showConfirm} toggleModal={toggleModalConfirm} setConfirm={setComfirm} />
+                showConfirm={showConfirm} toggleModal={toggleModalConfirm} handleConfirm={handleConfirm} />
               <CardHeader className="border-0 bg-secondary">
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">

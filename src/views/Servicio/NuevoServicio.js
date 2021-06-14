@@ -27,7 +27,6 @@ const RegistroServicio = () => {
   const [idAsociado, setIdAsociado] = useState(null);
   const { register, handleSubmit } = useForm();
   const [formdata, setformdata] = useState(null);
-  const [confirm, setComfirm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const onSubmit = (data) => {
@@ -44,14 +43,11 @@ const RegistroServicio = () => {
     }
   }, [dispatch,idAsociado]);
 
-  useEffect(() => {
-    if (confirm) {
-      formdata.idAsociado=idAsociado;
-      dispatch(saveService(formdata));
-      history.push('/admin/servicios');
-    }
-    setComfirm(false);
-  }, [confirm,dispatch,formdata,idAsociado,history]);
+  const handleConfirm = () => {
+    formdata.idAsociado=idAsociado;
+    dispatch(saveService(formdata));
+    history.push('/admin/servicios');
+  }
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -68,7 +64,7 @@ const RegistroServicio = () => {
           question={'¿Seguro de registrar servicio?'}
           showConfirm={showConfirm}
           toggleModal={toggleModal}
-          setConfirm={setComfirm} />
+          handleConfirm={handleConfirm} />
         <Row>
           <Col className="order-xl-1" xl="12">
             <Card className="bg-secondary shadow">

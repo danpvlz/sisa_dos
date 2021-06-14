@@ -21,6 +21,7 @@ const Edit = ({ show, toggleModal }) => {
   const [formdata, setformdata] = useState({
     idParticipante: null,
     idCurso: null,
+    pagado: 0,
   });
 
   const onSubmit = (data) => {
@@ -34,6 +35,7 @@ const Edit = ({ show, toggleModal }) => {
         setformdata({
           idParticipante: null,
           idCurso: null,
+          pagado: 0,
         });
         toggleModal();
         dispatch(hideMessage());
@@ -46,12 +48,13 @@ const Edit = ({ show, toggleModal }) => {
       setformdata({
         idParticipante: inscripcionObject?.idParticipante,
         idCurso: inscripcionObject?.idCurso,
+        pagado: inscripcionObject?.pagado,
       });
     }
   }, [inscripcionObject]);
 
-  const setNewFormData = (key,val) => {
-    setformdata({...formdata,[key]:val});
+  const setNewFormData = (key, val) => {
+    setformdata({ ...formdata, [key]: val });
   }
 
   return (
@@ -78,6 +81,20 @@ const Edit = ({ show, toggleModal }) => {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <div className="modal-body pb-0 bg-secondary">
           <Row>
+            <Col lg="12">
+              <div className="custom-control custom-control-alternative custom-checkbox mb-3">
+                <input
+                  className="custom-control-input"
+                  id="cbPagado"
+                  type="checkbox"
+                  defaultChecked={ formdata.pagado===1 }
+                  onChange={(e)=>setNewFormData('pagado',e.target.checked === true ? 1 : 0)}
+                />
+                <label className="custom-control-label" htmlFor="cbPagado">
+                  ¿Pagado?
+                </label>
+              </div>
+            </Col>
             <Col lg="6">
               <FormGroup>
                 <label

@@ -38,7 +38,6 @@ const Index = () => {
   });
   const [selected, setSelected] = useState(null);
   const [idCurso, setIdCurso] = useState(null);
-  const [confirm, setconfirm] = useState(false);
   const [action, setAction] = useState(1);
 
   const handleNew = () => {
@@ -77,13 +76,10 @@ const Index = () => {
     setshow({ ...showModal, [modal]: !showModal[modal] });
   };
 
-  useEffect(() => {
-    if (confirm) {
-      if (action === 1 || action === 0) { dispatch(changeStatus(idCurso)) }
-      if (action === 2) { dispatch(destroy(idCurso)) }
-      setconfirm(false)
-    }
-  }, [confirm,action,idCurso,dispatch]);
+  const handleConfirm = () => {
+    if (action === 1 || action === 0) { dispatch(changeStatus(idCurso)) }
+    if (action === 2) { dispatch(destroy(idCurso)) }
+  }
 
   return (
     <>
@@ -92,14 +88,13 @@ const Index = () => {
       </div>
       <ConfirmDialog
         question={action === 1 ? "¿Seguro de desactivar el curso?" : action === 2 ? "¿Seguro de eliminar el curso?" : "¿Seguro de activar el curso?"}
-        showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} setConfirm={setconfirm} />
+        showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} handleConfirm={handleConfirm} />
       <New
         show={showModal.new}
         toggleModal={() => toggleModal('new')}
       />
       {/* Page content */}
       <Container className="mt--9" fluid>
-        {/* Table */}
         <Row>
           <div className="col">
             <Card className="shadow">

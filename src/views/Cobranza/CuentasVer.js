@@ -30,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { listBills, indicatorsBills, getBillDetail, exportBills, exportBillsDetail } from "../../redux/actions/Cuenta";
 import Loading from "../../components/Loaders/LoadingSmall";
 
+var timeOutFunc;
 const Cuenta = () => {
   const selectInputRef = useRef();
   const selectInputRefAsociado = useRef();
@@ -66,6 +67,7 @@ const Cuenta = () => {
 
   useEffect(() => {
     let tsearch = search;
+    let wait = false;
 
     if (cobrador == null) {
       delete tsearch.debCollector;
@@ -95,39 +97,48 @@ const Cuenta = () => {
       delete tsearch.number;
     } else {
       tsearch.number = number;
+      wait=true;
     }
     if (sincePay == null) {
       delete tsearch.sincePay;
     } else {
       tsearch.sincePay = sincePay;
+      wait=true;
     }
 
     if (untilPay == null) {
       delete tsearch.untilPay;
     } else {
       tsearch.untilPay = untilPay;
+      wait=true;
     }
 
     if (since == null) {
       delete tsearch.since;
     } else {
       tsearch.since = since;
+      wait=true;
     }
 
     if (until == null) {
       delete tsearch.until;
     } else {
       tsearch.until = until;
+      wait=true;
     }
 
     if (loaded) {
-      setsearch(tsearch);
+      if(wait){
+        clearTimeout(timeOutFunc);
+        timeOutFunc = setTimeout(() => {
+          setsearch(tsearch);
+          dispatch(listBills(page, tsearch));
+          dispatch(indicatorsBills(search));
+        }, 800);
+      }
+    }else{
       dispatch(listBills(page, tsearch));
       dispatch(indicatorsBills(search));
-    }else{
-      dispatch(listBills(page, search));
-      dispatch(indicatorsBills(search));
-      setloaded(true);
     }
     return () => {
       setloaded(false);

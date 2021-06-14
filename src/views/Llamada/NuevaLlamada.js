@@ -27,7 +27,6 @@ const RegistroLlamada = () => {
   const [idAsociado, setIdAsociado] = useState(null);
   const { register, handleSubmit } = useForm();
   const [formdata, setformdata] = useState(null);
-  const [confirm, setComfirm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const onSubmit = (data) => {
@@ -44,14 +43,11 @@ const RegistroLlamada = () => {
     }
   }, [dispatch,idAsociado]);
 
-  useEffect(() => {
-    if (confirm) {
-      formdata.idAsociado=idAsociado;
-      dispatch(savePhoneCall(formdata));
-      history.push('/admin/llamadas');
-    }
-    setComfirm(false);
-  }, [confirm,formdata,dispatch,history,idAsociado]);
+  const handleConfirm = () => {
+    formdata.idAsociado=idAsociado;
+    dispatch(savePhoneCall(formdata));
+    history.push('/admin/llamadas');
+  }
 
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
@@ -68,7 +64,7 @@ const RegistroLlamada = () => {
           question={'¿Seguro de registrar llamada?'}
           showConfirm={showConfirm}
           toggleModal={toggleModal}
-          setConfirm={setComfirm} />
+          handleConfirm={handleConfirm} />
         <Row>
           <Col className="order-xl-1" xl="12">
             <Card className="bg-secondary shadow">

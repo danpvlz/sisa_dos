@@ -8,9 +8,9 @@ import {
   Modal,
 } from "reactstrap";
 
-const SetCodigoModal = ({ showSetCodigo, toggleModal, codigo,setcodigo, setSendCodigo }) => {
+const SetCodigoModal = ({ showSetCodigo, toggleModal, codigo,setcodigo, handleSendCodigo }) => {
   const saveJustification = () => {
-    setSendCodigo(true); 
+    handleSendCodigo(); 
     toggleModal();
   }
   return (

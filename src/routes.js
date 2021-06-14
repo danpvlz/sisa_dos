@@ -23,7 +23,6 @@ import EditarAsociado from "views/Asociado/EditarAsociado.js";
 import EditarAsociadoCobranza from "views/Asociado/EditarAsociadoCobranza.js";
 import VerMas from "views/Asociado/VerMas.js";
 import EditarAsociadoSA from "views/Asociado/EditarAsociadoSA.js";
-import Afiliacion from "views/Asociado/Afiliacion.js";
 
 //Colaborador 3
 import Colaborador from "views/Colaborador/Colaborador.js";
@@ -47,6 +46,7 @@ import NuevaEmision from "views/Cobranza/NuevaEmision.js";
 import Pendientes from "views/Cobranza/Pendientes.js";
 import Membresia from "views/Cobranza/Membresia.js";
 import Ocurrencias from "views/Ocurrencias/index.js";
+import CuentasCobranza from "views/Cobranza/CuentasCobranza";
 
 //Caja 4
 import CajaAdmin from "views/Caja/CajaAdmin";
@@ -74,6 +74,13 @@ import Notificaciones from "views/Notificaciones/index";
 //Indexes
 import AreaDashbord from "views/Indexes/AreaDashbord";
 
+//Public
+import Afiliacion from "views/Public/Afiliacion.js";
+import PublicInscripcion from "views/Public/Inscripcion.js";
+
+//Contabilidad
+import Pagos from "views/Contabilidad/Pagos.js";
+
 export const components=[
   Login,
   Index,
@@ -87,7 +94,7 @@ export const components=[
   MarcarAsistencia,
   Llamada,
   NuevaLlamada,
-  CuentasAdmin,
+  CuentasAdmin, //12
   NuevaEmision,
   Pendientes,
   Membresia,
@@ -122,6 +129,9 @@ export const components=[
   AreaDashbord,//44
   AreaDashboardAdmin,//45
   Ocurrencias, //46
+  PublicInscripcion, //47
+  Pagos, //48
+  CuentasCobranza, //49
 ]
 //1
 export const routesSimple = [
@@ -146,6 +156,14 @@ export const routesSimple = [
     name: "Afiliacion",
     icon: "ni ni-key-25 text-info",
     component: components[22],
+    layout: "/public",
+    show: false
+  },
+  {
+    path: "/inscripcion/:cursoId",
+    name: "Inscripción",
+    icon: "ni ni-key-25 text-info",
+    component: components[47],
     layout: "/public",
     show: false
   },

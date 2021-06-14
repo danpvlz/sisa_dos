@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../redux/actions/Cuenta";
 
-const ChangePayModal = ({ showPay, toggleModal, setsendPay, setbancopago, opciones }) => {
+const ChangePayModal = ({ showPay, toggleModal, opciones }) => {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const { pagos } = useSelector(({ cuenta }) => cuenta.comprobanteObject);

@@ -3,9 +3,10 @@ import {
     Button,
     Modal,
   } from "reactstrap";
-const ConfirmDialog = ({ showConfirm, toggleModal, setConfirm, question }) => {
+const ConfirmDialog = ({ showConfirm, toggleModal, question, handleConfirm }) => {
     const doAction = () => {
-        setConfirm(true); toggleModal();
+        handleConfirm();
+        toggleModal();
     }
     return (
         <Modal

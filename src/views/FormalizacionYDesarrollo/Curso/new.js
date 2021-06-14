@@ -7,7 +7,9 @@ import {
   Col,
   Modal,
   Form,
+  UncontrolledTooltip,
 } from "reactstrap";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchError, hideMessage } from '../../../redux/actions/Common';
@@ -15,13 +17,19 @@ import { store, update } from "../../../redux/actions/Curso";
 
 const New = ({ show, toggleModal }) => {
   const { register, handleSubmit } = useForm();
+
+  const [file, setFile] = useState(null);
+  const [fileSend, setfileSend] = useState(null);
+  
   const { cursobject } = useSelector(({ curso }) => curso);
   const dispatch = useDispatch();
   const [formdata, setformdata] = useState({
     descripcion: "",
   });
+  const [copiedText, setcopiedText] = useState("");
 
   const onSubmit = (data) => {
+    formdata.foto = fileSend;
     if (formdata.descripcion === "") {
       dispatch(fetchError("Debe ingresar una descripción."))
     } else {
@@ -42,9 +50,21 @@ const New = ({ show, toggleModal }) => {
     if (cursobject) {
       setformdata({
         descripcion: cursobject?.descripcion,
+        url: process.env.REACT_APP_BASE+"capacitacion-cclam/"+cursobject.idCurso,
       });
     }
   }, [cursobject]);
+
+  const hiddenFileInput = React.useRef(null);
+
+  const handleOpenFileSearch = event => {
+    hiddenFileInput.current.click();
+  };
+  const handleChangeFileInput = event => {
+    const fileUploaded = event.target.files[0];
+    setfileSend(fileUploaded)
+    setFile(fileUploaded ? URL.createObjectURL(fileUploaded) : null);
+  };
 
   return (
     <Modal
@@ -88,6 +108,82 @@ const New = ({ show, toggleModal }) => {
                 />
               </FormGroup>
             </Col>
+            {/* Inicio flayer */}
+            <Col lg="12" className="mb-2">
+              <label
+                className="form-control-label"
+                htmlFor="input-ruc"
+              >Flayer</label>
+              <input
+                type="file"
+                name="photo"
+                ref={hiddenFileInput}
+                onChange={handleChangeFileInput}
+                style={{ display: 'none' }}
+              />
+              <div className="input-image-rectangle-container">
+                <img
+                  alt="Flayer de curso"
+                  className="input-image-rectangle"
+                  src={
+                    file == null || file === "" ?
+                    cursobject.foto ? 
+                    process.env.REACT_APP_BASE + 'storage/' + cursobject.foto
+                    :
+                    require("../../../assets/img/resources/upload-image.jpg")
+                        .default
+                      :
+                      file
+                  }
+                  onClick={handleOpenFileSearch}
+                />
+              </div>
+            </Col>
+            {/* Fin flayer */}
+            {
+              cursobject.idCurso ? 
+              <Col lg="12">
+                <FormGroup>
+                  <label
+                    className="form-control-label"
+                    htmlFor="input-ruc"
+                  >Link inscripción</label>
+                  {
+                      <Row className="mr-0 pr-0">
+                        <Col className="col-11 mr-0 pr-0">
+                      <div className="form-control-alternative text-left assistance-input">
+                      <a href={formdata?.url} target="_blank" rel="noreferrer">{formdata?.url}</a>
+                      </div>
+                        </Col>
+                        <Col className="col-1 mx-0 px-0">
+                          <CopyToClipboard
+                            text={formdata?.url}
+                            onCopy={() => setcopiedText(formdata?.url)}
+                          >
+                            <Button
+                              id="tooltipCopiarLinkCurso"
+                              type="button"
+                            >
+                              <i className="ni ni-single-copy-04" />
+                            </Button>
+                          </CopyToClipboard>
+                          <UncontrolledTooltip
+                            delay={0}
+                            trigger="hover focus"
+                            target="tooltipCopiarLinkCurso"
+                          >
+                            {copiedText === formdata?.url
+                              ? "Copiado"
+                              : "Copiar link"}
+                          </UncontrolledTooltip>
+                        </Col>
+                      </Row>
+                    }
+                </FormGroup>
+              </Col>
+              :
+              ""
+            }
           </Row>
         </div>
         <div className="modal-footer">

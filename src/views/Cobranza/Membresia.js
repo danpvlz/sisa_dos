@@ -82,7 +82,7 @@ const EstadoCuenta = () => {
               <CardHeader className="border-0 bg-secondary">
                 <Row >
                   <Col lg="12" className="border-0 d-flex justify-content-between">
-                    <h3 className="mb-0">Membresía{process.env.REACT_NUBEFACT_TOKEN}</h3>
+                    <h3 className="mb-0">Membresía</h3>
                   </Col>
                   <Col lg="12 ">
                     <hr className="my-4 " />

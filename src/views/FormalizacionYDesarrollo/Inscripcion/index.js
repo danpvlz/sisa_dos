@@ -37,7 +37,6 @@ const Index = () => {
     edit: false,
   });
   const [selected, setSelected] = useState(null);
-  const [confirm, setconfirm] = useState(false);
   const [action, setAction] = useState(1);
   const [participantSearched, setParticipant] = useState(null);
   const [cursoSearched, setCursoSearched] = useState(null);
@@ -80,12 +79,9 @@ const Index = () => {
     setshow({ ...showModal, [modal]: !showModal[modal] });
   };
 
-  useEffect(() => {
-    if (confirm) {
-      if (action === 2) { dispatch(destroy(selected)) }
-      setconfirm(false)
-    }
-  }, [confirm,dispatch,action,selected]);
+  const handleConfirm = () => {
+    if (action === 2) { dispatch(destroy(selected)) }
+  }
 
   useEffect(() => {
     if (action === 1 && selected!=null) { dispatch(show(selected)); }
@@ -98,7 +94,7 @@ const Index = () => {
       </div>
       <ConfirmDialog
         question={action === 1 ? "¿Seguro de desactivar el participante?" : action === 2 ? "¿Seguro de eliminar inscripción?" : "¿Seguro de activar el participante?"}
-        showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} setConfirm={setconfirm} />
+        showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} handleConfirm={handleConfirm} />
       <Edit
         show={showModal.edit}
         toggleModal={() => toggleModal('edit')}
@@ -169,6 +165,7 @@ const Index = () => {
                           <th scope="col">Participante</th>
                           <th scope="col">DNI</th>
                           <th scope="col">Curso</th>
+                          <th scope="col">¿Pagado?</th>
                           <th scope="col">Inscripción</th>
                           <th scope="col"></th>
                         </tr>
@@ -178,13 +175,20 @@ const Index = () => {
                           inscripcionList?.data?.map((inscription, key) =>
                             <tr key={key}>
                               <td>
-                                {inscription.participante}
+                                <a href={`https://wa.me/51${inscription.celular}`} target="_blank" rel="noreferrer">{inscription.participante}</a>
                               </td>
                               <td>
                                 {inscription.dni}
                               </td>
                               <td>
                                 {inscription.curso}
+                              </td>
+                              <td>
+                                {inscription.pagado === 0 ? 
+                                  <i className="ni ni-fat-remove text-muted ni-lg"/>  
+                                :
+                                  <i className="ni ni-check-bold text-success ni-lg"/>  
+                                }
                               </td>
                               <td>
                                 {moment(inscription.fecha, "YYYY-MM-DD h:m:s").fromNow()}

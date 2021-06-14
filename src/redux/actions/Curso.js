@@ -54,12 +54,21 @@ import {
   };
   
   export const update = (courseData,idCurso) => {
+    var bodyFormData = new FormData();
+    bodyFormData.append('descripcion', courseData.descripcion);
+    bodyFormData.append('foto', courseData.foto);
+    
+    let config = {
+        headers:  { "Content-Type": "multipart/form-data" }
+    }
+
     return (dispatch) => {
       dispatch({ type: FETCH_START });
       dispatch({ type: CURSOS_STATUS_ACTIONS, payload: 0 });
   
       axios.post('courseUpdate/'+idCurso,
-      courseData
+      bodyFormData,
+      config
       ).then(({ data, status }) => {
         if (data) {
           dispatch({ type: SHOW_MESSAGE, payload: data.message });

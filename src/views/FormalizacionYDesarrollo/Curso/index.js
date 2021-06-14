@@ -1,4 +1,4 @@
-import React, {  useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PaginationComponent from "react-reactstrap-pagination";
 
 // reactstrap components
@@ -14,6 +14,10 @@ import {
   Col,
   FormGroup,
   Input,
+  CardImg,
+  CardBody,
+  CardTitle,
+  CardText,
 } from "reactstrap";
 // core components
 import New from "./new";
@@ -38,8 +42,8 @@ const Index = () => {
   });
   const [selected, setSelected] = useState(null);
   const [idCurso, setIdCurso] = useState(null);
-  const [confirm, setconfirm] = useState(false);
   const [action, setAction] = useState(1);
+  const [gridView, setgridView] = useState(false);
 
   const handleNew = () => {
     dispatch(resetCursoObject());
@@ -51,7 +55,7 @@ const Index = () => {
     if (cursoStatusActions === 200) {
       dispatch(list(page, search));
     }
-  }, [cursoStatusActions,dispatch,page,search]);
+  }, [cursoStatusActions, dispatch, page, search]);
 
   useEffect(() => {
     let tsearch = search;
@@ -62,7 +66,7 @@ const Index = () => {
     }
     setsearch(tsearch);
     dispatch(list(page, tsearch));
-  }, [page, searchCurso,search,dispatch]);
+  }, [page, searchCurso, search, dispatch]);
 
   useEffect(() => {
     if (selected) {
@@ -71,19 +75,21 @@ const Index = () => {
     return () => {
       setSelected(null);
     }
-  }, [selected,dispatch])
+  }, [selected, dispatch])
 
   const toggleModal = (modal) => {
     setshow({ ...showModal, [modal]: !showModal[modal] });
   };
 
-  useEffect(() => {
-    if (confirm) {
-      if (action === 1 || action === 0) { dispatch(changeStatus(idCurso)) }
-      if (action === 2) { dispatch(destroy(idCurso)) }
-      setconfirm(false)
-    }
-  }, [confirm,action,idCurso,dispatch]);
+  const handleConfirm = () => {
+    if (action === 1 || action === 0) { dispatch(changeStatus(idCurso)) }
+    if (action === 2) { dispatch(destroy(idCurso)) }
+  }
+
+  const handleOpenCourse = (_id) => {
+    window.open(process.env.REACT_APP_BASE + "capacitacion-cclam/" + _id, '_blank');
+    return null;
+  }
 
   return (
     <>
@@ -92,7 +98,7 @@ const Index = () => {
       </div>
       <ConfirmDialog
         question={action === 1 ? "¿Seguro de desactivar el curso?" : action === 2 ? "¿Seguro de eliminar el curso?" : "¿Seguro de activar el curso?"}
-        showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} setConfirm={setconfirm} />
+        showConfirm={showModal.confirm} toggleModal={() => toggleModal('confirm')} handleConfirm={handleConfirm} />
       <New
         show={showModal.new}
         toggleModal={() => toggleModal('new')}
@@ -135,7 +141,7 @@ const Index = () => {
                             htmlFor="filterDescription"
                           >
                             Búsqueda
-                      </label>
+                          </label>
                           <Input
                             className="form-control-alternative"
                             id="filterDescription"
@@ -148,6 +154,20 @@ const Index = () => {
                           />
                         </FormGroup >
                       </Col>
+                      <Col lg="6" className="my-auto">
+                        <Button color="primary" size="sm" type="button" className="my-auto" onClick={() => setgridView(!gridView)}>
+                          {
+                            gridView ?
+                              <>
+                                <i className="fa fa-table" aria-hidden="true"></i> Tabla
+                            </>
+                              :
+                              <>
+                                <i className="fa fa-th-large" aria-hidden="true"></i> Imágenes
+                            </>
+                          }
+                        </Button>
+                      </Col>
                     </Row>
                   </Col>
                 </Row>
@@ -155,57 +175,119 @@ const Index = () => {
               {
                 !loading || cursoList?.data ?
                   <>
-                    <Table className="align-items-center table-flush table-sm" responsive>
-                      <thead className="thead-light">
-                        <tr>
-                          <th scope="col">Curso</th>
-                          <th scope="col">Estado</th>
-                          <th scope="col">Ult. Mod.</th>
-                          <th scope="col"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                          cursoList?.data?.map((curso, key) =>
-                            <tr key={key}>
-                              <td>
-                                {curso.descripcion}
-                              </td>
-                              <td>
-                                <Badge color="" className="badge-dot mr-4">
-                                  <i className={curso.estado === 0 ? "bg-danger" : "bg-success"} />
-                                  {curso.estado === 1 ? "Activo" : "Inactivo"}
-                                </Badge>
-                              </td>
-                              <td>
-                                {moment(curso.updated_at, "YYYY-MM-DD h:m:s").fromNow()}
-                              </td>
-                              <td className="text-right">
-                                <Button
-                                  className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
-                                  onClick={(e) => { setSelected(curso.idCurso); toggleModal('new'); }}
-                                >
-                                  <i className="text-blue fa fa-eye fa-2x" aria-hidden="true"></i>
-                                </Button>
-                                <Button
-                                  className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
-                                  onClick={(e) => { setAction(curso.estado); setIdCurso(curso.idCurso); toggleModal('confirm'); }}
-                                >
-                                  <i className={`text-${curso.estado === 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}  fa-2x`} aria-hidden="true"></i>
-                                </Button>
-                                <Button
-                                  className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
-                                  onClick={(e) => { setAction(2); setIdCurso(curso.idCurso); toggleModal('confirm'); }}
-                                >
-                                  <i className="text-danger fa fa-trash fa-2x" aria-hidden="true"></i>
-                                </Button>
-                              </td>
+                    {
+                      gridView ?
+                        <Table className="align-items-center table-flush table-sm" responsive>
+                          <thead className="thead-light">
+                            <tr>
+                              <th scope="col">Curso</th>
+                              <th scope="col">Estado</th>
+                              <th scope="col">Flayer</th>
+                              <th scope="col">Ult. Mod.</th>
+                              <th scope="col"></th>
                             </tr>
-                          )
-                        }
+                          </thead>
+                          <tbody>
+                            {
+                              cursoList?.data?.map((curso, key) =>
+                                <tr key={key} className="selectable-row">
+                                  <td onClick={() => handleOpenCourse(curso.idCurso)}>
+                                    {curso.descripcion}
+                                  </td>
+                                  <td onClick={() => handleOpenCourse(curso.idCurso)}>
+                                    <Badge color="" className="badge-dot mr-4">
+                                      <i className={curso.estado === 0 ? "bg-danger" : "bg-success"} />
+                                      {curso.estado === 1 ? "Activo" : "Inactivo"}
+                                    </Badge>
+                                  </td>
+                                  <td onClick={() => handleOpenCourse(curso.idCurso)}>
+                                    {curso.foto ?
 
-                      </tbody>
-                    </Table>
+                                      <i className="ni ni-image text-primary ni-2x" />
+                                      :
+
+                                      <i className="ni ni-image text-muted ni-2x" />
+                                    }
+                                  </td>
+                                  <td onClick={() => handleOpenCourse(curso.idCurso)}>
+                                    {moment(curso.updated_at, "YYYY-MM-DD h:m:s").fromNow()}
+                                  </td>
+                                  <td className="text-right">
+                                    <Button
+                                      className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
+                                      onClick={(e) => { setSelected(curso.idCurso); toggleModal('new'); }}
+                                    >
+                                      <i className="text-blue fa fa-eye fa-2x" aria-hidden="true"></i>
+                                    </Button>
+                                    {
+                                      /*
+                                      <Button
+                                        className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
+                                        onClick={(e) => { setAction(curso.estado); setIdCurso(curso.idCurso); toggleModal('confirm'); }}
+                                      >
+                                        <i className={`text-${curso.estado === 1 ? 'danger fa fa-ban' : 'green ni ni-check-bold'}  fa-2x`} aria-hidden="true"></i>
+                                      </Button>
+                                      */
+                                    }
+                                    <Button
+                                      className="btn btn-sm m-0 p-0 icon icon-shape rounded-circle shadow"
+                                      onClick={(e) => { setAction(2); setIdCurso(curso.idCurso); toggleModal('confirm'); }}
+                                    >
+                                      <i className="text-danger fa fa-trash fa-2x" aria-hidden="true"></i>
+                                    </Button>
+                                  </td>
+                                </tr>
+                              )
+                            }
+
+                          </tbody>
+                        </Table>
+                        :
+
+                        <CardBody className="bg-secondary">
+                          <Row>
+                            {
+                              cursoList?.data?.map((curso, key) =>
+                                <Col className="mb-2">
+                                  <Card style={{ width: "18rem" }}>
+                                    <div className="container-img-curso">
+                                      <CardImg
+                                        alt={curso.descripcion}
+                                        src={
+                                          curso.foto ?
+                                            process.env.REACT_APP_BASE + 'storage/' + curso.foto
+                                            :
+                                            require("../../../assets/img/resources/upload-image.jpg")
+                                              .default
+                                        }
+                                        top
+                                        onClick={(e) => { setSelected(curso.idCurso); toggleModal('new'); }}
+                                      />
+                                      <Button
+                                        className="btn btn-sm icon icon-shape bg-transparent border-0 shadow"
+                                        onClick={(e) => { setAction(2); setIdCurso(curso.idCurso); toggleModal('confirm'); }}
+                                      >
+                                        <i className="text-danger fa fa-trash fa-lg" aria-hidden="true"></i>
+                                      </Button>
+                                    </div>
+                                    <CardBody className="text-center"
+                                      onClick={(e) => { setSelected(curso.idCurso); toggleModal('new'); }}>
+                                      <CardTitle>{curso.descripcion} <small>({moment(curso.updated_at, "YYYY-MM-DD h:m:s").fromNow()})</small></CardTitle>
+                                      <CardText>
+
+                                        <Badge color="" className="badge-dot mr-4">
+                                          <i className={curso.estado === 0 ? "bg-danger" : "bg-success"} />
+                                          {curso.estado === 1 ? "Activo" : "Inactivo"}
+                                        </Badge>
+                                      </CardText>
+                                    </CardBody>
+                                  </Card>
+                                </Col>
+                              )
+                            }
+                          </Row>
+                        </CardBody>
+                    }
                     <CardFooter className="py-4">
                       <nav aria-label="..." className="pagination justify-content-end mb-0">
                         <PaginationComponent
