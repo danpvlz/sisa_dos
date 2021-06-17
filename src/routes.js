@@ -81,6 +81,9 @@ import PublicInscripcion from "views/Public/Inscripcion.js";
 //Contabilidad
 import Pagos from "views/Contabilidad/Pagos.js";
 
+//Ambientes
+import Disponibilidad from "views/Ambientes/Disponibilidad";
+
 export const components=[
   Login,
   Index,
@@ -132,6 +135,7 @@ export const components=[
   PublicInscripcion, //47
   Pagos, //48
   CuentasCobranza, //49
+  Disponibilidad, //50
 ]
 //1
 export const routesSimple = [

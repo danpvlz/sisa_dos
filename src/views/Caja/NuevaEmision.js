@@ -454,7 +454,7 @@ const NuevaEmision = () => {
                                     onChange={(inputValue, actionMeta) => {
                                       setOpcion(inputValue.value);
                                     }}
-                                    options={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }]}
+                                    options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]}
                                     innerRef={register({ required: pagado === 2 })}
                                   />
                                 </FormGroup>

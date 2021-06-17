@@ -65,7 +65,7 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, hand
                   <i className="ni ni-money-coins mr-2 my-auto" /> Pago
                 </h6>
               </Col>
-              <Col lg="6"  className="mt-0">
+              <Col lg="6" className="mt-0">
                 <FormGroup className="mb-0">
                   <label
                     className="form-control-label"
@@ -90,7 +90,7 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, hand
                   <span className="text-danger text-center text-sm mx-auto mt-0"> Debe especificar la fecha. </span>
                 }
               </Col>
-              <Col lg="6"  className="mt-0">
+              <Col lg="6" className="mt-0">
                 <FormGroup className="mb-0">
                   <label
                     className="form-control-label"
@@ -123,49 +123,25 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, hand
                   <i className="ni ni-money-coins mr-2 my-auto" /> Transacción
                 </h6>
               </Col>
-              {
-                opciones ?
-                  <Col lg="6">
-                    <FormGroup className="mb-0">
-                      <label
-                        className="form-control-label"
-                        htmlFor="filterMonth"
-                      >
-                        Medio de pago
+              <Col lg="6">
+                <FormGroup className="mb-0">
+                  <label
+                    className="form-control-label"
+                    htmlFor="filterMonth"
+                  >
+                    Banco
                       </label>
-                      <Select
-                        placeholder="Seleccione..."
-                        className="select-style"
-                        name="opciones"
-                        onChange={(inputValue, actionMeta) => {
-                          setbancopago(inputValue != null ? inputValue.value : null);
-                        }}
-                        isClearable
-                        options={[{ value: 3, label: "Banco" }, { value: 4, label: "Contado" }]}
-                      />
-                    </FormGroup >
-                  </Col>
-                  :
-                  <Col lg="6">
-                    <FormGroup className="mb-0">
-                      <label
-                        className="form-control-label"
-                        htmlFor="filterMonth"
-                      >
-                        Banco
-                      </label>
-                      <Select
-                        placeholder="Seleccione..."
-                        className="select-style"
-                        name="banco"
-                        onChange={(inputValue, actionMeta) => {
-                          setbancopago(inputValue != null ? inputValue.value : null);
-                        }}
-                        isClearable
-                        options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
-                    </FormGroup >
-                  </Col>
-              }
+                  <Select
+                    placeholder="Seleccione..."
+                    className="select-style"
+                    name="banco"
+                    onChange={(inputValue, actionMeta) => {
+                      setbancopago(inputValue != null ? inputValue.value : null);
+                    }}
+                    isClearable
+                    options={[{ value: 1, label: "BCP" }, { value: 2, label: "BBVA" }]} />
+                </FormGroup >
+              </Col>
               <Col lg="6" >
                 <FormGroup>
                   <label

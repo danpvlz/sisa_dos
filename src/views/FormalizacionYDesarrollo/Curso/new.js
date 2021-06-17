@@ -50,7 +50,8 @@ const New = ({ show, toggleModal }) => {
     if (cursobject) {
       setformdata({
         descripcion: cursobject?.descripcion,
-        url: process.env.REACT_APP_BASE+"capacitacion-cclam/"+cursobject.idCurso,
+        publicitario: process.env.REACT_APP_BASE+"capacitacion-cclam/"+window.btoa(cursobject.idCurso),
+        inscripcion: cursobject?.inscripcion
       });
     }
   }, [cursobject]);
@@ -142,23 +143,24 @@ const New = ({ show, toggleModal }) => {
             {/* Fin flayer */}
             {
               cursobject.idCurso ? 
+              <>
               <Col lg="12">
                 <FormGroup>
                   <label
                     className="form-control-label"
                     htmlFor="input-ruc"
-                  >Link inscripción</label>
+                  >Link publicitario</label>
                   {
                       <Row className="mr-0 pr-0">
                         <Col className="col-11 mr-0 pr-0">
                       <div className="form-control-alternative text-left assistance-input">
-                      <a href={formdata?.url} target="_blank" rel="noreferrer">{formdata?.url}</a>
+                      <a href={formdata?.publicitario} target="_blank" rel="noreferrer">{formdata?.publicitario}</a>
                       </div>
                         </Col>
                         <Col className="col-1 mx-0 px-0">
                           <CopyToClipboard
-                            text={formdata?.url}
-                            onCopy={() => setcopiedText(formdata?.url)}
+                            text={formdata?.publicitario}
+                            onCopy={() => setcopiedText(formdata?.publicitario)}
                           >
                             <Button
                               id="tooltipCopiarLinkCurso"
@@ -172,7 +174,7 @@ const New = ({ show, toggleModal }) => {
                             trigger="hover focus"
                             target="tooltipCopiarLinkCurso"
                           >
-                            {copiedText === formdata?.url
+                            {copiedText === formdata?.publicitario
                               ? "Copiado"
                               : "Copiar link"}
                           </UncontrolledTooltip>
@@ -181,6 +183,46 @@ const New = ({ show, toggleModal }) => {
                     }
                 </FormGroup>
               </Col>
+              <Col lg="12">
+                <FormGroup>
+                  <label
+                    className="form-control-label"
+                    htmlFor="input-ruc"
+                  >Link de inscripción</label>
+                  {
+                      <Row className="mr-0 pr-0">
+                        <Col className="col-11 mr-0 pr-0">
+                      <div className="form-control-alternative text-left assistance-input">
+                      <a href={formdata?.inscripcion} target="_blank" rel="noreferrer">{formdata?.inscripcion}</a>
+                      </div>
+                        </Col>
+                        <Col className="col-1 mx-0 px-0">
+                          <CopyToClipboard
+                            text={formdata?.inscripcion}
+                            onCopy={() => setcopiedText(formdata?.inscripcion)}
+                          >
+                            <Button
+                              id="tooltipCopiarLinkCurso"
+                              type="button"
+                            >
+                              <i className="ni ni-single-copy-04" />
+                            </Button>
+                          </CopyToClipboard>
+                          <UncontrolledTooltip
+                            delay={0}
+                            trigger="hover focus"
+                            target="tooltipCopiarLinkCurso"
+                          >
+                            {copiedText === formdata?.inscripcion
+                              ? "Copiado"
+                              : "Copiar link"}
+                          </UncontrolledTooltip>
+                        </Col>
+                      </Row>
+                    }
+                </FormGroup>
+              </Col>
+              </>
               :
               ""
             }

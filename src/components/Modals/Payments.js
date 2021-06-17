@@ -11,6 +11,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { showComprobante } from "../../redux/actions/Cuenta";
 import Loading from "../../components/Loaders/LoadingSmall";
+import moment from "moment";
+import 'moment/locale/es';
+moment.locale('es')
 
 export default function Payments({ showDetail, toggleModal }) {
     const dispatch = useDispatch();
@@ -43,7 +46,7 @@ export default function Payments({ showDetail, toggleModal }) {
                 <Col className="text-center my-2" >
                     <Badge color="" className="badge-dot mr-4">
                         <i className="bg-success" />
-                        <small className="text-muted">Última modificación por {comprobanteObject?.cuenta?.userLastChanged}</small>
+                        <small className="text-muted">Última modificación por {comprobanteObject?.cuenta?.userLastChanged} {moment(comprobanteObject?.cuenta?.lastUpdate, "YYYY-MM-DD h:m:s").fromNow()}</small>
                     </Badge>
                 </Col>
                 :

@@ -206,6 +206,8 @@ const Pagos = () => {
                                                                 ]
                                                                 :
                                                                 [
+                                                                    { value: 1, label: "BCP" },
+                                                                    { value: 2, label: "BBVA" },
                                                                     { value: 3, label: "BANCOS" },
                                                                     { value: 4, label: "CONTADO" },
                                                                     { value: 5, label: "CREDITO" }
