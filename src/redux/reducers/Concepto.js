@@ -7,6 +7,7 @@ import {
   GET_CONCEPT,
   FILTER_AREAS,
   FILTER_CATEGORIES,
+  FILTER_AMBIENTES,
 } from "../ActionTypes";
 
 const INIT_STATE = {
@@ -16,10 +17,17 @@ const INIT_STATE = {
   conceptoList: [],
   conceptStatusActions: 0,
   conceptObject: [],
+  ambientesFilter: [],
 };
 
 const states = (state = INIT_STATE, action) => {
   switch (action.type) {
+    case FILTER_AMBIENTES: {
+      return {
+        ...state,
+        ambientesFilter: action.payload,
+      }
+    }
     case FILTER_AREAS: {
       return {
         ...state,

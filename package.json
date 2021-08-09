@@ -6,11 +6,8 @@
     "react",
     "reactjs",
     "argon",
-    "argon-react",
     "dashboard",
-    "dashboard-react",
-    "argon-dashboard",
-    "argon-dashboard-react"
+    "dashboard-react"
   ],
   "author": "Daniela Paiva",
   "license": "MIT",
@@ -37,6 +34,7 @@
   ],
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.15.2",
+    "@lyracom/embedded-form-glue": "^0.3.3",
     "axios": "^0.21.1",
     "bootstrap": "4.6.0",
     "chart.js": "2.9.4",
@@ -54,6 +52,7 @@
     "react-dom": "17.0.1",
     "react-hook-form": "^6.15.4",
     "react-reactstrap-pagination": "^2.0.3",
+    "react-recaptcha": "^2.3.10",
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.1",
     "react-select": "^4.2.1",

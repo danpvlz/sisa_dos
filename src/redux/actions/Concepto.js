@@ -11,6 +11,7 @@ import {
   CONCEPT_STATUS_ACTIONS,
   FILTER_AREAS,
   FILTER_CATEGORIES,
+  FILTER_AMBIENTES,
 } from "../ActionTypes";
 import axios from '../../util/Api';
   
@@ -145,6 +146,25 @@ export const filterCategories = (idArea) => {
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: FILTER_CATEGORIES, payload: data });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+  
+export const filterAmbientes = (search="") => {
+  return (dispatch) => {
+    axios.post('/filterAmbientes',
+    {
+        "search": search
+    }
+    ).then(({data}) => {
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: FILTER_AMBIENTES, payload: data });
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.error });
       }

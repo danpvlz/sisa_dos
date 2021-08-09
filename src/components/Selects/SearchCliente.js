@@ -18,15 +18,16 @@ export default function SearchCliente({setVal,idCliente,defaultVal,selectInputRe
   }, [searchDoc,dispatch]);
 
   useEffect(() => {
-    if(clienteFilter.length>0 && searchDoc!=null){      
-      setVal(clienteFilter.find(c=>c.documento === searchDoc).value);
+    if(clienteFilter.length>0 && searchDoc!=null){
+      setVal(clienteFilter.find(c=>c.documento === searchDoc)?.value);
     }
-  }, [clienteFilter,searchDoc,setVal]);
+    // eslint-disable-next-line
+  }, [clienteFilter,searchDoc]);
 
   return (
     <Select
       ref={selectInputRef}
-      placeholder="Seleccione..."
+      placeholder="Cliente..."
       id="searchcliente"
       name="searchcliente"
       className="select-style"

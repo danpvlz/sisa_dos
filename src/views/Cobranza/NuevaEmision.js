@@ -13,6 +13,7 @@ import {
   Container,
   Row,
   Col,
+  Table,
 } from "reactstrap";
 import Select from 'react-select';
 // core components
@@ -23,10 +24,17 @@ import { showAssociated } from '../../redux/actions/Asociado';
 import { fetchError, hideMessage } from '../../redux/actions/Common';
 import { saveCuenta } from '../../redux/actions/Cuenta';
 import ConfirmDialog from '../../components/Modals/ConfirmDialog';
+import { toSoles } from "../../util/Helper"
+import Loading from "components/Loaders/LoadingModal";
+import moment from "moment";
+import 'moment/locale/es';
+moment.locale('es');
 
 const NuevaEmision = () => {
   const dispatch = useDispatch();
   const { associatedObject } = useSelector(({ asociado }) => asociado);
+  const { loading,success } = useSelector(({ commonData }) => commonData);
+  const [submited, setsubmited] = useState(false);
   const [idAsociado, setidAsociado] = useState(undefined);
   const [showAfiliacion, setshowAfiliacion] = useState(false);
 
@@ -38,9 +46,16 @@ const NuevaEmision = () => {
   const [tipoDocumentoEmision, settipoDocumentoEmision] = useState(null);
   const [pagado, setpagado] = useState(null)
   const [bancopago, setbancopago] = useState(null)
-  const [meses, setmeses] = useState([]);
-  const [descuento, setdescuento] = useState(0);
+  const [importeAfiliacion, setimporteAfiliacion] = useState(0);
   const [montoPaid, setMontoPaid] = useState(null);
+  const [newImporte, setnewImporte] = useState(0);
+  const [items, setitems] = useState([]);
+  const [itemData, setitemData] = useState({
+    desde: '',
+    hasta: '',
+    cantidad: 0,
+    descuento: 0
+  });
   const [numPayFilled, setnumPayFilled] = useState({
     operation: false,
     sofdoc: false,
@@ -56,7 +71,26 @@ const NuevaEmision = () => {
     if (idAsociado != null) {
       dispatch(showAssociated(idAsociado));
     }
-  }, [idAsociado,dispatch]);
+  }, [idAsociado, dispatch]);
+
+  const addItem = () => {
+    if (itemData.cantidad === 0) {
+      dispatch(fetchError("Seleccione fechas válidas."));
+    } else {
+      itemData.comprobanteLabel = itemData.cantidad > 1 ? moment(itemData.desde).format("MMMM YYYY") + " - " + moment(itemData.hasta).format("MMMM YYYY") : moment(itemData.desde).format("MMMM YYYY");;
+      setitems(items.concat(itemData));
+      setitemData({
+        desde: '',
+        hasta: '',
+        cantidad: 0,
+        descuento: 0
+      });
+    }
+
+    setTimeout(() => {
+      dispatch(hideMessage());
+    }, 500);
+  }
 
   const onSubmit = (data) => {
     idAsociado == null ?
@@ -74,22 +108,22 @@ const NuevaEmision = () => {
             pagado === 2 && (!numPayFilled.operation && !numPayFilled.sofdoc) ?
               dispatch(fetchError("Debe especificar un número de operación o de sofydoc."))
               :
-              pagado === 2 && (montoPaid==null) ?
+              pagado === 2 && (montoPaid == null) ?
                 dispatch(fetchError("Debe especificar el monto del pago total."))
                 :
-              meses.length === 0 ?
-                dispatch(fetchError("Debe elegir al menos un mes."))
-                :
-                tipoDocumentoEmision === 3 && docModificar.tipo === "" ?
-                  dispatch(fetchError("Debe especificar el tipo de documento a modificar."))
+                items.length === 0 ?
+                  dispatch(fetchError("Debe agregar al menos un mes."))
                   :
-                  tipoDocumentoEmision === 3 && docModificar.serie === "" ?
-                    dispatch(fetchError("Debe especificar la serie del documento a modificar."))
+                  tipoDocumentoEmision === 3 && docModificar.tipo === "" ?
+                    dispatch(fetchError("Debe especificar el tipo de documento a modificar."))
                     :
-                    tipoDocumentoEmision === 3 && docModificar.numero === "" ?
-                      dispatch(fetchError("Debe especificar el número del documento a modificar."))
+                    tipoDocumentoEmision === 3 && docModificar.serie === "" ?
+                      dispatch(fetchError("Debe especificar la serie del documento a modificar."))
                       :
-                      toggleModal();
+                      tipoDocumentoEmision === 3 && docModificar.numero === "" ?
+                        dispatch(fetchError("Debe especificar el número del documento a modificar."))
+                        :
+                        toggleModal();
     setformdata(data);
 
     dispatch(hideMessage());
@@ -98,19 +132,37 @@ const NuevaEmision = () => {
   const toggleModal = () => {
     setShowConfirm(!showConfirm);
   };
-  
+
   const handleConfirm = () => {
     formdata.idAsociado = idAsociado;
     formdata.tipo_de_comprobante = tipoDocumentoEmision;
     formdata.pagado = pagado;
     formdata.banco = bancopago;
-    formdata.meses = meses;
-    formdata.cantidad = meses.length
     formdata.conafiliacion = showAfiliacion;
-    formdata.descuento === 0 && delete formdata.descuento;
-    formdata.docModificar = docModificar;
+    formdata.docModificar = docModificar; 
+    formdata.items=items;
     dispatch(saveCuenta(formdata));
-    history.push('/admin/cuentas');
+    setsubmited(true);
+  }
+
+  useEffect(() => {
+    if(submited && success && !loading){
+      history.push('/admin/cuentas');
+      setsubmited(false);
+    }
+  }, [submited,loading,success,history]);
+
+  const calcImporteTotal = () => {
+    let importeCalc = showAfiliacion ? newImporte : associatedObject[0]?.importeMensual;
+    return idAsociado ?
+      items.reduce(function (a, b) {
+        return a + (importeCalc * b.cantidad - (importeCalc * b.cantidad * b.descuento / 100));
+      }, 0) + (showAfiliacion ? parseFloat(importeAfiliacion) : 0)
+      : 0;
+  }
+
+  const calcSubtotal = () => {
+    return showAfiliacion ? newImporte * itemData.cantidad - (newImporte * itemData.cantidad * itemData.descuento / 100) : idAsociado ? associatedObject[0]?.importeMensual * itemData.cantidad - (associatedObject[0]?.importeMensual * itemData.cantidad * itemData.descuento / 100) : 0;
   }
 
   return (
@@ -120,6 +172,10 @@ const NuevaEmision = () => {
       </div>
       {/* Page content */}
       <Container className="mt--7" fluid>
+        {
+          submited &&
+          <Loading />
+        }
         <ConfirmDialog
           question={'¿Seguro de registrar emisión?'}
           showConfirm={showConfirm}
@@ -151,7 +207,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Asociado
-                          </label>
+                              </label>
                               <SearchAsociado setVal={setidAsociado} />
                             </FormGroup>
                           </Col>
@@ -194,7 +250,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Fecha emisión
-                          </label>
+                              </label>
                               <Input
                                 className="form-control-alternative"
                                 name="fechaEmision"
@@ -212,7 +268,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Tipo de documento
-                          </label>
+                              </label>
                               <Select
                                 placeholder="Seleccione..."
                                 className="select-style"
@@ -261,7 +317,7 @@ const NuevaEmision = () => {
                                       htmlFor="input-address"
                                     >
                                       Serie a modificar
-                                </label>
+                                    </label>
                                     <Input
                                       className="form-control-alternative"
                                       type="text"
@@ -282,7 +338,7 @@ const NuevaEmision = () => {
                                       htmlFor="input-address"
                                     >
                                       Num. modificar
-                                </label>
+                                    </label>
                                     <Input
                                       className="form-control-alternative"
                                       type="text"
@@ -304,7 +360,7 @@ const NuevaEmision = () => {
                                     htmlFor="input-address"
                                   >
                                     ¿Pagado?
-                                    </label>
+                                  </label>
                                   <Select
                                     placeholder="Seleccione..."
                                     className="select-style"
@@ -325,7 +381,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Observación
-                          </label>
+                              </label>
                               <Input
                                 className="form-control-alternative"
                                 name="observacion"
@@ -341,7 +397,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Correo destino
-                          </label>
+                              </label>
                               <Input
                                 className="form-control-alternative"
                                 name="correo"
@@ -359,7 +415,7 @@ const NuevaEmision = () => {
                       <Col lg="12">
                         <h6 className="heading-small text-muted mb-4">
                           <i className="ni ni-money-coins mr-2 my-auto" /> Pago
-                      </h6>
+                        </h6>
                         <div className="pl-lg-4">
                           <Row>
                             <>
@@ -370,7 +426,7 @@ const NuevaEmision = () => {
                                     htmlFor="input-address"
                                   >
                                     Fecha de pago
-                              </label>
+                                  </label>
                                   <Input
                                     className="form-control-alternative"
                                     name="fechaPago"
@@ -388,7 +444,7 @@ const NuevaEmision = () => {
                                     htmlFor="filterMonth"
                                   >
                                     Banco
-                                          </label>
+                                  </label>
                                   <Select
                                     placeholder="Seleccione..."
                                     className="select-style"
@@ -407,7 +463,7 @@ const NuevaEmision = () => {
                                     htmlFor="input-address"
                                   >
                                     Num. Operación
-                                        </label>
+                                  </label>
                                   <Input
                                     className="form-control-alternative"
                                     name="numoperacion"
@@ -444,7 +500,7 @@ const NuevaEmision = () => {
                                     className="form-control-label"
                                     htmlFor="input-address"
                                   >
-                                    Monto del pago
+                                    Monto de oper.
                                   </label>
                                   <Input
                                     className="form-control-alternative text-center"
@@ -475,11 +531,12 @@ const NuevaEmision = () => {
                           type="checkbox"
                           onChange={(e) => {
                             setshowAfiliacion(e.target.checked)
+                            setnewImporte(associatedObject[0]?.importeMensual)
                           }}
                         />
                         <label className="custom-control-label" htmlFor="customCheck5">
                           Afiliación
-                    </label>
+                        </label>
                       </div>
                     </Col>
                     <Col lg="12" className={showAfiliacion ? "block" : "d-none"}>
@@ -495,7 +552,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Concepto
-                          </label>
+                              </label>
                               <Input
                                 className="form-control-alternative"
                                 type="text"
@@ -510,14 +567,41 @@ const NuevaEmision = () => {
                                 className="form-control-label"
                                 htmlFor="input-address"
                               >
-                                Importe
-                          </label>
+                                Importe afiliación
+                              </label>
                               <Input
                                 className="form-control-alternative text-center"
                                 name="importe"
                                 type="number"
                                 min="0"
+                                value={importeAfiliacion}
+                                onChange={(e) => {
+                                  setimporteAfiliacion(e.target.value ? e.target.value : 0)
+                                }}
+                                onWheelCapture={(e) => e.target.blur()}
                                 innerRef={register({ required: showAfiliacion })}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col lg="2">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-address"
+                              >
+                                Importe mensual
+                              </label>
+                              <Input
+                                className="form-control-alternative text-center"
+                                name="newImporte"
+                                type="number"
+                                min="0"
+                                value={newImporte}
+                                onChange={(e) => {
+                                  setnewImporte(e.target.value ? e.target.value : 0)
+                                }}
+                                onWheelCapture={(e) => e.target.blur()}
+                                innerRef={register({ required: false })}
                               />
                             </FormGroup>
                           </Col>
@@ -531,44 +615,67 @@ const NuevaEmision = () => {
                       </h6>
                       <div className="pl-lg-4">
                         <Row>
-                          <Col lg="4">
+
+                          {
+                            !showAfiliacion &&
+                            <Col lg="2">
+                              <FormGroup>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-address"
+                                >
+                                  Importe mensual
+                                </label>
+                                <Input
+                                  className="form-control-alternative text-center"
+                                  name="ammount"
+                                  type="number"
+                                  min="0"
+                                  value={
+                                    idAsociado ?
+                                      associatedObject[0]?.importeMensual
+                                      : ""
+                                  }
+                                  disabled
+                                />
+                              </FormGroup>
+                            </Col>
+                          }
+                          <Col lg="3">
                             <FormGroup>
                               <label
                                 className="form-control-label"
-                                htmlFor="input-address"
+                                htmlFor="filterMonth"
                               >
-                                Concepto
-                          </label>
+                                Desde
+                              </label>
                               <Input
                                 className="form-control-alternative"
-                                type="text"
-                                value={"PAGO ORDINARIO ASOCIADO"}
-                                disabled
+                                type="month"
+                                value={itemData.desde}
+                                onChange={(e) => {
+                                  setitemData({ ...itemData, desde: e.target.value, hasta: e.target.value, cantidad: 1 });
+                                }}
                               />
-                            </FormGroup>
+                            </FormGroup >
                           </Col>
-                          <Col lg="2">
+                          <Col lg="3">
                             <FormGroup>
                               <label
                                 className="form-control-label"
-                                htmlFor="input-address"
+                                htmlFor="filterMonth"
                               >
-                                Importe
-                          </label>
+                                Hasta
+                              </label>
                               <Input
-                                className="form-control-alternative text-center"
-                                name="ammount"
-                                type="number"
-                                min="0"
-                                value={idAsociado ?
-                                  descuento > 0 ?
-                                    associatedObject[0]?.importeMensual - (associatedObject[0]?.importeMensual * descuento / 100)
-                                    :
-                                    associatedObject[0]?.importeMensual
-                                  : ""}
-                                disabled
+                                className="form-control-alternative"
+                                type="month"
+                                value={itemData.hasta}
+                                onChange={(e) => {
+                                  setitemData({ ...itemData, hasta: e.target.value, cantidad: moment(e.target.value, 'YYYY-MM')?.diff(moment(itemData.desde, 'YYYY-MM'), 'months') + 1 })
+                                }}
                               />
-                            </FormGroup>
+                            </FormGroup >
                           </Col>
                           <Col lg="2">
                             <FormGroup>
@@ -577,71 +684,19 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Cantidad
-                          </label>
+                              </label>
                               <Input
                                 className="form-control-alternative text-center"
                                 type="number"
-                                min="1"
-                                value={meses.length}
+                                min="0"
+                                value={
+                                  itemData.cantidad
+                                }
                                 disabled
                               />
                             </FormGroup>
                           </Col>
-                          <Col lg="4">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Meses
-                          </label>
-
-                              <Select
-                                placeholder="Seleccione..."
-                                closeMenuOnSelect={false}
-                                className="select-style select-multiple-height"
-                                isMulti
-                                name="months"
-                                options={[{ 'value': 1, 'label': 'Enero' },
-                                { 'value': 2, 'label': 'Febrero' },
-                                { 'value': 3, 'label': 'Marzo' },
-                                { 'value': 4, 'label': 'Abril' },
-                                { 'value': 5, 'label': 'Mayo' },
-                                { 'value': 6, 'label': 'Junio' },
-                                { 'value': 7, 'label': 'Julio' },
-                                { 'value': 8, 'label': 'Agosto' },
-                                { 'value': 9, 'label': 'Setiembre' },
-                                { 'value': 10, 'label': 'Octubre' },
-                                { 'value': 11, 'label': 'Noviembre' },
-                                { 'value': 12, 'label': 'Diciembre' },
-                                ]}
-                                classNamePrefix="select"
-                                onChange={(inputValue, actionMeta) => {
-                                  setmeses(inputValue);
-                                }}
-                              />
-                            </FormGroup>
-                          </Col>
                           <Col lg="2">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Año
-                              </label>
-                              <Input
-                                className="form-control-alternative text-center"
-                                name="year_pass"
-                                type="number"
-                                min="2019"
-                                max="2022"
-                                defaultValue="2021"
-                                innerRef={register({ required: false })}
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col lg="2" className="ml-auto">
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -658,9 +713,9 @@ const NuevaEmision = () => {
                                     defaultValue="0"
                                     min="0"
                                     step="5"
-                                    innerRef={register({ required: false })}
+                                    onWheelCapture={(e) => e.target.blur()}
                                     onChange={(e) => {
-                                      setdescuento(e.target.value);
+                                      setitemData({ ...itemData, descuento: e.target.value ? e.target.value : 0 })
                                     }}
                                   />
                                 </div>
@@ -670,25 +725,71 @@ const NuevaEmision = () => {
                               </div>
                             </FormGroup>
                           </Col>
+                          <Col className="col-6">
+                            <span>Subtotal s/. <strong>{toSoles(calcSubtotal())}</strong></span>
+                          </Col>
+                          <div className="ml-auto mr-4 my-auto">
+                            <Button color="primary" type="button" onClick={addItem}>
+                              <i className="fa fa-plus" />
+                            </Button>
+                          </div>
                         </Row>
-                        <hr />
-                        <div style={{ float: 'right', fontSize: '1.5rem' }}>
+                      </div>
+                    </Col>
+                    <Col lg="12">
+                      <Table className="align-items-center table-flush table-sm" responsive>
+                        <thead className="thead-light">
+                          <tr className="text-right">
+                            <th scope="col" className="text-left">Concepto</th>
+                            <th scope="col">Meses</th>
+                            <th scope="col">Descuento</th>
+                            <th scope="col">Subtotal</th>
+                            <th scope="col" />
+                          </tr>
+                        </thead>
+                        <tbody className="text-right">
+                          {
+                            items.map((item, key) =>
+                              <tr key={key}>
+                                <td className="text-left">
+                                  Membresía de {item.comprobanteLabel}
+                                </td>
+                                <td>
+                                  {item.cantidad}
+                                </td>
+                                <td>
+                                  {item.descuento}%
+                                </td>
+                                <td>
+                                  s/.{((showAfiliacion ? newImporte : associatedObject[0]?.importeMensual) * item.cantidad) - (showAfiliacion ? newImporte : associatedObject[0]?.importeMensual) * item.cantidad * item.descuento / 100}
+                                </td>
 
-                          <small>Total: s/.</small><strong >
-                            {idAsociado ?
-                              descuento > 0 ?
-                                (associatedObject[0]?.importeMensual - (associatedObject[0]?.importeMensual * descuento / 100)) * meses?.length
-                                :
-                                (associatedObject[0]?.importeMensual) * meses?.length
-                              : 0}</strong>
-                        </div>
+                                <td>
+                                  <Button className="btn btn-sm" color="danger" type="button" onClick={() => { setitems(items.filter((a, i) => i !== key)) }}>
+                                    <i className="fa fa-trash" />
+                                  </Button>
+                                </td>
+                              </tr>)}
+
+                        </tbody>
+                      </Table>
+                    </Col>
+                    <Col lg="12">
+                      <hr />
+                      <div style={{ float: 'right', fontSize: '1.5rem' }}>
+                        <small>Total: s/.</small>
+                        <strong >
+                          {
+                            toSoles(calcImporteTotal())
+                          }
+                        </strong>
                       </div>
                     </Col>
                   </Row>
                   <div className="text-center mt-5">
                     <Button className="my-4 btn-block" color="primary" type="submit" disabled={idAsociado ? false : true}>
                       Registrar
-                      </Button>
+                    </Button>
                   </div>
                 </Form>
               </CardBody>

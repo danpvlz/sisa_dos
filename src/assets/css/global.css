@@ -200,35 +200,67 @@
   }
 
   .calendar-item{
-    border-radius: 1rem;
-    padding: .7rem;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    border-radius: .8rem;
+    padding: 1rem;
+    /*box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;*/
     margin: .5rem;
     line-break: anywhere;
     background-color: white;
     cursor: pointer;
   }
 
+  .container-week{
+    min-height: 150px;
+    width: fit-content;
+    /*width: 100%;*/
+  }
+
+  .body-week, .body-week-content{
+    transform: rotateX(180deg);
+  }
+
   .calendar-item-name{
     font-size: 13px;
     display: -webkit-inline-box;
+    font-weight: 600;
   }
 
-  .item-aniversario span{
+  .item-uno{
+    background-color: #eeeaff;
+    color: #414fdc;
+  }
+
+  .item-uno{
+    background-color: #eeeaff;
+    color: #5c6a7a;
+  }
+
+  .item-uno span{
     font-size: 11px;
-    color: #8691ff;
+    color: #414fdc;
     font-weight: bolder;
   }
 
-  .item-onomastico span{
+  .item-dos{
+    background-color: #fff0f3;
+    color: #5c6a7a;
+  }
+
+  .item-dos span{
     font-size: 11px;
-    color: #ff6767;
+    color: #ef233c;
     font-weight: bolder;
   }
 
-  .item-fundacion span{
+  .item-tres{
+    background-color: #daf8e6;
+    color: #5c6a7a;
+  }
+
+
+  .item-tres span{
     font-size: 11px;
-    color: #37da53;
+    color: #52a471;
     font-weight: bolder;
   }
 
@@ -252,34 +284,43 @@
     margin: 0 .1rem;
   }
 
-  .calendar-indicator-aniversario{
-    background-color: #8691ff;
+  .calendar-indicator-uno{
+    background-color: #414fdc;
   }
 
-  .calendar-indicator-fundacion{
-    background-color: #37da53;
+  .calendar-indicator-dos{
+    background-color: #ef233c;
   }
 
-  .calendar-indicator-onomastico{
-    background-color: #ff6767;
+  .calendar-indicator-tres{
+    background-color: #52a471;
   }
 
   .day-container{
-    min-width: 136px;
-  }
-  
-  .item-month-detail-container{
-    background-color: white;
+    min-width: 140px;
+    /*flex: 1 1 0;*/
   }
 
-  .item-month-detail{
-    border-radius: 1rem;
-    padding: .7rem;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
-    margin: .5rem 0;
-    line-break: anywhere;
-    background-color: white;
-    
+
+  .day-container-selectable:active{
+    background-color: #ebf8fb;
+  }
+
+  .day-container-selectable{
+    min-width: 140px;
+    /*flex: 1 1 0;*/
+    cursor: pointer;
+  }
+
+  .day-container-selectable:hover{
+    background-color: #f3f3f3;
+  }
+
+  .break-calendar-content{
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .notif-bar-item{
@@ -385,11 +426,11 @@
 .stepper-line{
   margin: auto 0;
   height: 3px;
-  width: 100px;
+  width: 80px;
 }
 
 .sl-selected{
-  background-color:var(--primary);
+  background-color:var(--success);
 }
 
 .sl-not-selected{
@@ -414,4 +455,14 @@
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.img-card-pagos{
+  width: 40px;
+}
+
+.modal-loading-content{
+  box-shadow: none;
+  background-color:transparent;
+  text-align: center;
 }

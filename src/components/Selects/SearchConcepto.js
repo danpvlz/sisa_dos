@@ -21,8 +21,12 @@ export default function SearchConcepto({setVal,setLabel,defaultVal,selectInputRe
       isClearable={true}
       onChange={(inputValue, actionMeta) => {
         setVal(inputValue != null ? inputValue.value : null);
-        setLabel(inputValue != null ? inputValue.label : null);
-        setprice(inputValue && inputValue.price ? inputValue.price : 0);
+        if(setLabel){
+          setLabel(inputValue != null ? inputValue.label : null);
+        }
+        if(setprice){
+          setprice(inputValue && inputValue.price ? inputValue.price : 0);
+        }
         if(setInmutable){
           setInmutable(inputValue != null ? inputValue.inmutable : null);
         }

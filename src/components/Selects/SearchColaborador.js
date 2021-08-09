@@ -12,7 +12,7 @@ export default function SearchColaborador({setVal}) {
   }
   return (
     <Select
-      placeholder="Seleccione..."
+      placeholder="Colaborador..."
       id="searchWorker"
       name="searchWorker"
       className="select-style"

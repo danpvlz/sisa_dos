@@ -12,6 +12,7 @@ import {
     Col,
     FormGroup,
     Input,
+    UncontrolledCollapse,
 } from "reactstrap";
 // core components
 import Select from 'react-select';
@@ -22,6 +23,10 @@ import PaymentsModal from "components/Modals/Payments.js";
 import { useDispatch, useSelector } from "react-redux";
 import { list, exportPagos } from "../../redux/actions/Pago";
 import Loading from "../../components/Loaders/LoadingSmall";
+import { toSoles } from "../../util/Helper"
+import moment from "moment";
+import 'moment/locale/es';
+moment.locale('es')
 
 const Pagos = () => {
     const dispatch = useDispatch();
@@ -31,9 +36,9 @@ const Pagos = () => {
 
     const [page, setPage] = useState(1);
     const [search, setsearch] = useState({
-        serie:109,
-        since:`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-01`,
-        until:`${new Date().getFullYear()}-${new Date().getMonth()+1<10 ? '0'+(new Date().getMonth()+1) : new Date().getMonth()+1}-${new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate()}`
+        serie: 109,
+        since: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 1) : new Date().getMonth() + 1}-01`,
+        until: `${new Date().getFullYear()}-${new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 1) : new Date().getMonth() + 1}-${new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()}`
     });
 
     const toggleModalDetail = () => {
@@ -48,6 +53,7 @@ const Pagos = () => {
         let tsearch = search;
         delete tsearch[key];
         setsearch(tsearch);
+        dispatch(list(page, search));
     }
 
     return (
@@ -102,7 +108,7 @@ const Pagos = () => {
                                                         htmlFor="filterMonth"
                                                     >
                                                         Desde
-                                                </label>
+                                                    </label>
                                                     <Input
                                                         className="form-control-alternative"
                                                         name="since"
@@ -124,7 +130,7 @@ const Pagos = () => {
                                                         htmlFor="filterMonth"
                                                     >
                                                         Hasta
-                                                 </label>
+                                                    </label>
                                                     <Input
                                                         className="form-control-alternative"
                                                         name="until"
@@ -146,7 +152,7 @@ const Pagos = () => {
                                                         htmlFor="filterMonth"
                                                     >
                                                         Operación
-                                                </label>
+                                                    </label>
                                                     <Input
                                                         className="form-control-alternative"
                                                         type="text"
@@ -166,7 +172,7 @@ const Pagos = () => {
                                                         htmlFor="filterMonth"
                                                     >
                                                         SofDoc
-                                                </label>
+                                                    </label>
                                                     <Input
                                                         className="form-control-alternative"
                                                         type="text"
@@ -248,60 +254,80 @@ const Pagos = () => {
                                         </Row>
 
                                     </Col>
-
                                 </Row>
                             </CardHeader>
                             {
-                                !loading || pagoList?.data ?
+                                !loading ?
                                     <>
                                         <Table className="align-items-center table-flush table-sm" responsive>
                                             <thead className="thead-light">
                                                 <tr>
                                                     <th scope="col">Fecha</th>
                                                     <th scope="col">{search?.serie === 109 ? 'Asociado' : 'Cliente'}</th>
-                                                    <th scope="col">Monto Operación</th>
+                                                    <th scope="col">Monto Op.</th>
+                                                    <th scope="col">Banco</th>
                                                     <th scope="col">Operación</th>
                                                     <th scope="col">SofyDoc</th>
-                                                    <th scope="col">Banco</th>
                                                     <th scope="col">Serie-Número</th>
                                                     <th scope="col">Cobrado</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                {
-                                                    pagoList?.data?.map((cuenta, key) =>
-                                                        <tr key={key}>
+                                            {
+                                                pagoList?.data?.map((cuenta, key) =>
+                                                    <tbody key={key} style={{ borderBottom: '0px' }}>
+                                                        <tr id={`toggler_${key}`} className="selectable-row">
                                                             <td>
-                                                                {cuenta.fecha}
+                                                                {moment(cuenta.fecha).format('L')}
                                                             </td>
                                                             <td>
                                                                 {cuenta.adquiriente}
                                                             </td>
-                                                            <td className="text-center">
+                                                            <td className="text-right">
                                                                 <small>S/.</small>
-                                                                {cuenta.montoPaid}
+                                                                {toSoles(cuenta.montoPaid)}
                                                             </td>
                                                             <td>
-                                                                {cuenta.numoperacion}
+                                                                {
+                                                                    cuenta.bancos === 'BBVA' || cuenta.bancos === 'BCP' ?
+                                                                        <img
+                                                                            className="img-card-pagos"
+                                                                            alt={cuenta.bancos}
+                                                                            src={
+                                                                                require(`../../assets/img/resources/${cuenta.bancos}.png`).default} />
+                                                                        :
+                                                                        cuenta.bancos
+                                                                }
                                                             </td>
-                                                            <td>
-                                                                {cuenta.numsofdoc}
+                                                            <td className="text-right">
+                                                                {cuenta.numoperacion ? cuenta.numoperacion : "-"}
                                                             </td>
-                                                            <td>
-                                                                {cuenta.bancos}
+                                                            <td className="text-right">
+                                                                {cuenta.numsofdoc ? cuenta.numsofdoc : "-"}
                                                             </td>
-                                                            <td>
+                                                            <td className="text-right">
                                                                 {cuenta.serieNumero}
                                                             </td>
-                                                            <td className="text-center">
+                                                            <td className="text-right">
                                                                 <small>S/.</small>
-                                                                {cuenta.total}
+                                                                {toSoles(cuenta.total)}
                                                             </td>
                                                         </tr>
-                                                    )
-                                                }
+                                                        <tr>
+                                                            <td colSpan="9" style={{ padding: '0px', border: '0px' }}>
+                                                                <UncontrolledCollapse toggler={`#toggler_${key}`}>
+                                                                    {
+                                                                        cuenta.metadata ? 
+                                                                        <DetailTransaction data={JSON.parse(cuenta.metadata)} />
+                                                                        :
+                                                                        <div className="text-muted text-small m-3">--No hay información--</div>
+                                                                    }
+                                                                </UncontrolledCollapse>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                )
+                                            }
 
-                                            </tbody>
                                         </Table>
                                         <CardFooter className="py-4">
                                             <nav aria-label="..." className="pagination justify-content-end mb-0">
@@ -329,5 +355,51 @@ const Pagos = () => {
         </>
     );
 };
+
+const DetailTransaction = ({ data }) => {
+    return (
+        <div className="p-4 row bg-secondary">
+            <div className="mx-4">
+                <span className="d-block"><small><i className="mr-2 fa fa-file" aria-hidden="true"></i></small> Información de transacción</span>
+                <span className="d-block"><strong>Estado: <span className={`text-${data.orderStatus === 'PAID' ? 'success' : 'black'}`}>{data.orderStatus === 'PAID' ? 'PAGADO' : data.orderStatus === 'UNPAID' ? 'NO PAGADO' : data.orderStatus === 'RUNNING' ? 'PROCESANDO' : data.orderStatus === 'PARTIALLY_PAID' ? 'PARCIALMENTE PAGADO' : data.orderStatus}</span></strong></span>
+                <span className="d-block"><strong>Monto: </strong>S/. {toSoles(data?.orderDetails?.orderTotalAmount / 100)}</span>
+                <span className="d-block"><strong>Fecha: </strong>{moment(data.serverDate).format('L h:mm:ss a')}</span>
+                <br></br>
+                <span className="d-block"><small><i className="mr-2 ni ni-credit-card"></i></small> Medio de pago</span>
+                {data.transactions.map((t, i) =>
+                    <div key={i} className="mb-3">
+                        <span className="d-block"><strong>Medio de pago: </strong>{t.transactionDetails.cardDetails.effectiveBrand}</span>
+                        <span className="d-block"><strong>Tarjeta: </strong>{t.transactionDetails.cardDetails.pan}</span>
+                        <span className="d-block"><strong>Monto: </strong>S/. {toSoles(t.amount / 100)}</span>
+                        <span className="d-block"><strong>Estado: </strong>{t.status === 'PAID' ? 'Pagado' : t.status === 'UNPAID' ? 'No pagado' : t.status === 'RUNNING' ? 'Procesando' : t.status === 'PARTIALLY_PAID' ? 'Parcialmente pagado' : t.status}</span>
+                        {
+                            data.transactions.length > (i + 1) &&
+                            <hr className="my-1"></hr>
+                        }
+                    </div>
+                )}
+            </div>
+            <div className="mx-4">
+                <span className="d-block"><small><i className="mr-2 ni ni-badge"></i></small> Comprador</span>
+                <span className="d-block"><strong>DNI: </strong> {data.customer.billingDetails.identityCode}</span>
+                <span className="d-block"><strong>Cliente: </strong> {`${data.customer.billingDetails.firstName} ${data.customer.billingDetails.lastName}`}</span>
+                <span className="d-block"><strong>Correo: </strong> {data.customer.email}</span>
+                <span className="d-block"><strong>Teléfonos: </strong> {`${data.customer.billingDetails.cellPhoneNumber}, ${data.customer.billingDetails.phoneNumber}`}</span>
+                <span className="d-block"><strong>Dirección: </strong> {data.customer.billingDetails.address}</span>
+            </div>
+            <div className="mx-4">
+                <span className="d-block"><small><i className="mr-2 ni ni-cart"></i></small> Carrito</span>
+                {data.customer.shoppingCart.cartItemInfo.map((c, i) => <div key={i}>
+                    <span className="d-block"><strong>Servicio: </strong> {c.productLabel}</span>
+                    <span className="d-block"><strong>Precio: </strong> S/. {toSoles(c.productAmount)}</span>
+                    {
+                        data.customer.shoppingCart.cartItemInfo.length > (i + 1) &&
+                        <hr className="my-1"></hr>
+                    }
+                </div>)}
+            </div>
+        </div>
+    );
+}
 
 export default Pagos;

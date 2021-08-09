@@ -214,7 +214,7 @@ const FolderContainer = ({ folders, selected }) => {
                                                     notification?.tipo === 4 ?
                                                         <NotificacionInscripcion detail={notification?.detail} />
                                                         :
-                                                            <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
+                                                        <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
                                         }
                                     </CardBody>
                                 </Card>
@@ -272,37 +272,37 @@ const NotificationContainer = ({ props, folders }) => {
                                         color=""
                                         onClick={(e) => e.preventDefault()}
                                     >
-                                    <i className="ni ni-archive-2 fa-lg" />
+                                        <i className="ni ni-archive-2 fa-lg" />
                                     </DropdownToggle>
                                     <DropdownMenu className="dropdown-menu-arrow" right positionFixed={true}>
-                                            {
-                                                folders?.map((f, k) =>
-                                                    <DropdownItem
-                                                        key={k}
-                                                        className="d-flex"
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            if(notification.detail.hasOwnProperty('id')){
-                                                                let not=notification.detail;
-                                                                delete not.id;
-                                                            }
-                                                            dispatch(storeFolderContent({
-                                                                idFolder: f.idFolder,
-                                                                content: JSON.stringify(notification),
-                                                            }));
-                                                            firebaseNotif.delete(notification.key);
-                                                            dispatch(showMessage("Notificación archivada"));
-                                                            setTimeout(() => {
-                                                                dispatch(hideMessage());
-                                                                dispatch(getMyFolders());
-                                                            }, 3000);
-                                                        }}
-                                                    >
-                                                    <i className="fa fa-folder folder-icon"  aria-hidden="true" style={{ color: f.color ? f.color : '#fed86f' }} />
-                                                     {f.folder}
-                                                    </DropdownItem>
-                                                )
-                                            }
+                                        {
+                                            folders?.map((f, k) =>
+                                                <DropdownItem
+                                                    key={k}
+                                                    className="d-flex"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        if (notification.detail.hasOwnProperty('id')) {
+                                                            let not = notification.detail;
+                                                            delete not.id;
+                                                        }
+                                                        dispatch(storeFolderContent({
+                                                            idFolder: f.idFolder,
+                                                            content: JSON.stringify(notification),
+                                                        }));
+                                                        firebaseNotif.delete(notification.key);
+                                                        dispatch(showMessage("Notificación archivada"));
+                                                        setTimeout(() => {
+                                                            dispatch(hideMessage());
+                                                            dispatch(getMyFolders());
+                                                        }, 3000);
+                                                    }}
+                                                >
+                                                    <i className="fa fa-folder folder-icon" aria-hidden="true" style={{ color: f.color ? f.color : '#fed86f' }} />
+                                                    {f.folder}
+                                                </DropdownItem>
+                                            )
+                                        }
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
                             </div>
@@ -314,12 +314,20 @@ const NotificationContainer = ({ props, folders }) => {
                                                 <NotificationAsociado detail={notification?.detail} timestamp={notification?.timestamp} />
                                                 :
                                                 notification?.tipo === 3 ?
-                                                    <NotificationAsociadoEdit detail={notification?.detail} handleDone={()=>firebaseNotif.delete(notification.key)}/>
+                                                    <NotificationAsociadoEdit detail={notification?.detail}
+                                                        handleDone={() => {
+                                                            let { id, ...newNotif } = notification.detail;
+                                                            dispatch(storeFolderContent({
+                                                                idFolder: 5,
+                                                                content: JSON.stringify({ ...notification, detail: newNotif }),
+                                                            }));
+                                                            firebaseNotif.delete(notification.key)
+                                                        }} />
                                                     :
                                                     notification?.tipo === 4 ?
                                                         <NotificacionInscripcion detail={notification?.detail} />
                                                         :
-                                                            <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
+                                                        <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
                                         }
                                     </CardBody>
                                 </Card>

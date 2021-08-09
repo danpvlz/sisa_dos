@@ -83,6 +83,7 @@ import Pagos from "views/Contabilidad/Pagos.js";
 
 //Ambientes
 import Disponibilidad from "views/Ambientes/Disponibilidad";
+import Reserva from "views/Ambientes/Reserva";
 
 export const components=[
   Login,
@@ -135,7 +136,8 @@ export const components=[
   PublicInscripcion, //47
   Pagos, //48
   CuentasCobranza, //49
-  Disponibilidad, //50
+  Reserva,//50
+  Disponibilidad, //51
 ]
 //1
 export const routesSimple = [

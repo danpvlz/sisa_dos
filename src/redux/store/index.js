@@ -3,24 +3,14 @@ import {routerMiddleware} from 'connected-react-router'
 import thunk from 'redux-thunk';
 import createRootReducer from '../reducers'
 
-const createHashHistory = require('history').createHashHistory;
+const createBrowserHistory = require('history').createBrowserHistory;
 
 
-export const history = createHashHistory();
-
-/*
-
-
-const createHashHistory = require('history').createHashHistory;
-
-
-export const history = createHashHistory();
-*/
+export const history = createBrowserHistory({ basename: '/gs' });
 
 const routeMiddleware = routerMiddleware(history);
 
 const middlewares = [thunk, routeMiddleware];
-
 
 export default function configureStore(preloadedState) {
   const store = createStore(
@@ -31,7 +21,7 @@ export default function configureStore(preloadedState) {
         routerMiddleware(history), // for dispatching history actions
         ...middlewares
       ),
-      window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+      process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() : ''
     )
   );
 

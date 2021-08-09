@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Col, UncontrolledAlert } from "reactstrap";
+import { Col, Alert } from "reactstrap";
 import { useSelector } from "react-redux";
 
 export default function Message() {
@@ -7,6 +7,15 @@ export default function Message() {
   const [show, setShow] = useState(false);
   const [showmessage, setshowmessage] = useState(null)
   const [type, settype] = useState(0)
+
+  const setVisible = () => {
+    setShow(true);
+    setTimeout(() => {
+      setShow(false);
+      settype(0);
+      setshowmessage(null);
+    }, 3000);
+  }
 
   useEffect(() => {
     if (error) {
@@ -32,25 +41,16 @@ export default function Message() {
     }
   }, [error, success, message])
 
-  const setVisible = () => {
-    setShow(true);
-    setTimeout(() => {
-      setShow(false);
-      settype(0);
-      setshowmessage(null);
-    }, 3000);
-  }
-
   return (
     <Col lg="7" md="10" style={{ marginTop: '1rem', position: 'fixed', zIndex: 9, left: '50%', width: '100%', transform: 'translate(-50%, 0)' }} >
-      <UncontrolledAlert color={type === 1 ? "danger" : type === 2 ? "success" : ""} isOpen={show}>
+      <Alert color={type === 1 ? "danger" : type === 2 ? "success" : ""} isOpen={show} toggle={() =>setShow(false)}>
         <span className="alert-inner--icon">
           <i className={type === 1 ? "fa fa-exclamation-circle" : type === 2 ? "ni ni-like-2" : ""} />
         </span>{" "}
         <span className="alert-inner--text">
           <strong>{type === 1 ? "Error." : type === 2 ? "¡Éxito!" : ""}</strong> {showmessage}
         </span>
-      </UncontrolledAlert >
+      </Alert >
     </Col>
   )
 }

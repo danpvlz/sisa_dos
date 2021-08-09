@@ -10,7 +10,7 @@ export default function NotificationAsociado({ detail, timestamp }) {
             <p className="mb-0"><small>Correo: </small>{detail.correos}</p>
             <p className="mb-0"><small>Importe: S/.</small>{detail.importeMensual}</p>
             <p className="mb-0"><small>Promotor: </small>{detail.promotor}</p>
-            <p className="mb-0"><small>Fecha de eliminación: </small>{timestamp}</p>
+            <p className="mb-0"><small>Fecha de registro: </small>{timestamp}</p>
         </div>
     )
 }

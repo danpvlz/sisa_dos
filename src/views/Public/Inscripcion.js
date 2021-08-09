@@ -17,8 +17,64 @@ import { useForm } from "react-hook-form";
 
 import { show, resetCursoObject } from "../../redux/actions/Curso";
 import { externalInscription } from "../../redux/actions/Inscripcion";
-
 import { useDispatch, useSelector } from "react-redux";
+import Recaptcha from "react-recaptcha";
+
+const Page2 = ({ register }) => {
+    return (
+        <Row>
+            <Col className="col-12">
+                <h6 className="heading-small text-muted">
+                    Información de empresa <span className="text-danger">(Opcional)</span>
+                </h6>
+            </Col>
+            <Col className="my-2" lg="6">
+                <FormGroup className="mb-0">
+                    <label
+                        className="form-control-label"
+                        htmlFor="ruc"
+                    >
+                        RUC</label>
+                    <Input
+                        className="form-control-alternative"
+                        name="ruc"
+                        type="tel"
+                        innerRef={register({ required: false })}
+                    />
+                </FormGroup >
+            </Col>
+            <Col className="my-2" lg="12">
+                <FormGroup className="mb-0">
+                    <label
+                        className="form-control-label"
+                        htmlFor="empresa"
+                    >
+                        Empresa</label>
+                    <Input
+                        className="form-control-alternative"
+                        name="empresa"
+                        type="text"
+                        innerRef={register({ required: false })}
+                    />
+                </FormGroup >
+            </Col>
+            <Col className="my-2" lg="6">
+                <FormGroup className="mb-0">
+                    <label
+                        className="form-control-label"
+                        htmlFor="cargo"
+                    >
+                        Cargo</label>
+                    <Input
+                        className="form-control-alternative"
+                        name="cargo"
+                        type="text"
+                        innerRef={register({ required: false })}
+                    />
+                </FormGroup >
+            </Col>
+        </Row>);
+}
 
 const Page1 = ({ register }) => {
     return (
@@ -141,62 +197,6 @@ const Page1 = ({ register }) => {
         </Row>);
 }
 
-const Page2 = ({ register }) => {
-    return (
-        <Row>
-            <Col className="col-12">
-                <h6 className="heading-small text-muted">
-                    Información de empresa <span className="text-danger">(Opcional)</span>
-                </h6>
-            </Col>
-            <Col className="my-2" lg="6">
-                <FormGroup className="mb-0">
-                    <label
-                        className="form-control-label"
-                        htmlFor="ruc"
-                    >
-                        RUC</label>
-                    <Input
-                        className="form-control-alternative"
-                        name="ruc"
-                        type="tel"
-                        innerRef={register({ required: false })}
-                    />
-                </FormGroup >
-            </Col>
-            <Col className="my-2" lg="12">
-                <FormGroup className="mb-0">
-                    <label
-                        className="form-control-label"
-                        htmlFor="empresa"
-                    >
-                        Empresa</label>
-                    <Input
-                        className="form-control-alternative"
-                        name="empresa"
-                        type="text"
-                        innerRef={register({ required: false })}
-                    />
-                </FormGroup >
-            </Col>
-            <Col className="my-2" lg="6">
-                <FormGroup className="mb-0">
-                    <label
-                        className="form-control-label"
-                        htmlFor="cargo"
-                    >
-                        Cargo</label>
-                    <Input
-                        className="form-control-alternative"
-                        name="cargo"
-                        type="text"
-                        innerRef={register({ required: false })}
-                    />
-                </FormGroup >
-            </Col>
-        </Row>);
-}
-
 const Completed = () => {
     return (
         <>
@@ -229,12 +229,18 @@ export default function Inscripcion(props) {
     const [page, setpage] = useState(1);
     const [completed, setcompleted] = useState(false);
     const [formData, setformData] = useState();
+
+    let recaptchaInstance;
+    const executeCaptcha = () => {
+      recaptchaInstance.execute();
+    };
     const max = 2;
     const next = () => {
         setpage(page + 1);
     }
     const onSubmit = (data) => {
         if ((page + 1) > max) {
+            executeCaptcha();
             formData.idCurso=props.match.params.cursoId;
             dispatch(externalInscription(formData));
             setcompleted(true);
@@ -249,9 +255,9 @@ export default function Inscripcion(props) {
             dispatch(resetCursoObject());
         }
     }, [props.match.params.cursoId,dispatch]);
-
+    
     return (
-        <ContainerPublic bg="full" title={`CURSO: ${cursobject?.descripcion?.toUpperCase()}`}>
+        <ContainerPublic bg="full" title={cursobject.descripcion ? `CURSO: ${cursobject?.descripcion?.toUpperCase() }` : "..."} imgHeader={cursobject?.foto}>
             <Col className="order-xl-1" lg="6">
                 <Card className="bg-secondary shadow">
                     {
@@ -261,7 +267,7 @@ export default function Inscripcion(props) {
                             <>
                                 <CardHeader>
                                     <div className="d-flex mx-auto text-center justify-content-center">
-                                        <div className={`icon icon-shape icon-sm rounded-circle font-weight-bold mx-2 text-white stepper-number bg-primary`}>
+                                        <div className={`icon icon-shape icon-sm rounded-circle font-weight-bold mx-2 text-white stepper-number ${page>1 ? 'bg-success' : 'bg-primary'}`}>
                                             {page > 1 ?
                                                 <i className="ni ni-check-bold" />
                                                 :
@@ -280,6 +286,11 @@ export default function Inscripcion(props) {
                                 </CardHeader>
                                 <Form onSubmit={handleSubmit(onSubmit)}>
                                     <CardBody>
+                                    <Recaptcha
+                                        ref={e => recaptchaInstance = e}
+                                        sitekey={process.env.REACT_APP_CAPTCHA_KEY}
+                                        size="invisible"
+                                    />
                                         {
                                             page === 1 ?
                                                 <Page1 register={register} />
@@ -289,7 +300,7 @@ export default function Inscripcion(props) {
                                     </CardBody>
                                     <CardFooter className="d-flex justify-content-center">
                                         <Button color="primary" type="submit">
-                                            Siguiente
+                                            {(page + 1) > max ? 'Finalizar' : 'Siguiente'}
                                             <i className="ml-2 fa fa-chevron-right" aria-hidden="true"></i>
                                         </Button>
                                     </CardFooter>
