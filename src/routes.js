@@ -84,6 +84,7 @@ import Pagos from "views/Contabilidad/Pagos.js";
 //Ambientes
 import Disponibilidad from "views/Ambientes/Disponibilidad";
 import Reserva from "views/Ambientes/Reserva";
+import Reservas from "views/Ambientes/Reservas";
 
 export const components=[
   Login,
@@ -138,6 +139,7 @@ export const components=[
   CuentasCobranza, //49
   Reserva,//50
   Disponibilidad, //51
+  Reservas,//52
 ]
 //1
 export const routesSimple = [

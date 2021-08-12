@@ -466,3 +466,6 @@
   background-color:transparent;
   text-align: center;
 }
+body:not(.modal-open){
+  padding-right: 0px !important;
+}

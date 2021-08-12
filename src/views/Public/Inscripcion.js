@@ -233,6 +233,7 @@ export default function Inscripcion(props) {
     let recaptchaInstance;
     const executeCaptcha = () => {
       recaptchaInstance.execute();
+      console.log(recaptchaInstance)
     };
     const max = 2;
     const next = () => {

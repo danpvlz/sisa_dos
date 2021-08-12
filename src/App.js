@@ -13,12 +13,10 @@ function useOnlineStatus() {
     useEffect(() => {
         function handleOnline() {
             setOnline(true);
-            console.log("yeih")
         }
 
         function handleOffline() {
             setOnline(false);
-            console.log("ish")
         }
 
         window.addEventListener("online", handleOnline);

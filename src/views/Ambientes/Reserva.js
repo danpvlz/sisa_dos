@@ -44,7 +44,7 @@ const ReservaCommon = ({ register, settimeinfo, timeinfo, dateSelected }) => {
         settimeinfo({ ...timeinfo, since: e?.format('LTS'), until: moment(e)?.add(1, 'hour')?.format('LTS'), dif: 1 });
       } else {
         setuntil(e);
-        settimeinfo({ ...timeinfo, until: e?.format('LTS'), dif: e?.diff(since, 'hours') ? e?.diff(since, 'hours') :  0});
+        settimeinfo({ ...timeinfo, until: e?.format('LTS'), dif: e?.diff(since, 'hours') ? e?.diff(since, 'hours') : 0 });
       }
     } else {
       if (type === "since") {
@@ -71,16 +71,16 @@ const ReservaCommon = ({ register, settimeinfo, timeinfo, dateSelected }) => {
       </Col>
       <Col lg="12">
         <div className="form-control-alternative assistance-input mb-3">
-        <i className="fa fa-calendar mr-2" aria-hidden="true"></i> {moment(dateSelected).format('LL')}
+          <i className="fa fa-calendar mr-2" aria-hidden="true"></i> {moment(dateSelected).format('LL')}
         </div>
         {
-          moment(dateSelected,'YYYY-MM-DD').diff(moment().format('YYYY-MM-DD'),'days')<0 ?
-          <div className="mb-3 mt--2">
-          <i className="fa fa-exclamation-triangle text-danger text-small mr-2" aria-hidden="true"></i>
-          <small className="text-danger font-weight-bold">Seleccione una fecha mayor a hoy.</small>
-          </div>
-          :
-          ""
+          moment(dateSelected, 'YYYY-MM-DD').diff(moment().format('YYYY-MM-DD'), 'days') < 0 ?
+            <div className="mb-3 mt--2">
+              <i className="fa fa-exclamation-triangle text-danger text-small mr-2" aria-hidden="true"></i>
+              <small className="text-danger font-weight-bold">Seleccione una fecha mayor a hoy.</small>
+            </div>
+            :
+            ""
         }
       </Col>
       <Col lg="6">
@@ -91,10 +91,10 @@ const ReservaCommon = ({ register, settimeinfo, timeinfo, dateSelected }) => {
               inputProps={{
                 placeholder: "Desde"
               }}
-              timeFormat={"h A"}
+              timeFormat={"h:mm A"}
               onChange={(e) => handleChangeHour(e, 'since')}
               dateFormat={false}
-              value={since?.format('h A')}
+              value={since?.format('h:mm A')}
             />
           </InputGroup>
         </FormGroup >
@@ -107,10 +107,10 @@ const ReservaCommon = ({ register, settimeinfo, timeinfo, dateSelected }) => {
               inputProps={{
                 placeholder: "Hasta"
               }}
-              timeFormat={"h A"}
+              timeFormat={"h:mm A"}
               onChange={(e) => handleChangeHour(e, 'until')}
               dateFormat={false}
-              value={until?.format('h A')}
+              value={until?.format('h:mm A')}
             />
           </InputGroup>
         </FormGroup >
@@ -119,7 +119,7 @@ const ReservaCommon = ({ register, settimeinfo, timeinfo, dateSelected }) => {
   );
 }
 
-const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente }) => {
+const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente, data, timeinfo, dateSelected }) => {
   const selectAmbientes = useRef();
   const dispatch = useDispatch();
   const [ambienteSelected, setambienteSelected] = useState({
@@ -130,62 +130,75 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente 
     descuento: "",
     gratuito: false
   });
-  const getTotal=()=>{
-    return ((ambienteSelected.price ? ambienteSelected.price : 0)*(cantidad ? cantidad : 0))-(ambienteSelected?.descuento ? ambienteSelected.descuento : 0);
+  const getTotal = (item) => {
+    return item.price*cantidad-(item.descuento ? item.descuento : 0);
   }
+
+  const checkTimes = () => {
+    let toCheck = data.week.length > 0 ? data.week : data.month;
+    let newH = { d: moment(timeinfo.since, 'LTS').format('HH:mm:ss'), h: moment(timeinfo.until, 'LTS').format('HH:mm:ss'), id: request.idConcepto }
+    let allowRegister = toCheck.some(a => dateSelected === a.fecha && newH.id === a.idc && ((a.desde < newH.d && newH.d < a.hasta) || (a.desde < newH.h && newH.h < a.hasta) || (newH.d < a.desde && a.desde < newH.h) || (newH.d < a.hasta && a.hasta < newH.h) || (newH.d === a.desde && newH.h === a.hasta)))
+    return allowRegister
+  }
+
   const addItem = () => {
-    let foundError=false;
-    if (ambienteSelected.idAmbiente === "") {
+    let foundError = false;
+    if (!ambienteSelected.idAmbiente) {
       dispatch(fetchError("Debe seleccionar un concepto."));
-      foundError=true;
+      foundError = true;
     } else {
       if (items.some(a => a.idAmbiente === ambienteSelected.idAmbiente)) {
         dispatch(fetchError("Item repetido"));
-        foundError=true;
+        foundError = true;
       } else {
         if (type === "externa" && ambienteSelected.gratuito === false && ambienteSelected.price === "") {
           dispatch(fetchError("Debe asignar un precio."));
-          foundError=true;
+          foundError = true;
         } else {
-          if (type === "externa" && (cantidad===0 || !cantidad)) {
+          if (type === "externa" && (cantidad === 0 || !cantidad)) {
             dispatch(fetchError("Escoja un rango de hóras válido, no puede ser cero."));
-            foundError=true;
+            foundError = true;
           } else {
-            ambienteSelected.cantidad= cantidad;
-            ambienteSelected.total= getTotal();
-            setitems(items.concat(ambienteSelected));
-            setambienteSelected({
-              ...ambienteSelected,
-              idAmbiente: "",
-              label: "",
-              inmutable: "",
-              price: "",
-              descuento: ""
-            });
-            selectAmbientes?.current?.select?.clearValue();
+            if (checkTimes()) {
+              dispatch(fetchError("Cruce de horario con este item."));
+              foundError = true;
+            } else {
+              setitems(items.concat(ambienteSelected));
+              console.log(ambienteSelected)
+              setambienteSelected({
+                ...ambienteSelected,
+                idAmbiente: "",
+                label: "",
+                inmutable: "",
+                price: "",
+                descuento: ""
+              });
+              selectAmbientes?.current?.select?.clearValue();
+            }
           }
         }
       }
     }
-    if(foundError){
+    if (foundError) {
       setTimeout(() => {
         dispatch(hideMessage());
       }, 500);
     }
+
   }
 
-  const handleChangeAmbienteSelected=(e)=>{
+  const handleChangeAmbienteSelected = (e) => {
     setambienteSelected(e);
     setidAmbiente(e.idAmbiente);
-    dispatch(listMonth({...request.month,idConcepto:e.idAmbiente}));
-    dispatch(listWeek({...request.week,idConcepto:e.idAmbiente}));
+    dispatch(listMonth({ ...request.month, idConcepto: e.idAmbiente }));
+    dispatch(listWeek({ ...request.week, idConcepto: e.idAmbiente }));
   }
-  
+
   return (
     <>
       <Col lg="12">
         <FormGroup className="mb-0 pb-3">
-          <SearchAmbientes 
+          <SearchAmbientes
             setSelected={handleChangeAmbienteSelected}
             selectInputRef={selectAmbientes}
           />
@@ -202,7 +215,7 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente 
                   name="free2"
                   type="checkbox"
                   checked={ambienteSelected.gratuito}
-                  onChange={(e) => {if(e.target.checked!==ambienteSelected.gratuito){ setambienteSelected({ ...ambienteSelected, gratuito: e.target.checked })}}}
+                  onChange={(e) => { if (e.target.checked !== ambienteSelected.gratuito) { setambienteSelected({ ...ambienteSelected, gratuito: e.target.checked }) } }}
                 />
                 <label
                   htmlFor="free2"
@@ -228,11 +241,11 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente 
                         type="number"
                         min="0"
                         step="any"
-                        onWheelCapture={(e) => e.target.blur() }
+                        onWheelCapture={(e) => e.target.blur()}
                         readOnly={ambienteSelected.inmutable === 1}
                         placeholder="S/."
                         value={ambienteSelected.price}
-                        onChange={(e) => {if(e.target.value!==ambienteSelected.price){ setambienteSelected({ ...ambienteSelected, price: e.target.value })}}}
+                        onChange={(e) => { if (e.target.value !== ambienteSelected.price) { setambienteSelected({ ...ambienteSelected, price: e.target.value }) } }}
                       />
                     </FormGroup >
                   </Col>
@@ -270,10 +283,10 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente 
                         min="0"
                         step="any"
                         placeholder="S/."
-                        onWheelCapture={(e) => e.target.blur() }
+                        onWheelCapture={(e) => e.target.blur()}
                         value={ambienteSelected.descuento ? ambienteSelected.descuento : ""}
                         onChange={(e) => {
-                          if(e.target.value!==ambienteSelected?.descuento){
+                          if (e.target.value !== ambienteSelected?.descuento) {
                             setambienteSelected({ ...ambienteSelected, descuento: e.target.value })
                           }
                         }}
@@ -286,14 +299,14 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente 
                         className="form-control-label"
                         htmlFor="total"
                       >
-                      Total (S/.)
+                        Total (S/.)
                       </label>
                       <Input
                         className="form-control-alternative text-right"
                         id="total"
                         type="total"
                         placeholder="S/."
-                        value={((ambienteSelected.price ? ambienteSelected.price : 0)*(cantidad ? cantidad : 0))-(ambienteSelected?.descuento ? ambienteSelected.descuento : 0)}
+                        value={((ambienteSelected.price ? ambienteSelected.price : 0) * (timeinfo.dif ? timeinfo.dif : 0)) - (ambienteSelected?.descuento ? ambienteSelected.descuento : 0)}
                         disabled
                       />
                     </FormGroup >
@@ -328,21 +341,21 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente 
                       <td className="p-1 text-left">
                         {item?.label}
                         {
-                        type==='externa' ?
-                        `
-                        ${item?.gratuito ? 'GRATUITO' : 
-                        (`
-                          x${item?.cantidad} 
-                          ${item.descuento ? 
-                            '(-S/.'+item.descuento +')' 
-                            : ''
-                          }      
-                          Total:S/.${item?.total}
+                          type === 'externa' ?
+                            `
+                        ${item?.gratuito ? 'GRATUITO' :
+                              (`
+                          x${timeinfo.dif} 
+                          ${item.descuento ?
+                                  '(-S/.' + item.descuento + ')'
+                                  : ''
+                                }      
+                          Total:S/.${getTotal(item)}
                         `)}
                         `
-                        :
-                        ''
-                      }
+                            :
+                            ''
+                        }
                       </td>
                       <td className="p-1 text-right">
                         <Button className="btn btn-sm" color="danger" type="button" onClick={() => { setitems(items.filter((a, i) => i !== key)) }}>
@@ -361,38 +374,38 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente 
   );
 }
 
-const ReservaInterna = ({ changeType, dateSelected, request, setidAmbiente }) => {
+const ReservaInterna = ({ changeType, dateSelected, request, setidAmbiente, data }) => {
   const dispatch = useDispatch();
   const { register, handleSubmit, reset } = useForm();
   const [timeinfo, settimeinfo] = useState({});
   const [colaborador, setcolaborador] = useState(null);
   const [items, setitems] = useState([]);
 
-  const resetForm=()=>{
+  const resetForm = () => {
     settimeinfo({});
     setitems([]);
     reset();
   }
-  
+
 
   const onSubmit = (data) => {
-    let foundError=false;
-    if (Object.keys(timeinfo).length === 0 || timeinfo?.since==null || timeinfo?.until==null) {
+    let foundError = false;
+    if (Object.keys(timeinfo).length === 0 || timeinfo?.since == null || timeinfo?.until == null) {
       dispatch(fetchError("Debe especificar las horas de uso."));
-      foundError=true;
+      foundError = true;
     } else {
       if (colaborador == null) {
         dispatch(fetchError("Debe seleccionar un colaborador."));
-        foundError=true;
+        foundError = true;
       } else {
         if (items.length === 0) {
           dispatch(fetchError("Debe agregar al menos un item."));
-          foundError=true;
+          foundError = true;
         } else {
           data.idResponsable = colaborador;
           data.date = dateSelected;
           data.typeReservation = 'interna';
-          
+
           dispatch(save({ ...timeinfo, ...data, items: items }));
           dispatch(listMonth(request.month))
           dispatch(listWeek(request.week))
@@ -400,7 +413,7 @@ const ReservaInterna = ({ changeType, dateSelected, request, setidAmbiente }) =>
         }
       }
     }
-    if(foundError){
+    if (foundError) {
       setTimeout(() => {
         dispatch(hideMessage());
       }, 500);
@@ -431,9 +444,9 @@ const ReservaInterna = ({ changeType, dateSelected, request, setidAmbiente }) =>
                 <SearchColaborador setVal={setcolaborador} />
               </FormGroup >
             </Col>
-            <ReservaItems type={'interna'} items={items} setitems={setitems} cantidad={timeinfo.dif} request={request} setidAmbiente={setidAmbiente}/>
+            <ReservaItems type={'interna'} items={items} setitems={setitems} cantidad={timeinfo.dif} request={request} setidAmbiente={setidAmbiente} data={data} timeinfo={timeinfo} dateSelected={dateSelected} />
             <Col lg="12" className="mt-4">
-              <Button color="success" className="btn btn-block" type="submit" disabled={moment(dateSelected,'YYYY-MM-DD').diff(moment().format('YYYY-MM-DD'),'days')<0}>
+              <Button color="success" className="btn btn-block" type="submit">
                 Registrar
               </Button>
             </Col>
@@ -443,7 +456,7 @@ const ReservaInterna = ({ changeType, dateSelected, request, setidAmbiente }) =>
     </Card>);
 }
 
-const ReservaExterna = ({ changeType, dateSelected, request, setidAmbiente }) => {
+const ReservaExterna = ({ changeType, dateSelected, request, setidAmbiente, data }) => {
   const selectInputRefCliente = useRef();
   const dispatch = useDispatch();
   const { register, handleSubmit, reset } = useForm();
@@ -456,46 +469,44 @@ const ReservaExterna = ({ changeType, dateSelected, request, setidAmbiente }) =>
     confirm: false,
   });
 
-  const resetForm=()=>{
+  const resetForm = () => {
     settimeinfo({});
     setitems([]);
     reset();
   }
-  
+
   const onSubmit = (data) => {
-    let foundError=false;
-    if (Object.keys(timeinfo).length === 0 || timeinfo?.since==null || timeinfo?.until==null) {
+    let foundError = false;
+    if (Object.keys(timeinfo).length === 0 || timeinfo?.since == null || timeinfo?.until == null) {
       dispatch(fetchError("Debe especificar las horas de uso."));
-      foundError=true;
+      foundError = true;
     } else {
       if (cliente == null) {
         dispatch(fetchError("Debe seleccionar un cliente."));
-        foundError=true;
+        foundError = true;
       } else {
         if (items.length === 0) {
           dispatch(fetchError("Debe agregar al menos un item."));
-          foundError=true;
+          foundError = true;
         } else {
           data.idResponsable = cliente;
           data.date = dateSelected;
           data.typeReservation = 'externa';
-          
-          
           dispatch(save({ ...timeinfo, ...data, items: items }));
           dispatch(listMonth(request.month))
           dispatch(listWeek(request.week))
           resetForm()
-
           
           selectInputRefCliente?.current?.select?.clearValue();
         }
       }
     }
-    if(foundError){
+    if (foundError) {
       setTimeout(() => {
         dispatch(hideMessage());
       }, 500);
     }
+
   }
 
   const toogleModal = (prop) => {
@@ -531,7 +542,7 @@ const ReservaExterna = ({ changeType, dateSelected, request, setidAmbiente }) =>
                 <FormGroup className="mb-0 pb-4">
                   <div className="d-flex">
                     <div className="col-10 mx-0 px-0">
-                      <SearchCliente setVal={setcliente} searchDoc={searchDoc} idCliente={cliente}  selectInputRef={selectInputRefCliente}/>
+                      <SearchCliente setVal={setcliente} searchDoc={searchDoc} idCliente={cliente} selectInputRef={selectInputRefCliente} />
                     </div>
                     <div className="col-2 ml-0 pl-0">
                       <Button color="primary" type="button" onClick={() => toogleModal('new')}>
@@ -541,9 +552,9 @@ const ReservaExterna = ({ changeType, dateSelected, request, setidAmbiente }) =>
                   </div>
                 </FormGroup >
               </Col>
-              <ReservaItems type={'externa'} items={items} setitems={setitems} cantidad={timeinfo.dif} request={request} setidAmbiente={setidAmbiente} />
+              <ReservaItems type={'externa'} items={items} setitems={setitems} cantidad={timeinfo.dif} request={request} setidAmbiente={setidAmbiente} data={data} timeinfo={timeinfo} dateSelected={dateSelected} />
               <Col lg="12" className="mt-4">
-                <Button color="success" className="btn btn-block">
+                <Button color="success" className="btn btn-block" type="submit">
                   Registrar
                 </Button>
               </Col>
@@ -555,15 +566,15 @@ const ReservaExterna = ({ changeType, dateSelected, request, setidAmbiente }) =>
   );
 }
 
-const ReservasPick = ({ dateSelected, setdateSelected, request, setidAmbiente }) => {
+const ReservasPick = ({ dateSelected, setdateSelected, request, setidAmbiente, data }) => {
   const [typeReservation, settypeReservation] = useState(null);
   return (
     <>
       {
         typeReservation === 1 ?
-          <ReservaInterna changeType={settypeReservation} dateSelected={dateSelected} request={request} resetDate={()=>setdateSelected(null)} setidAmbiente={setidAmbiente}/> :
+          <ReservaInterna data={data} changeType={settypeReservation} dateSelected={dateSelected} request={request} resetDate={() => setdateSelected(null)} setidAmbiente={setidAmbiente} /> :
           typeReservation === 2 ?
-            <ReservaExterna changeType={settypeReservation} dateSelected={dateSelected} request={request} resetDate={()=>setdateSelected(null)} setidAmbiente={setidAmbiente} /> :
+            <ReservaExterna data={data} changeType={settypeReservation} dateSelected={dateSelected} request={request} resetDate={() => setdateSelected(null)} setidAmbiente={setidAmbiente} /> :
             <div className="mb-3">
               <Button className="btn-block mx-0 px-0" onClick={() => settypeReservation(1)}>Reserva interna</Button>
               <Button className="btn-block mx-0 px-0" onClick={() => settypeReservation(2)}>Reserva externa</Button>
@@ -581,7 +592,7 @@ const Disponibilidad = () => {
   const handleChangeDate = (e) => {
     setdateSelected(e);
   }
-  
+
   const [requestWeek, setrequestWeek] = useState(null);
   const [requestMonth, setrequestMonth] = useState(null);
   const [idAmbiente, setidAmbiente] = useState(null);
@@ -601,28 +612,28 @@ const Disponibilidad = () => {
               handleClickDay={handleChangeDate}
               selectable={true}
               dataWeek={reservationWeek}
-              handleChangeWeek={(e) => {dispatch(listWeek(e)); console.log(e); setrequestWeek(e)}}
+              handleChangeWeek={(e) => { dispatch(listWeek(e)); setrequestWeek(e) }}
               dataMonth={reservationMonth}
-              handleChangeMonth={(e) => {dispatch(listMonth(e)); setrequestMonth(e)}}
+              handleChangeMonth={(e) => { dispatch(listMonth(e)); setrequestMonth(e) }}
               CollapseChild={({ item }) =>
                 <div className="text-center">
-                <i className="ni ni-single-02 text-muted d-block"></i>
-                <small>{item.person}</small>
-                {
-                item.motivo ?
-                <>
-                  <small className="font-weight-bold  d-block  mt-2">
-                    "{item.motivo}""
-                  </small>
-                </>
-                :
-                ""
-                }
+                  <i className="ni ni-single-02 text-muted d-block"></i>
+                  <small>{item.person}</small>
+                  {
+                    item.motivo ?
+                      <>
+                        <small className="font-weight-bold  d-block  mt-2">
+                          "{item.motivo}""
+                        </small>
+                      </>
+                      :
+                      ""
+                  }
                 </div>}
             />
           </Col>
           <Collapse className="col-lg-4 px-lg-0 px-md-3" isOpen={dateSelected != null}>
-            <ReservasPick dateSelected={dateSelected} setdateSelected={setdateSelected} request={{month:requestMonth,week:requestWeek, idConcepto:idAmbiente}} setidAmbiente={setidAmbiente} />
+            <ReservasPick dateSelected={dateSelected} setdateSelected={setdateSelected} request={{ month: requestMonth, week: requestWeek, idConcepto: idAmbiente }} setidAmbiente={setidAmbiente} data={{ month: reservationMonth, week: reservationWeek }} />
           </Collapse>
         </Row>
       </Container>

@@ -173,8 +173,10 @@ const NuevaEmision = () => {
       {/* Page content */}
       <Container className="mt--7" fluid>
         {
-          submited &&
+          submited ?
           <Loading />
+          :
+          ""
         }
         <ConfirmDialog
           question={'¿Seguro de registrar emisión?'}

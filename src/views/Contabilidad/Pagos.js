@@ -319,7 +319,7 @@ const Pagos = () => {
                                                                         cuenta.metadata ? 
                                                                         <DetailTransaction data={JSON.parse(cuenta.metadata)} />
                                                                         :
-                                                                        <div className="text-muted text-small m-3">--No hay información--</div>
+                                                                        <div className="text-muted text-small m-3">--No hay pago externo--</div>
                                                                     }
                                                                 </UncontrolledCollapse>
                                                             </td>
