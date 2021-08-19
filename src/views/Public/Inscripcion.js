@@ -229,16 +229,18 @@ export default function Inscripcion(props) {
     const [page, setpage] = useState(1);
     const [completed, setcompleted] = useState(false);
     const [formData, setformData] = useState();
+    const [sendForm, setsendForm] = useState(false);
 
     let recaptchaInstance;
     const executeCaptcha = () => {
-      recaptchaInstance.execute();
-      console.log(recaptchaInstance)
+        recaptchaInstance.current.execute();
     };
+
     const max = 2;
     const next = () => {
         setpage(page + 1);
     }
+
     const onSubmit = (data) => {
         if ((page + 1) > max) {
             executeCaptcha();
@@ -250,6 +252,22 @@ export default function Inscripcion(props) {
             next();
         }
     }
+
+    const verifyCallback = (response) => {
+        console.log(response)
+        setsendForm(true);
+    };
+
+    useEffect(() => {
+        if(sendForm){
+            formData.idCurso = props.match.params.cursoId;
+            dispatch(externalInscription(formData));
+            setcompleted(true);
+            setsendForm(false);
+        }
+        // eslint-disable-next-line
+    }, [sendForm])
+
     useEffect(() => {
         dispatch(show(props.match.params.cursoId));
         return () => {
@@ -258,7 +276,16 @@ export default function Inscripcion(props) {
     }, [props.match.params.cursoId,dispatch]);
     
     return (
-        <ContainerPublic bg="full" title={cursobject.descripcion ? `CURSO: ${cursobject?.descripcion?.toUpperCase() }` : "..."} imgHeader={cursobject?.foto}>
+        <ContainerPublic bg="full" title={cursobject.descripcion ? `CURSO: ${cursobject?.descripcion?.toUpperCase()}` : "..."} imgHeader={cursobject?.foto}>
+
+            <Recaptcha
+                ref={recaptchaInstance}
+                sitekey={process.env.REACT_APP_CAPTCHA_KEY}
+                size="invisible"
+                render="explicit"
+                onloadCallback={() => console.log(recaptchaInstance.current)}
+                verifyCallback={verifyCallback}
+            />
             <Col className="order-xl-1" lg="6">
                 <Card className="bg-secondary shadow">
                     {

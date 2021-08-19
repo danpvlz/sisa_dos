@@ -348,13 +348,14 @@ const Cuenta = () => {
                       </label>
                           <Select
                             placeholder="Seleccione..."
+                            isClearable
                             className="select-style"
                             name="status"
                             onChange={(inputValue, actionMeta) => {
-                              setstatus(inputValue.value);
+                              setstatus(inputValue ? inputValue.value : null);
                             }}
-                            value={status ? [{ value: 0, label: "Emitido" }, { value: 1, label: "Por cancelar" }, { value: 2, label: "Cancelada" }, { value: 3, label: "Anulada" }][status] : ""}
-                            options={[{ value: 0, label: "Emitido" }, { value: 1, label: "Por cancelar" }, { value: 2, label: "Cancelada" }, { value: 3, label: "Anulada" }]} />
+                            value={status ? [{ value: 4, label: "Emitido" }, { value: 1, label: "Por cancelar" }, { value: 2, label: "Cancelada" }, { value: 3, label: "Anulada" }][status] : ""}
+                            options={[{ value: 4, label: "Emitido" }, { value: 1, label: "Por cancelar" }, { value: 2, label: "Cancelada" }, { value: 3, label: "Anulada" }]} />
                         </FormGroup >
                       </Col>
                       <Col lg="4"  >

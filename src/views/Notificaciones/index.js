@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 // reactstrap components
 import {
     Card,
@@ -21,6 +22,7 @@ import {
     DropdownMenu,
     DropdownItem,
 } from "reactstrap";
+
 import { useSelector, useDispatch } from "react-redux";
 import { showMessage, hideMessage } from '../../redux/actions/Common';
 import { getMyFolders, storeFolderContent, storeFolder } from '../../redux/actions/Colaborador';
@@ -29,6 +31,7 @@ import NotificationPagos from "./Tables/NotificationPagos";
 import NotificationAsociado from "./Tables/NotificationAsociado";
 import NotificationAsociadoEdit from "./Tables/NotificationAsociadoEdit";
 import NotificacionInscripcion from "./Tables/NotificacionInscripcion";
+import NotificacionAmbientes from "./Tables/NotificacionAmbientes";
 import moment from "moment";
 import 'moment/locale/es';
 moment.locale('es');
@@ -214,7 +217,10 @@ const FolderContainer = ({ folders, selected }) => {
                                                     notification?.tipo === 4 ?
                                                         <NotificacionInscripcion detail={notification?.detail} />
                                                         :
-                                                        <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
+                                                        notification?.tipo === 5 ?
+                                                            <NotificacionAmbientes detail={notification?.detail} />
+                                                            :
+                                                            <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
                                         }
                                     </CardBody>
                                 </Card>
@@ -327,7 +333,13 @@ const NotificationContainer = ({ props, folders }) => {
                                                     notification?.tipo === 4 ?
                                                         <NotificacionInscripcion detail={notification?.detail} />
                                                         :
-                                                        <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
+                                                        notification?.tipo === 5 ?
+                                                            <NotificacionAmbientes detail={notification?.detail} 
+                                                            handleDone={() => {
+                                                                firebaseNotif.delete(notification.key)
+                                                            }} />
+                                                            :
+                                                            <NotificationPagos details={notification?.detail} numoperacion={notification.numoperacion} numsofdoc={notification.numsofdoc} />
                                         }
                                     </CardBody>
                                 </Card>

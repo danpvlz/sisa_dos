@@ -108,9 +108,9 @@ const Afiliacion = () => {
 
   const handleConfirm = () => {
     //REGISTRAR
-    formData.comitegremial = comiteGremial;
+    formData.comitegremial = comiteGremial.value;
     formData.tipoasociado = typeAssociated;
-    formData.idPromotor = promotorSearched;
+    formData.idPromotor = promotorSearched.value;
     formData.promotornombre = newPromotorName;
     formData.tipodocumento_representante = tipodocumentorepresentante;
     formData.tipodocumento_adicional = tipodocumentoadicional;
@@ -146,7 +146,7 @@ const Afiliacion = () => {
                           >
                             Promotor
                               </label>
-                          <SearchPromotor setVal={setPromotorSearched} setNew={setnewPromotorName} />
+                          <SearchPromotor setVal={setPromotorSearched} setNew={setnewPromotorName}  curVal={promotorSearched}/>
                         </FormGroup>
                       </Col>
                       <Col lg="4">
@@ -157,7 +157,7 @@ const Afiliacion = () => {
                           >
                             Comité gremial*
                               </label>
-                          <SearchComiteGremial setVal={setcomiteGremial} />
+                          <SearchComiteGremial setVal={setcomiteGremial} curVal={comiteGremial}/>
                         </FormGroup>
                       </Col>
                       <Col lg="4">

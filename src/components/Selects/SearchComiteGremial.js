@@ -4,7 +4,7 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from "react-redux";
 import { filter } from "../../redux/actions/ComiteGremial";
 
-export default function SearchComiteGremial({setVal, defaultVal}) {
+export default function SearchComiteGremial({setVal, curVal}) {
   const dispatch = useDispatch();
   const comiteGremialFilter = useSelector(({ comite }) => comite.comiteGremialFilter);
   useEffect(() => {
@@ -19,9 +19,9 @@ export default function SearchComiteGremial({setVal, defaultVal}) {
       //onInputChange={handleInputChange}
       isClearable={true}
       onChange={(inputValue, actionMeta) => {
-        setVal(inputValue != null ? inputValue.value : null);
+        setVal(inputValue != null ? {value:inputValue.value,label:inputValue.label} : null);
       }}
       options={comiteGremialFilter}
-      defaultValue={defaultVal} />
+      value={curVal} />
   )
 }

@@ -81,7 +81,7 @@ const Asociado = () => {
     if(comiteGremial == null){
       delete tsearch.comite;
     }else{
-      tsearch.comite=comiteGremial;
+      tsearch.comite=comiteGremial.value;
     }
     if (since == null) {
       delete tsearch.month;
@@ -209,7 +209,7 @@ const Asociado = () => {
                           >
                             Comité gremial
                       </label>
-                          <SearchComiteGremial setVal={setcomiteGremial}/>
+                          <SearchComiteGremial setVal={setcomiteGremial} curVal={comiteGremial}/>
                         </FormGroup>
                       </Col>
                     </Row>

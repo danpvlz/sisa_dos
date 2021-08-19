@@ -269,7 +269,7 @@ const Pagos = () => {
                                                     <th scope="col">Operación</th>
                                                     <th scope="col">SofyDoc</th>
                                                     <th scope="col">Serie-Número</th>
-                                                    <th scope="col">Cobrado</th>
+                                                    <th scope="col">Monto Fact.</th>
                                                 </tr>
                                             </thead>
                                             {

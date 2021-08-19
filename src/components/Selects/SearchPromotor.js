@@ -3,7 +3,7 @@ import CreatableSelect from 'react-select/creatable';
 import { useDispatch, useSelector } from "react-redux";
 import { filter } from "../../redux/actions/Promotor";
 
-export default function SearchPromotor({ setVal, setNew, defaultVal }) {
+export default function SearchPromotor({ setVal, setNew,curVal }) {
     const dispatch = useDispatch();
     const promotorFilter = useSelector(({ promotor }) => promotor.promotorFilter);
     const [newOption, setnewOption] = useState(null);
@@ -29,7 +29,7 @@ export default function SearchPromotor({ setVal, setNew, defaultVal }) {
             isClearable
             onChange={(inputValue, actionMeta) => {
               if(inputValue){
-                setVal(inputValue != null ? inputValue.value : null);
+                setVal(inputValue != null ? {value:inputValue.value,label:inputValue.label} : null);
               }else{
                 setNew(null);
                 setnewOption(null);
@@ -38,7 +38,7 @@ export default function SearchPromotor({ setVal, setNew, defaultVal }) {
             onInputChange={handleInputChange}
             onCreateOption={handleCreate}
             options={ newOption ? newOption : promotorFilter }
-            defaultValue={defaultVal}
+            value={curVal}
         />
     )
 }
