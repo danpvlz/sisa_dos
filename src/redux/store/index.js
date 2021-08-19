@@ -21,7 +21,7 @@ export default function configureStore(preloadedState) {
         routerMiddleware(history), // for dispatching history actions
         ...middlewares
       ),
-      process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() : ''
+      //process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() : ''
     )
   );
 
