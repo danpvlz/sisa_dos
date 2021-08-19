@@ -18,7 +18,8 @@ import { useForm } from "react-hook-form";
 import { show, resetCursoObject } from "../../redux/actions/Curso";
 import { externalInscription } from "../../redux/actions/Inscripcion";
 import { useDispatch, useSelector } from "react-redux";
-import Recaptcha from "react-recaptcha";
+var Recaptcha = require('react-recaptcha');
+
 
 const Page2 = ({ register }) => {
     return (
@@ -90,7 +91,7 @@ const Page1 = ({ register }) => {
                         className="form-control-label"
                         htmlFor="dni"
                     >
-                        DNI</label>
+                        DNI / DOC. EXTRJ.</label>
                     <Input
                         className="form-control-alternative"
                         name="dni"
@@ -230,10 +231,11 @@ export default function Inscripcion(props) {
     const [completed, setcompleted] = useState(false);
     const [formData, setformData] = useState();
     const [sendForm, setsendForm] = useState(false);
+    const [recaptchaInstance, setrecaptchaInstance] = useState(null);
 
-    let recaptchaInstance;
+
     const executeCaptcha = () => {
-        recaptchaInstance.current.execute();
+        recaptchaInstance.execute(); 
     };
 
     const max = 2;
@@ -244,11 +246,11 @@ export default function Inscripcion(props) {
     const onSubmit = (data) => {
         if ((page + 1) > max) {
             executeCaptcha();
-            formData.idCurso=props.match.params.cursoId;
+            formData.idCurso = props.match.params.cursoId;
             dispatch(externalInscription(formData));
             setcompleted(true);
         } else {
-            setformData({ ...formData, ...data});
+            setformData({ ...formData, ...data });
             next();
         }
     }
@@ -259,7 +261,7 @@ export default function Inscripcion(props) {
     };
 
     useEffect(() => {
-        if(sendForm){
+        if (sendForm) {
             formData.idCurso = props.match.params.cursoId;
             dispatch(externalInscription(formData));
             setcompleted(true);
@@ -273,19 +275,11 @@ export default function Inscripcion(props) {
         return () => {
             dispatch(resetCursoObject());
         }
-    }, [props.match.params.cursoId,dispatch]);
-    
-    return (
-        <ContainerPublic bg="full" title={cursobject.descripcion ? `CURSO: ${cursobject?.descripcion?.toUpperCase()}` : "..."} imgHeader={cursobject?.foto}>
+    }, [props.match.params.cursoId, dispatch]);
 
-            <Recaptcha
-                ref={recaptchaInstance}
-                sitekey={process.env.REACT_APP_CAPTCHA_KEY}
-                size="invisible"
-                render="explicit"
-                onloadCallback={() => console.log(recaptchaInstance.current)}
-                verifyCallback={verifyCallback}
-            />
+    return (
+        <ContainerPublic bg="full" title={cursobject.descripcion ? `${cursobject?.descripcion?.toUpperCase()}` : "..."} imgHeader={cursobject?.foto}>
+
             <Col className="order-xl-1" lg="6">
                 <Card className="bg-secondary shadow">
                     {
@@ -295,7 +289,7 @@ export default function Inscripcion(props) {
                             <>
                                 <CardHeader>
                                     <div className="d-flex mx-auto text-center justify-content-center">
-                                        <div className={`icon icon-shape icon-sm rounded-circle font-weight-bold mx-2 text-white stepper-number ${page>1 ? 'bg-success' : 'bg-primary'}`}>
+                                        <div className={`icon icon-shape icon-sm rounded-circle font-weight-bold mx-2 text-white stepper-number ${page > 1 ? 'bg-success' : 'bg-primary'}`}>
                                             {page > 1 ?
                                                 <i className="ni ni-check-bold" />
                                                 :
@@ -314,17 +308,20 @@ export default function Inscripcion(props) {
                                 </CardHeader>
                                 <Form onSubmit={handleSubmit(onSubmit)}>
                                     <CardBody>
-                                    <Recaptcha
-                                        ref={e => recaptchaInstance = e}
-                                        sitekey={process.env.REACT_APP_CAPTCHA_KEY}
-                                        size="invisible"
-                                    />
                                         {
                                             page === 1 ?
                                                 <Page1 register={register} />
                                                 :
                                                 <Page2 register={register} />
                                         }
+                                        <Recaptcha
+                                            ref={e => setrecaptchaInstance(e)}
+                                            sitekey={process.env.REACT_APP_CAPTCHA_KEY}
+                                            size="invisible"
+                                            render="explicit"
+                                            onloadCallback={() => console.log(recaptchaInstance)}
+                                            verifyCallback={verifyCallback}
+                                        />
                                     </CardBody>
                                     <CardFooter className="d-flex justify-content-center">
                                         <Button color="primary" type="submit">
