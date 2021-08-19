@@ -326,6 +326,7 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente,
       </Col>
       {
         items.length > 0 ?
+        <>
           <Col lg="12" className="mt-3">
             <Table className="align-items-center table-flush" responsive>
               <thead className="thead-light">
@@ -367,6 +368,10 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente,
               </tbody>
             </Table>
           </Col>
+          <div className="d-block mt-2 mx-auto mb-0">
+            <strong>Total: S/. {items.reduce((r, a) => { return r + getTotal(a) }, 0)}</strong>
+          </div>
+          </>
           :
           ""
       }
