@@ -21,8 +21,7 @@ export default function SearchCliente({setVal,idCliente,defaultVal,selectInputRe
     if(clienteFilter.length>0 && searchDoc!=null){
       setVal(clienteFilter.find(c=>c.documento === searchDoc)?.value);
     }
-    // eslint-disable-next-line
-  }, [clienteFilter,searchDoc]);
+  }, [clienteFilter,setVal,searchDoc]);
 
   return (
     <Select

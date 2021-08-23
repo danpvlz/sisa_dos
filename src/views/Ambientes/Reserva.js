@@ -368,9 +368,14 @@ const ReservaItems = ({ type, items, setitems, cantidad, request, setidAmbiente,
               </tbody>
             </Table>
           </Col>
-          <div className="d-block mt-2 mx-auto mb-0">
-            <strong>Total: S/. {items.reduce((r, a) => { return r + getTotal(a) }, 0)}</strong>
-          </div>
+          {
+            type === "externa" ?
+            <div className="d-block mt-2 mx-auto mb-0">
+              <strong>Total: S/. {items.reduce((r, a) => { return r + getTotal(a) }, 0)}</strong>
+            </div>
+            :
+            ""
+          }
           </>
           :
           ""

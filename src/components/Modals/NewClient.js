@@ -45,11 +45,11 @@ const NewClient = ({ show, toggleModal, setSearchDoc }) => {
     if(rucSearched){
       setformdata({...formdata,
         denominacion: rucSearched.nombre_o_razon_social,
-        direccion: rucSearched.direccion_completa ? rucSearched.direccion_completa : ""});
+        direccion: rucSearched.direccion ? rucSearched.direccion : rucSearched.tipo_via ? (`${rucSearched.tipo_via} ${rucSearched.nombre_via} ${rucSearched.numero} - ${rucSearched.codigo_zona} ${rucSearched.tipo_zona}`) : ""});
     }
   }, [rucSearched,dniSearched]);  // eslint-disable-line react-hooks/exhaustive-deps
 
-  const onSubmit = (data) => {
+  const onSubmit = () => {
     if(formdata.tipoDocumento === ""){
       dispatch(fetchError("Debe elegir un tipo de documento."))
     }else{
@@ -68,7 +68,14 @@ const NewClient = ({ show, toggleModal, setSearchDoc }) => {
             if(setSearchDoc){
               setSearchDoc(formdata.documento);
             }
-            setformdata(null);
+            setformdata({
+              tipoDocumento: "",
+              documento: "",
+              denominacion: "",
+              direccion: "",
+              email: "",
+              telefono: ""
+            });
             toggleModal();
           }
           dispatch(hideMessage());
@@ -163,7 +170,7 @@ const NewClient = ({ show, toggleModal, setSearchDoc }) => {
                   type="text"
                   name="document"
                   id="document"
-                  onChange={(e)=>setformdata({...formdata,documento:e.target.value})}
+                  onChange={(e)=>setformdata({...formdata,documento:e.target.value ? e.target.value : ""})}
                   value={formdata?.documento}
                   innerRef={register({ required: true })}
                 />
