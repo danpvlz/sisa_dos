@@ -450,7 +450,7 @@ const Cuenta = () => {
                                   <>
                                     <DropdownItem
                                       className="d-flex"
-                                      onClick={(e) => { setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); toggleModalPay(); }}
+                                      onClick={(e) => { setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); setmonto(cuenta.total); toggleModalPay(); }}
                                     >
                                       <i className="fa fa-credit-card text-success" aria-hidden="true"></i> Cancelar
                                     </DropdownItem>

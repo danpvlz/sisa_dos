@@ -11,7 +11,8 @@ import {
   SHOW_COMPROBANTE,
   INDICATORS_BILLS_CAJA,
   DASHBOARD_DATA,
-  DASHBOARD_DATA_BY_AREA
+  DASHBOARD_DATA_BY_AREA,
+  LIST_PENDINGS_CAJA
 } from "../ActionTypes";
 import axios from '../../util/Api';
 
@@ -209,6 +210,24 @@ export const loadDashboardByArea = (params={}) => {
       if (data) {
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: DASHBOARD_DATA_BY_AREA, payload: data });
+      } else {
+        dispatch({ type: FETCH_ERROR, payload: data.error });
+      }
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+
+export const listPendings = (page = 1,params={}) => {
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('listPendings108?page=' + page,
+    params
+    ).then(({ data }) => {  
+      if (data) {
+        dispatch({ type: FETCH_SUCCESS });
+        dispatch({ type: LIST_PENDINGS_CAJA, payload: data });
       } else {
         dispatch({ type: FETCH_ERROR, payload: data.error });
       }

@@ -2,7 +2,8 @@ import {
   LIST_BILLS_CAJA,
   INDICATORS_BILLS_CAJA,
   DASHBOARD_DATA,
-  DASHBOARD_DATA_BY_AREA
+  DASHBOARD_DATA_BY_AREA,
+  LIST_PENDINGS_CAJA
 } from "../ActionTypes";
 
 const INIT_STATE = {
@@ -10,6 +11,7 @@ const INIT_STATE = {
   cajaDashboardByArea: [],
   billListCaja: [],
   billIndicatorsCaja: [],
+  pendingsListCaja: [],
 };
 
 const states = (state = INIT_STATE, action) => {
@@ -36,6 +38,12 @@ const states = (state = INIT_STATE, action) => {
       return {
         ...state,
         billIndicatorsCaja: action.payload
+      }
+    }
+    case LIST_PENDINGS_CAJA: {
+      return {
+        ...state,
+        pendingsListCaja: action.payload
       }
     }
     default:

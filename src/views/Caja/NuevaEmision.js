@@ -265,7 +265,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Tipo de documento
-                          </label>
+                              </label>
                               <Select
                                 placeholder="Seleccione..."
                                 className="select-style"
@@ -313,7 +313,7 @@ const NuevaEmision = () => {
                                       htmlFor="input-address"
                                     >
                                       Serie a modificar
-                                </label>
+                                    </label>
                                     <Input
                                       className="form-control-alternative"
                                       type="text"
@@ -334,7 +334,7 @@ const NuevaEmision = () => {
                                       htmlFor="input-address"
                                     >
                                       Num. modificar
-                                </label>
+                                    </label>
                                     <Input
                                       className="form-control-alternative"
                                       type="text"
@@ -393,37 +393,64 @@ const NuevaEmision = () => {
                                 options={[{ value: 1, label: "PEN" }, { value: 2, label: "USD" }]} />
                             </FormGroup>
                           </Col>
-                          <Col lg="9">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Observación
-                          </label>
-                              <Input
-                                className="form-control-alternative"
-                                name="observacion"
-                                type="text"
-                                innerRef={register({ required: false })}
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col lg="3">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Correo destino
-                          </label>
-                              <Input
-                                className="form-control-alternative"
-                                name="correo"
-                                type="email"
-                                innerRef={register({ required: false })}
-                              />
-                            </FormGroup>
+                          <Col lg="12">
+                            <Row>
+                              {
+                                (tipoDocumentoEmision === 1 || tipoDocumentoEmision === 2) && (pagado === 1) ?
+                                  <Col lg="4">
+                                    <FormGroup>
+                                      <label
+                                        className="form-control-label"
+                                        htmlFor="input-address"
+                                      >
+                                        Fecha de vencimiento <span className="text-success">*NUEVO</span>
+                                      </label>
+                                      <Input
+                                        className="form-control-alternative"
+                                        name="fechaVencimiento"
+                                        type="date"
+                                        min={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
+                                        innerRef={register({ required:  (tipoDocumentoEmision === 1 || tipoDocumentoEmision === 2) && (pagado === 1) })}
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  :
+                                  ""
+                              }
+
+                              <Col lg="4">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Correo destino
+                                  </label>
+                                  <Input
+                                    className="form-control-alternative"
+                                    name="correo"
+                                    type="email"
+                                    innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col lg="12">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Observación
+                                  </label>
+                                  <Input
+                                    className="form-control-alternative"
+                                    name="observacion"
+                                    type="text"
+                                    innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                            </Row>
                           </Col>
                         </Row>
                       </div>
@@ -445,7 +472,7 @@ const NuevaEmision = () => {
                                     htmlFor="input-address"
                                   >
                                     Medio de pago
-                                      </label>
+                                  </label>
                                   <Select
                                     placeholder="Seleccione..."
                                     className="select-style"
@@ -466,7 +493,7 @@ const NuevaEmision = () => {
                                     htmlFor="input-address"
                                   >
                                     Num. Operación
-                                        </label>
+                                  </label>
                                   <Input
                                     className="form-control-alternative"
                                     name="numoperacion"
@@ -503,7 +530,7 @@ const NuevaEmision = () => {
                                     className="form-control-label"
                                     htmlFor="input-address"
                                   >
-                                    Monto del pago
+                                    Monto de oper.
                                   </label>
                                   <Input
                                     className="form-control-alternative text-center"
@@ -516,6 +543,7 @@ const NuevaEmision = () => {
                                       setMontoPaid(e.target.value);
                                     }}
                                     value={montoPaid}
+                                    onWheelCapture={(e) => e.target.blur()}
                                     innerRef={register({ required: pagado === 2 })}
                                   />
                                 </FormGroup>
@@ -539,7 +567,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Concepto
-                          </label>
+                              </label>
                               <SearchConcepto setVal={setidConcepto} setLabel={setLabelConcepto} setInmutable={setinmutable} setprice={setPriceConcepto} />
                             </FormGroup>
                           </Col>
@@ -550,7 +578,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Detalle
-                          </label>
+                              </label>
                               <Input
                                 className="form-control-alternative text-center"
                                 name="detalle"
@@ -589,13 +617,14 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Precio
-                          </label>
+                              </label>
                               <Input
                                 className="form-control-alternative text-center"
                                 name="price"
                                 type="number"
                                 min="0"
                                 readOnly={inmutable === 1}
+                                onWheelCapture={(e) => e.target.blur()}
                                 onChange={(e) => {
                                   setitemValues({ ...itemValues, "price": e.target.value, "subtotal": e.target.value * itemValues.ammount })
                                 }}
@@ -610,7 +639,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Cantidad
-                          </label>
+                              </label>
                               <Input
                                 className="form-control-alternative text-center"
                                 name="ammount"
@@ -621,6 +650,7 @@ const NuevaEmision = () => {
                                   setitemValues({ ...itemValues, "ammount": e.target.value, "subtotal": e.target.value * itemValues.price })
                                 }}
                                 value={itemValues.ammount}
+                                onWheelCapture={(e) => e.target.blur()}
                               />
                             </FormGroup>
                           </Col>
@@ -631,7 +661,7 @@ const NuevaEmision = () => {
                                 htmlFor="input-address"
                               >
                                 Total
-                          </label>
+                              </label>
                               <Input
                                 className="form-control-alternative text-center"
                                 name="subtotal"

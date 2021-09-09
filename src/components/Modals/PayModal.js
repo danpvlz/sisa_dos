@@ -103,6 +103,7 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, hand
                     placeholder="S/."
                     type="number"
                     value={monto}
+                    onWheelCapture={(e) => e.target.blur()}
                     onChange={(e) => {
                       setmonto(e.target.value);
                       seterror({ ...error, monto: false });
@@ -157,6 +158,7 @@ const PayModal = ({ showPay, toggleModal, setfecha, fecha, setmonto, monto, hand
                     min="0"
                     step="any"
                     placeholder="S/."
+                    onWheelCapture={(e) => e.target.blur()}
                     onChange={(e) => {
                       setMontoPaid(e.target.value);
                       seterror({ ...error, montoPaid: false });

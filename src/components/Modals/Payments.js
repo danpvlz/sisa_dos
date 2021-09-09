@@ -53,7 +53,7 @@ export default function Payments({ showDetail, toggleModal }) {
                 ""
             }
             {
-                !loading || comprobanteObject?.detalle ? 
+                !loading ? 
                 <div className="modal-body">
                     <Row>
                         <Col className="d-flex justify-content-between p-0">
@@ -84,6 +84,8 @@ export default function Payments({ showDetail, toggleModal }) {
                                     <th scope="col">Estado</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Observaciones</th>
+                                    {comprobanteObject?.cuenta?.fechaVencimiento ?
+                                    <th scope="col">Vencimiento</th> : ""}
                                 </tr>
                             </thead>
                             <tbody>
@@ -106,6 +108,10 @@ export default function Payments({ showDetail, toggleModal }) {
                                     <td>
                                         {comprobanteObject?.cuenta?.observaciones}
                                     </td>
+                                    
+                                    {comprobanteObject?.cuenta?.fechaVencimiento ? <td> {comprobanteObject?.cuenta?.fechaVencimiento}
+                                    </td> : ""}
+                                    
                                 </tr>
                             </tbody>
                         </Table>

@@ -52,6 +52,7 @@ import CuentasCobranza from "views/Cobranza/CuentasCobranza";
 import CajaAdmin from "views/Caja/CajaAdmin";
 import NuevaEmisionCaja from "views/Caja/NuevaEmision";
 import CajaDashboard from "views/Caja/Dashboard";
+import PendientesCaja from "views/Caja/Pendientes";
 
 //Concepto
 import Concepto from "views/Concepto/Concepto.js";
@@ -140,6 +141,7 @@ export const components=[
   Reserva,//50
   Disponibilidad, //51
   Reservas,//52
+  PendientesCaja,//53
 ]
 //1
 export const routesSimple = [

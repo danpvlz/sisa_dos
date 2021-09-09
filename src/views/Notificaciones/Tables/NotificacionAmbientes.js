@@ -3,6 +3,7 @@ import { toSoles } from "../../../util/Helper"
 import {
     Table,
     Button,
+    Input
 } from "reactstrap"
 import Select from 'react-select';
 import moment from "moment";
@@ -12,30 +13,48 @@ import { useDispatch } from 'react-redux';
 
 export default function NotificacionInscripcion({ detail, handleDone }) {
     const [tipoDoc, settipoDoc] = useState(null);
+    const [fechaVencimiento, setfechaVencimiento] = useState(null);
     const dispatch = useDispatch();
     const handleClickDone = () => {
-        detail.tipo_de_comprobante=tipoDoc;
-        detail.fechaEmision=moment().format("YYYY-MM-DD");
-        detail.typeChange=1;
-        console.log(detail)
+        detail.tipo_de_comprobante = tipoDoc;
+        detail.fechaEmision = moment().format("YYYY-MM-DD");
+        detail.fechaVencimiento = fechaVencimiento;
+        detail.typeChange = 1;
         dispatch(confirmarCheckIn(detail));
         handleDone()
     }
     return (
         <div>
             <small>Información del comprobante</small>
-            <strong className="d-block mt-2">Tipo de documento:</strong>
-            <div className="row mb-4">
-                <div className="col-3">
-                    <Select
-                        placeholder="Seleccione..."
-                        className="select-style"
-                        onChange={(inputValue, actionMeta) => {
-                            settipoDoc(inputValue.value)
-                        }}
-                        options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
+            <div className="row mb-3">
+                <div className="col-4">
+                    <strong className="d-block mt-2">Tipo de documento:</strong>
+                    <div >
+                        <Select
+                            placeholder="Seleccione..."
+                            className="select-style"
+                            onChange={(inputValue, actionMeta) => {
+                                settipoDoc(inputValue.value)
+                            }}
+                            options={[{ value: 1, label: "Factura" }, { value: 2, label: "Boleta" }]} />
+                    </div>
+                </div>
+                <div className="col-4">
+                    <strong className="d-block mt-2">Fecha de vencimiento:</strong>
+                    <div>
+                        <Input
+                            className="form-control-alternative"
+                            name="fechaVencimiento"
+                            type="date"
+                            min={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
+                            onChange={(e, actionMeta) => {
+                                setfechaVencimiento(e.target.value ? e.target.value : null)
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
+
             <strong className="d-block mt-2">Cliente:</strong>
             <p className="my-0"><strong>Documento: </strong>{detail?.cliente_documento}</p>
             <p className="my-0"><strong>Denominación: </strong>{detail?.cliente}</p>
@@ -90,7 +109,7 @@ export default function NotificacionInscripcion({ detail, handleDone }) {
                     ""
             }
             <div className="text-center mt-5">
-                <Button color="success" onClick={handleClickDone} disabled={tipoDoc==null}>Generar comprobante</Button>
+                <Button color="success" onClick={handleClickDone} disabled={tipoDoc == null}>Generar comprobante</Button>
             </div>
         </div>
     )

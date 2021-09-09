@@ -33,7 +33,7 @@ moment.locale('es');
 const NuevaEmision = () => {
   const dispatch = useDispatch();
   const { associatedObject } = useSelector(({ asociado }) => asociado);
-  const { loading,success } = useSelector(({ commonData }) => commonData);
+  const { loading, success } = useSelector(({ commonData }) => commonData);
   const [submited, setsubmited] = useState(false);
   const [idAsociado, setidAsociado] = useState(undefined);
   const [showAfiliacion, setshowAfiliacion] = useState(false);
@@ -139,18 +139,18 @@ const NuevaEmision = () => {
     formdata.pagado = pagado;
     formdata.banco = bancopago;
     formdata.conafiliacion = showAfiliacion;
-    formdata.docModificar = docModificar; 
-    formdata.items=items;
+    formdata.docModificar = docModificar;
+    formdata.items = items;
     dispatch(saveCuenta(formdata));
     setsubmited(true);
   }
 
   useEffect(() => {
-    if(submited && success && !loading){
+    if (submited && success && !loading) {
       history.push('/admin/cuentas');
       setsubmited(false);
     }
-  }, [submited,loading,success,history]);
+  }, [submited, loading, success, history]);
 
   const calcImporteTotal = () => {
     let importeCalc = showAfiliacion ? newImporte : associatedObject[0]?.importeMensual;
@@ -174,9 +174,9 @@ const NuevaEmision = () => {
       <Container className="mt--7" fluid>
         {
           submited ?
-          <Loading />
-          :
-          ""
+            <Loading />
+            :
+            ""
         }
         <ConfirmDialog
           question={'¿Seguro de registrar emisión?'}
@@ -254,7 +254,7 @@ const NuevaEmision = () => {
                                 Fecha emisión
                               </label>
                               <Input
-                                className="form-control-alternative"
+                                className="form-control-alternative "
                                 name="fechaEmision"
                                 type="date"
                                 readOnly
@@ -377,36 +377,62 @@ const NuevaEmision = () => {
                               </Col>
                           }
                           <Col lg="12">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Observación
-                              </label>
-                              <Input
-                                className="form-control-alternative"
-                                name="observacion"
-                                type="text"
-                                innerRef={register({ required: false })}
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col lg="4">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-address"
-                              >
-                                Correo destino
-                              </label>
-                              <Input
-                                className="form-control-alternative"
-                                name="correo"
-                                type="email"
-                                innerRef={register({ required: false })}
-                              />
-                            </FormGroup>
+                            <Row>
+                              {
+                                (tipoDocumentoEmision === 1 || tipoDocumentoEmision === 2) && (pagado === 1) ?
+                                  <Col lg="4">
+                                    <FormGroup>
+                                      <label
+                                        className="form-control-label"
+                                        htmlFor="input-address"
+                                      >
+                                        Fecha de vencimiento <span className="text-success">*NUEVO</span>
+                                      </label>
+                                      <Input
+                                        className="form-control-alternative"
+                                        name="fechaVencimiento"
+                                        type="date"
+                                        min={new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
+                                        innerRef={register({ required: (tipoDocumentoEmision === 1 || tipoDocumentoEmision === 2) && (pagado === 1) })}
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  :
+                                  ""
+                              }
+                              <Col lg="4">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Correo destino
+                                  </label>
+                                  <Input
+                                    className="form-control-alternative"
+                                    name="correo"
+                                    type="email"
+                                    innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                              <Col lg="12">
+                                <FormGroup>
+                                  <label
+                                    className="form-control-label"
+                                    htmlFor="input-address"
+                                  >
+                                    Observación
+                                  </label>
+                                  <Input
+                                    className="form-control-alternative"
+                                    name="observacion"
+                                    type="text"
+                                    innerRef={register({ required: false })}
+                                  />
+                                </FormGroup>
+                              </Col>
+                            </Row>
                           </Col>
                         </Row>
                       </div>
@@ -515,6 +541,7 @@ const NuevaEmision = () => {
                                       setMontoPaid(e.target.value);
                                     }}
                                     value={montoPaid}
+                                    onWheelCapture={(e) => e.target.blur()}
                                     innerRef={register({ required: pagado === 2 })}
                                   />
                                 </FormGroup>

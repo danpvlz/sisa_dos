@@ -82,7 +82,7 @@ const Cuenta = () => {
       dispatch(listBills(page, search));
       dispatch(indicatorsBills(search));
     }
-  }, [billsStatusActions,page,search,dispatch]);
+  }, [billsStatusActions, page, search, dispatch]);
 
   useEffect(() => {
     let tsearch = search;
@@ -116,38 +116,38 @@ const Cuenta = () => {
       delete tsearch.number;
     } else {
       tsearch.number = number;
-      wait=true;
+      wait = true;
     }
     if (sincePay == null) {
       delete tsearch.sincePay;
     } else {
       tsearch.sincePay = sincePay;
-      wait=true;
+      wait = true;
     }
 
     if (untilPay == null) {
       delete tsearch.untilPay;
     } else {
       tsearch.untilPay = untilPay;
-      wait=true;
+      wait = true;
     }
 
     if (since == null) {
       delete tsearch.since;
     } else {
       tsearch.since = since;
-      wait=true;
+      wait = true;
     }
 
     if (until == null) {
       delete tsearch.until;
     } else {
       tsearch.until = until;
-      wait=true;
+      wait = true;
     }
 
     if (loaded) {
-      if(wait){
+      if (wait) {
         clearTimeout(timeOutFunc);
         timeOutFunc = setTimeout(() => {
           setsearch(tsearch);
@@ -155,14 +155,14 @@ const Cuenta = () => {
           dispatch(indicatorsBills(search));
         }, 800);
       }
-    }else{
+    } else {
       dispatch(listBills(page, search));
       dispatch(indicatorsBills(search));
     }
     return () => {
       setloaded(false);
     }
-  }, [page, cobrador, idAsociado, status, typeDetail, number, sincePay, untilPay, since, until,search,loaded,dispatch]);
+  }, [page, cobrador, idAsociado, status, typeDetail, number, sincePay, untilPay, since, until, search, loaded, dispatch]);
 
   const toggleModal = (modal) => {
     setshow({ ...show, [modal]: !show[modal] });
@@ -276,7 +276,7 @@ const Cuenta = () => {
                             htmlFor="filterMonth"
                           >
                             Desde
-                      </label>
+                          </label>
                           <Input
                             className="form-control-alternative"
                             id="fitlerSince"
@@ -296,7 +296,7 @@ const Cuenta = () => {
                             htmlFor="filterMonth"
                           >
                             Hasta
-                      </label>
+                          </label>
                           <Input
                             className="form-control-alternative"
                             id="filterUntil"
@@ -316,7 +316,7 @@ const Cuenta = () => {
                             htmlFor="filterMonth"
                           >
                             Número
-                      </label>
+                          </label>
                           <Input
                             className="form-control-alternative"
                             name="number"
@@ -334,7 +334,7 @@ const Cuenta = () => {
                             htmlFor="filterMonth"
                           >
                             Asociado
-                      </label>
+                          </label>
                           <SearchAsociado setVal={setidAsociado} selectInputRef={selectInputRefAsociado} />
                         </FormGroup>
                       </Col>
@@ -345,7 +345,7 @@ const Cuenta = () => {
                             htmlFor="filterMonth"
                           >
                             Estado
-                      </label>
+                          </label>
                           <Select
                             placeholder="Seleccione..."
                             isClearable
@@ -365,7 +365,7 @@ const Cuenta = () => {
                             htmlFor="filterMonth"
                           >
                             Cobrador
-                      </label>
+                          </label>
                           <SearchCobrador setVal={setcobrador} selectInputRef={selectInputRef} />
                         </FormGroup>
                       </Col>
@@ -376,7 +376,7 @@ const Cuenta = () => {
                             htmlFor="filterMonth"
                           >
                             Tipo
-                      </label>
+                          </label>
                           <Select
                             placeholder="Seleccione..."
                             className="select-style"
@@ -493,22 +493,22 @@ const Cuenta = () => {
                                       }}
                                     >
                                       <i className="text-blue fa fa-eye" aria-hidden="true"></i> Detalle
-                        </DropdownItem>
+                                    </DropdownItem>
                                     {
                                       cuenta.estado === 1 ?
                                         <>
                                           <DropdownItem
                                             className="d-flex"
-                                            onClick={(e) => { setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); toggleModal('pay'); }}
+                                            onClick={(e) => { setfechasince(cuenta.fechaEmision); setidCuenta(cuenta.idCuenta); setmonto(cuenta.total); toggleModal('pay'); }}
                                           >
                                             <i className="fa fa-credit-card text-success" aria-hidden="true"></i> Cancelar
-                                    </DropdownItem>
+                                          </DropdownItem>
                                           <DropdownItem
                                             className="d-flex"
                                             onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal('confirm'); }}
                                           >
                                             <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
-                                    </DropdownItem>
+                                          </DropdownItem>
                                         </>
                                         :
                                         cuenta.estado === 2 ?
@@ -521,19 +521,19 @@ const Cuenta = () => {
                                               }}
                                             >
                                               <i className="text-green fa fa-edit" aria-hidden="true"></i> Cambiar pago
-                                    </DropdownItem>
+                                            </DropdownItem>
                                             <DropdownItem
                                               className="d-flex"
                                               onClick={(e) => { setaction(2); setidCuenta(cuenta.idCuenta); toggleModal('confirm'); }}
                                             >
                                               <i className="text-yellow fa fa-eraser" aria-hidden="true"></i> Cambiar a pendiente
-                                    </DropdownItem>
+                                            </DropdownItem>
                                             <DropdownItem
                                               className="d-flex"
                                               onClick={(e) => { setaction(1); setidCuenta(cuenta.idCuenta); toggleModal('confirm') }}
                                             >
                                               <i className="text-danger fa fa-ban" aria-hidden="true"></i> Anular
-                                      </DropdownItem>
+                                            </DropdownItem>
                                           </>
                                           :
                                           ""
