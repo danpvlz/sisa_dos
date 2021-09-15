@@ -5,9 +5,11 @@ import {
   Table,
   Row,
   Progress,
+  Button,
 } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { listbysector } from "../../redux/actions/Cuenta";
+import { exportmetacobertura } from "../../redux/actions/Asociado";
 import Loading from "../../components/Loaders/LoadingSmall";
 
 export default function BySector({ since, until }) {
@@ -79,10 +81,9 @@ export default function BySector({ since, until }) {
                                   </div>
                                   <span className="ml-2">{Math.round(bill.cobrado / bill.meta * 100)}%</span>
                                 </div>
-
                             }
-                          </td>
-                          <td>{bill.asociados} <i className="ni ni-single-02 ml-1"></i></td>
+                          </td>{/*exportmetacobertura*/}
+                          <td>{bill.asociados} <Button title="Exportar" color="link" className="mx-0 px-0" onClick={() => dispatch(exportmetacobertura({debCollector:bill.idSector}))}><i className="ni ni-single-02 ml-1"></i></Button></td>
                           <td>
                             {
                               billListBySector.cobertura?.find(c=>c.descripcion===bill.descripcion)?.cobertura ?

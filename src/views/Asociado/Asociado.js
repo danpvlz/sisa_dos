@@ -71,13 +71,14 @@ const Asociado = () => {
     Promotor: true,
     Codigo: true,
     Ingreso: true,
+    Retiro: true,
   });
 
   useEffect(() => {
     if (associatedStatusActions === 200) {
       dispatch(listAssociated(page, search));
     }
-  }, [associatedStatusActions,page,search,dispatch]);
+  }, [associatedStatusActions, page, search, dispatch]);
 
   useEffect(() => {
     let tsearch = search;
@@ -117,7 +118,7 @@ const Asociado = () => {
       setsearch(tsearch);
       dispatch(listAssociated(page, tsearch))
     }
-  }, [idAsociado, debCollector, comiteGremial, since, promotorSearched, state, page,loaded,search,dispatch]);
+  }, [idAsociado, debCollector, comiteGremial, since, promotorSearched, state, page, loaded, search, dispatch]);
 
   useEffect(() => {
     setsearch(search);
@@ -126,13 +127,13 @@ const Asociado = () => {
     return () => {
       setloaded(false);
     }
-  }, [page,search,dispatch]);
+  }, [page, search, dispatch]);
 
   const toggleModalCodigo = () => {
     setshowSetCodigo(!showSetCodigo);
   };
 
-  const handleSendCodigo=()=>{
+  const handleSendCodigo = () => {
     var fData = {
       "idAsociado": selectedAsociado,
       "codigo": codigo
@@ -147,7 +148,7 @@ const Asociado = () => {
     setShowConfirm(!showConfirm);
   };
 
-  const handleConfirm=()=>{
+  const handleConfirm = () => {
     if (action === 1) {
       dispatch(status(selectedAsociado)); //CAMBIAR DE ESTADO
     } else {
@@ -215,7 +216,7 @@ const Asociado = () => {
                             htmlFor="filterMonth"
                           >
                             Ingreso
-                      </label>
+                          </label>
                           <Input
                             className="form-control-alternative"
                             id="fitlerSince"
@@ -223,7 +224,7 @@ const Asociado = () => {
                             type="month"
                             value={since}
                             onChange={(e, actionMeta) => {
-                              setsince(e.target.value.length >0  ? e.target.value : null);
+                              setsince(e.target.value.length > 0 ? e.target.value : null);
                             }}
                           />
                         </FormGroup >
@@ -235,7 +236,7 @@ const Asociado = () => {
                             htmlFor="filterMonth"
                           >
                             Asociado
-                      </label>
+                          </label>
                           <SearchAsociado setVal={setIdAsociado} />
                         </FormGroup>
                       </Col>
@@ -246,7 +247,7 @@ const Asociado = () => {
                             htmlFor="filterMonth"
                           >
                             Cobrador
-                      </label>
+                          </label>
                           <SearchCobrador setVal={setdebCollector} />
                         </FormGroup>
                       </Col>
@@ -257,7 +258,7 @@ const Asociado = () => {
                             htmlFor="input-address"
                           >
                             Promotor
-                              </label>
+                          </label>
                           <SearchPromotor setVal={setPromotorSearched} />
                         </FormGroup>
                       </Col>
@@ -268,7 +269,7 @@ const Asociado = () => {
                             htmlFor="filterMonth"
                           >
                             Estado
-                      </label>
+                          </label>
                           <Select
                             placeholder="Seleccione..."
                             className="select-style"
@@ -287,7 +288,7 @@ const Asociado = () => {
                             htmlFor="filterMonth"
                           >
                             Comité gremial
-                      </label>
+                          </label>
                           <SearchComiteGremial setVal={setcomiteGremial} curVal={comiteGremial} />
                         </FormGroup>
                       </Col>
@@ -318,6 +319,7 @@ const Asociado = () => {
                           <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Promotor ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Promotor: !showHeaders.Promotor })}>Promotor</th>
                           <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Codigo ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Codigo: !showHeaders.Codigo })}>Código</th>
                           <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Ingreso ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Ingreso: !showHeaders.Ingreso })}>Ingreso</th>
+                          <th scope="col" style={{ cursor: 'pointer' }} className={!showHeaders.Retiro ? 'd-none' : ''} onClick={() => setshowHeaders({ ...showHeaders, Retiro: !showHeaders.Retiro })}>Retiro</th>
                           <th scope="col" />
                         </tr>
                       </thead>
@@ -364,6 +366,9 @@ const Asociado = () => {
                               <td className={!showHeaders.Ingreso ? 'd-none' : ''}>
                                 {asociado.fechaIngreso}
                               </td>
+                              <td className={!showHeaders.Retiro ? 'd-none' : ''}>
+                                {asociado.fechaRetiro}
+                              </td>
                               <td className="text-right">
                                 <UncontrolledDropdown>
                                   <DropdownToggle
@@ -381,7 +386,7 @@ const Asociado = () => {
                                       className="d-flex"
                                       onClick={() => {
                                         history.push({
-                                          pathname: '/admin/editar-asociado-sa/'+asociado.idAsociado
+                                          pathname: '/admin/editar-asociado-sa/' + asociado.idAsociado
                                         });
                                       }}
                                     >
@@ -392,7 +397,7 @@ const Asociado = () => {
                                       onClick={(e) => { setSelectedAsociado(asociado.idAsociado); toggleModalCodigo(); }}
                                     >
                                       <i className="text-blue fa fa-edit" aria-hidden="true"></i> Modificar código
-                        </DropdownItem>
+                                    </DropdownItem>
                                     {asociado.estado === 1 || asociado.estado === 3 ?
                                       <>
                                         {asociado.estado === 3 ?
@@ -406,7 +411,7 @@ const Asociado = () => {
                                             }}
                                           >
                                             <i className="text-green fa fa-check" aria-hidden="true"></i> Activar
-                          </DropdownItem>
+                                          </DropdownItem>
                                           :
                                           <DropdownItem
                                             className="d-flex"
@@ -418,7 +423,7 @@ const Asociado = () => {
                                             }}
                                           >
                                             <i className="text-yellow fa fa-ban" aria-hidden="true"></i> Preactivo
-                          </DropdownItem>
+                                          </DropdownItem>
                                         }
                                         <DropdownItem
                                           className="d-flex"
@@ -430,7 +435,7 @@ const Asociado = () => {
                                           }}
                                         >
                                           <i className="text-danger fa fa-ban" aria-hidden="true"></i> Retirar
-                          </DropdownItem>
+                                        </DropdownItem>
                                       </>
                                       : asociado.estado === 2 || asociado.estado === 0 ?
                                         <DropdownItem
@@ -443,7 +448,7 @@ const Asociado = () => {
                                           }}
                                         >
                                           <i className="text-green fa fa-check" aria-hidden="true"></i> Activar
-                          </DropdownItem>
+                                        </DropdownItem>
                                         : ""}
                                     <DropdownItem
                                       className="d-none"
@@ -451,14 +456,14 @@ const Asociado = () => {
                                       onClick={(e) => e.preventDefault()}
                                     >
                                       <i className="text-blue fa fa-phone fa-rotate-90" aria-hidden="true"></i> Llamadas
-                        </DropdownItem>
+                                    </DropdownItem>
                                     <DropdownItem
                                       className="d-none"
                                       href="#pablo"
                                       onClick={(e) => e.preventDefault()}
                                     >
                                       <i className="text-blue fa fa-credit-card" aria-hidden="true"></i> Cuentas
-                        </DropdownItem>
+                                    </DropdownItem>
                                     {asociado.estado === 2 &&
                                       <DropdownItem
                                         className="d-flex"
@@ -470,7 +475,7 @@ const Asociado = () => {
                                         }}
                                       >
                                         <i className="text-danger fa fa-trash" aria-hidden="true"></i> Eliminar
-                        </DropdownItem>
+                                      </DropdownItem>
                                     }
                                   </DropdownMenu>
                                 </UncontrolledDropdown>

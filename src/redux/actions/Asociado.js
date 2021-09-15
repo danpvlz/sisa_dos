@@ -97,6 +97,29 @@ export const exportAssociateds = (params = {}) => {
   }
 };
 
+export const exportmetacobertura = (params = {}) => {
+  let config = {
+    responseType: 'blob', // important
+  }
+  return (dispatch) => {
+    dispatch({ type: FETCH_START });
+    axios.post('/associated/exportcobertura',
+      params,
+      config
+    ).then(({ data }) => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'meta_cobertura.xlsx'); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+      dispatch({ type: FETCH_SUCCESS });
+    }).catch(function (error) {
+      dispatch({ type: FETCH_ERROR, payload: error });
+    });
+  }
+};
+
 export const showAssociated = (id) => {
   return (dispatch) => {
     dispatch({ type: FETCH_START });

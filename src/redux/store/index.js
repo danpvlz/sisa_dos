@@ -5,7 +5,6 @@ import createRootReducer from '../reducers'
 
 const createBrowserHistory = require('history').createBrowserHistory;
 
-
 export const history = createBrowserHistory({ basename: '/gs' });
 
 const routeMiddleware = routerMiddleware(history);
@@ -21,7 +20,7 @@ export default function configureStore(preloadedState) {
         routerMiddleware(history), // for dispatching history actions
         ...middlewares
       ),
-      //process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() : ''
+      //window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     )
   );
 
