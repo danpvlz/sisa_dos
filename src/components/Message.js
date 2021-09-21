@@ -28,6 +28,7 @@ export default function Message() {
         setshowmessage(message?.message ? message.message : "");
 
         if (message?.message === "Request failed with status code 401") {
+          localStorage.clear();
           window.location.reload();
         }
 

@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 import { useHistory } from 'react-router-dom';
 import { useForm } from "react-hook-form";
-import { showWorker, resetShowWorker, update, resetPassword } from "../../redux/actions/Colaborador";
+import { showWorker, update, resetPassword, resetShowWorker } from "../../redux/actions/Colaborador";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmDialog from '../../components/Modals/ConfirmDialog';
 
@@ -52,13 +52,17 @@ const NuevoColaborador = (props) => {
 
   useEffect(() => {
     if (props.location.state?.workerSelected) {
-      workerObject?.length === 0 &&
         dispatch(showWorker(props.location.state.workerSelected));
+    }else {
+      history.push('/');
     }
+  }, [dispatch,props.location.state.workerSelected,history])
+
+  useEffect(() => {
     return () => {
       dispatch(resetShowWorker());
     }
-  }, [dispatch,props,workerObject])
+  }, [dispatch])
 
   const handleConfirm = () => {
     if(actionresetpassword){
